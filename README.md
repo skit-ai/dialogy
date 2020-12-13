@@ -95,7 +95,7 @@ evaluation scripts, serving your models via an API, combining another workflow, 
 
 ## Contrib
 - Go through the docs.
-- Name your branch as "<purpose>/<short-description>". examples:
+- Name your branch as "purpose/short-description". examples:
     - "feature/hippos_can_fly"
     - "fix/breathing_water_instead_of_fire"
     - "docs/chapter_on_mighty_sphinx"
