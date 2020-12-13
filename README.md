@@ -62,13 +62,13 @@ Refer to the source for [merge_asr_output](./dialogy/preprocessing/text/merge_as
 
 ## Docs
 
-- [Errors](./docs/errors/README.md)
-- [Types](./docs/types/README.md)
-- [Parsers](./docs/parsers/README.md)
-- [Pre-Processors](./docs/preprocessing/README.md)
-- [Post-Processors](./docs/postprocessing/README.md)
-- [Workflow](./docs/workflow/README.md)
 - [Plugins](./docs/plugins/README.md)
+- [Workflow](./docs/workflow/README.md)
+- [Errors](./docs/errors/README.md) (WIP)
+- [Types](./docs/types/README.md) (WIP)
+- [Parsers](./docs/parsers/README.md) (WIP)
+- [Pre-Processors](./docs/preprocessing/README.md) (WIP)
+- [Post-Processors](./docs/postprocessing/README.md) (WIP)
 
 ## FAQs
 
