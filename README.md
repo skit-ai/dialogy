@@ -44,7 +44,7 @@ def vectorizer(workflow):
 
 class TfidfMLPClfWorkflow(Workflow):
     def __init__(self):
-        super(TfidfMLPClfWorkflow, self).__init__()
+        super(TfidfMLPClfWorkflow).__init__()
         self.model = None
 
     def load_model(self, model_path):

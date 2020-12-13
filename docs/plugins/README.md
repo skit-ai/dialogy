@@ -43,7 +43,7 @@ from dialogy.workflow import Workflow
 def better_tokenizer_plugin(pattern: str = r" ", maxsplit: int = 0, flags = re.I | re.U):
     # Always compile strings before using them in loops.
     pattern = re.compile(pattern, maxsplit=maxsplit, flags=flags)
-    def inner(workflow: Workflow):
+    def plugin(workflow: Workflow):
         """
         Split a sentence by given regex pattern.
         """
@@ -85,7 +85,7 @@ def user_friendly_better_tokenizer_plugin(
     # Always compile strings before using them in loops.
     pattern = re.compile(pattern, maxsplit=maxsplit, flags=flags)
 
-    def inner(workflow: Workflow):
+    def plugin(workflow: Workflow):
         text = access(workflow)
 
         if not isinstance(text, str):
@@ -116,28 +116,30 @@ from dialogy.plugins import Plugin
 
 class Sentence2VecPlugin(Plugin):
     def __init__(self):
-        super(Sentence2Vec, self).__init__()
+        super(Sentence2Vec).__init__()
         self.model = None
 
-    def load(model_path=None):
+    def load(self, model_path=None):
         with open(model_path, "rb") as binary:
             self.model = binary.load()
         
-    def exec(workflow, access: Callable = None, mutate: Callable = None):
-        sentence = access(workflow)
+    def exec(self, access: Callable = None, mutate: Callable = None):
+        def plugin(self, workflow):
+            sentence = access(workflow)
 
-        if not isinstance(access, Callable):
-            raise TypeError(f"Expected access to be a Callable got {type(access)} instead.")
-        if not isinstance(mutate, Callable): 
-            raise TypeError(f"Expected mutate to be a Callable got {type(access)} instead.")
+            if not isinstance(access, Callable):
+                raise TypeError(f"Expected access to be a Callable got {type(access)} instead.")
+            if not isinstance(mutate, Callable): 
+                raise TypeError(f"Expected mutate to be a Callable got {type(access)} instead.")
 
-        if not isinstance(text, str):
-            raise TypeError(f"Expected str found {type(text)}.")
-        if not text:
-            raise ValueError(f"Expected str of non-zero length.")
+            if not isinstance(text, str):
+                raise TypeError(f"Expected str found {type(text)}.")
+            if not text:
+                raise ValueError(f"Expected str of non-zero length.")
 
-        vectorized_sentence = self.model(sentence)
-        mutate(workflow, vectorized_sentence)
+            vectorized_sentence = self.model(sentence)
+            mutate(workflow, vectorized_sentence)
+        return plugin
 ```
 
 ## Summary
