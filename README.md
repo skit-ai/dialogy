@@ -11,6 +11,11 @@ Dialogy is a battries-included 🔋 opinionated framework to build machine-learn
 pip install dialogy
 ```
 
+## Test
+```
+make
+```
+
 ## Examples
 Using `dialogy` to run a classifier on a new input.
 
@@ -80,7 +85,7 @@ Any rigidity here would lead to distractions both to maintainers and users of th
 Separate, isolated and lightweight libraries that just work for a recipe.
 
 ### Shouldn't evaluation be common if we are using this software?
-❌. Evaluation of models is hard to standardize. if you have a fairly common need, feel free to contribute plugins.
+❌. Evaluation of models is hard to standardize. if you have a fairly common need, feel free to contribute your `workflow` or `plugins`.
 
 ### What are the benefits of using this project?
 - ✅. This project offers a conduit for an untrained model. This means once a [workflow](./dialogy/workflow/README.md) is coded you can use it anywhere:
@@ -88,8 +93,17 @@ evaluation scripts, serving your models via an API, combining another workflow, 
 - ✅. If your application needs spoken language understanding, you should find little need to write data processing functions.
 - ✅. Little to no learning curve, if you know python you know how to use this project.
 
+## Contrib
+- Go through the docs.
+- Name your branch as "<purpose>/<short-description>". examples:
+    - "feature/hippos_can_fly"
+    - "fix/breathing_water_instead_of_fire"
+    - "docs/chapter_on_mighty_sphinx"
+    - "refactor/limbs_of_mummified_pharao"
+    - "test/my_patience"
+- Make sure tests are added are passing. Run `make` at project root. Coverage is important aim for 100% unless reviewer agrees.
+
 ## Future
 - [ ] Duckling parsers and support.
 - [ ] Cookiecutter project installation.
 - [ ] Conversation driven development.
-
