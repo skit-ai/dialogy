@@ -59,7 +59,7 @@ def better_tokenizer_plugin(pattern: str = r" ", maxsplit: int = 0, flags = re.I
     return inner
 ```
 
-This new plugin offers more utility because the consumer can now use the [`re`](https://docs.python.org/3/library/re.html) library to tokenize their inputs. There are still problems with this plugin. The assumptions made by these plugins have a tendency to break their utility. The author assumes (as can be seen in the comments) that:
+This new plugin offers more utility because the consumer can now use the [`re`](https://docs.python.org/3/library/re.html) library to tokenize their inputs. This plugin is still not ready for general use. The assumptions made by this plugin has a tendency to hurt its utility. The author assumes (as can be seen in the comments) that:
 
 > assuming consumers would have `workflow.input` as `str`.
 
