@@ -1,0 +1,18 @@
+from dialogy.workflow import Workflow
+from dialogy.preprocessing.text.merge_asr_output import merge_asr_output
+
+
+def test_merge_as_output():
+    def access(workflow):
+        return workflow.input
+
+    def mutate(workflow, value):
+        workflow.input = value
+
+    workflow = Workflow(
+        preprocessors=[merge_asr_output(access, mutate)],
+        postprocessors=[]
+    )
+
+    workflow.run([[{"transcript": "hello world", "confidence": None}]])
+    assert workflow.input == "<s> hello world </s>"
