@@ -13,7 +13,7 @@ Let's look at a few example plugins:
 from dialogy.workflow import Workflow
 
 
-def barely_useful_tokenizer(workflow: Workflow):
+def barely_useful_tokenizer_plugin(workflow: Workflow):
     """
     Separate words in a sentence by " ".
     """
@@ -40,7 +40,7 @@ import re
 from dialogy.workflow import Workflow
 
 
-def better_tokenizer(pattern: str = r" ", maxsplit: int = 0, flags = re.I | re.U):
+def better_tokenizer_plugin(pattern: str = r" ", maxsplit: int = 0, flags = re.I | re.U):
     # Always compile strings before using them in loops.
     pattern = re.compile(pattern, maxsplit=maxsplit, flags=flags)
     def inner(workflow: Workflow):
@@ -75,7 +75,7 @@ from typing import Callable
 from dialogy.workflow import Workflow
 
 
-def user_friendly_better_tokenizer(
+def user_friendly_better_tokenizer_plugin(
     pattern: str = r" ", 
     maxsplit: int = 0, 
     flags = re.I | re.U, 
@@ -113,7 +113,8 @@ from typing import Callable
 from dialogy.workflow import Workflow
 from dialogy.plugins import Plugin
 
-class Sentence2Vec(Plugin):
+
+class Sentence2VecPlugin(Plugin):
     def __init__(self):
         super(Sentence2Vec, self).__init__()
         self.model = None
@@ -147,3 +148,4 @@ We will summarize a few key points for creating plugins:
 - We can easily access multiple parts of a workflow by expecting `access` functions to return `Tuple`, `List` or `Dict`.
 - Likewise, we can easily modify multiple parts of a workflow by expecting `mutate` functions to accept `Tuple`, `List` or `Dict` as values.
 - Plugin authors must provide good documentation for `access` and `mutate` functions that work with their plugin.
+- **Plugin names must end with Plugin for classes and _plugin for functions.**
