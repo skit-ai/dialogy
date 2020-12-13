@@ -33,7 +33,7 @@ The successor to this function would receive a `List[str]` as `workflow.input`.
 
 
 ### A better plugin
-Let's try to create a plugin where the delimiter is an argument. 💡 
+Let's try to create a plugin to split on `regex`. 💡 
 
 ```python
 import re
