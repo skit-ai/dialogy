@@ -1,11 +1,12 @@
 from pprint import pformat
-from typing import List, Callable, Any
+from typing import List, Callable, Any, Optional
 from dialogy import constants
 from dialogy.utils.logger import log, change_log_level
+from dialogy.types.plugins import PluginFn
 
 
 class Workflow:
-    def __init__(self, preprocessors=None, postprocessors=None, debug=False):
+    def __init__(self, preprocessors: Optional[List[PluginFn]] = None, postprocessors: Optional[List[PluginFn]] = None, debug: bool = False) -> None:
         """
         This is a light but fairly flexible workflow for a machine learning pipeline.
 
@@ -53,7 +54,7 @@ class Workflow:
             # Changing log-level to error would mean, logs from log.debug(...) would not appear.
             change_log_level("ERROR")
 
-    def load_model(self):
+    def load_model(self) -> None:
         """
         Override method in sub-class to load model(s).
 
@@ -64,7 +65,7 @@ class Workflow:
         raise NotImplementedError(
             f"Override method `load_model` in class {class_name}.")
 
-    def update(self, processor_type: str, processors: List):
+    def update(self, processor_type: str, processors: List[PluginFn]) -> None:
         """
         Update input, output attributes.
 
@@ -80,7 +81,7 @@ class Workflow:
             TypeError: If any element in processors list is not a Callable.
         """
         for processor in processors:
-            if not isinstance(processor, Callable):
+            if not isinstance(processor, Callable):  # type: ignore
                 raise TypeError(
                     f"{processor_type}={processor} is not a callable")
 
@@ -90,7 +91,7 @@ class Workflow:
             # logs are available only when debug=True during class initialization
             self.__log("After", processor_type, processor)
 
-    def preprocess(self):
+    def preprocess(self) -> None:
         """
         Convenience over `update` method.
 
@@ -98,7 +99,7 @@ class Workflow:
         """
         self.update(constants.PREPROCESSORS, self.__preprocessors)
 
-    def postprocess(self):
+    def postprocess(self) -> None:
         """
         Convenience over `update` method.
 
@@ -106,7 +107,7 @@ class Workflow:
         """
         self.update(constants.POSTPROCESSORS, self.__postprocessors)
 
-    def inference(self):
+    def inference(self) -> None:
         """
         Get model predictions.
 
@@ -120,7 +121,7 @@ class Workflow:
             raise NotImplementedError(
                 f"Override method `inference` in class {class_name}.")
 
-    def run(self, input_: Any):
+    def run(self, input_: Any) -> Any:
         """
         Get final results from the workflow.
 
@@ -136,13 +137,13 @@ class Workflow:
         Returns:
             (Any): This function can return any arbitrary value. Subclasses may enforce a stronger check.
         """
-        self.__input = input_
+        self.input = input_
         self.preprocess()
         self.inference()
         self.postprocess()
         return self.output
 
-    def __log(self, message: str, processor_type: str, processor: str):
+    def __log(self, message: str, processor_type: str, processor: PluginFn) -> None:
         """
         Log the changes in the input/output as pre/post processing functions execute.
 
