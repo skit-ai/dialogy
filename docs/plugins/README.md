@@ -28,7 +28,7 @@ def barely_useful_tokenizer_plugin(workflow: Workflow):
     workflow.input = text.split(" ")
 ```
 
-This plugin is a pre-processing function that splits each word in a given sentence and replaces the value held by the current input.
+This plugin is a pre-processing function that splits each word in a given sentence and replaces the value held by the current `workflow.input`.
 The successor to this function would receive a `List[str]` as `workflow.input`.
 
 
