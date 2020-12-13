@@ -51,8 +51,10 @@ workflow = TfidfMLPClfWorkflow(preprocessors=preprocessors, postprocessors=[])
 output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # output -> _greeting_
 ```
 
-## Future
-- Duckling parsers and support.
+## Note
 - Popular workflow sub-classes will be accepted after code-review.
-- Cookiecutter project installation.
-- Conversation driven development.
+
+## Future
+- [ ] Duckling parsers and support.
+- [ ] Cookiecutter project installation.
+- [ ] Conversation driven development.
