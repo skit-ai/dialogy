@@ -52,6 +52,7 @@ output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # o
 ```
 
 ## Future
+- Duckling parsers and support.
 - Popular workflow sub-classes will be accepted after code-review.
 - Cookiecutter project installation.
 - Conversation driven development.
