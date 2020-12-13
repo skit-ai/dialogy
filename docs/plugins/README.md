@@ -104,8 +104,9 @@ The plugin only offers a value.
 
 ## Plugins are classes too!
 
-There is yet another challenge. We saw functional plugins but what if a plugin requires a state? say a consumers want to encode sentences to vectors using
-sentence_embeddings? A function only interface would make that difficult. `Dialogy` also provides a `Plugin` class ([abstact](https://docs.python.org/3/library/abc.html)) that can be used for such cases.
+There is yet another challenge. We saw plugins that are just functions with some convention, but what if a plugin requires a state? 
+
+Say a consumers want to encode sentences to vectors using sentence_embeddings? A function would load that model for each iteration, and that's no good. `Dialogy` also provides a `Plugin` class ([abstact](https://docs.python.org/3/library/abc.html)) that can be used for such cases.
 
 ```python
 from typing import Callable
