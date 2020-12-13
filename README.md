@@ -17,7 +17,7 @@ pip install dialogy
 
 ## Test
 ```
-make
+make test
 ```
 
 ## Examples
