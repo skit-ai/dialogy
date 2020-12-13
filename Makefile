@@ -12,9 +12,9 @@ PYTHONFILES := $(wildcard *.py)
 
 test:  ## Run the tests.
 	@pytest --cov=dialogy --cov-report html --cov-report term:skip-covered tests/
+	@mypy dialogy
 	@echo -e "The tests pass! ✨ 🍰 ✨"
 
 lint:
 	$(patsubst %.py,%.pylint,$(PYTHONFILES))
-	@mypy dialogy
 	@echo -e "No linting errors! ✨ 🍰 ✨"
