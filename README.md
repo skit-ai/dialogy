@@ -1,4 +1,4 @@
-# Dialogy◾
+# Dialogy
 
 Dialogy is a battries-included 🔋 opinionated framework to build machine-learning solutions for speech applications. 
 
