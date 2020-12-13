@@ -30,7 +30,7 @@ def set_input(workflow, value):
 
 def vectorizer(workflow):
     vectorizer = TfidfVectorizer()
-    workflow.input = vectorizer.transform(workflow.input[-1])
+    workflow.input = vectorizer.transform(workflow.input)
 
 
 class TfidfMLPClfWorkflow(Workflow):
