@@ -1,5 +1,9 @@
 # Dialogy
 
+[![Build Status](https://travis-ci.com/Vernacular-ai/dialogy.svg?branch=master)](https://travis-ci.com/Vernacular-ai/dialogy)
+[![Coverage Status](https://coveralls.io/repos/github/Vernacular-ai/dialogy/badge.svg?branch=master)](https://coveralls.io/github/Vernacular-ai/dialogy?branch=master)
+
+
 Dialogy is a battries-included 🔋 opinionated framework to build machine-learning solutions for speech applications. 
 
 - Plugin-based: Makes it easy to import/export components to other projects. 🔌
