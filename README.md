@@ -59,7 +59,7 @@ preprocessors = [merge_asr_output(access=access, mutate=mutate), vectorizer]
 workflow = TfidfMLPClfWorkflow(preprocessors=preprocessors, postprocessors=[])
 output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # output -> _greeting_
 ```
-Refer to the source for [merge_asr_output](./dialogy/preprocessing/text/merge_asr_output.py) and [Plugins](./docs/plugins/README.md) to understand this example better.
+Refer to the source for [`merge_asr_output`](./dialogy/preprocessing/text/merge_asr_output.py) and [`Plugins`](./docs/plugins/README.md) to understand this example better.
 
 ## Note
 - Popular workflow sub-classes will be accepted after code-review.
@@ -78,15 +78,15 @@ Refer to the source for [merge_asr_output](./dialogy/preprocessing/text/merge_as
 
 ### Will Dialogy help me with model training boilerplate?
 ❌. This is not an end-to-end automated model training framework. That said, no one wants to write boilerplate code,
-unfortunately, it doesn't align with the objectives of this project also it is hard to accomodate for different needs 
+unfortunately, it doesn't align with the objectives of this project. Also, it is hard to accomodate for different needs 
 like: 
 
 - library dependencies 
 - hardware support
 - Need for visualizations/reports during/after training.
 
-Any rigidity here would lead to distractions both to maintainers and users of this project. Therefore we will provide **plugin support**.
-Separate, isolated and lightweight libraries that just work for a recipe.
+Any rigidity here would lead to distractions both to maintainers and users of this project. [`Plugins`](./docs/plugins/README.md) and custom
+[Workflow](./docs/workflow/README.md) are certainly welcome and can take care of recipe-based needs. 
 
 ### Shouldn't evaluation be common if we are using this software?
 ❌. Evaluation of models is hard to standardize. if you have a fairly common need, feel free to contribute your `workflow`, `plugins`.
