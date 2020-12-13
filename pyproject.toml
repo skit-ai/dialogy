@@ -11,6 +11,8 @@ coloredlogs = "^15.0"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
 pytest-cov = "^2.10.1"
+pylint = "^2.6.0"
+mypy = "^0.790"
 
 [build-system]
 requires = ["poetry>=0.12"]
