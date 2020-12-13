@@ -61,9 +61,9 @@ output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # o
 
 ## Docs
 
-- [Errors](./errors/README.md)
-- [Parsers](./parsers/README.md)
-- [Post-Processors](./postprocessing/README.md)
-- [Pre-Processors](./preprocessing/README.md)
-- [Types](./types/README.md)
-- [Workflow](./workflow/README.md)
+- [Errors](./dialogy/errors/README.md)
+- [Parsers](./dialogy/parsers/README.md)
+- [Post-Processors](./dialogy/postprocessing/README.md)
+- [Pre-Processors](./dialogy/preprocessing/README.md)
+- [Types](./dialogy/types/README.md)
+- [Workflow](./dialogy/workflow/README.md)
