@@ -2,7 +2,9 @@ from pprint import pformat
 from typing import List, Callable, Any, Optional
 from dialogy import constants
 from dialogy.utils.logger import log, change_log_level
-from dialogy.types.plugins import PluginFn
+
+
+PluginFn = Callable[['Workflow'], None]
 
 
 class Workflow:
