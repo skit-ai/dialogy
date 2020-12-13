@@ -20,11 +20,11 @@ from dialogy.workflow import Workflow
 from dialogy.preprocessing import merge_asr_output
 
 
-def get_utterance(workflow):
+def access(workflow):
     return workflow.input
 
 
-def set_input(workflow, value):
+def mutate(workflow, value):
     workflow.input = value
 
 
@@ -46,28 +46,30 @@ class TfidfMLPClfWorkflow(Workflow):
         self.output = self.model.predict(self.input)
 
 
-preprocessors = [merge_asr_output(get_utterance, set_input), vectorizer]
+preprocessors = [merge_asr_output(access=access, mutate=mutate), vectorizer]
 workflow = TfidfMLPClfWorkflow(preprocessors=preprocessors, postprocessors=[])
 output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # output -> _greeting_
 ```
+Refer to the source for [merge_asr_output](./dialogy/preprocessing/text/merge_asr_output.py) and [Plugins](./docs/plugins/README.md) to understand this example better.
 
 ## Note
 - Popular workflow sub-classes will be accepted after code-review.
 
 ## Docs
 
-- [Errors](./dialogy/errors/README.md)
-- [Parsers](./dialogy/parsers/README.md)
-- [Post-Processors](./dialogy/postprocessing/README.md)
-- [Pre-Processors](./dialogy/preprocessing/README.md)
-- [Types](./dialogy/types/README.md)
-- [Workflow](./dialogy/workflow/README.md)
+- [Errors](./docs/errors/README.md)
+- [Types](./docs/types/README.md)
+- [Parsers](./docs/parsers/README.md)
+- [Pre-Processors](./docs/preprocessing/README.md)
+- [Post-Processors](./docs/postprocessing/README.md)
+- [Workflow](./docs/workflow/README.md)
+- [Plugins](./docs/plugins/README.md)
 
 ## FAQs
 
 ### Will Dialogy help me with model training boilerplate?
 ❌. This is not an end-to-end automated model training framework. That said, no one wants to write boilerplate code,
-it doesn't align with the objectives of this project also it is hard to accomodate for different needs 
+unfortunately, it doesn't align with the objectives of this project also it is hard to accomodate for different needs 
 like: 
 
 - library dependencies 
