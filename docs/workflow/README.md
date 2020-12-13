@@ -38,8 +38,15 @@ def test_workflow_run():
     )
 
     workflow.run(2)
-    assert workflow.input == 20, "workflow.get_input() should be 2."
-    assert workflow.output == 10, "workflow.get_output() should be 10."
+    assert workflow.input == 20, "workflow.get_input() should be 2." ✅
+    assert workflow.output == 10, "workflow.get_output() should be 10." ✅
 ```
 
 The utility of a `Workflow` is to inspire subclasses which can then be added to this framework for faster development. Along with the [Plugin](../plugins/README.md) ecosystem, where any plugin can become a part of any subclass of `Workflow` ensures development speeds would increase over time.
+
+## Contrib
+Contributing a workflow requires a sub-class of `Workflow` with passing tests. There is no restriction on methods and their operations. 
+So say a workflow `TrainableWorkflow` exists which allows users to have access to `train`, `test`, `save` methods as well, would be accepted 
+into the core libraries.
+
+There might be restriction based on uniqueness of workflows.
