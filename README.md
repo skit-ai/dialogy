@@ -50,3 +50,8 @@ preprocessors = [merge_asr_output(get_utterance, set_input), vectorizer]
 workflow = TfidfMLPClfWorkflow(preprocessors=preprocessors, postprocessors=[])
 output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # output -> _greeting_
 ```
+
+## Future
+- Popular workflow sub-classes will be accepted after code-review.
+- Cookiecutter project installation.
+- Conversation driven development.
