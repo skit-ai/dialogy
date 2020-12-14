@@ -50,8 +50,6 @@ refer to the [[source](../../dialogy/workflow/__init__.py)] for the `.run` metho
         The current workflow exhibits the following simple procedure:
         pre-processing -> inference -> post-processing.
 
-        We run all three functions and return the final result here.
-
         Args:
             input_ (Any): This function receives any arbitrary input. Subclasses may enforce
             a stronger check.
