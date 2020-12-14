@@ -102,7 +102,7 @@ def user_friendly_better_tokenizer_plugin(
 ```
 
 Now we can easily interact with the plugin adequately. An accessor function `access`, allows us to specify the contract to 
-receive inputs from her workflow. Likewise, a mutator function `mutate`, helps modifying the state of our `workflow`.
+receive inputs from our workflows. Likewise, a mutator function `mutate`, helps modifying the state of our `workflow`.
 Now, a plugin is only responsible for access, operations and dispatch on data.
 
 ## Plugins are stateful too!
