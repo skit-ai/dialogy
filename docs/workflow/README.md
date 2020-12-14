@@ -19,7 +19,7 @@ _What's slot filling?_
 
 ## Examples
 
-Here is an example from the tests, demonstrating the simple structure imposed on the user.
+Here is an example from the tests.
 ```python
 from dialogy.workflow import Workflow
 
@@ -37,8 +37,33 @@ def test_workflow_run():
     )
 
     workflow.run(2)
-    assert workflow.input == 20, "workflow.get_input() should be 2." # ✅
+    assert workflow.input == 20, "workflow.get_input() should be 20." # ✅
     assert workflow.output == 10, "workflow.get_output() should be 10." # ✅
+```
+refer to the [[source](../../dialogy/workflow/__init__.py)] for the `.run` method for understanding the process here.
+```python
+    # from the source
+    def run(self, input_: Any) -> Any:
+        """
+        Get final results from the workflow.
+
+        The current workflow exhibits the following simple procedure:
+        pre-processing -> inference -> post-processing.
+
+        We run all three functions and return the final result here.
+
+        Args:
+            input_ (Any): This function receives any arbitrary input. Subclasses may enforce
+            a stronger check.
+
+        Returns:
+            (Any): This function can return any arbitrary value. Subclasses may enforce a stronger check.
+        """
+        self.input = input_
+        self.preprocess()
+        self.inference()
+        self.postprocess()
+        return self.output
 ```
 
 The utility of a `Workflow` is to inspire subclasses which can then be added to this framework for faster development. Along with the [Plugin](../plugins/README.md) ecosystem, where any plugin can attach to any subclass of `Workflow` ensures development speeds would increase over time.
