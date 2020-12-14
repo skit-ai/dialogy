@@ -103,13 +103,14 @@ def user_friendly_better_tokenizer_plugin(
 
 Now we can easily interact with the plugin adequately. An accessor function `access`, allows us to specify the contract to 
 receive inputs from her workflow. Likewise, a mutator function `mutate`, helps modifying the state of our `workflow`.
-The plugin is only responsible for access, operations and dispatch on data.
+Now, a plugin is only responsible for access, operations and dispatch on data.
 
 ## Plugins are stateful too!
 
-There is yet another challenge. We saw plugins that are just functions with some convention, but what if a plugin requires a state? 
+There is yet another challenge. We saw plugins that are just functions with some convention, but what if a plugin requires state? 
 
-Say a consumers want to encode sentences to vectors using [`sentence-transformers`](https://www.sbert.net/)? A function would load that model for each iteration, and that's no good. `Dialogy` also provides an [abstact class](https://docs.python.org/3/library/abc.html), `Plugin` that can be used for such cases.
+Say, we want to encode sentences to vectors using [`sentence-transformers`](https://www.sbert.net/)? 
+`Dialogy` also provides an [abstact class](https://docs.python.org/3/library/abc.html), [`Plugin`](../../dialogy/plugins/__init__.py) that can be used for such cases.
 
 ```python
 from typing import Callable
@@ -153,4 +154,4 @@ We will summarize a few key points for creating plugins:
 - We can easily access multiple parts of a workflow by expecting `access` functions to return `Tuple`, `List` or `Dict`.
 - Likewise, we can easily modify multiple parts of a workflow by expecting `mutate` functions to accept `Tuple`, `List` or `Dict` as values.
 - Plugin authors must provide good documentation for `access` and `mutate` functions that work with their plugin.
-- **Plugin names must end with Plugin for classes and _plugin for functions.**
+- **Plugin names must end with Plugin for classes and _plugin for functions.** examples: `Sentence2VecPlugin`, `words2num_plugin`.
