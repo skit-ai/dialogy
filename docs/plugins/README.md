@@ -1,5 +1,7 @@
 # Plugins
 
+[[source](../../dialogy/plugins/__init__.py)]
+
 A plugin is a `Callable` that requires a [`Workflow`](./docs/workflow/README.md) instance as its only argument. 
 This is standard for many functions within this project to help its extensibility. 
 
