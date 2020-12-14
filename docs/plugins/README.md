@@ -1,13 +1,14 @@
 # Plugins
 
-A plugin is a callable that requires a workflow instance as its only argument. 
+A plugin is a `Callable` that requires a [`Workflow`](./docs/workflow/README.md) instance as its only argument. 
 This is standard for many functions within this project to help its extensibility. 
 
 
 ## Plugins are functions
 
-### Naive plugin
 Let's look at a few example plugins:
+
+### Naive plugin
 
 ```python
 from dialogy.workflow import Workflow
@@ -28,12 +29,12 @@ def barely_useful_tokenizer_plugin(workflow: Workflow):
     workflow.input = text.split(" ")
 ```
 
-This plugin is a pre-processing function that splits each word in a given sentence and replaces the value held by the current `workflow.input`.
+This plugin is a pre-processing function that splits each word in a given sentence by space, and replaces the value held by the current `workflow.input`.
 The successor to this function would receive a `List[str]` as `workflow.input`.
 
 
 ### A better plugin
-Let's try to create a plugin to split on `regex`. 💡 
+Let's try to create a plugin to split on [`regex`](https://docs.python.org/3/library/re.html) patterns. 💡 
 
 ```python
 import re
@@ -59,7 +60,7 @@ def better_tokenizer_plugin(pattern: str = r" ", maxsplit: int = 0, flags = re.I
     return inner
 ```
 
-This new plugin offers more utility because the consumer can now use the [`re`](https://docs.python.org/3/library/re.html) library to tokenize their inputs. This plugin is still not ready for general use. The assumptions made by this plugin has a tendency to hurt its utility. The author assumes (as can be seen in the comments) that:
+This plugin offers more utility because we can use the [`re`](https://docs.python.org/3/library/re.html) library to tokenize inputs. This plugin is still not ready for general use. The assumptions made by this plugin has a tendency to hurt its utility. The author assumes (as can be seen in the comments) that:
 
 > assuming consumers would have `workflow.input` as `str`.
 
@@ -98,15 +99,15 @@ def user_friendly_better_tokenizer_plugin(
     return inner
 ```
 
-Now consumers can easily interact with the plugin adequately. An accessor function `access`, allows a consumer to specify 
-how to receive inputs from her workflow. Meanwhile a mutator function `mutate`, helps modifying the `workflow` only as per the consumer's desire.
-The plugin only offers a value.
+Now we can easily interact with the plugin adequately. An accessor function `access`, allows us to specify the contract to 
+receive inputs from her workflow. Likewise, a mutator function `mutate`, helps modifying the state of our `workflow`.
+The plugin is only responsible for access, operations and dispatch on data.
 
-## Plugins are classes too!
+## Plugins are stateful too!
 
 There is yet another challenge. We saw plugins that are just functions with some convention, but what if a plugin requires a state? 
 
-Say a consumers want to encode sentences to vectors using sentence_embeddings? A function would load that model for each iteration, and that's no good. `Dialogy` also provides a `Plugin` class ([abstact](https://docs.python.org/3/library/abc.html)) that can be used for such cases.
+Say a consumers want to encode sentences to vectors using [`sentence-transformers`](https://www.sbert.net/)? A function would load that model for each iteration, and that's no good. `Dialogy` also provides an [abstact class](https://docs.python.org/3/library/abc.html), `Plugin` that can be used for such cases.
 
 ```python
 from typing import Callable
@@ -124,7 +125,7 @@ class Sentence2VecPlugin(Plugin):
             self.model = binary.load()
         
     def exec(self, access: Callable = None, mutate: Callable = None):
-        def plugin(self, workflow):
+        def plugin(workflow):
             sentence = access(workflow)
 
             if not isinstance(access, Callable):
@@ -137,14 +138,14 @@ class Sentence2VecPlugin(Plugin):
             if not text:
                 raise ValueError(f"Expected str of non-zero length.")
 
-            vectorized_sentence = self.model(sentence)
+            vectorized_sentence = self.model.encode([sentence])
             mutate(workflow, vectorized_sentence)
         return plugin
 ```
 
 ## Summary
 We will summarize a few key points for creating plugins:
-- Don't directly interact with the workflow directly.
+- Don't interact with the workflow directly, use functions to access and mutate.
 - The convention for workflow access is `access(workflow)`.
 - The convention for workflow modification is `mutate(workflow, value)`.
 - We can easily access multiple parts of a workflow by expecting `access` functions to return `Tuple`, `List` or `Dict`.

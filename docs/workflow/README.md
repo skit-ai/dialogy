@@ -2,16 +2,13 @@
 
 A `workflow` is supposed to run tasks that can be anticipated well in advance. We are prioritizing tasks that can be performed in production
 so you may find it odd to miss `train` and `test` methods. This is a deliberate decision since that choice is upto the user and a `workflow` 
-targets performance in a production environment, where `train` and `test` are not the expected set of tasks, but rather `inference` is.
+targets performance in a production environment, where `train` and `test` are not the expected set of tasks, rather `inference` is.
 
-A workflow accepts `preprocessors` and `postprocessors` of type `Optional[List[PluginFn]]`. Preprocessing data has clear utility in ML-pipelines 
-post-processing however, tends to be useful at times. Given that `postprocessors` as a feature tend to allow bad-practices it is highly encouraged 
-to get the most work done through the use of machine-learning techniques. There are still some uses (not restricted to) for a post-processing layer:
+A workflow accepts `preprocessors` and `postprocessors` of type [`Optional[List[PluginFn]]`](../../dialogy/types/plugins/__init__.py). Preprocessing data has clear utility in ML-pipelines. Post-processing however, tends to be useful at certain specific times. Given that `postprocessors` tend to allow bad-practices, it is highly encouraged to get most of the work done through the use of machine-learning techniques. There are still some uses (not restricted to) for a post-processing layer:
 
 1. Eliminate low-confidence output.
 2. Slot-filling.
 3. Sorting items by order of confidence.
-
 
 _What's slot filling?_
 
@@ -42,7 +39,7 @@ def test_workflow_run():
     assert workflow.output == 10, "workflow.get_output() should be 10." # ✅
 ```
 
-The utility of a `Workflow` is to inspire subclasses which can then be added to this framework for faster development. Along with the [Plugin](../plugins/README.md) ecosystem, where any plugin can become a part of any subclass of `Workflow` ensures development speeds would increase over time.
+The utility of a `Workflow` is to inspire subclasses which can then be added to this framework for faster development. Along with the [Plugin](../plugins/README.md) ecosystem, where any plugin can attach to any subclass of `Workflow` ensures development speeds would increase over time.
 
 ## Contrib
 Contributing a workflow requires a sub-class of `Workflow` with passing tests. There is no restriction on methods and their operations. 
