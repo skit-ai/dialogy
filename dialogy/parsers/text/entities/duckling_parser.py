@@ -1,4 +1,8 @@
-"""[summary]
+"""
+Parser for Duckling, the open source project. 
+We need this for parsing and extracting date, time, numbers, currency etc. 
+We will expect Duckling to be running as an http service, and provide means
+to connect from the implementation here. 
 """
 import json
 import datetime
