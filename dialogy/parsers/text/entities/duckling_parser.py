@@ -21,9 +21,6 @@ from dialogy.utils.logger import log
 class DucklingParser(Plugin):
     """
     We use duckling for extracting entity tokens and parsing their value.
-
-    Args:
-        Plugin ([type]): [description]
     """
     url: str = attr.ib(default="http://0.0.0.0:8080/parse")
     dimensions: List[str] = attr.Factory(list)
@@ -36,15 +33,17 @@ class DucklingParser(Plugin):
     }
     debug: bool = attr.ib(default=False)
 
-    def __create_req_body(self, text: str, reference_time: int):
-        """[summary]
+    def __create_req_body(self, text: str, reference_time: int) -> None:
+        """
+        Create request body for entity parsing. 
+        
+        Isolation of the request object expected by Duckling. 
 
         Args:
-            text (str): [description]
-            reference_time (int): [description]
-
-        Returns:
-            [type]: [description]
+            text (str): A sentence or document. 
+            reference_time (int): Cases where relative units of time are mentioned, 
+                                  like "today", "now", etc. We need to know the current time
+                                  to parse the values into usable dates/times. 
         """
         dimensions = self.dimensions
         return {
