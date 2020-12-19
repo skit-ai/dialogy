@@ -6,7 +6,7 @@ from typing import List
 
 import attr
 
-from dialogy.types.entities import Entity
+from dialogy.types.entities import BaseEntity
 
 @attr.s
 class Slot:
@@ -15,4 +15,4 @@ class Slot:
     """
     name = attr.ib(type=str)
     type = attr.ib(type=List[str])
-    values = attr.ib(type=List[Entity])
+    values = attr.ib(type=List[BaseEntity])

@@ -1,3 +1,7 @@
+"""
+Tests for entities
+"""
+
 from dialogy.types.entities import BaseEntity
 from dialogy.workflow import Workflow
 
