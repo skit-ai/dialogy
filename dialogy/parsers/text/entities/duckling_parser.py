@@ -2,41 +2,52 @@
 Parser for Duckling, the open source project. 
 We need this for parsing and extracting date, time, numbers, currency etc. 
 We will expect Duckling to be running as an http service, and provide means
-to connect from the implementation here. 
+to connect from the implementation here.
 """
 import json
 import datetime
-from typing import List, Dict, Callable, Optional
+from typing import List, Dict, Callable, Optional, Any
 
 import attr
 import requests
-from requests.exceptions import ConnectionError, ReadTimeout
 
 from dialogy.plugins import Plugin
 from dialogy.types.plugins import PluginFn
-from dialogy.utils.logger import log
 
 
 @attr.s
 class DucklingParser(Plugin):
     """
     We use duckling for extracting entity tokens and parsing their value.
+
+    - transformers: A list of functions that can be used for parsing Duckling entities once obtained from the service call.
+    - dimensions: [read here](https://github.com/facebook/duckling#supported-dimensions)
+    - locale: The format for expressing locale requires language and country name ids. 
+              Examples: en_IN, en_US, en_UK.
+    - timezone: Pytz Timezone. This is especially important when services are deployed across different geographies
+                and consistency is expected in the responses.
+    - url: The address where Duckling's entity parser can be reached.
+    - timeout: To prevent cases where the Duckling server is stalled, leading to poor performance for this framework as well.
+    - debug: Set `True` if logs are required.
+
+    Duckling also provides date and time entities. Sometimes there are sentences which refer a relative unit like:
+              "yesterday", "tomorrow", "next month" which requires knowledge of 
     """
-    url: str = attr.ib(default="http://0.0.0.0:8080/parse")
+    transformers: List[Callable[[Any], Any]] = attr.Factory(list)
     dimensions: List[str] = attr.Factory(list)
     locale: str = attr.ib()
     timezone: Optional[datetime.datetime] = attr.ib()
-    transformers: List[Callable] = attr.Factory(list)
     timeout: Optional[int] = attr.ib(default=None)
+    debug: bool = attr.ib(default=False)
+    url: str = attr.ib(default="http://0.0.0.0:8080/parse")
     headers: Dict[str, str] = {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     }
-    debug: bool = attr.ib(default=False)
 
-    def __create_req_body(self, text: str, reference_time: int) -> None:
+    def __create_req_body(self, text: str, reference_time: int) -> Dict[str, Any]:
         """
         Create request body for entity parsing. 
-        
+
         Isolation of the request object expected by Duckling. 
 
         Args:
@@ -54,23 +65,34 @@ class DucklingParser(Plugin):
             "reftime": reference_time,
         }
 
-    def service(self, text: str, reference_time: int):
-        body = self.__create_req_body(text, reference_time)
-        try:
-            response = requests.post(self.url,
-                                     data=body,
-                                     headers=self.headers,
-                                     timeout=self.timeout)
-            if response.status_code == 200:
-                return response.json()
-            else:
-                log.error("Duckling request failed [reason]: %s\n"
-                          "for text=%s with reference_time=%d", response.text, text, reference_time)
-                return []
-        except (ConnectionError, ReadTimeout) as connection_error:
-            log.error("%s : was encountered\nfor text=%s with "
-                      "reference_time=%d", str(connection_error), text, reference_time)
-            return []
+    def get_entities(self, text: str, reference_time: int) -> Optional[List[Dict[str, Any]]]:
+        """
+        Get entities from duckling-server.
 
-    def exec(self, access: PluginFn, mutate: PluginFn, ref_time: int) -> None:
-        pass
+        Assuming duckling-server is running at expected `url`. The entities are returned in
+        `json` compatible format.
+
+        Args:
+            text (str): The sentence or document in which entities must be looked up.
+            reference_time (int): Cases where relative units of time are mentioned, 
+                                  like "today", "now", etc. We need to know the current time
+                                  to parse the values into usable dates/times.
+
+        Returns:
+            List[Dict[str, Any]]: Duckling entities are `dicts`.
+        """
+        body = self.__create_req_body(text, reference_time)
+        response = requests.post(self.url,
+                                 data=body,
+                                 headers=self.headers,
+                                 timeout=self.timeout)
+
+        if response.status_code == 200:
+            # The API call was successful, expect the following to contain entities.
+            # A list of dicts or an empty list.
+            return response.json()
+
+        # Control flow reaching here would mean the API call wasn't successful.
+        # To prevent rest of the things from crashing, we will raise an exception.
+        raise ValueError(f"Duckling API call failed | "
+                         "[{response.status_code}]: {response.text}")
