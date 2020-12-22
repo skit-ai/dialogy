@@ -16,12 +16,8 @@ def test_entity_parser():
             "to": len(body)
         },
         body = body,
-        score = 0.5,
         entity_type = "pattern",
-        value = body,
-        grain = "pattern",
-        type = "pattern",
-        unit = "pattern"
+        value = body
     )
     entity.add_parser(mock_plugin)
 
