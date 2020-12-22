@@ -15,17 +15,23 @@ class BaseEntity:
     Base Entity Type.
 
     This class is meant for subclassing.
-    Do not use it directly.
+    Do not use it directly in any preprocessing or postprocessing functions.
+    Using it for defining types falls under the intended purposes.
+
+    Keys are:
+    - `range` is the character range in the alternative where the entity is parsed
+    - `score` is the confidence that the range is the entity
+    - `body` is the string that is extracted
+    - `entity_type` is the type of the entity
+    - `value` is the normalized value of the entity. This can either be a string, an integer or a Dict
+    - `grain` is the grain of the entity
     """
     range = attr.ib(type=Dict[str, int])
-    score = attr.ib(type=float)
-    body = attr.ib(type=str)
-    entity_type = attr.ib(type=str)
-    value = attr.ib(type=str)
-    grain = attr.ib(type=str)
-    type = attr.ib(type=str)
-    unit = attr.ib(type=str)
-    parsers = attr.ib(type=List[str], default=attr.Factory(list))
+    body = attr.ib(type=str, validator=attr.validators.instance_of(str))
+    entity_type = attr.ib(type=str, validator=attr.validators.instance_of(str))
+    value = attr.ib(type=Any)
+    parsers = attr.ib(type=List[str], default=attr.Factory(list), validator=attr.validators.instance_of(list))
+    score = attr.ib(type=Optional[float], default=None)
     alternative_index = attr.ib(type=Optional[int], default=None)
 
     def add_parser(self, postprocessor: PluginFn) -> None:
