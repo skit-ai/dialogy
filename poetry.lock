@@ -69,6 +69,14 @@ version = "5.3"
 toml = ["toml"]
 
 [[package]]
+category = "dev"
+description = "HTTP client mock for Python"
+name = "httpretty"
+optional = false
+python-versions = ">=3"
+version = "1.0.3"
+
+[[package]]
 category = "main"
 description = "Human friendly output for text interfaces using Python"
 name = "humanfriendly"
@@ -279,7 +287,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "1bdcc10b383982bc28fe45037f17aa1d20da86e7ccb955cb3f23f4d40308c947"
+content-hash = "961ed03e7555ec2965d6810ddb9f7e8033c17b0b3ccb58a5196a1f5fb0daa00a"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -339,6 +347,9 @@ coverage = [
     {file = "coverage-5.3-cp39-cp39-win32.whl", hash = "sha256:cb7df71de0af56000115eafd000b867d1261f786b5eebd88a0ca6360cccfaca7"},
     {file = "coverage-5.3-cp39-cp39-win_amd64.whl", hash = "sha256:47a11bdbd8ada9b7ee628596f9d97fbd3851bd9999d398e9436bd67376dbece7"},
     {file = "coverage-5.3.tar.gz", hash = "sha256:280baa8ec489c4f542f8940f9c4c2181f0306a8ee1a54eceba071a449fb870a0"},
+]
+httpretty = [
+    {file = "httpretty-1.0.3.tar.gz", hash = "sha256:9335cbd8f38745e0e2dc4755d8932a77d378d93e15804969504b1e6b568d613c"},
 ]
 humanfriendly = [
     {file = "humanfriendly-9.1-py2.py3-none-any.whl", hash = "sha256:d5c731705114b9ad673754f3317d9fa4c23212f36b29bdc4272a892eafc9bc72"},
