@@ -12,7 +12,6 @@ import attr
 import requests
 
 from dialogy.plugins import Plugin
-from dialogy.types.plugins import PluginFn
 
 
 @attr.s
