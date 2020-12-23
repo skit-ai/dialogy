@@ -7,12 +7,15 @@ authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 coloredlogs = "^15.0"
+attrs = "^20.3.0"
+requests = "^2.25.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
 pytest-cov = "^2.10.1"
 pylint = "^2.6.0"
 mypy = "^0.790"
+httpretty = "^1.0.3"
 
 [build-system]
 requires = ["poetry>=0.12"]
