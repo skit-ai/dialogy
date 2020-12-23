@@ -8,6 +8,7 @@ authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 python = "^3.8"
 coloredlogs = "^15.0"
 attrs = "^20.3.0"
+requests = "^2.25.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
