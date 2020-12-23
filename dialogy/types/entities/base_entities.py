@@ -19,11 +19,14 @@ class BaseEntity:
 
     Keys are:
     - `range` is the character range in the alternative where the entity is parsed
-    - `score` is the confidence that the range is the entity
     - `body` is the string that is extracted
     - `entity_type` is the type of the entity
     - `value` is the normalized value of the entity. This can either be a string, an integer or a Dict
-    - `grain` is the grain of the entity
+    - `parsers` gives the list of all the functions that have changed this entity.
+                This list will be in sorted order, which means that the first element has worked
+                on the entity first
+    - `score` is the confidence that the range is the entity
+    - `alternative_index` is the alternative index of ASR output in which this entity was picked up.
     """
     range = attr.ib(type=Dict[str, int])
     body = attr.ib(type=str, validator=attr.validators.instance_of(str))
