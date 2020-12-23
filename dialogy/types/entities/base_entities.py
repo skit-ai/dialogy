@@ -23,10 +23,11 @@ class BaseEntity:
     - `entity_type` is the type of the entity
     - `value` is the normalized value of the entity. This can either be a string, an integer or a Dict
     - `parsers` gives the list of all the functions that have changed this entity.
-                This list will be in sorted order, which means that the first element has worked
-                on the entity first
+        This list will be in sorted order, which means that the first element has worked
+        on the entity first.
     - `score` is the confidence that the range is the entity
-    - `alternative_index` is the alternative index of ASR output in which this entity was picked up.
+    - `alternative_index` is the index of transcript within the ASR output: `List[Utterances]`
+        from which this entity was picked up. This may be None.
     """
     range = attr.ib(type=Dict[str, int])
     body = attr.ib(type=str, validator=attr.validators.instance_of(str))
