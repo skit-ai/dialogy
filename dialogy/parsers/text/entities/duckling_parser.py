@@ -36,7 +36,6 @@ class DucklingParser(Plugin):
     locale: str = attr.ib(default=None)
     timezone: Optional[datetime.datetime] = attr.ib(default=None)
     timeout: Optional[int] = attr.ib(default=None)
-    debug: bool = attr.ib(default=False)
     url: str = attr.ib(default="http://0.0.0.0:8000/parse")
     headers: Dict[str, str] = {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
