@@ -27,7 +27,6 @@ class DucklingParser(Plugin):
                 and consistency is expected in the responses.
     - url: The address where Duckling's entity parser can be reached.
     - timeout: To prevent cases where the Duckling server is stalled, leading to poor performance for this framework as well.
-    - debug: Set `True` if logs are required.
 
     Duckling also provides date and time entities. Sometimes there are sentences which refer a relative unit like:
               "yesterday", "tomorrow", "next month" which requires knowledge of the current time.
