@@ -14,7 +14,7 @@ import requests
 from dialogy.plugins import Plugin
 
 
-@attr.s
+@attr.s(kw_only=True)
 class DucklingParser(Plugin):
     """
     We use duckling for extracting entity tokens and parsing their value.
@@ -30,30 +30,30 @@ class DucklingParser(Plugin):
     - debug: Set `True` if logs are required.
 
     Duckling also provides date and time entities. Sometimes there are sentences which refer a relative unit like:
-              "yesterday", "tomorrow", "next month" which requires knowledge of 
+              "yesterday", "tomorrow", "next month" which requires knowledge of the current time.
     """
-    transformers: List[Callable[[Any], Any]] = attr.Factory(list)
-    dimensions: List[str] = attr.Factory(list)
-    locale: str = attr.ib()
-    timezone: Optional[datetime.datetime] = attr.ib()
+    transformers: List[Callable[[Any], Any]] = attr.ib(factory=list)
+    dimensions: Optional[List[str]] = attr.ib(default=None)
+    locale: str = attr.ib(default=None)
+    timezone: Optional[datetime.datetime] = attr.ib(default=None)
     timeout: Optional[int] = attr.ib(default=None)
     debug: bool = attr.ib(default=False)
-    url: str = attr.ib(default="http://0.0.0.0:8080/parse")
+    url: str = attr.ib(default="http://0.0.0.0:8000/parse")
     headers: Dict[str, str] = {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     }
 
-    def __create_req_body(self, text: str, reference_time: int) -> Dict[str, Any]:
+    def __create_req_body(self, text: str, reference_time: Optional[int]) -> Dict[str, Any]:
         """
-        Create request body for entity parsing. 
+        Create request body for entity parsing.
 
-        Isolation of the request object expected by Duckling. 
+        Isolation of the request object expected by Duckling.
 
         Args:
-            text (str): A sentence or document. 
-            reference_time (int): Cases where relative units of time are mentioned, 
+            text (str): A sentence or document.
+            reference_time (int): Cases where relative units of time are mentioned,
                                   like "today", "now", etc. We need to know the current time
-                                  to parse the values into usable dates/times. 
+                                  to parse the values into usable dates/times.
         """
         dimensions = self.dimensions
         return {
@@ -64,7 +64,7 @@ class DucklingParser(Plugin):
             "reftime": reference_time,
         }
 
-    def get_entities(self, text: str, reference_time: int) -> Optional[List[Dict[str, Any]]]:
+    def get_entities(self, text: str, reference_time: Optional[int]) -> Optional[List[Dict[str, Any]]]:
         """
         Get entities from duckling-server.
 
@@ -77,8 +77,13 @@ class DucklingParser(Plugin):
                                   like "today", "now", etc. We need to know the current time
                                   to parse the values into usable dates/times.
 
+        Raises:
+            requests.exceptions.ConnectionError: Duckling cannot be reached at `self.url`
+            requests.exceptions.Timeout: Duckling request times out.
+            ValueError: The status code of the response is not 200.
+
         Returns:
-            List[Dict[str, Any]]: Duckling entities are `dicts`.
+            Optional[List[Dict[str, Any]]]: [description]
         """
         body = self.__create_req_body(text, reference_time)
         response = requests.post(self.url,
