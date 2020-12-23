@@ -11,10 +11,11 @@ def test_duckling_api_success():
     Initialize DucklingParser and `.get_entities`.
 
     This test-case bypasses duckling API calls via httpretty. The expected response
-    was originally generated using: 
+    was originally generated using:
 
     ```
-    curl -XPOST http://0.0.0.0:8000/parse --data 'locale=en_US&text="27th next month"&dims="[date"]"'
+    curl -XPOST http://0.0.0.0:8000/parse \\
+        --data 'locale=en_US&text="I need four of those on 27th next month. Can I have it at 5 am""&dims="[date"]"'
     ```
     """
     body = "I need four of those on 27th next month. Can I have it at 5 am"
@@ -80,7 +81,7 @@ def test_duckling_api_failure():
     """
     Simulate Duckling returning 500.
     """
-    body = "I need four of those on 27th next month. Can I have it at 5 am"
+    body = "27th next month"
     duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
     expected_response = [{'body': '27th next month',
                           'start': 0,
