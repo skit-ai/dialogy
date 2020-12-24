@@ -4,11 +4,16 @@ from dialogy import constants
 from dialogy.utils.logger import log, change_log_level
 
 
-PluginFn = Callable[['Workflow'], None]
+PluginFn = Callable[["Workflow"], None]
 
 
 class Workflow:
-    def __init__(self, preprocessors: Optional[List[PluginFn]] = None, postprocessors: Optional[List[PluginFn]] = None, debug: bool = False) -> None:
+    def __init__(
+        self,
+        preprocessors: Optional[List[PluginFn]] = None,
+        postprocessors: Optional[List[PluginFn]] = None,
+        debug: bool = False,
+    ) -> None:
         """
         This is a light but fairly flexible workflow for a machine learning pipeline.
 
@@ -16,12 +21,12 @@ class Workflow:
         - A list of pre-processing functions.
         - A list of post-processing functions.
 
-        Why are some methods raising NotImplementedError?      
+        Why are some methods raising NotImplementedError?
         This class is not supposed to be used as it is. Ideally this should have been an abstract class,
         there are some design considerations which make that a bad choice. We want methods to be overridden
         to offer flexibility of use.
 
-        Abstract classes put constraints on method signatures which isn't desired because a couple of methods 
+        Abstract classes put constraints on method signatures which isn't desired because a couple of methods
         here could use more arguments, say, `load_model()` requires `path` and `version` and in some other cases
         `path`, `version` and `language`.
 
@@ -65,15 +70,16 @@ class Workflow:
         """
         class_name = self.__class__.__name__
         raise NotImplementedError(
-            f"Override method `load_model` in class {class_name}.")
+            f"Override method `load_model` in class {class_name}."
+        )
 
     def update(self, processor_type: str, processors: List[PluginFn]) -> None:
         """
         Update input, output attributes.
 
-        We iterate through pre/post processing functions and update the input and 
-        output attributes of the class. It is expected that pre-processing functions 
-        would modify the input, and post-processing functions would modify the output. 
+        We iterate through pre/post processing functions and update the input and
+        output attributes of the class. It is expected that pre-processing functions
+        would modify the input, and post-processing functions would modify the output.
 
         Args:
             processor_type (str): One of ["__preprocessor", "__postprocessor"]
@@ -84,8 +90,7 @@ class Workflow:
         """
         for processor in processors:
             if not isinstance(processor, Callable):  # type: ignore
-                raise TypeError(
-                    f"{processor_type}={processor} is not a callable")
+                raise TypeError(f"{processor_type}={processor} is not a callable")
 
             # logs are available only when debug=True during class initialization
             self.__log("Before", processor_type, processor)
@@ -121,7 +126,8 @@ class Workflow:
         class_name = self.__class__.__name__
         if class_name != "Workflow":
             raise NotImplementedError(
-                f"Override method `inference` in class {class_name}.")
+                f"Override method `inference` in class {class_name}."
+            )
 
     def run(self, input_: Any) -> Any:
         """
@@ -152,8 +158,7 @@ class Workflow:
             processor_type (str): One of ["__preprocessor", "__postprocessor"].
             processor (str): A callable within __preprocessor or __postprocessor.
         """
-        log.debug("%s %s %s:", message,
-                  processor_type[:-1], processor.__name__)
+        log.debug("%s %s %s:", message, processor_type[:-1], processor.__name__)
         log.debug("input")
         log.debug(pformat(self.input))
         log.debug("output")

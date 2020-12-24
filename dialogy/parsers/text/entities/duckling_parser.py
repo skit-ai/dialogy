@@ -21,7 +21,7 @@ class DucklingParser(Plugin):
 
     - transformers: A list of functions that can be used for parsing Duckling entities once obtained from the service call.
     - dimensions: [read here](https://github.com/facebook/duckling#supported-dimensions)
-    - locale: The format for expressing locale requires language and country name ids. 
+    - locale: The format for expressing locale requires language and country name ids.
               Examples: en_IN, en_US, en_UK.
     - timezone: Pytz Timezone. This is especially important when services are deployed across different geographies
                 and consistency is expected in the responses.
@@ -31,6 +31,7 @@ class DucklingParser(Plugin):
     Duckling also provides date and time entities. Sometimes there are sentences which refer a relative unit like:
               "yesterday", "tomorrow", "next month" which requires knowledge of the current time.
     """
+
     transformers: List[Callable[[Any], Any]] = attr.ib(factory=list)
     dimensions: Optional[List[str]] = attr.ib(default=None)
     locale: str = attr.ib(default=None)
@@ -41,7 +42,9 @@ class DucklingParser(Plugin):
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     }
 
-    def __create_req_body(self, text: str, reference_time: Optional[int]) -> Dict[str, Any]:
+    def __create_req_body(
+        self, text: str, reference_time: Optional[int]
+    ) -> Dict[str, Any]:
         """
         Create request body for entity parsing.
 
@@ -62,7 +65,9 @@ class DucklingParser(Plugin):
             "reftime": reference_time,
         }
 
-    def get_entities(self, text: str, reference_time: Optional[int]) -> Optional[List[Dict[str, Any]]]:
+    def get_entities(
+        self, text: str, reference_time: Optional[int]
+    ) -> Optional[List[Dict[str, Any]]]:
         """
         Get entities from duckling-server.
 
@@ -71,7 +76,7 @@ class DucklingParser(Plugin):
 
         Args:
             text (str): The sentence or document in which entities must be looked up.
-            reference_time (int): Cases where relative units of time are mentioned, 
+            reference_time (int): Cases where relative units of time are mentioned,
                                   like "today", "now", etc. We need to know the current time
                                   to parse the values into usable dates/times.
 
@@ -84,10 +89,9 @@ class DucklingParser(Plugin):
             Optional[List[Dict[str, Any]]]: [description]
         """
         body = self.__create_req_body(text, reference_time)
-        response = requests.post(self.url,
-                                 data=body,
-                                 headers=self.headers,
-                                 timeout=self.timeout)
+        response = requests.post(
+            self.url, data=body, headers=self.headers, timeout=self.timeout
+        )
 
         if response.status_code == 200:
             # The API call was successful, expect the following to contain entities.
@@ -96,5 +100,6 @@ class DucklingParser(Plugin):
 
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
-        raise ValueError(f"Duckling API call failed | "
-                         "[{response.status_code}]: {response.text}")
+        raise ValueError(
+            f"Duckling API call failed | " "[{response.status_code}]: {response.text}"
+        )

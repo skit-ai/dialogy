@@ -84,13 +84,11 @@ def test_duckling_api_failure():
     body = "27th next month"
     duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
     expected_response = [{'body': '27th next month',
-                          'start': 0,
-                          'value': {'values': [{'value': '2021-01-27T00:00:00.000-08:00',
+                          'start': 0, 'value': {'values': [{'value': '2021-01-27T00:00:00.000-08:00', 'grain': 'day',
+                                                            'type': 'value'}],
+                                                'value': '2021-01-27T00:00:00.000-08:00',
                                                 'grain': 'day',
-                                                'type': 'value'}],
-                                    'value': '2021-01-27T00:00:00.000-08:00',
-                                    'grain': 'day',
-                                    'type': 'value'},
+                                                'type': 'value'},
                           'end': 15,
                           'dim': 'time',
                           'latent': False}]
