@@ -164,6 +164,7 @@ def test_location_entity_value_not_int_error():
             },
             body = body,
             entity_type = "location",
-            value = body,
-            grain = 0
+            value = body
         )
+
+

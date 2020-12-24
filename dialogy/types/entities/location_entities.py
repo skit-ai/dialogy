@@ -1,5 +1,5 @@
 """
-Other Entity Types
+Location Entity Types
 """
 import attr
 
