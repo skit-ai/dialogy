@@ -101,5 +101,5 @@ class DucklingParser(Plugin):
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
         raise ValueError(
-            f"Duckling API call failed | " "[{response.status_code}]: {response.text}"
+            f"Duckling API call failed | [{response.status_code}]: {response.text}"
         )
