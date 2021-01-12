@@ -5,6 +5,7 @@ import attr
 
 from dialogy.types.entities import BaseEntity
 
+
 @attr.s
 class LocationEntity(BaseEntity):
     """
@@ -15,4 +16,7 @@ class LocationEntity(BaseEntity):
     Keys:
     - `value` is an integer that is the index of the location in the knowledge base
     """
-    value = attr.ib(type=int, default=attr.Factory(int), validator=attr.validators.instance_of(int))
+
+    value = attr.ib(
+        type=int, default=attr.Factory(int), validator=attr.validators.instance_of(int)
+    )
