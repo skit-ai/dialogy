@@ -29,13 +29,29 @@ class BaseEntity:
     - `alternative_index` is the index of transcript within the ASR output: `List[Utterances]`
         from which this entity was picked up. This may be None.
     """
+
     range = attr.ib(type=Dict[str, int])
     body = attr.ib(type=str, validator=attr.validators.instance_of(str))
     entity_type = attr.ib(type=str, validator=attr.validators.instance_of(str))
-    value = attr.ib(type=Any)
-    parsers = attr.ib(type=List[str], default=attr.Factory(list), validator=attr.validators.instance_of(list))
+    parsers = attr.ib(
+        type=List[str],
+        default=attr.Factory(list),
+        validator=attr.validators.instance_of(list),
+    )
     score = attr.ib(type=Optional[float], default=None)
     alternative_index = attr.ib(type=Optional[int], default=None)
+    latent = attr.ib(type=bool, default=False)
+    # TODO: Make value private
+    values = attr.ib(type=List[Any], default=attr.Factory(list))
+
+    @classmethod
+    def __validate(cls, dict_: Dict[str, Any]) -> None:
+        raise TypeError("BaseEntity is not a valid type")
+
+    @classmethod
+    def from_dict(cls, dict_: Dict[str, Any]) -> "BaseEntity":
+        cls.__validate(dict_)
+        return cls(**dict_)
 
     def add_parser(self, postprocessor: PluginFn) -> None:
         """
@@ -48,3 +64,26 @@ class BaseEntity:
             postprocessor (PluginFn): Plugin function applied to an entity
         """
         self.parsers.append(postprocessor.__name__)
+
+    def get_value(self) -> Any:
+        """[summary]
+
+        [extended_summary]
+
+        Raises:
+            IndexError: [description]
+            KeyError: [description]
+
+        Returns:
+            Any: [description]
+        """
+        try:
+            return self.values[0]["value"]
+        except IndexError as index_error:
+            raise IndexError(
+                'entity value should be in values[0]["value"]'
+            ) from index_error
+        except KeyError as key_error:
+            raise KeyError(
+                'entity value should be in values[0]["value"]'
+            ) from key_error
