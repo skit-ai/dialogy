@@ -25,8 +25,9 @@ class NumericalEntity(BaseEntity):
         - `dim` dimension of the entity from duckling parser
         - `values` values is a List which contains the actual value of the entity
         - `reader` gives the list of all functions that have changed the entity in some way
-        - `type` is the type of the entity which can have values in ["value", "interval"] 
+        - `type` is the type of the entity which can have values in ["value", "interval"]
     """
+
     dim = attr.ib(type=str, default=attr.Factory(str))
     values = attr.ib(type=List[Dict[str, Any]], default=attr.Factory(list))
     reader = attr.ib(type=List[Callable[[Any], Any]], default=attr.Factory(list))
@@ -97,7 +98,7 @@ class TimeEntity(NumericalEntity):
     - `grain` tells us the smallest unit of time in the utterance
     """
 
-    grain = attr.ib(type=str, default=None)
+    grain = attr.ib(type=str, default=None, validator=attr.validators.instance_of(str))
     __properties_map = [
         (["range"], dict),
         (["range", "start"], int),
@@ -113,7 +114,7 @@ class TimeEntity(NumericalEntity):
     def __copy_entity(self) -> "TimeEntity":
         return copy.deepcopy(self)
 
-    def filter(self, ref_time: datetime, operator: str) -> Optional[TimeEntity]:
+    def filter(self, ref_time: datetime, operator: str) -> Optional["TimeEntity"]:
         """
         Creates a TimeEntity with values according to the the operator functions
         NOTE: `ref_time` needs to be of offset-aware (timezoned) datetime type
