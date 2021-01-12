@@ -64,6 +64,7 @@ class BaseEntity:
             postprocessor (PluginFn): Plugin function applied to an entity
         """
         self.parsers.append(postprocessor.__name__)
+<<<<<<< HEAD
 
     def get_value(self) -> Any:
         """[summary]
@@ -87,3 +88,5 @@ class BaseEntity:
             raise KeyError(
                 'entity value should be in values[0]["value"]'
             ) from key_error
+=======
+>>>>>>> d447aa4c276ae207fbd7dc4e26001392ba506649
