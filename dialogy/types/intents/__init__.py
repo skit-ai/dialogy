@@ -29,9 +29,10 @@ class Intent:
         to make the prediction.
     - `slots` are the slots associated with this intent.
     """
+
     name = attr.ib(type=str)
     score = attr.ib(type=float)
-    type = attr.ib(type=str, default='main')
+    type = attr.ib(type=str, default="main")
     parsers = attr.ib(type=List[str], default=attr.Factory(list))
     alternative_index = attr.ib(type=Optional[int], default=None)
     slots = attr.ib(type=List[Slot], default=attr.Factory(list))
