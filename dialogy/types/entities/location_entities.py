@@ -1,5 +1,8 @@
 """
-Location Entity Types
+Module provides access to an entity type (class) to handle locations.
+
+Import classes:
+    - LocationEntity
 """
 from typing import List, Dict
 
@@ -18,7 +21,6 @@ class LocationEntity(BaseEntity):
     Keys:
     - `value` is an integer that is the index of the location in the knowledge base
     """
-
     values = attr.ib(
         type=List[Dict[str, int]],
         default=attr.Factory(List),

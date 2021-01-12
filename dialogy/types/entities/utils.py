@@ -4,7 +4,7 @@ from functools import reduce
 from typing import List, Dict, Any, Tuple, Union
 
 # TODO: This can be better
-
+# NOTE: yes ☝
 
 def greater_than_today(
     utt_value: Dict[str, Any], ref_time: datetime, limit: int = 100
