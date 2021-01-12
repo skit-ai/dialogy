@@ -1,9 +1,12 @@
 """
 Location Entity Types
 """
+from typing import List, Dict
+
 import attr
 
 from dialogy.types.entities import BaseEntity
+
 
 @attr.s
 class LocationEntity(BaseEntity):
@@ -15,4 +18,10 @@ class LocationEntity(BaseEntity):
     Keys:
     - `value` is an integer that is the index of the location in the knowledge base
     """
-    value = attr.ib(type=int, default=attr.Factory(int), validator=attr.validators.instance_of(int))
+
+    values = attr.ib(
+        type=List[Dict[str, int]],
+        default=attr.Factory(List),
+        validator=attr.validators.instance_of(List),
+    )
+    _meta = attr.ib(type=Dict[str, str], default=attr.Factory(Dict))
