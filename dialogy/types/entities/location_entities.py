@@ -16,10 +16,11 @@ class LocationEntity(BaseEntity):
     """
     Location Entity Type
 
-    The keys are the same as Base Entity.
+    Use this type for handling locations available with reference-ids. 
+    This is not meant for (latitude, longitude) values, those will be covered in GeoPointEntity.
 
-    Keys:
-    - `value` is an integer that is the index of the location in the knowledge base
+    Attributes:
+        - `values` values is a List which contains the actual value of the entity
     """
     values = attr.ib(
         type=List[Dict[str, int]],

@@ -35,7 +35,7 @@ class NumericalEntity(BaseEntity):
     - time
     - datetime
 
-    Keys are:
+    Attributes:
         - `dim` dimension of the entity from duckling parser
         - `values` values is a List which contains the actual value of the entity
         - `reader` gives the list of all functions that have changed the entity in some way
@@ -114,7 +114,7 @@ class TimeEntity(NumericalEntity):
     - "I have a flight at 6th December."
     - "I have a flight at 6 am today."
 
-    Keys are:
+    Attributes:
     - `grain` tells us the smallest unit of time in the utterance
     """
 
@@ -171,7 +171,7 @@ class TimeIntervalEntity(TimeEntity):
     - "They will visit today or tomorrow."
     - "I have a flight at 6 am to 5 pm today."
 
-    Keys:
+    Attributes:
     - `type`
     - `value` is a Dictionary which has either keys 'from' and 'to' or both
     """

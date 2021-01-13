@@ -25,7 +25,7 @@ class BaseEntity:
     Do not use it directly in any preprocessing or postprocessing functions.
     Its intended purpose is to define types.
 
-    Keys are:
+    Attributes:
     - `range` is the character range in the alternative where the entity is parsed.
     - `body` is the string that is extracted.
     - `entity_type` is the type of the entity.
