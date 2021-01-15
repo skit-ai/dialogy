@@ -1,177 +1,59 @@
-import operator as op
-from datetime import datetime
+"""
+Module provides utility functions for entities.
+
+Import functions:
+    - dict_traversal
+    - validate_type
+"""
+from typing import List, Any, Tuple, Union, Dict
 from functools import reduce
-from typing import List, Dict, Any, Tuple, Union
 
-# TODO: This can be better
-# NOTE: yes ☝
 
-def greater_than_today(
-    utt_value: Dict[str, Any], ref_time: datetime, limit: int = 100
-) -> bool:
-    """[summary]
+def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:
+    """
+    Traverse a dictionary for a given list of properties.
+
+    This is useful for traversing a deeply nested dictionary.
+    Instead of recursion, we are using reduce to update the `dict`.
+    Missing properties will lead to KeyErrors.
 
     Args:
-        utt_value ([type]): [description]
-        ref_time (datetime): [description]
-        limit (int, optional): [description]. Defaults to 100.
+        obj (Dict[Any, Any]): The `dict` to traverse.
+        properties (List[int]): List of properties expected in the `dict`.
+
+    Raises:
+        KeyError: There is a chance of the property list containing elements not present in the `dict`.
+        TypeError: There is a chance of the property being accessed over values that are not compatible.
 
     Returns:
-        bool: [description]
+        Any: The value within the `dict` described by the properties list.
     """
-    if isinstance(utt_value["value"], Dict):
-        if "from" in utt_value["value"]:
-            utt_time = utt_value["value"]["from"]
-        else:
-            return True
-    else:
-        utt_time = utt_value["value"]
-    if utt_time.date() == ref_time.date() and utt_value["grain"] == "day":
-        return True
-    if not limit:
-        return utt_time > ref_time
-    else:
-        return utt_time > ref_time and abs(utt_time - ref_time).days <= limit
-
-
-def greater_than(utt_value: Dict[str, Any], ref_time: datetime) -> bool:
-    """[summary]
-
-    Args:
-        utt_value ([type]): [description]
-        ref_time (datetime): [description]
-
-    Returns:
-        bool: [description]
-    """
-    if isinstance(utt_value["value"], Dict):
-        if "from" in utt_value["value"]:
-            utt_time = utt_value["value"]["from"]
-        else:
-            return True
-    else:
-        utt_time = utt_value["value"]
-    return utt_time > ref_time
-
-
-def greater_than_eq(utt_value: Dict[str, Any], ref_time: datetime) -> bool:
-    """[summary]
-
-    Args:
-        utt_value ([type]): [description]
-        ref_time (datetime): [description]
-
-    Returns:
-        bool: [description]
-    """
-    if isinstance(utt_value["value"], Dict):
-        if "from" in utt_value["value"]:
-            utt_time = utt_value["value"]["from"]
-        else:
-            return True
-    else:
-        utt_time = utt_value["value"]
-    return utt_time >= ref_time
-
-
-def not_eq(utt_value: Dict[str, Any], ref_time: datetime) -> bool:
-    """[summary]
-
-    Args:
-        utt_value ([type]): [description]
-        ref_time (datetime): [description]
-
-    Returns:
-        bool: [description]
-    """
-    if isinstance(utt_value["value"], Dict):
-        if "from" in utt_value["value"]:
-            utt_time = utt_value["value"]["from"]
-        else:
-            return True
-    else:
-        utt_time = utt_value["value"]
-    return utt_time != ref_time
-
-
-def eq(utt_value: Dict[str, Any], ref_time: datetime) -> bool:
-    """[summary]
-
-    Args:
-        utt_value ([type]): [description]
-        ref_time (datetime): [description]
-
-    Returns:
-        bool: [description]
-    """
-    if isinstance(utt_value["value"], Dict):
-        if "from" in utt_value["value"]:
-            utt_time = utt_value["value"]["from"]
-        else:
-            return True
-    else:
-        utt_time = utt_value["value"]
-    return utt_time == ref_time
-
-
-def less_than_eq(utt_value: Dict[str, Any], ref_time: datetime) -> bool:
-    """[summary]
-
-    Args:
-        utt_value ([type]): [description]
-        ref_time (datetime): [description]
-
-    Returns:
-        bool: [description]
-    """
-    if isinstance(utt_value["value"], Dict):
-        if "from" in utt_value["value"]:
-            utt_time = utt_value["value"]["from"]
-        else:
-            return True
-    else:
-        utt_time = utt_value["value"]
-    return utt_time <= ref_time
-
-
-def less_than(utt_value: Dict[str, Any], ref_time: datetime) -> bool:
-    """[summary]
-
-    Args:
-        utt_value ([type]): [description]
-        ref_time (datetime): [description]
-
-    Returns:
-        bool: [description]
-    """
-    if isinstance(utt_value["value"], Dict):
-        if "from" in utt_value["value"]:
-            utt_time = utt_value["value"]["from"]
-        else:
-            return True
-    else:
-        utt_time = utt_value["value"]
-    return utt_time < ref_time
-
-
-op_set = {
-    "<": less_than,
-    "<=": less_than_eq,
-    "==": eq,
-    "!=": not_eq,
-    ">=": greater_than_eq,
-    ">": greater_than,
-    ">today": greater_than_today,
-}
-
-
-def object_return(obj: Any, properties: List[str]) -> Any:
     try:
-        return reduce(lambda o, k: o.get(k, {}), properties, obj)
-    except KeyError:
-        raise KeyError(f"Missing property in {obj}. Check the types")
+        return reduce(lambda o, k: o[k], properties, obj)
+    except KeyError as key_error:
+        raise KeyError(
+            f"Missing property {key_error} in {obj}. Check the types."
+        ) from key_error
+    except TypeError as type_error:
+        raise TypeError(
+            f"The properties aren't describing path within a dictionary. | {type_error}"
+        ) from type_error
 
 
 def validate_type(obj: Any, obj_type: Union[type, Tuple[type]]) -> None:
+    """
+    Raise TypeError on object type mismatch.
+
+    This is syntatic sugar for instance type checks.
+
+    The check is by exclusion of types. Wraps exception raising logic.
+
+    Args:
+        obj (Any): The object available for type assertion.
+        obj_type (Union[type, Tuple[type]]): This must match the type of the object.
+
+    Raises:
+        TypeError: If the type `obj_type` doesn't match the type of `obj`.
+    """
     if not isinstance(obj, obj_type):
         raise TypeError(f"{obj} should be a {obj_type}")
