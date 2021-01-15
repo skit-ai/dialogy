@@ -10,8 +10,7 @@ def test_merge_as_output():
         workflow.input = value
 
     workflow = Workflow(
-        preprocessors=[merge_asr_output(access, mutate)],
-        postprocessors=[]
+        preprocessors=[merge_asr_output(access, mutate)], postprocessors=[]
     )
 
     workflow.run([[{"transcript": "hello world", "confidence": None}]])
