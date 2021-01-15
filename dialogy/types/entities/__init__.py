@@ -2,8 +2,8 @@
 Entity Types
 """
 
-from dialogy.types.entities.base_entities import BaseEntity
-from dialogy.types.entities.duckling_entities import (
+from dialogy.types.entities.base_entities import BaseEntity, entity_synthesis
+from dialogy.types.entities.numerical_entities import (
     NumericalEntity,
     PeopleEntity,
     TimeEntity,
