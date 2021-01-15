@@ -12,8 +12,10 @@ Import classes:
 from typing import Any, Dict, List, Optional
 
 import attr
+import copy
 
 from dialogy.types.plugins import PluginFn
+from dialogy.types.entities.utils import traverse_dict, validate_type
 
 
 @attr.s
@@ -22,7 +24,6 @@ class BaseEntity:
     Base Entity Type.
 
     This class is meant for subclassing.
-    Do not use it directly in any preprocessing or postprocessing functions.
     Its intended purpose is to define types.
 
     Attributes:
@@ -38,45 +39,48 @@ class BaseEntity:
         from which this entity was picked up. This may be None.
     """
 
-    range       = attr.ib(type=Dict[str, int])
-    body        = attr.ib(type=str, validator=attr.validators.instance_of(str))
-    entity_type = attr.ib(type=str, validator=attr.validators.instance_of(str))
-    parsers     = attr.ib(
+    range = attr.ib(type=Dict[str, int])
+    body = attr.ib(type=str, validator=attr.validators.instance_of(str))
+    dim = attr.ib(type=str, validator=attr.validators.instance_of(str))
+
+    parsers = attr.ib(
         type=List[str],
         default=attr.Factory(list),
         validator=attr.validators.instance_of(list),
     )
 
-    score               = attr.ib(type=Optional[float], default=None)
-    alternative_index   = attr.ib(type=Optional[int], default=None)
-    latent              = attr.ib(type=bool, default=False)
-    values              = attr.ib(type=List[Any], default=attr.Factory(list))
+    score = attr.ib(type=Optional[float], default=None)
+    alternative_index = attr.ib(type=Optional[int], default=None)
+    latent = attr.ib(type=bool, default=False)
+    values = attr.ib(type=List[Any], default=attr.Factory(list))
+
+    __properties_map = [
+        (["range"], dict),
+        (["range", "start"], int),
+        (["range", "end"], int),
+        (["body"], str),
+        (["values"], list),
+        (["dim"], str),
+        (["latent"], bool),
+    ]
 
     @classmethod
-    def __validate(cls, dict_: Dict[str, Any]) -> None:
-        """
-        Stub method, raises exception to prevent direct use of this class' instances.
-        
-        Args:
-            dict_ (Dict[str, Any]): Any dictionary with string keys and arbitrarily typed values.
-
-        Raises:
-            NotImplementedError: Always. This method should be overridden in each subclass.
-        """
-        raise NotImplementedError("BaseEntity should not be used directly.")
+    def validate(cls, dict_: Dict[str, Any]) -> None:
+        for prop, prop_type in cls.__properties_map:
+            validate_type(traverse_dict(dict_, prop), prop_type)
 
     @classmethod
-    def from_dict(cls, dict_: Dict[str, Any]) -> BaseEntity:
+    def from_dict(cls, dict_: Dict[str, Any]) -> "BaseEntity":
         """
-        Create an instance of a given class `cls` from a `dict` that complies 
-        with attributes of `cls` through its keys and values. 
-        Compliance is verified using the `__validate` method. It is expected that each subclass 
+        Create an instance of a given class `cls` from a `dict` that complies
+        with attributes of `cls` through its keys and values.
+        Compliance is verified using the `__validate` method. It is expected that each subclass
         will implement their own flavor of `__validate` to check their respective inputs.
 
         Returns:
             BaseEntity: Instance of class
         """
-        cls.__validate(dict_)
+        cls.validate(dict_)
         return cls(**dict_)
 
     def add_parser(self, postprocessor: PluginFn) -> None:
@@ -115,3 +119,28 @@ class BaseEntity:
             raise KeyError(
                 'entity value should be in values[0]["value"]'
             ) from key_error
+
+    def copy(self) -> "BaseEntity":
+        return copy.deepcopy(self)
+
+
+def entity_synthesis(entity: BaseEntity, property_: str, value: Any) -> BaseEntity:
+    """
+    Update a property=`property_` of a BaseEntity, with a given value=`value`.
+
+    Args:
+        entity (BaseEntity): The BaseEntity instance to update.
+        property_ (str): The attribute of a given entity that should be updated.
+        value (Any): The value that should updated.
+
+    Raises:
+        TypeError: If `entity` is not a BaseEntity.
+
+    Returns:
+        BaseEntity: modified instance of BaseEntity.
+    """
+    if not isinstance(entity, BaseEntity):
+        raise TypeError(f"{entity} has type {type(entity)} expected BaseEntity")
+    synthetic_entity = entity.copy()
+    setattr(synthetic_entity, property_, value)
+    return synthetic_entity
