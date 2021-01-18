@@ -4,14 +4,16 @@ Import classes:
     - Plugin
 """
 from abc import ABC
-from typing import Optional
+from typing import Optional, Callable
 from dialogy.types.plugins import PluginFn
-
+from dialogy.workflow import Workflow
 
 class Plugin(ABC):
     def exec(
-        self, access: Optional[PluginFn] = None, mutate: Optional[PluginFn] = None
-    ) -> None:
+        self, 
+        access: Optional[PluginFn] = None, 
+        mutate: Optional[PluginFn] = None
+    ) -> PluginFn:
         """Compulsory method, each Plugin must have a definite role invoked by `exec`
         everything else (initialization etc) can happen through other methods.
 
