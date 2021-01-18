@@ -1,4 +1,5 @@
-"""Module provides access to a Plugin to combine ASR output.
+"""
+Module provides access to a Plugin to combine ASR output.
 
 Since ASR outputs may contain n-best transcripts, the plugins here provide strategies
 to unify these into one.
@@ -6,7 +7,7 @@ to unify these into one.
 Import functions:
     - merge_asr_output
 """
-from typing import List, Callable
+from typing import List
 from dialogy.workflow import Workflow
 from dialogy.types.plugins import (
     GetWorkflowUtteranceFn,
@@ -19,7 +20,8 @@ from dialogy.types.utterances import Utterance
 def merge_asr_output(
     access: GetWorkflowUtteranceFn, mutate: UpdateWorkflowStringFn
 ) -> PluginFn:
-    """Create a closure for single text representation for ASR output.
+    """
+    Create a closure for single text representation for ASR output.
 
     This Plugin provides a merging strategy for n-best ASR transcripts.
 
@@ -32,7 +34,10 @@ def merge_asr_output(
     """
 
     def inner(workflow: Workflow) -> None:
-        """This function provides a merging strategy for n-best ASR transcripts by
+        """
+        Join ASR output to single string.
+
+        This function provides a merging strategy for n-best ASR transcripts by
         joining each transcript, such that:
             - each sentence end is marked by "</s>" and,
             - sentence start marked by "<s>".

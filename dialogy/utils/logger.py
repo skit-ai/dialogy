@@ -1,4 +1,5 @@
-"""Module provides access to logger. 
+"""
+Module provides access to logger.
 
 This needs to be used sparingly, prefer to raise specific exceptions instead.
 
@@ -15,7 +16,8 @@ coloredlogs.install(level=logging.ERROR, logger=log, fmt=fmt)
 
 
 def change_log_level(level: str) -> None:
-    """change log level throughout the project.
+    """
+    Change log level throughout the project.
 
     Args:
         level (str): One of: DEBUG, INFO, WARNING, ERROR, CRITICAL

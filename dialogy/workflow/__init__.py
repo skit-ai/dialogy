@@ -1,4 +1,5 @@
-"""Module provides access to workflow implementation.
+"""
+Module provides access to workflow implementation.
 
 Import Class:
     - Workflow
@@ -13,7 +14,9 @@ PluginFn = Callable[["Workflow"], None]
 
 
 class Workflow:
-    """This is a light but fairly flexible workflow for a machine learning pipeline.
+
+    """
+    This is a light but fairly flexible workflow for a machine learning pipeline.
 
     Requirements
     - A list of pre-processing functions.
