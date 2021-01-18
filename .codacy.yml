@@ -18,5 +18,5 @@ engines:
       - "dialogy/preprocessing/text/__init__.py"
       - "dialogy/types/__init__.py"
       - "dialogy/utils/__init__.py"
-      - "./docs/**"
-      - "./tests/**"
+      - "docs/**"
+      - "tests/**"
