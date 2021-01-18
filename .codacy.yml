@@ -3,6 +3,20 @@ engines:
   pylint:
     enabled: true
     exclude_paths:
-      - "**/**/__init__.py"
+      - "dialogy/types/entities/__init__.py"
+      - "dialogy/constants/__init__.py"
+      - "dialogy/errors/__init__.py"
+      - "dialogy/parsers/text/entities/duckling_parser/__init__.py"
+      - "dialogy/parsers/text/entities/__init__.py"
+      - "dialogy/parsers/text/__init__.py"
+      - "dialogy/parsers/__init__.py"
+      - "dialogy/__init__.py"
+      - "dialogy/plugins/__init__.py"
+      - "dialogy/postprocessing/__init__.py"
+      - "dialogy/postprocessing/text/__init__.py"
+      - "dialogy/preprocessing/__init__.py"
+      - "dialogy/preprocessing/text/__init__.py"
+      - "dialogy/types/__init__.py"
+      - "dialogy/utils/__init__.py"
       - "./docs/**"
       - "./tests/**"
