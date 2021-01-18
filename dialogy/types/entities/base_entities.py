@@ -40,6 +40,7 @@ class BaseEntity:
     """
 
     range = attr.ib(type=Dict[str, int])
+    entity_type = attr.ib(type=str, validator=attr.validators.instance_of(str))
     body = attr.ib(type=str, validator=attr.validators.instance_of(str))
     dim = attr.ib(type=str, validator=attr.validators.instance_of(str))
 
