@@ -1,10 +1,9 @@
 # Plugins
 
-[[source](../../dialogy/plugins/__init__.py)]
+[source](../../dialogy/plugins/__init__.py)
 
 A plugin is a `Callable` that requires a [`Workflow`](./docs/workflow/README.md) instance as its only argument. 
 This is standard for many functions within this project to help its extensibility. 
-
 
 ## Plugins are functions
 
@@ -34,8 +33,8 @@ def barely_useful_tokenizer_plugin(workflow: Workflow):
 This plugin is a pre-processing function that splits each word in a given sentence by space, and replaces the value held by the current `workflow.input`.
 The successor to this function would receive a `List[str]` as `workflow.input`.
 
-
 ### A better plugin
+
 Let's try to create a plugin to split on [`regex`](https://docs.python.org/3/library/re.html) patterns. 💡 
 
 ```python
@@ -147,11 +146,13 @@ class Sentence2VecPlugin(Plugin):
 ```
 
 ## Summary
+
 We will summarize a few key points for creating plugins:
-- Don't interact with the workflow directly, use functions to access and mutate.
-- The convention for workflow access is `access(workflow)`.
-- The convention for workflow modification is `mutate(workflow, value)`.
-- We can easily access multiple parts of a workflow by expecting `access` functions to return `Tuple`, `List` or `Dict`.
-- Likewise, we can easily modify multiple parts of a workflow by expecting `mutate` functions to accept `Tuple`, `List` or `Dict` as values.
-- Plugin authors must provide good documentation for `access` and `mutate` functions that work with their plugin.
-- **Plugin names must end with Plugin for classes and _plugin for functions.** examples: `Sentence2VecPlugin`, `words2num_plugin`.
+
+-   Don't interact with the workflow directly, use functions to access and mutate.
+-   The convention for workflow access is `access(workflow)`.
+-   The convention for workflow modification is `mutate(workflow, value)`.
+-   We can easily access multiple parts of a workflow by expecting `access` functions to return `Tuple`, `List` or `Dict`.
+-   Likewise, we can easily modify multiple parts of a workflow by expecting `mutate` functions to accept `Tuple`, `List` or `Dict` as values.
+-   Plugin authors must provide good documentation for `access` and `mutate` functions that work with their plugin.
+-   **Plugin names must end with Plugin for classes and \_plugin for functions.** examples: `Sentence2VecPlugin`, `words2num_plugin`.
