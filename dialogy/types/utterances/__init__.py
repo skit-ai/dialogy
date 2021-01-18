@@ -1,3 +1,9 @@
+"""Module provides types 
+
+Import Types:
+    - Alternative
+    - Utterance
+"""
 from typing import List, Dict, Callable, Union, Optional
 
 

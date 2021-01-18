@@ -1,3 +1,8 @@
+"""Module provides access to workflow implementation.
+
+Import Class:
+    - Workflow
+"""
 from pprint import pformat
 from typing import List, Callable, Any, Optional
 from dialogy import constants
@@ -8,6 +13,28 @@ PluginFn = Callable[["Workflow"], None]
 
 
 class Workflow:
+    """This is a light but fairly flexible workflow for a machine learning pipeline.
+
+    Requirements
+    - A list of pre-processing functions.
+    - A list of post-processing functions.
+
+    Why are some methods raising NotImplementedError?
+    This class is not supposed to be used as it is. Ideally this should have been an abstract class,
+    there are some design considerations which make that a bad choice. We want methods to be overridden
+    to offer flexibility of use.
+
+    Abstract classes put constraints on method signatures which isn't desired because a couple of methods
+    here could use more arguments, say, `load_model()` requires `path` and `version` and in some other cases
+    `path`, `version` and `language`.
+
+    All the attributes of the class that are meant for private use, have `__` preceeding their names.
+
+    DO NOT USE THIS CLASS DIRECTLY
+    This class is meant for sub-classing, it has few important methods missing, namely inference which does nothing.
+    This behaviour is retained for testability of this class.
+    """
+
     def __init__(
         self,
         preprocessors: Optional[List[PluginFn]] = None,
@@ -15,31 +42,29 @@ class Workflow:
         debug: bool = False,
     ) -> None:
         """
-        This is a light but fairly flexible workflow for a machine learning pipeline.
+        Setup a Workflow.
 
-        Requirements
-        - A list of pre-processing functions.
-        - A list of post-processing functions.
+        Setup a list of functions to execute before and after `.inference(...)` call.
 
-        Why are some methods raising NotImplementedError?
-        This class is not supposed to be used as it is. Ideally this should have been an abstract class,
-        there are some design considerations which make that a bad choice. We want methods to be overridden
-        to offer flexibility of use.
+        Attributes:
+            - input (Any): The input to a workflow. This is supposed to be flexible.
+            - output (Any): The outputs of a workflow. This is supposed to be flexible.
+            - __preprocessors (List[PluginFn]): A list of functions to execute before inference.
+            - __postprocessors (List[PluginFn]): A list of functions to execute after inference.
 
-        Abstract classes put constraints on method signatures which isn't desired because a couple of methods
-        here could use more arguments, say, `load_model()` requires `path` and `version` and in some other cases
-        `path`, `version` and `language`.
-
-        All the attributes of the class that are meant for private use, have `__` preceeding their names.
-
-        DO NOT USE THIS CLASS DIRECTLY
-        This class is meant for sub-classing, it has few important methods missing, namely inference which does nothing.
-        This behaviour is retained for testability of this class.
+        Methods:
+            - load_model: Load models
+            - update: Update input and output attributes. This is the effect of running either processors.
+            - preprocess: Update input attributes. This is the effect of running pre-processors.
+            - postprocess: Update output attributes. This is the effect of running post-processors.
+            - inference: Model related functionality.
+            - run: Wraps over pre/post processing and inference.
+            - __log: Log the changes in the input/output as pre/post processing functions execute. REQUIRES log-level set to `DEBUG`.
 
         Args:
-            preprocessors (List[Callable], optional): [description]. Defaults to None.
-            postprocessors (List[Callable], optional): [description]. Defaults to None.
-            debug (bool, optional): [description]. Defaults to False.
+            preprocessors (List[PluginFn], optional): A list of functions to execute before inference. Defaults to None.
+            postprocessors (List[PluginFn], optional): A list of functions to execute after inference. Defaults to None.
+            debug (bool, optional): [description]. Changes to input/output are logged if log-level is set to `DEBUG`. Defaults to False.
         """
         self.input = None
         self.output = None

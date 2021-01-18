@@ -1,6 +1,4 @@
-"""
-Slot Type
-"""
+"""Slot Type"""
 
 from typing import List
 
@@ -11,8 +9,7 @@ from dialogy.types.entities import BaseEntity
 
 @attr.s
 class Slot:
-    """
-    Slot Type
+    """Slot Type
 
     Keys are:
     - `name` of the slot

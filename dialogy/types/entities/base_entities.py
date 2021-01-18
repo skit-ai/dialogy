@@ -1,9 +1,7 @@
-"""
-Module provides access to a base class to create other entities. 
-This is an unsafe class and not meant for direct use.
+"""Module provides access to a base class to create other entities. 
 
 These methods of this class that are supposed to be overridden:
-- __validate
+- validate
 - get_value
 
 Import classes:

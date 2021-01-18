@@ -1,5 +1,15 @@
-"""
-Entity Types
+"""Module provides access to entity types. 
+
+Import functions:
+    - entity_synthesis
+
+Import classes:
+    - BaseEntity
+    - NumericalEntity,
+    - PeopleEntity,
+    - TimeEntity,
+    - TimeIntervalEntity
+    - LocationEntity
 """
 
 from dialogy.types.entities.base_entities import BaseEntity, entity_synthesis

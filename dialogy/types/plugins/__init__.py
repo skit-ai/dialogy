@@ -1,4 +1,11 @@
-from typing import List, Dict, Callable
+"""Module provides access to pre-defined plugin types. 
+
+Import Types:
+    - PluginFn
+    - GetWorkflowUtteranceFn
+    - UpdateWorkflowStringFn
+"""
+from typing import List, Callable
 from dialogy.workflow import Workflow
 from dialogy.types.utterances import Utterance
 

@@ -1,5 +1,4 @@
-"""
-Module provides utility functions for entities.
+"""Module provides utility functions for entities.
 
 Import functions:
     - dict_traversal
@@ -10,8 +9,7 @@ from functools import reduce
 
 
 def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:
-    """
-    Traverse a dictionary for a given list of properties.
+    """Traverse a dictionary for a given list of properties.
 
     This is useful for traversing a deeply nested dictionary.
     Instead of recursion, we are using reduce to update the `dict`.
@@ -41,8 +39,7 @@ def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:
 
 
 def validate_type(obj: Any, obj_type: Union[type, Tuple[type]]) -> None:
-    """
-    Raise TypeError on object type mismatch.
+    """Raise TypeError on object type mismatch.
 
     This is syntatic sugar for instance type checks.
 

@@ -12,8 +12,7 @@ from dialogy.types.plugins import PluginFn
 
 @attr.s
 class Intent:
-    """
-    Intent Type
+    """Intent Type
 
     Keys are:
     - `name` is the name of the intent to be used.
@@ -38,8 +37,7 @@ class Intent:
     slots = attr.ib(type=List[Slot], default=attr.Factory(list))
 
     def add_parser(self, postprocessor: PluginFn) -> None:
-        """
-        Update parsers with the postprocessor function name
+        """Update parsers with the postprocessor function name
 
         This helps us identify the progression in which the postprocessing functions
         were applied to an intent. This helps in debugging and has no production utility

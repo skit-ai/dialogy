@@ -1,3 +1,8 @@
+"""Module provides access to an abstract plugin class.
+
+Import classes:
+    - Plugin
+"""
 from abc import ABC
 from typing import Optional
 from dialogy.types.plugins import PluginFn
@@ -7,8 +12,8 @@ class Plugin(ABC):
     def exec(
         self, access: Optional[PluginFn] = None, mutate: Optional[PluginFn] = None
     ) -> None:
-        """
-        Plugin method.
+        """Compulsory method, each Plugin must have a definite role invoked by `exec`
+        everything else (initialization etc) can happen through other methods.
 
         These are required if stateful plugins are needed. This method requires `access` and `mutate`
         functions to interact with the workflow. A workflow can be expected in the closure function.
@@ -26,4 +31,3 @@ class Plugin(ABC):
             access (Optional[PluginFn], optional): [description]. Defaults to None.
             mutate (Optional[PluginFn], optional): [description]. Defaults to None.
         """
-        pass
