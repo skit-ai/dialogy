@@ -1,4 +1,5 @@
-"""Module provides access to entity types that can be parsed to obtain values like: numbers, date, time, datetime.
+"""
+Module provides access to entity types that can be parsed to obtain values like: numbers, date, time, datetime.
 
 Import classes:
     - NumericalEntity
@@ -8,18 +9,18 @@ Import classes:
 """
 
 from typing import Any, List, Dict, Callable
-from datetime import datetime
 
 import attr
 
 
 from dialogy.types.entities import BaseEntity
-from dialogy.types.entities.utils import traverse_dict, validate_type
+from dialogy.types.entities.utils import validate_type
 
 
 @attr.s
 class NumericalEntity(BaseEntity):
-    """Numerical Entity Type
+    """
+    Numerical Entity Type
 
     Use this type for handling all entities that can be parsed to obtain:
     - numbers
@@ -53,7 +54,8 @@ class NumericalEntity(BaseEntity):
 
 @attr.s
 class TimeEntity(NumericalEntity):
-    """Entities that can be parsed to obtain date, time or datetime values.
+    """
+    Entities that can be parsed to obtain date, time or datetime values.
 
     Example sentences that contain the entity are:
     - "I have a flight at 6 am."
@@ -79,7 +81,8 @@ class TimeEntity(NumericalEntity):
 
 @attr.s
 class TimeIntervalEntity(TimeEntity):
-    """Entities that can be parsed to obtain date, time or datetime interval.
+    """
+    Entities that can be parsed to obtain date, time or datetime interval.
 
     - "I need a flight between 6 am to 10 am."
     - "I have a flight at 6 am to 5 pm today."
@@ -104,7 +107,8 @@ class TimeIntervalEntity(TimeEntity):
 
 @attr.s
 class PeopleEntity(NumericalEntity):
-    """A variant of numerical entity which addresses collections of people.
+    """
+    A variant of numerical entity which addresses collections of people.
 
     Example sentences that contain the entity are:
     - "N people", where N is a whole number.
