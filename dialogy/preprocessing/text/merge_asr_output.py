@@ -1,12 +1,4 @@
-"""
-Module provides access to a Plugin to combine ASR output.
-
-Since ASR outputs may contain n-best transcripts, the plugins here provide strategies
-to unify these into one.
-
-Import functions:
-    - merge_asr_output
-"""
+"""Module provides access to a Plugin to combine ASR output."""
 from typing import List
 from dialogy.workflow import Workflow
 from dialogy.types.plugins import (
