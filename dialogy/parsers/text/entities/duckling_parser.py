@@ -1,8 +1,12 @@
 """
-Parser for Duckling, the open source project. 
+Parser for Duckling, the open source project.
+
 We need this for parsing and extracting date, time, numbers, currency etc. 
 We will expect Duckling to be running as an http service, and provide means
 to connect from the implementation here.
+
+Import classes:
+    - DucklingParser
 """
 import json
 import datetime
@@ -19,6 +23,7 @@ class DucklingParser(Plugin):
     """
     We use duckling for extracting entity tokens and parsing their value.
 
+    Attributes:
     - transformers: A list of functions that can be used for parsing Duckling entities once obtained from the service call.
     - dimensions: [read here](https://github.com/facebook/duckling#supported-dimensions)
     - locale: The format for expressing locale requires language and country name ids.
@@ -27,9 +32,6 @@ class DucklingParser(Plugin):
                 and consistency is expected in the responses.
     - url: The address where Duckling's entity parser can be reached.
     - timeout: To prevent cases where the Duckling server is stalled, leading to poor performance for this framework as well.
-
-    Duckling also provides date and time entities. Sometimes there are sentences which refer a relative unit like:
-              "yesterday", "tomorrow", "next month" which requires knowledge of the current time.
     """
 
     transformers: List[Callable[[Any], Any]] = attr.ib(factory=list)

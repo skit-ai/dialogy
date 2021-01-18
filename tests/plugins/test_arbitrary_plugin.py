@@ -15,6 +15,7 @@ class ArbitraryPlugin(Plugin):
             numbers = [number + 2 for number in numbers]
             words = [word + " world" for word in words]
             mutate(workflow, (numbers, words))
+
         return plugin
 
 
@@ -29,10 +30,7 @@ def mutateFn(workflow, value):
 def test_arbitrary_plugin():
     pluginInstance = ArbitraryPlugin()
     plugin = pluginInstance.exec(access=accessFn, mutate=mutateFn)
-    workflow = Workflow(
-        preprocessors=[plugin],
-        postprocessors=[]
-    )
+    workflow = Workflow(preprocessors=[plugin], postprocessors=[])
 
     workflow.run(([2, 5], ["hello", "hi"]))
     if isinstance(workflow.output, tuple):

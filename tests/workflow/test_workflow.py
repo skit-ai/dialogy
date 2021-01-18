@@ -36,10 +36,7 @@ def test_workflow_run():
     def mock_preproc(w):
         w.input = 20
 
-    workflow = Workflow(
-        preprocessors=[mock_preproc],
-        postprocessors=[mock_postproc]
-    )
+    workflow = Workflow(preprocessors=[mock_preproc], postprocessors=[mock_postproc])
 
     workflow.run(2)
     assert workflow.input == 20, "workflow.get_input() should be 2."
@@ -54,9 +51,7 @@ def test_workflow_run_debug_mode():
         w.input = 20
 
     workflow = Workflow(
-        preprocessors=[mock_preproc],
-        postprocessors=[mock_postproc],
-        debug=True
+        preprocessors=[mock_preproc], postprocessors=[mock_postproc], debug=True
     )
 
     workflow.run(2)
@@ -75,10 +70,7 @@ def test_child_class_inference_not_implemented_error():
 
 
 def test_not_callable_pre_post_processors_type_error():
-    workflow = Workflow(
-        preprocessors=[2],
-        postprocessors=[3]
-    )
+    workflow = Workflow(preprocessors=[2], postprocessors=[3])
 
     with pytest.raises(TypeError):
         workflow.preprocess()
