@@ -1,0 +1,8 @@
+---
+engines:
+  pylint:
+    enabled: true
+    exclude_paths:
+      - "**/**/__init__.py"
+      - "docs/**"
+      - "tests/**"
