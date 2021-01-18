@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Optional
 import attr
 import copy
 
+from dialogy import constants
 from dialogy.types.plugins import PluginFn
 from dialogy.types.entities.utils import traverse_dict, validate_type
 
@@ -53,15 +54,7 @@ class BaseEntity:
     latent = attr.ib(type=bool, default=False)
     values = attr.ib(type=List[Any], default=attr.Factory(list))
 
-    __properties_map = [
-        (["range"], dict),
-        (["range", "start"], int),
-        (["range", "end"], int),
-        (["body"], str),
-        (["values"], list),
-        (["dim"], str),
-        (["latent"], bool),
-    ]
+    __properties_map = constants.BASE_ENTITY_PROPS
 
     @classmethod
     def validate(cls, dict_: Dict[str, Any]) -> None:

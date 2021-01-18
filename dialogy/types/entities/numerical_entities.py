@@ -12,7 +12,7 @@ from typing import Any, List, Dict, Callable
 
 import attr
 
-
+from dialogy import constants
 from dialogy.types.entities import BaseEntity
 
 
@@ -33,22 +33,12 @@ class NumericalEntity(BaseEntity):
         - `reader` gives the list of all functions that have changed the entity in some way
         - `type` is the type of the entity which can have values in ["value", "interval"]
     """
-
-    dim = attr.ib(type=str, default=attr.Factory(str))
     values = attr.ib(type=List[Dict[str, Any]], default=attr.Factory(list))
     reader = attr.ib(type=List[Callable[[Any], Any]], default=attr.Factory(list))
     type = attr.ib(
         type=str, default="value", validator=attr.validators.instance_of(str)
     )
-    __properties_map = [
-        (["range"], dict),
-        (["range", "start"], int),
-        (["range", "end"], int),
-        (["body"], str),
-        (["values"], list),
-        (["dim"], str),
-        (["latent"], bool),
-    ]
+    __properties_map = constants.BASE_ENTITY_PROPS
 
 
 @attr.s
@@ -66,16 +56,7 @@ class TimeEntity(NumericalEntity):
     """
 
     grain = attr.ib(type=str, default=None, validator=attr.validators.instance_of(str))
-    __properties_map = [
-        (["range"], dict),
-        (["range", "start"], int),
-        (["range", "end"], int),
-        (["body"], str),
-        (["values"], list),
-        (["dim"], str),
-        (["latent"], bool),
-        (["grain"], str),
-    ]
+    __properties_map = constants.TIME_ENTITY_PROPS
 
 
 @attr.s
@@ -92,16 +73,7 @@ class TimeIntervalEntity(TimeEntity):
     """
 
     type = "interval"
-    __properties_map = [
-        (["range"], dict),
-        (["range", "start"], int),
-        (["range", "end"], int),
-        (["body"], str),
-        (["values"], list),
-        (["dim"], str),
-        (["latent"], bool),
-        (["grain"], str),
-    ]
+    __properties_map = constants.TIME_ENTITY_PROPS
 
 
 @attr.s
@@ -118,13 +90,4 @@ class PeopleEntity(NumericalEntity):
     unit = attr.ib(
         type=str, default=attr.Factory(str), validator=attr.validators.instance_of(str)
     )
-    __properties_map = [
-        (["range"], dict),
-        (["range", "start"], int),
-        (["range", "end"], int),
-        (["body"], str),
-        (["values"], list),
-        (["dim"], str),
-        (["latent"], bool),
-        (["unit"], str),
-    ]
+    __properties_map = constants.PEOPLE_ENTITY_PROPS
