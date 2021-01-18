@@ -2,7 +2,7 @@
 Intent Type
 """
 
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
 import attr
 

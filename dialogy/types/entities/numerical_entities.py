@@ -14,7 +14,6 @@ import attr
 
 
 from dialogy.types.entities import BaseEntity
-from dialogy.types.entities.utils import validate_type
 
 
 @attr.s
