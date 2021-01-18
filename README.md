@@ -1,5 +1,6 @@
 # Dialogy
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e6a91ca8917c4615a0f409703f06d5e9)](https://app.codacy.com/gh/Vernacular-ai/dialogy?utm_source=github.com&utm_medium=referral&utm_content=Vernacular-ai/dialogy&utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.com/Vernacular-ai/dialogy.svg?branch=master)](https://travis-ci.com/Vernacular-ai/dialogy)
 [![Coverage Status](https://coveralls.io/repos/github/Vernacular-ai/dialogy/badge.svg?branch=master)](https://coveralls.io/github/Vernacular-ai/dialogy?branch=master)
 
