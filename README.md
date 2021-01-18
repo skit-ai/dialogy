@@ -102,22 +102,20 @@ Any rigidity here would lead to distractions both to maintainers and users of th
 
 -   ✅. This project offers a conduit for an untrained model. This means once a [workflow](./dialogy/workflow/README.md) is ready you can use it anywhere:
     evaluation scripts, serving your models via an API, custom training/evaluation scripts, combining another workflow, etc. 
+
 -   ✅. If your application needs spoken language understanding, you should find little need to write data processing functions.
+
 -   ✅. Little to no learning curve, if you know python you know how to use this project.
 
 ## Contributions
 
 -   Go through the docs.
+
 -   Name your branch as "purpose/short-description". examples:
     -   "feature/hippos_can_fly"
     -   "fix/breathing_water_instead_of_fire"
     -   "docs/chapter_on_mighty_sphinx"
     -   "refactor/limbs_of_mummified_pharao"
     -   "test/my_patience"
+
 -   Make sure tests are added are passing. Run `make test lint` at project root. Coverage is important aim for 100% unless reviewer agrees.
-
-## Future
-
--   [x] Duckling parsers and support.
--   [ ] Cookiecutter project installation.
--   [ ] Conversation driven development.
