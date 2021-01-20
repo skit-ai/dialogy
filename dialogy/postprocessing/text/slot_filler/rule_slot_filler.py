@@ -4,58 +4,76 @@ Module provides access to a rule-based slot-filler.
 This is best suited for post-processing.
 
 Consider a minimal rule schema:
-```yaml
+```python
 
-intent_name: # The name of the intent
-  slots:
-  - name: str: str # The name of a slot.
-    entity_type: str # Entity type, like: NumericalEntity, TimeEntity, etc.
-    values: List[BaseEntity]
+{
+    "<intent_name>": {
+        "<entity_type>": {
+            "slot_name": "<slot_name>",
+            "entity_name": "<entity_name>"
+        } 
+    }
+}
 ```
+
 Then irrespective of the entities that are found, only the listed type in the slot shall be present in `values`.
 
 Import Plugin:
     - SlotFiller
 """
-from typing import Optional, Callable, List, Dict, Any, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import attr
 
 from dialogy.plugins import Plugin
-from dialogy.types.plugins import PluginFn
-from dialogy.types.intents import Intent
 from dialogy.types.entities import BaseEntity
+from dialogy.types.intents import Intent
+from dialogy.types.plugins import PluginFn
 from dialogy.workflow import Workflow
 
 
 @attr.s
 class RuleBasedSlotFillerPlugin(Plugin):
-    rules = attr.ib(type=Dict[str, Any], default=attr.Factory(Dict))
+    """
+    [summary]
+
+    Attributes:
+        - `rules` Dict[str, List[str]]: A relationship between intent and entities.
+        - `slots` Dict[str, Slot]: A container for slots for a given intent.
+
+    Raises:
+        TypeError: [description]
+
+    Returns:
+        [type]: [description]
+    """
+
+    rules = attr.ib(type=Dict[str, Dict[str, str]], default=attr.Factory(Dict))
 
     def exec(
-        self, 
-        access: Optional[PluginFn] = None, 
-        mutate: Optional[PluginFn] = None
+        self, access: Optional[PluginFn] = None, mutate: Optional[PluginFn] = None
     ) -> PluginFn:
         def filler(workflow: Workflow) -> None:
-            slot_container = []
-
             if access is not None:
 
-                intent_and_entities: Tuple[Intent, List[BaseEntity]] = access(workflow)
-                confident_class = intent_and_entities[0]
-                entities = intent_and_entities[1]
+                try:
+                    intent_and_entities: Tuple[Intent, List[BaseEntity]] = access(
+                        workflow
+                    )
+                    intent, entities = intent_and_entities
+                    intent.apply(self.rules)
 
-                # TODO: Create a type for a slot
-                # TODO: Create a type for slot-filling-rules
-                slots = self.rules[confident_class.name]["slots"]
-
-                # TODO: RuleParser can check containment instead of this loop
-                for entity in entities:
-                    for slot in slots:
-                        if entity.entity_type in slot.entity_type:
-                            slot_container.append(entity)
+                    for entity in entities:
+                        intent.fill_slot(entity)
+                except TypeError as type_error:
+                    raise TypeError(
+                        f"`access` passed to {self.__class__.__name__}"
+                        f" is not a Callable. Received {type(access)} instead."
+                    ) from type_error
             else:
-                raise TypeError(f"`access` passed to RuleBasedSlotFillerPlugin is not a Callable. Received {type(access)} instead.")
+                raise TypeError(
+                    f"`access` passed to {self.__class__.__name__}"
+                    f" is not a Callable. Received {type(access)} instead."
+                )
 
         return filler
