@@ -35,7 +35,14 @@ class Intent:
     type = attr.ib(type=str, default="main")
     parsers = attr.ib(type=List[str], default=attr.Factory(list))
     alternative_index = attr.ib(type=Optional[int], default=None)
-    slots = attr.ib(type=List[Slot], default=attr.Factory(list))
+    slots = attr.ib(type=Dict[str, Slot], default=attr.Factory(dict))
+
+    def apply(self, rules: Dict[str, Dict[str, str]]) -> "Intent":
+        for entity_name, entity_meta in rules.items():
+            self.slots[entity_meta["slot_name"]] = Slot(
+                name=entity_name, type=[entity_meta["entity_type"]], values=[]
+            )
+        return self
 
     def add_parser(self, postprocessor: PluginFn) -> None:
         """Update parsers with the postprocessor function name
