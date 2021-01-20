@@ -69,8 +69,8 @@ class Workflow:
             postprocessors (List[PluginFn], optional): A list of functions to execute after inference. Defaults to None.
             debug (bool, optional): [description]. Changes to input/output are logged if log-level is set to `DEBUG`. Defaults to False.
         """
-        self.input = None
-        self.output = None
+        self.input: Any = None
+        self.output: Any = None
 
         if not isinstance(preprocessors, list):
             # Type check to ensure preprocessors are lists.
