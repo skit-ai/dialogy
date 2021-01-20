@@ -20,3 +20,11 @@ class Slot:
     name = attr.ib(type=str)
     type = attr.ib(type=List[str])
     values = attr.ib(type=List[BaseEntity])
+
+    @classmethod
+    def fill(cls, entity: BaseEntity) -> "Slot":
+        return cls(name=entity.slot_name, type=[entity.type], values=[entity])
+
+    def add(self, entity: BaseEntity) -> "Slot":
+        self.values.append(entity)
+        return self
