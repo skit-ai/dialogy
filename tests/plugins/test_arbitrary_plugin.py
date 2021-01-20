@@ -1,12 +1,13 @@
 from dialogy.plugins import Plugin
 from dialogy.workflow import Workflow
+from dialogy.types.plugins import PluginFn
 
 
 class ArbitraryPlugin(Plugin):
     def __init__(self):
         super(ArbitraryPlugin).__init__()
 
-    def exec(self, access=None, mutate=None) -> None:
+    def exec(self, access=None, mutate=None) -> PluginFn:
         # this is not required for any reason other than code-coverage
         super().exec()
 
