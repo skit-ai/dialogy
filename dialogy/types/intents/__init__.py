@@ -51,3 +51,7 @@ class Intent:
         were applied to an intent. This helps in debugging and has no production utility
         """
         self.parsers.append(postprocessor.__name__)
+
+    def fill_slot(self, entity: BaseEntity) -> None:
+        if entity.slot_name in self.slots:
+            self.slots[entity.slot_name].add(entity)
