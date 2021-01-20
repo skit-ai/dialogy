@@ -33,9 +33,10 @@ class NumericalEntity(BaseEntity):
         - `reader` gives the list of all functions that have changed the entity in some way
         - `type` is the type of the entity which can have values in ["value", "interval"]
     """
+
     values = attr.ib(type=List[Dict[str, Any]], default=attr.Factory(list))
     reader = attr.ib(type=List[Callable[[Any], Any]], default=attr.Factory(list))
-    type = attr.ib(
+    origin = attr.ib(
         type=str, default="value", validator=attr.validators.instance_of(str)
     )
     __properties_map = constants.BASE_ENTITY_PROPS
@@ -68,11 +69,11 @@ class TimeIntervalEntity(TimeEntity):
     - "I have a flight at 6 am to 5 pm today."
 
     Attributes:
-    - `type`
+    - `origin`
     - `value` is a Dictionary which has either keys 'from' and 'to' or both
     """
 
-    type = "interval"
+    origin = "interval"
     __properties_map = constants.TIME_ENTITY_PROPS
 
 
@@ -87,7 +88,5 @@ class PeopleEntity(NumericalEntity):
     - "I have triplets" ~ 3 children.
     """
 
-    unit = attr.ib(
-        type=str, default=attr.Factory(str), validator=attr.validators.instance_of(str)
-    )
+    unit = attr.ib(type=str, default="", validator=attr.validators.instance_of(str))
     __properties_map = constants.PEOPLE_ENTITY_PROPS
