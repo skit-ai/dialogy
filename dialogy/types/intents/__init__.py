@@ -8,6 +8,7 @@ import attr
 
 from dialogy.types.slots import Slot
 from dialogy.types.plugins import PluginFn
+from dialogy.types.entities import BaseEntity
 
 
 @attr.s
