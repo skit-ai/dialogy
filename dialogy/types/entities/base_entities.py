@@ -29,7 +29,7 @@ class BaseEntity:
     Attributes:
     - `range` is the character range in the alternative where the entity is parsed.
     - `body` is the string that is extracted.
-    - `entity_type` is the type of the entity.
+    - `type` is the type of the entity.
     - `value` is the normalized value of the entity. This can either be a string, an integer or a Dict.
     - `parsers` gives the list of all the functions that have changed this entity.
         This list will be in sorted order, which means that the first element has worked
@@ -40,7 +40,7 @@ class BaseEntity:
     """
 
     range = attr.ib(type=Dict[str, int])
-    entity_type = attr.ib(type=str, validator=attr.validators.instance_of(str))
+    type = attr.ib(type=str, validator=attr.validators.instance_of(str))
     body = attr.ib(type=str, validator=attr.validators.instance_of(str))
     dim = attr.ib(type=str, validator=attr.validators.instance_of(str))
 
@@ -51,6 +51,7 @@ class BaseEntity:
     )
 
     score = attr.ib(type=Optional[float], default=None)
+    slot_name = attr.ib(type=str, default="")
     alternative_index = attr.ib(type=Optional[int], default=None)
     latent = attr.ib(type=bool, default=False)
     values = attr.ib(type=List[Any], default=attr.Factory(list))
