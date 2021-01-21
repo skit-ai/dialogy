@@ -9,7 +9,6 @@ from typing import List, Callable, Any
 from dialogy.workflow import Workflow
 from dialogy.types.utterances import Utterance
 
-
-PluginFn = Callable[[Workflow], Any]
+PluginFn = Callable[..., Any]
 GetWorkflowUtteranceFn = Callable[[Workflow], List[Utterance]]
 UpdateWorkflowStringFn = Callable[[Workflow, str], None]
