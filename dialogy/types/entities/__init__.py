@@ -20,3 +20,9 @@ from dialogy.types.entities.numerical_entities import (
     TimeIntervalEntity,
 )
 from dialogy.types.entities.location_entities import LocationEntity
+
+dimension_entity_map = {
+    "number": {"value": NumericalEntity},
+    "people": {"value": PeopleEntity},
+    "time": {"value": TimeEntity, "interval": TimeIntervalEntity},
+}
