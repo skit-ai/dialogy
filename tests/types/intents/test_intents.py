@@ -19,7 +19,10 @@ def test_intent_parser():
 
 
 def test_rule_application():
-    rules = {"date": {"slot_name": "date_slot", "entity_type": "date"}, "number": {"slot_name": "number_slot", "entity_type": "number"}}
+    rules = {
+        "date": {"slot_name": "date_slot", "entity_type": "date"},
+        "number": {"slot_name": "number_slot", "entity_type": "number"},
+    }
     intent = Intent(name="intent", score=0.8)
     intent.apply(rules)
     assert "date_slot" in intent.slots, "date_slot should be present."
@@ -36,7 +39,7 @@ def test_slot_filling():
         dim="default",
         type="basic",
         values=[{"key": "value"}],
-        slot_name="basic_slot"
+        slot_name="basic_slot",
     )
     rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
     intent = Intent(name="intent", score=0.8)

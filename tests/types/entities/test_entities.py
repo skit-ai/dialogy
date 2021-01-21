@@ -144,7 +144,10 @@ def test_numerical_type_not_str_error():
     body = "12 december"
     with pytest.raises(TypeError):
         _ = NumericalEntity(
-            range={"from": 0, "to": len(body)}, body=body, origin="pattern", type="numeric"
+            range={"from": 0, "to": len(body)},
+            body=body,
+            origin="pattern",
+            type="numeric",
         )
 
 
