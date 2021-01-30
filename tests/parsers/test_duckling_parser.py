@@ -514,6 +514,6 @@ def test_plugin():
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    workflow = Workflow(preprocessors=[parser.parse], postprocessors=[])
+    workflow = Workflow(preprocessors=[parser.plugin], postprocessors=[])
     workflow.run(body)
     assert isinstance(workflow.output["entities"][0], PeopleEntity)
