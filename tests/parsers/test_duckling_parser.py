@@ -222,7 +222,7 @@ def test_duckling_wrong_tz():
         assert (
             content_type == duckling_header
         ), f"expected {duckling_header} but received Content-Type: {content_type}"
-        return [200, response_headers, json.dumps(expected_response)]
+        return [200, response_headers, json.dumps({})]
 
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
@@ -459,7 +459,7 @@ def test_entity_object_error_on_missing_value():
 
 def test_plugin_io_missing():
     parser = DucklingParser(locale="en_IN")
-    plugin = parser.exec(access=None, mutate=None)
+    plugin = parser.exec()
 
     workflow = Workflow(preprocessors=[plugin], postprocessors=[])
     with pytest.raises(TypeError):
@@ -467,18 +467,31 @@ def test_plugin_io_missing():
 
 
 def test_plugin_io_type_mismatch():
-    parser = DucklingParser(locale="en_IN")
-    plugin = parser.exec(access=5, mutate=54)
+    parser = DucklingParser(access=5, mutate=54, locale="en_IN")
+    plugin = parser.exec()
 
     workflow = Workflow(preprocessors=[plugin], postprocessors=[])
     with pytest.raises(TypeError):
         workflow.run("")
 
 
+@httpretty.activate
 def test_plugin():
+    """
+    [summary]
+
+    Returns:
+        [type]: [description]
+    """
     body = "I need it for 4 people."
-    parser = DucklingParser(dimensions=["people"], locale="en_IN")
+    def access(workflow):
+        return workflow.input, None
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+    
     duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
+    parser = DucklingParser(access=access, mutate=mutate, dimensions=["people"], locale="en_IN")
     expected_response = [
         {
             "body": "4 people",
@@ -501,14 +514,6 @@ def test_plugin():
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    def access(workflow):
-        return workflow.input, None
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
-    plugin = parser.exec(access=access, mutate=mutate)
-
-    workflow = Workflow(preprocessors=[plugin], postprocessors=[])
+    workflow = Workflow(preprocessors=[parser.parse], postprocessors=[])
     workflow.run(body)
     assert isinstance(workflow.output["entities"][0], PeopleEntity)
