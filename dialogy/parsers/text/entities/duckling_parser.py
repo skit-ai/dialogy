@@ -165,9 +165,29 @@ class DucklingParser(Plugin):
             f"Duckling API call failed | [{response.status_code}]: {response.text}"
         )
 
-    def exec(
-        self, access: Optional[PluginFn] = None, mutate: Optional[PluginFn] = None
-    ) -> PluginFn:
+    def plugin(self, workflow: Workflow) -> None:
+        access = self.access
+        mutate = self.mutate
+        if access and mutate:
+            try:
+                text, reference_time = access(workflow)
+                entities_json = self.get_entities(text, reference_time)
+                if entities_json:
+                    entities = self.reshape(entities_json)
+                    mutate(workflow, entities)
+            except TypeError as type_error:
+                raise TypeError(
+                    "Expected `access` and `mutate` to be Callable,"
+                    f" got access={type(access)} mutate={type(mutate)} | {type_error}"
+                ) from type_error
+
+        else:
+            raise TypeError(
+                "Expected `access` and `mutate` to be Callable,"
+                f" got access={type(access)} mutate={type(mutate)}"
+            )
+
+    def exec(self) -> PluginFn:
         """
         [summary]
 
@@ -175,25 +195,4 @@ class DucklingParser(Plugin):
             access (PluginFn): [description]
             mutate (PluginFn): [description]
         """
-
-        def parse(workflow: Workflow) -> None:
-            if access and mutate:
-                try:
-                    text, reference_time = access(workflow)
-                    entities_json = self.get_entities(text, reference_time)
-                    if entities_json:
-                        entities = self.reshape(entities_json)
-                        mutate(workflow, entities)
-                except TypeError as type_error:
-                    raise TypeError(
-                        "Expected `access` and `mutate` to be Callable,"
-                        f" got access={type(access)} mutate={type(mutate)} | {type_error}"
-                    ) from type_error
-
-            else:
-                raise TypeError(
-                    "Expected `access` and `mutate` to be Callable,"
-                    f" got access={type(access)} mutate={type(mutate)}"
-                )
-
-        return parse
+        return self.plugin
