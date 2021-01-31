@@ -459,7 +459,7 @@ def test_entity_object_error_on_missing_value():
 
 def test_plugin_io_missing():
     parser = DucklingParser(locale="en_IN")
-    plugin = parser.exec()
+    plugin = parser()
 
     workflow = Workflow(preprocessors=[plugin], postprocessors=[])
     with pytest.raises(TypeError):
@@ -468,7 +468,7 @@ def test_plugin_io_missing():
 
 def test_plugin_io_type_mismatch():
     parser = DucklingParser(access=5, mutate=54, locale="en_IN")
-    plugin = parser.exec()
+    plugin = parser()
 
     workflow = Workflow(preprocessors=[plugin], postprocessors=[])
     with pytest.raises(TypeError):
@@ -484,14 +484,17 @@ def test_plugin():
         [type]: [description]
     """
     body = "I need it for 4 people."
+
     def access(workflow):
         return workflow.input, None
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
-    
+
     duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
-    parser = DucklingParser(access=access, mutate=mutate, dimensions=["people"], locale="en_IN")
+    parser = DucklingParser(
+        access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
+    )
     expected_response = [
         {
             "body": "4 people",
@@ -514,6 +517,6 @@ def test_plugin():
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    workflow = Workflow(preprocessors=[parser.plugin], postprocessors=[])
+    workflow = Workflow(preprocessors=[parser()], postprocessors=[])
     workflow.run(body)
     assert isinstance(workflow.output["entities"][0], PeopleEntity)
