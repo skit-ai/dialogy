@@ -17,6 +17,7 @@ class Plugin:
     """
     [summary]
     """
+
     access: Optional[PluginFn] = attr.ib(default=None)
     mutate: Optional[PluginFn] = attr.ib(default=None)
 
