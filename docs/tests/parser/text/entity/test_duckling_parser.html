@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
   <title>test_duckling_parser.py</title>
-  <link rel="stylesheet" href="../../pycco.css">
+  <link rel="stylesheet" href="../../../../pycco.css">
 </head>
 <body>
 <div id='container'>
@@ -667,7 +667,7 @@ was originally generated using:</p>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_missing</span><span class="p">():</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
-    <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+    <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="p">()</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
@@ -685,7 +685,7 @@ was originally generated using:</p>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_type_mismatch</span><span class="p">():</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="mi">54</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
-    <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+    <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="p">()</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
@@ -743,9 +743,11 @@ was originally generated using:</p>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">):</span>
         <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;entities&quot;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
-    
+
     <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;people&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span>
+        <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;people&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span>
+    <span class="p">)</span>
     <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;4 people&quot;</span><span class="p">,</span>
@@ -778,7 +780,7 @@ was originally generated using:</p>
         <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
     <span class="p">)</span>
 
-    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">parser</span><span class="o">.</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">parser</span><span class="p">()],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">PeopleEntity</span><span class="p">)</span>
 
