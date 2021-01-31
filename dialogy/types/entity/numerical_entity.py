@@ -13,7 +13,7 @@ from typing import Any, List, Dict, Callable
 import attr
 
 from dialogy import constants
-from dialogy.types.entities import BaseEntity
+from dialogy.types.entity import BaseEntity
 
 
 @attr.s

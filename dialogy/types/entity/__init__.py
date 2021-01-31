@@ -12,14 +12,14 @@ Import classes:
     - LocationEntity
 """
 
-from dialogy.types.entities.base_entities import BaseEntity, entity_synthesis
-from dialogy.types.entities.numerical_entities import (
+from dialogy.types.entity.base_entity import BaseEntity, entity_synthesis
+from dialogy.types.entity.numerical_entity import (
     NumericalEntity,
     PeopleEntity,
     TimeEntity,
     TimeIntervalEntity,
 )
-from dialogy.types.entities.location_entities import LocationEntity
+from dialogy.types.entity.location_entity import LocationEntity
 
 dimension_entity_map = {
     "number": {"value": NumericalEntity},

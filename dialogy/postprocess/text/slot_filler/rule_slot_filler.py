@@ -25,10 +25,10 @@ from typing import Dict, List, Optional, Tuple
 
 import attr
 
-from dialogy.plugins import Plugin
-from dialogy.types.entities import BaseEntity
-from dialogy.types.intents import Intent
-from dialogy.types.plugins import PluginFn
+from dialogy.plugin import Plugin
+from dialogy.types.entity import BaseEntity
+from dialogy.types.intent import Intent
+from dialogy.types.plugin import PluginFn
 from dialogy.workflow import Workflow
 
 

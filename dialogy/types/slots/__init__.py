@@ -4,7 +4,7 @@ from typing import List
 
 import attr
 
-from dialogy.types.entities import BaseEntity
+from dialogy.types.entity import BaseEntity
 
 
 @attr.s

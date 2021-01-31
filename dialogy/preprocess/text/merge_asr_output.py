@@ -1,7 +1,7 @@
 """Module provides access to a Plugin to combine ASR output."""
 from typing import List
 from dialogy.workflow import Workflow
-from dialogy.types.plugins import (
+from dialogy.types.plugin import (
     GetWorkflowUtteranceFn,
     UpdateWorkflowStringFn,
     PluginFn,

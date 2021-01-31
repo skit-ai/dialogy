@@ -6,9 +6,9 @@ import httpretty
 import requests
 from typing import List
 
-from dialogy.parsers.text.entities import DucklingParser
+from dialogy.parser.text.entity import DucklingParser
 from dialogy.workflow import Workflow
-from dialogy.types.entities import (
+from dialogy.types.entity import (
     BaseEntity,
     NumericalEntity,
     PeopleEntity,

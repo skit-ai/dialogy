@@ -1,6 +1,6 @@
 import pytest
 from dialogy.workflow import Workflow
-from dialogy.preprocessing.text.merge_asr_output import merge_asr_output
+from dialogy.preprocess.text.merge_asr_output import merge_asr_output
 
 
 def test_merge_as_output():

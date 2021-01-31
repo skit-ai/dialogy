@@ -1,11 +1,11 @@
 import pytest
 
-from dialogy.postprocessing.text.slot_filler.rule_slot_filler import (
+from dialogy.postprocess.text.slot_filler.rule_slot_filler import (
     RuleBasedSlotFillerPlugin,
 )
 from dialogy.workflow import Workflow
-from dialogy.types.entities import BaseEntity
-from dialogy.types.intents import Intent
+from dialogy.types.entity import BaseEntity
+from dialogy.types.intent import Intent
 
 
 def test_rule_slot_filler():

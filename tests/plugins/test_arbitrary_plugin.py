@@ -1,8 +1,8 @@
 import attr
 from typing import Optional
-from dialogy.plugins import Plugin
+from dialogy.plugin import Plugin
 from dialogy.workflow import Workflow
-from dialogy.types.plugins import PluginFn
+from dialogy.types.plugin import PluginFn
 
 
 @attr.s

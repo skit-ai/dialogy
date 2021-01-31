@@ -1,5 +1,5 @@
 import pytest
-from dialogy.types.entities.utils import traverse_dict, validate_type
+from dialogy.types.entity.utils import traverse_dict, validate_type
 
 
 def test_traverse_dict() -> None:

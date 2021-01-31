@@ -7,12 +7,16 @@ from abc import ABC
 from typing import Optional, Callable
 
 import attr
-from dialogy.types.plugins import PluginFn
+from dialogy.types.plugin import PluginFn
 from dialogy.workflow import Workflow
 
 
+# = Plugin =
 @attr.s
 class Plugin:
+    """
+    [summary]
+    """
     access: Optional[PluginFn] = attr.ib(default=None)
     mutate: Optional[PluginFn] = attr.ib(default=None)
 

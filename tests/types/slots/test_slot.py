@@ -1,5 +1,5 @@
 from dialogy.types.slots import Slot
-from dialogy.types.entities import BaseEntity
+from dialogy.types.entity import BaseEntity
 
 
 def test_slot_build():

@@ -3,7 +3,7 @@ Tests for entities
 """
 import pytest
 
-from dialogy.types.entities import (
+from dialogy.types.entity import (
     BaseEntity,
     NumericalEntity,
     PeopleEntity,

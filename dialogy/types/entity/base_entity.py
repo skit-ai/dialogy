@@ -14,8 +14,8 @@ import attr
 import copy
 
 from dialogy import constants
-from dialogy.types.plugins import PluginFn
-from dialogy.types.entities.utils import traverse_dict, validate_type
+from dialogy.types.plugin import PluginFn
+from dialogy.types.entity.utils import traverse_dict, validate_type
 
 
 @attr.s
