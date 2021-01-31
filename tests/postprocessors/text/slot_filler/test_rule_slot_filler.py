@@ -14,7 +14,7 @@ def test_rule_slot_filler():
     def access(workflow):
         return workflow.output
 
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules).exec(access=access)
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)(access=access)
     workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
     intent = Intent(name="intent", score=0.8)
 
@@ -36,7 +36,7 @@ def test_rule_slot_filler():
 def test_missing_access_fn():
     rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
 
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules).exec()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)()
     workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
     intent = Intent(name="intent", score=0.8)
 
@@ -60,7 +60,7 @@ def test_incorrect_access_fn():
     rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
     access = 5
 
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules).exec(access=access)
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)(access=access)
     workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
     intent = Intent(name="intent", score=0.8)
 

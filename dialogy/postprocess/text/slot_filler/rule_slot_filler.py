@@ -50,7 +50,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
     rules = attr.ib(type=Dict[str, Dict[str, str]], default=attr.Factory(Dict))
 
-    def exec(
+    def __call__(
         self, access: Optional[PluginFn] = None, mutate: Optional[PluginFn] = None
     ) -> PluginFn:
         def filler(workflow: Workflow) -> None:
