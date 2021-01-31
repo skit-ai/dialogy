@@ -12,9 +12,7 @@ PREPROCESSORS = "__preprocessors"
 POSTPROCESSORS = "__postprocessors"
 WORKFLOW_PUBLIC_PROPERTIES = [PREPROCESSORS, POSTPROCESSORS]
 
-# ----------------------------------------------------------------
-# This section defines entity key-names.
-# ----------------------------------------------------------------
+
 class EntityKeys:
     BODY = "body"
     DIM = "dim"
@@ -33,6 +31,9 @@ class EntityKeys:
 
 
 # ----------------------------------------------------------------
+
+
+# ----------------------------------------------------------------
 # This section is needed for dialogy.types.entities.*
 # Each entity type has a few properties which need to be
 # validated for their type.
@@ -41,7 +42,6 @@ class EntityKeys:
 # method of the Entity class, which provides all/enough values to
 # instantiate the Entity. We use this mapping to ensure that the
 # values belong to expected types.
-# ----------------------------------------------------------------
 BASE_ENTITY_PROPS = [
     ([EntityKeys.RANGE], dict),
     ([EntityKeys.RANGE, EntityKeys.START], int),
