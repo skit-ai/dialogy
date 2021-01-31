@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>numerical_entities.py</title>
+  <link rel="stylesheet" href="../../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>numerical_entities.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Module provides access to entity types that can be parsed to obtain values like: numbers, date, time, datetime.</p>
+<p>Import classes:
+    - NumericalEntity
+    - TimeEntity
+    - TimeIntervalEntity
+    - PeopleEntity</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entities</span> <span class="kn">import</span> <span class="n">BaseEntity</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Numerical Entity Type</p>
+<p>Use this type for handling all entities that can be parsed to obtain:
+- numbers
+- date
+- time
+- datetime</p>
+<p>Attributes:
+    - <code>dim</code> dimension of the entity from duckling parser
+    - <code>values</code> values is a List which contains the actual value of the entity
+    - <code>reader</code> gives the list of all functions that have changed the entity in some way
+    - <code>type</code> is the type of the entity which can have values in [&ldquo;value&rdquo;, &ldquo;interval&rdquo;]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">NumericalEntity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">values</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">BASE_ENTITY_PROPS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Entities that can be parsed to obtain date, time or datetime values.</p>
+<p>Example sentences that contain the entity are:
+- &ldquo;I have a flight at 6 am.&rdquo;
+- &ldquo;I have a flight at 6th December.&rdquo;
+- &ldquo;I have a flight at 6 am today.&rdquo;</p>
+<p>Attributes:
+- <code>grain</code> tells us the smallest unit of time in the utterance</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">TimeEntity</span><span class="p">(</span><span class="n">NumericalEntity</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">grain</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Entities that can be parsed to obtain date, time or datetime interval.</p>
+<ul>
+<li>&ldquo;I need a flight between 6 am to 10 am.&rdquo;</li>
+<li>&ldquo;I have a flight at 6 am to 5 pm today.&rdquo;</li>
+</ul>
+<p>Attributes:
+- <code>origin</code>
+- <code>value</code> is a Dictionary which has either keys &lsquo;from&rsquo; and &lsquo;to&rsquo; or both</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">TimeIntervalEntity</span><span class="p">(</span><span class="n">TimeEntity</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">origin</span> <span class="o">=</span> <span class="s2">&quot;interval&quot;</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>A variant of numerical entity which addresses collections of people.</p>
+<p>Example sentences that contain the entity are:
+- &ldquo;N people&rdquo;, where N is a whole number.
+- &ldquo;A couple&rdquo; ~ 2 people.
+- &ldquo;I have triplets&rdquo; ~ 3 children.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">PeopleEntity</span><span class="p">(</span><span class="n">NumericalEntity</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">unit</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">PEOPLE_ENTITY_PROPS</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

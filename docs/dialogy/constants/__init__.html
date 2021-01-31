@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>__init__.py</title>
+  <link rel="stylesheet" href="../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>__init__.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Module provides Constants to be used throughtout the project.</p>
+<p>Import:
+    - PREPROCESSORS
+    - POSTPROCESSORS
+    - WORKFLOW_PUBLIC_PROPERTIES
+    - BASE_ENTITY_PROPS
+    - TIME_ENTITY_PROPS
+    - PEOPLE_ENTITY_PROPS</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="n">PREPROCESSORS</span> <span class="o">=</span> <span class="s2">&quot;__preprocessors&quot;</span>
+<span class="n">POSTPROCESSORS</span> <span class="o">=</span> <span class="s2">&quot;__postprocessors&quot;</span>
+<span class="n">WORKFLOW_PUBLIC_PROPERTIES</span> <span class="o">=</span> <span class="p">[</span><span class="n">PREPROCESSORS</span><span class="p">,</span> <span class="n">POSTPROCESSORS</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <hr />
+<h2>This section defines entity key-names.</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">EntityKeys</span><span class="p">:</span>
+    <span class="n">BODY</span> <span class="o">=</span> <span class="s2">&quot;body&quot;</span>
+    <span class="n">DIM</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+    <span class="n">END</span> <span class="o">=</span> <span class="s2">&quot;end&quot;</span>
+    <span class="n">FROM</span> <span class="o">=</span> <span class="s2">&quot;from&quot;</span>
+    <span class="n">GRAIN</span> <span class="o">=</span> <span class="s2">&quot;grain&quot;</span>
+    <span class="n">INTERVAL</span> <span class="o">=</span> <span class="s2">&quot;interval&quot;</span>
+    <span class="n">LATENT</span> <span class="o">=</span> <span class="s2">&quot;latent&quot;</span>
+    <span class="n">RANGE</span> <span class="o">=</span> <span class="s2">&quot;range&quot;</span>
+    <span class="n">START</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span>
+    <span class="n">TO</span> <span class="o">=</span> <span class="s2">&quot;to&quot;</span>
+    <span class="n">TYPE</span> <span class="o">=</span> <span class="s2">&quot;type&quot;</span>
+    <span class="n">UNIT</span> <span class="o">=</span> <span class="s2">&quot;unit&quot;</span>
+    <span class="n">VALUE</span> <span class="o">=</span> <span class="s2">&quot;value&quot;</span>
+    <span class="n">VALUES</span> <span class="o">=</span> <span class="s2">&quot;values&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <hr />
+<p>This section is needed for dialogy.types.entities.*
+Each entity type has a few properties which need to be
+validated for their type.</p>
+<p>The actual use-case is, a <code>dict</code> is received by the factory
+method of the Entity class, which provides all/enough values to
+instantiate the Entity. We use this mapping to ensure that the
+values belong to expected types.</p>
+<hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">BASE_ENTITY_PROPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">],</span> <span class="nb">dict</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">BODY</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">],</span> <span class="nb">list</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">LATENT</span><span class="p">],</span> <span class="nb">bool</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">TIME_ENTITY_PROPS</span> <span class="o">=</span> <span class="n">BASE_ENTITY_PROPS</span> <span class="o">+</span> <span class="p">[([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">],</span> <span class="nb">str</span><span class="p">)]</span>
+<span class="n">PEOPLE_ENTITY_PROPS</span> <span class="o">=</span> <span class="n">BASE_ENTITY_PROPS</span> <span class="o">+</span> <span class="p">[([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">UNIT</span><span class="p">],</span> <span class="nb">str</span><span class="p">)]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

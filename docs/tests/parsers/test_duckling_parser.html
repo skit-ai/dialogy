@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>test_duckling_parser.py</title>
+  <link rel="stylesheet" href="../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>test_duckling_parser.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">import</span> <span class="nn">pytz</span>
+<span class="kn">import</span> <span class="nn">httpretty</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">dialogy.parser.text.entity</span> <span class="kn">import</span> <span class="n">DucklingParser</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseEntity</span><span class="p">,</span>
+    <span class="n">NumericalEntity</span><span class="p">,</span>
+    <span class="n">PeopleEntity</span><span class="p">,</span>
+    <span class="n">TimeIntervalEntity</span><span class="p">,</span>
+    <span class="n">TimeEntity</span><span class="p">,</span>
+<span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Initialize DucklingParser and <code>.get_entities</code>.</p>
+<p>This test-case bypasses duckling API calls via httpretty. The expected response
+was originally generated using:</p>
+<pre><code>curl -XPOST http://0.0.0.0:8000/parse \\
+    --data 'locale=en_US&amp;text=&quot;I need four of those on 27th next month. Can I have it at 5 am&quot;&quot;&amp;dims=&quot;[date&quot;]&quot;'
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_duckling_api_success</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;I need four of those on 27th next month. Can I have it at 5 am&quot;</span>
+    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
+    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;four&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;on 27th next month&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-27T00:00:00.000-08:00&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">],</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-27T00:00:00.000-08:00&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;at 5 am&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-12-24T05:00:00.000-08:00&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-12-25T05:00:00.000-08:00&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-12-26T05:00:00.000-08:00&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">],</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-12-24T05:00:00.000-08:00&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">62</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+
+    <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
+        <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span> <span class="o">==</span> <span class="n">expected_response</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Simulate Duckling returning 500.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_duckling_api_failure</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;27th next month&quot;</span>
+    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
+    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;27th next month&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-27T00:00:00.000-08:00&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">],</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-27T00:00:00.000-08:00&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+
+    <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
+        <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Simulate Duckling returning 500.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_duckling_with_tz</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;i need it at 4 am&quot;</span>
+    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
+    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;4 am&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T04:00:00.000+05:30&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T04:00:00.000+05:30&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T04:00:00.000+05:30&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">],</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T04:00:00.000+05:30&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+
+    <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
+        <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;Asia/Kolkata&quot;</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span> <span class="o">==</span> <span class="n">expected_response</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Simulate Duckling returning 500.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_duckling_wrong_tz</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;i need it at 4 am&quot;</span>
+    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({})]</span>
+
+    <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
+        <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;Earth/Someplace&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">pytz</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_mutation_dict</span><span class="p">():</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;four&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+        <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">mutate_entity</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="s2">&quot;range&quot;</span> <span class="ow">in</span> <span class="n">entity</span>
+    <span class="k">assert</span> <span class="s2">&quot;start&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="s2">&quot;end&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="s2">&quot;values&quot;</span> <span class="ow">in</span> <span class="n">entity</span>
+    <span class="k">assert</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_mutation_list</span><span class="p">():</span>
+    <span class="n">entity_json</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;at 5 am&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">62</span><span class="p">,</span>
+        <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">mutate_entity</span><span class="p">(</span><span class="n">entity_json</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="s2">&quot;range&quot;</span> <span class="ow">in</span> <span class="n">entity</span>
+    <span class="k">assert</span> <span class="s2">&quot;start&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="s2">&quot;end&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="s2">&quot;values&quot;</span> <span class="ow">in</span> <span class="n">entity</span>
+    <span class="k">assert</span> <span class="s2">&quot;value&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">entity</span>
+    <span class="k">assert</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;2021-01-21T05:00:00.000+05:30&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_time_entity</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;at 5 am&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">],</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">62</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TimeEntity</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_time_interval_entity</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;between 2 to 4 am&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T02:00:00.000+05:30&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T02:00:00.000+05:30&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-24T05:00:00.000+05:30&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-24T02:00:00.000+05:30&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">],</span>
+                <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T05:00:00.000+05:30&quot;</span><span class="p">,</span> <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T02:00:00.000+05:30&quot;</span><span class="p">,</span> <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TimeIntervalEntity</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_numerical_entity</span><span class="p">():</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;four&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">NumericalEntity</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_people_entity</span><span class="p">():</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;3 people&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">PeopleEntity</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_object_not_implemented</span><span class="p">():</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;3 foobars&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;foobar&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_object_error_on_missing_value</span><span class="p">():</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;3 people&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_missing</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_type_mismatch</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="mi">54</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>[summary]</p>
+<p>Returns:
+    [type]: [description]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_plugin</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;I need it for 4 people.&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="kc">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">):</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;entities&quot;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
+    
+    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;people&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;4 people&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+
+    <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
+        <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
+    <span class="p">)</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">parser</span><span class="o">.</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">PeopleEntity</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
