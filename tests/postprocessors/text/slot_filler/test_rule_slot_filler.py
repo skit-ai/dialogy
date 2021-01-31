@@ -1,3 +1,10 @@
+"""
+[summary]
+
+Returns:
+    [type]: [description]
+"""
+from typing import Any
 import pytest
 
 from dialogy.postprocess.text.slot_filler.rule_slot_filler import (
@@ -8,10 +15,10 @@ from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 
 
-def test_rule_slot_filler():
+def test_rule_slot_filler() -> None:
     rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
 
-    def access(workflow):
+    def access(workflow: Workflow) -> Any:
         return workflow.output
 
     slot_filler = RuleBasedSlotFillerPlugin(rules=rules)(access=access)
