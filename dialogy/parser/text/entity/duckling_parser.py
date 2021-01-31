@@ -167,9 +167,9 @@ class DucklingParser(Plugin):
             del entity[EntityKeys.VALUE][EntityKeys.VALUES]
         entity[EntityKeys.VALUES] = [entity[EntityKeys.VALUE]]
 
-        # Pulling out the value of entity's **grain**. The value of **grain** helps 
+        # Pulling out the value of entity's **grain**. The value of **grain** helps
         # us understand the precision of the entity. Usually present for `Time` dimension
-        # expect "year", "month", "day", etc. 
+        # expect "year", "month", "day", etc.
         if EntityKeys.GRAIN in entity[EntityKeys.VALUE]:
             entity[EntityKeys.GRAIN] = entity[EntityKeys.VALUE][EntityKeys.GRAIN]
         elif entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.INTERVAL:
