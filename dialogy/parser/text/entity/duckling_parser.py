@@ -29,7 +29,7 @@ from dialogy.types.entity import (
 @attr.s(kw_only=True)
 class DucklingParser(Plugin):
     """
-    [Plugin](../../../plugin/__init__.html) for extracting entities using [Duckling](https://github.com/facebook/duckling).
+    [Plugin](../../../plugin/plugin.html) for extracting entities using [Duckling](https://github.com/facebook/duckling).
     Once instantiated, a `duckling_parser` object will interface to an http server, running [Duckling](https://github.com/facebook/duckling).
 
     This object when used as a plugin, transforms the `List[Dict[str, Any]]` returned from the API to a [BaseEntity](../../../types/entity/base_entity.html).
@@ -302,14 +302,9 @@ class DucklingParser(Plugin):
                 f" got access={type(access)} mutate={type(mutate)}"
             )
 
-    # == exec ==
-    def exec(self) -> PluginFn:
+    # == __call__ ==
+    def __call__(self) -> PluginFn:
         """
-        Creates a plugin
-
-        Args:
-
-        - access (PluginFn): Receives text from a workflow.
-        - mutate (PluginFn): Inserts Entity objects into a workflow.
+        [callable-plugin](../../../plugin/plugin.html#__call__)
         """
         return self.plugin
