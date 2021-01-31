@@ -17,7 +17,21 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      
+      <p>To handle a single dialog we need a system that can:</p>
+<ol>
+<li>Classify inputs into categories.</li>
+<li>Extract tokens of additional significance.</li>
+<li>Check for associations between the two.</li>
+</ol>
+<p>A slot-filler does the third bit. Once an <a href="../../../types/intent/__init__.html"><code>Intent</code></a> and a set of
+<a href="../../../types/entity/__init__.html"><code>Entities</code></a> are identified, there needs to be an arragement that
+tells us if any of the entities are related to an <a href="../../../types/intent/__init__.html"><code>Intent</code></a>.</p>
+<p>As per the current design, an <a href="../../../types/intent/__init__.html"><code>Intent</code></a> can contain <code>Slots</code>. A <code>Slot</code>
+fills an entity of a pre-defined type.</p>
+<ul>
+<li>A <code>Slot</code> configured to fill a <code>TimeEntity</code> will not fill <code>LocationEntity</code>.</li>
+<li>A <code>Slot</code> will not fill more than one entity even if the type matches.</li>
+</ul>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span>

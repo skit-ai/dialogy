@@ -17,8 +17,7 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      <p>Module provides access to a rule-based slot-filler.</p>
-<p>This is best suited for post-processing.</p>
+      <p>Module provides access to a rule-based <a href="../__init__.html">SlotFiller</a>.</p>
 <p>Consider a minimal rule schema:</p>
 <pre><code class="language-python">
 {
@@ -26,7 +25,7 @@
         &quot;&lt;entity_type&gt;&quot;: {
             &quot;slot_name&quot;: &quot;&lt;slot_name&gt;&quot;,
             &quot;entity_name&quot;: &quot;&lt;entity_name&gt;&quot;
-        } 
+        }
     }
 }
 </code></pre>
@@ -87,7 +86,7 @@
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span></pre></div>
     </div>
