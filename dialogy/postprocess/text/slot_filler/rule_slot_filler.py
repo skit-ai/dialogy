@@ -15,7 +15,7 @@ from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
 from dialogy.workflow import Workflow
 
-
+# == RuleBasedSlotFillerPlugin ==
 @attr.s
 class RuleBasedSlotFillerPlugin(Plugin):
     """
@@ -88,3 +88,9 @@ class RuleBasedSlotFillerPlugin(Plugin):
         [callable-plugin](../../../plugin/plugin.html#__call__)
         """
         return self.filler
+
+"""
+## Tutorials
+
+- [RuleSlotFiller](../../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
+"""
