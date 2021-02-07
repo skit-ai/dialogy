@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>time_interval_entity.py</title>
+  <link rel="stylesheet" href="../../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>time_interval_entity.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Module provides access to entity types that can be parsed to obtain intervals of datetime.</p>
+<p>Import classes:
+    - TimeIntervalEntity</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity.time_entity</span> <span class="kn">import</span> <span class="n">TimeEntity</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Entities that can be parsed to obtain date, time or datetime interval.</p>
+<ul>
+<li>&ldquo;I need a flight between 6 am to 10 am.&rdquo;</li>
+<li>&ldquo;I have a flight at 6 am to 5 pm today.&rdquo;</li>
+</ul>
+<p>Attributes:
+- <code>origin</code>
+- <code>value</code> is a Dictionary which has either keys &lsquo;from&rsquo; and &lsquo;to&rsquo; or both</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">TimeIntervalEntity</span><span class="p">(</span><span class="n">TimeEntity</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">origin</span> <span class="o">=</span> <span class="s2">&quot;interval&quot;</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -24,36 +24,42 @@ class BaseEntity:
     Base Entity Type.
 
     This class is meant for subclassing.
-    Its intended purpose is to define types.
-
-    Attributes:
-    - `range` is the character range in the alternative where the entity is parsed.
-    - `body` is the string that is extracted.
-    - `type` is the type of the entity.
-    - `value` is the normalized value of the entity. This can either be a string, an integer or a Dict.
-    - `parsers` gives the list of all the functions that have changed this entity.
-        This list will be in sorted order, which means that the first element has worked
-        on the entity first.
-    - `score` is the confidence that the range is the entity.
-    - `alternative_index` is the index of transcript within the ASR output: `List[Utterances]`
-        from which this entity was picked up. This may be None.
+    Its intended purpose is to define a base for all entity types.
     """
 
+    # `range` is the character range in the alternative where the entity is parsed.
     range = attr.ib(type=Dict[str, int])
+
+    # `type` is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
     type = attr.ib(type=str, validator=attr.validators.instance_of(str))
+
+    # `body` is the string from which the entity is extracted.
     body = attr.ib(type=str, validator=attr.validators.instance_of(str))
+
+    # `dim` is influenced from Duckling's convention of categorization.
     dim = attr.ib(type=str, validator=attr.validators.instance_of(str))
 
+    # `parsers` gives the trail of all the functions that have changed this entity in the sequence of application.
     parsers = attr.ib(
         type=List[str],
         default=attr.Factory(list),
         validator=attr.validators.instance_of(list),
     )
 
+    # `score` is the confidence that the range is the entity.
     score = attr.ib(type=Optional[float], default=None)
-    slot_name = attr.ib(type=str, default="")
+
+    # Entities have awareness of the slots they should fill.
+    slot_name = attr.ib(type=List[str], default=attr.Factory(list))
+
+    # `alternative_index` is the index of transcript within the ASR output: `List[Utterances]`
+    # from which this entity was picked up. This may be None.
     alternative_index = attr.ib(type=Optional[int], default=None)
+
+    # Duckling influenced attribute, tells if there is less evidence for an entity if latent is True.
     latent = attr.ib(type=bool, default=False)
+
+    # The parsed value of an entity resides within this attribute.
     values = attr.ib(type=List[Any], default=attr.Factory(list))
 
     __properties_map = constants.BASE_ENTITY_PROPS
