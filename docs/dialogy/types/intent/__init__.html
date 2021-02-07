@@ -158,6 +158,8 @@ alternatives that help in predictions.</p>
         <a class='octothorpe' href='#section-10'>#</a>
       </div>
       <p>Update parsers with the postprocessor function name</p>
+<p>This helps us identify the progression in which the postprocessing functions
+were applied to an intent. This helps in debugging and has no production utility</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">postprocessor</span><span class="p">:</span> <span class="n">PluginFn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Intent&quot;</span><span class="p">:</span></pre></div>
@@ -169,8 +171,7 @@ alternatives that help in predictions.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-11'>#</a>
       </div>
-      <p>This helps us identify the progression in which the postprocessing functions
-were applied to an intent. This helps in debugging and has no production utility</p>
+      
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">postprocessor</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
@@ -202,11 +203,12 @@ Args:
       <p><a href="../../../tests/types/intents/test_intents.html">Tutorial</a></p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">slot_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">slot_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">slot_name</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">slot_name</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">slot_name</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">slot_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">slot_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot_name</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot_name</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></pre></div>
     </div>
   </div>

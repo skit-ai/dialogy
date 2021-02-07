@@ -47,6 +47,24 @@ def test_rule_application() -> None:
     assert intent.slots["number_slot"].type == ["number"]
 
 
+def test_missing_rule() -> None:
+    """
+    In case there is no rule for an intent?
+    """
+    rules = {
+        "intent": {
+            "date": {"slot_name": "date_slot", "entity_type": "date"},
+            "number": {"slot_name": "number_slot", "entity_type": "number"},
+        }
+    }
+
+    intent = Intent(name="some-other-intent", score=0.8)
+    intent.apply(rules)
+
+    assert "date_slot" not in intent.slots, "date_slot should be present."
+    assert "number_slot" not in intent.slots, "number_slot should be present."
+
+
 def test_slot_filling() -> None:
     """
     This test shows rule application, and filling an entity within a slot.
@@ -58,7 +76,7 @@ def test_slot_filling() -> None:
         dim="default",
         type="basic",
         values=[{"key": "value"}],
-        slot_name="basic_slot",
+        slot_names=["basic_slot"],
     )
     rules = {"intent": {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}}
     intent = Intent(name="intent", score=0.8)

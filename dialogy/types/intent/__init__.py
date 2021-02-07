@@ -54,7 +54,8 @@ class Intent:
         return self
 
     def add_parser(self, postprocessor: PluginFn) -> "Intent":
-        """Update parsers with the postprocessor function name
+        """
+        Update parsers with the postprocessor function name
 
         This helps us identify the progression in which the postprocessing functions
         were applied to an intent. This helps in debugging and has no production utility
@@ -71,11 +72,12 @@ class Intent:
         Args:
             entity (BaseEntity): [entities](../../docs/entity/__init__.html)
         """
-        if entity.slot_name in self.slots:
-            if not self.slots[entity.slot_name].values:
-                self.slots[entity.slot_name].add(entity)
-            else:
-                self.slots[entity.slot_name].clear()
+        for slot_name in entity.slot_names:
+            if slot_name in self.slots:
+                if not self.slots[slot_name].values:
+                    self.slots[slot_name].add(entity)
+                else:
+                    self.slots[slot_name].clear()
         return self
 
 

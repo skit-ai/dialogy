@@ -50,7 +50,7 @@ class BaseEntity:
     score = attr.ib(type=Optional[float], default=None)
 
     # Entities have awareness of the slots they should fill.
-    slot_name = attr.ib(type=List[str], default=attr.Factory(list))
+    slot_names = attr.ib(type=List[str], default=attr.Factory(list))
 
     # `alternative_index` is the index of transcript within the ASR output: `List[Utterances]`
     # from which this entity was picked up. This may be None.

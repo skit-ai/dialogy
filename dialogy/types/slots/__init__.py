@@ -27,13 +27,6 @@ class Slot:
     type = attr.ib(type=List[str])
     values = attr.ib(type=List[BaseEntity])
 
-    @classmethod
-    def fill(cls, entity: BaseEntity) -> "Slot":
-        """
-        Create and fill a slot with a `BaseEntity`.
-        """
-        return cls(name=entity.slot_name, type=[entity.type], values=[entity])
-
     def add(self, entity: BaseEntity) -> "Slot":
         """
         Insert the `BaseEntity` within the current `Slot` instance.
