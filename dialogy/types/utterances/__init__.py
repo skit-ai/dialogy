@@ -1,4 +1,5 @@
-"""Module provides types 
+"""
+Module provides types
 
 Import Types:
     - Alternative
