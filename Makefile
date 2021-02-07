@@ -21,6 +21,7 @@ docs: test
 	@rm -rf dialogy/docs/dialogy
 	@pycco dialogy/**/*.py -p -i
 	@pycco tests/**/*.py -p
+	@cp docs/pycco_edit.css docs/pycco.css
 	@echo "🌟🌟🌟"
 
 all: docs
