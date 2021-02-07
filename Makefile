@@ -19,7 +19,7 @@ test: lint ## Run the tests.
 docs: test
 	@echo -e "🦆🦕🐬🐶"
 	@rm -rf dialogy/docs/dialogy
-	@pycco dialogy/**/*.py -p
+	@pycco dialogy/**/*.py -p -i
 	@pycco tests/**/*.py -p
 	@echo "🌟🌟🌟"
 
