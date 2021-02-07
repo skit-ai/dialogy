@@ -58,4 +58,7 @@ class Intent:
 
     def fill_slot(self, entity: BaseEntity) -> None:
         if entity.slot_name in self.slots:
-            self.slots[entity.slot_name].add(entity)
+            if not self.slots[entity.slot_name].values:
+                self.slots[entity.slot_name].add(entity)
+            else:
+                self.slots[entity.slot_name].clear()
