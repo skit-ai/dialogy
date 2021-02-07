@@ -1,8 +1,12 @@
 """
 Parser for [Duckling](https://github.com/facebook/duckling), the open source project.
 
-We use [Duckling](https://github.com/facebook/duckling) for parsing and extracting date, time, numbers, currency etc. 
+We use [Duckling](https://github.com/facebook/duckling) for parsing and extracting date, time, numbers, currency etc.
 We will expect Duckling to be running as an http service, and provide means to connect from the implementation here.
+
+## Tutorials
+
+- [DucklingParser](../../../../tests/parser/text/entity/test_duckling_parser.html)
 
 Import classes:
 
@@ -145,7 +149,8 @@ class DucklingParser(Plugin):
         return payload
 
     # == mutate_entity ==
-    def mutate_entity(self, entity: Dict[str, Any]) -> Dict[str, Any]:
+    @staticmethod
+    def mutate_entity(entity: Dict[str, Any]) -> Dict[str, Any]:
         """
         Mutate entity obtained from Duckling API.
 
@@ -315,10 +320,3 @@ class DucklingParser(Plugin):
         [callable-plugin](../../../plugin/plugin.html#__call__)
         """
         return self.plugin
-
-
-"""
-## Tutorials
-
-- [DucklingParser](../../../../tests/parser/text/entity/test_duckling_parser.html)
-"""
