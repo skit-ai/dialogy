@@ -113,7 +113,7 @@ def test_entity_synthesis_exception():
     body = "12th december"
     entity = {}
     with pytest.raises(TypeError):
-        entity_synthesis(entity, "body", "12th november")
+        entity_synthesis(entity, "body", body)
 
 
 def test_entity_values_key_error():
