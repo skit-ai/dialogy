@@ -1,5 +1,9 @@
 """
-Intent Type
+Type definition for `Intent`.
+
+Import classes:
+
+    - Intent
 """
 
 from typing import Callable, Dict, List, Optional
