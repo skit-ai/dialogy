@@ -6,7 +6,7 @@ from typing import Callable, Dict, List, Optional
 
 import attr
 
-from dialogy.types.slots import Slot
+from dialogy.types.slots import Slot, Rule
 from dialogy.types.plugin import PluginFn
 from dialogy.types.entity import BaseEntity
 
@@ -37,8 +37,12 @@ class Intent:
     alternative_index = attr.ib(type=Optional[int], default=None)
     slots = attr.ib(type=Dict[str, Slot], default=attr.Factory(dict))
 
-    def apply(self, rules: Dict[str, Dict[str, str]]) -> "Intent":
-        for entity_name, entity_meta in rules.items():
+    def apply(self, rules: Rule) -> "Intent":
+        rule = rules.get(self.name)
+        if not rule:
+            return self
+
+        for entity_name, entity_meta in rule.items():
             self.slots[entity_meta["slot_name"]] = Slot(
                 name=entity_name, type=[entity_meta["entity_type"]], values=[]
             )
