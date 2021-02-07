@@ -1,15 +1,14 @@
 import json
+from typing import List, Any, Callable
 
 import pytest
 import pytz
 import httpretty
-import requests
-from typing import List
 
 from dialogy.parser.text.entity import DucklingParser
 from dialogy.workflow import Workflow
+from tests.parser.text.entity import config
 from dialogy.types.entity import (
-    BaseEntity,
     NumericalEntity,
     PeopleEntity,
     TimeIntervalEntity,
@@ -17,87 +16,47 @@ from dialogy.types.entity import (
 )
 
 
+def request_builder(
+    expected_response, response_code=200
+) -> Callable[[Any, Any, Any], List[Any]]:
+    header = "application/x-www-form-urlencoded; charset=UTF-8"
+
+    def request_callback(request, _, response_headers) -> List[Any]:
+        content_type = request.headers.get("Content-Type")
+        assert (
+            content_type == header
+        ), f"expected {header} but received Content-Type: {content_type}"
+        return [response_code, response_headers, json.dumps(expected_response)]
+
+    return request_callback
+
+
+# == Test successful api call ==
 @httpretty.activate
-def test_duckling_api_success():
+def test_duckling_api_success() -> None:
     """
     Initialize DucklingParser and `.get_entities`.
 
     This test-case bypasses duckling API calls via httpretty. The expected response
     was originally generated using:
 
-    ```
-    curl -XPOST http://0.0.0.0:8000/parse \\
-        --data 'locale=en_US&text="I need four of those on 27th next month. Can I have it at 5 am""&dims="[date"]"'
+    ```shell
+    
+    export month_q="I need four of those on 27th next month."
+    export time_q="Can I have it at 5 am""&dims="[date"]"
+    export text="$month_q $time_q"
+    curl -XPOST http://0.0.0.0:8000/parse --data 'locale=en_US&text=$text'
     ```
     """
     body = "I need four of those on 27th next month. Can I have it at 5 am"
-    duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
+
     expected_response = [
-        {
-            "body": "four",
-            "start": 7,
-            "value": {"value": 4, "type": "value"},
-            "end": 11,
-            "dim": "number",
-            "latent": False,
-        },
-        {
-            "body": "on 27th next month",
-            "start": 21,
-            "value": {
-                "values": [
-                    {
-                        "value": "2021-01-27T00:00:00.000-08:00",
-                        "grain": "day",
-                        "type": "value",
-                    }
-                ],
-                "value": "2021-01-27T00:00:00.000-08:00",
-                "grain": "day",
-                "type": "value",
-            },
-            "end": 39,
-            "dim": "time",
-            "latent": False,
-        },
-        {
-            "body": "at 5 am",
-            "start": 55,
-            "value": {
-                "values": [
-                    {
-                        "value": "2020-12-24T05:00:00.000-08:00",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                    {
-                        "value": "2020-12-25T05:00:00.000-08:00",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                    {
-                        "value": "2020-12-26T05:00:00.000-08:00",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                ],
-                "value": "2020-12-24T05:00:00.000-08:00",
-                "grain": "hour",
-                "type": "value",
-            },
-            "end": 62,
-            "dim": "time",
-            "latent": False,
-        },
+        config.mock_number_entity,
+        config.mock_date_entity,
+        config.mock_time_entity,
     ]
 
-    def request_callback(request, _, response_headers):
-        content_type = request.headers.get("Content-Type")
-        assert (
-            content_type == duckling_header
-        ), f"expected {duckling_header} but received Content-Type: {content_type}"
-        return [200, response_headers, json.dumps(expected_response)]
-
+    request_callback = request_builder(expected_response)
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
@@ -108,41 +67,16 @@ def test_duckling_api_success():
     assert response == expected_response
 
 
+# == Test duckling api returning 500 ==
 @httpretty.activate
-def test_duckling_api_failure():
+def test_duckling_api_failure() -> None:
     """
     Simulate Duckling returning 500.
     """
     body = "27th next month"
-    duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
-    expected_response = [
-        {
-            "body": "27th next month",
-            "start": 0,
-            "value": {
-                "values": [
-                    {
-                        "value": "2021-01-27T00:00:00.000-08:00",
-                        "grain": "day",
-                        "type": "value",
-                    }
-                ],
-                "value": "2021-01-27T00:00:00.000-08:00",
-                "grain": "day",
-                "type": "value",
-            },
-            "end": 15,
-            "dim": "time",
-            "latent": False,
-        }
-    ]
+    expected_response = [config.mock_date_entity]
 
-    def request_callback(request, _, response_headers):
-        content_type = request.headers.get("Content-Type")
-        assert (
-            content_type == duckling_header
-        ), f"expected {duckling_header} but received Content-Type: {content_type}"
-        return [500, response_headers, json.dumps(expected_response)]
+    request_callback = request_builder(expected_response, response_code=500)
 
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
@@ -154,52 +88,16 @@ def test_duckling_api_failure():
         parser.get_entities(body, None)
 
 
+# == Test duckling with timezone info ==
 @httpretty.activate
-def test_duckling_with_tz():
+def test_duckling_with_tz() -> None:
     """
-    Simulate Duckling returning 500.
+    Using DucklingParser with timezone.
     """
-    body = "i need it at 4 am"
-    duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
-    expected_response = [
-        {
-            "body": "4 am",
-            "start": 7,
-            "value": {
-                "values": [
-                    {
-                        "value": "2021-01-21T04:00:00.000+05:30",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                    {
-                        "value": "2021-01-22T04:00:00.000+05:30",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                    {
-                        "value": "2021-01-23T04:00:00.000+05:30",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                ],
-                "value": "2021-01-21T04:00:00.000+05:30",
-                "grain": "hour",
-                "type": "value",
-            },
-            "end": 11,
-            "dim": "time",
-            "latent": False,
-        }
-    ]
+    body = "i need it at 5 am"
+    expected_response = [config.mock_time_entity]
 
-    def request_callback(request, _, response_headers):
-        content_type = request.headers.get("Content-Type")
-        assert (
-            content_type == duckling_header
-        ), f"expected {duckling_header} but received Content-Type: {content_type}"
-        return [200, response_headers, json.dumps(expected_response)]
-
+    request_callback = request_builder(expected_response)
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
@@ -210,20 +108,14 @@ def test_duckling_with_tz():
     assert response == expected_response
 
 
-def test_duckling_wrong_tz():
+# == Test duckling with incorrect timezone ==
+def test_duckling_wrong_tz() -> None:
     """
-    Simulate Duckling returning 500.
+    In case the timezone is incorrect or exceptions need to be handled.
     """
-    body = "i need it at 4 am"
-    duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
+    body = "i need it at 5 am"
 
-    def request_callback(request, _, response_headers):
-        content_type = request.headers.get("Content-Type")
-        assert (
-            content_type == duckling_header
-        ), f"expected {duckling_header} but received Content-Type: {content_type}"
-        return [200, response_headers, json.dumps({})]
-
+    request_callback = request_builder({})
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
@@ -234,18 +126,15 @@ def test_duckling_wrong_tz():
         response = parser.get_entities(body, None)
 
 
-def test_entity_mutation_dict():
-    entities_json = {
-        "body": "four",
-        "start": 7,
-        "value": {"value": 4, "type": "value"},
-        "end": 11,
-        "dim": "number",
-        "latent": False,
-    }
-
+# == Test entity structure modifications for numerical entities ==
+def test_entity_mutation_dict() -> None:
+    """
+    This piece of code is run by DucklingParser when the Duckling API
+    returns a set of entities. There are a few keys added/removed.
+    We are making sure of those for numerical entities here.
+    """
+    entities_json = config.mock_number_entity
     parser = DucklingParser(locale="en_IN")
-
     entity = parser.mutate_entity(entities_json)
 
     assert "range" in entity
@@ -255,7 +144,13 @@ def test_entity_mutation_dict():
     assert entity["values"][0]["value"] == 4
 
 
-def test_entity_mutation_list():
+# == Test entity structure modifications for time entities ==
+def test_entity_mutation_list() -> None:
+    """
+    This piece of code is run by DucklingParser when the Duckling API
+    returns a set of entities. There are a few keys added/removed.
+    We are making sure of those for time entities here.
+    """
     entity_json = {
         "body": "at 5 am",
         "start": 55,
@@ -287,7 +182,6 @@ def test_entity_mutation_list():
     }
 
     parser = DucklingParser(locale="en_IN")
-
     entity = parser.mutate_entity(entity_json)
 
     assert "range" in entity
@@ -298,101 +192,44 @@ def test_entity_mutation_list():
     assert entity["values"][0]["value"] == "2021-01-21T05:00:00.000+05:30"
 
 
-def test_entity_json_to_object_time_entity():
+# == Test transformation of entity-json to TimeEntity ==
+def test_entity_json_to_object_time_entity() -> None:
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for TimeEntity here.
+    """
     parser = DucklingParser(locale="en_IN")
-    entities_json = [
-        {
-            "body": "at 5 am",
-            "start": 55,
-            "value": {
-                "values": [
-                    {
-                        "value": "2021-01-21T05:00:00.000+05:30",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                    {
-                        "value": "2021-01-22T05:00:00.000+05:30",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                    {
-                        "value": "2021-01-23T05:00:00.000+05:30",
-                        "grain": "hour",
-                        "type": "value",
-                    },
-                ],
-                "value": "2021-01-21T05:00:00.000+05:30",
-                "grain": "hour",
-                "type": "value",
-            },
-            "end": 62,
-            "dim": "time",
-            "latent": False,
-        }
-    ]
+    entities_json = [config.mock_time_entity]
 
     entities = parser.reshape(entities_json)
     assert isinstance(entities[0], TimeEntity)
 
 
+# == Test transformation of entity-json to TimeIntervalEntity ==
 def test_entity_json_to_object_time_interval_entity():
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for TimeIntervalEntity here.
+    """
     parser = DucklingParser(locale="en_IN")
-    entities_json = [
-        {
-            "body": "between 2 to 4 am",
-            "start": 0,
-            "value": {
-                "values": [
-                    {
-                        "to": {
-                            "value": "2021-01-22T05:00:00.000+05:30",
-                            "grain": "hour",
-                        },
-                        "from": {
-                            "value": "2021-01-22T02:00:00.000+05:30",
-                            "grain": "hour",
-                        },
-                        "type": "interval",
-                    },
-                    {
-                        "to": {
-                            "value": "2021-01-23T05:00:00.000+05:30",
-                            "grain": "hour",
-                        },
-                        "from": {
-                            "value": "2021-01-23T02:00:00.000+05:30",
-                            "grain": "hour",
-                        },
-                        "type": "interval",
-                    },
-                    {
-                        "to": {
-                            "value": "2021-01-24T05:00:00.000+05:30",
-                            "grain": "hour",
-                        },
-                        "from": {
-                            "value": "2021-01-24T02:00:00.000+05:30",
-                            "grain": "hour",
-                        },
-                        "type": "interval",
-                    },
-                ],
-                "to": {"value": "2021-01-22T05:00:00.000+05:30", "grain": "hour"},
-                "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
-                "type": "interval",
-            },
-            "end": 17,
-            "dim": "time",
-            "latent": False,
-        }
-    ]
+    entities_json = [config.mock_interval_entity]
 
     entities = parser.reshape(entities_json)
     assert isinstance(entities[0], TimeIntervalEntity)
 
 
-def test_entity_json_to_object_numerical_entity():
+# == Test transformation of entity-json to NumericalEntity ==
+def test_entity_json_to_object_numerical_entity() -> None:
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for NumericalEntity here.
+    """
     entities_json = [
         {
             "body": "four",
@@ -408,40 +245,43 @@ def test_entity_json_to_object_numerical_entity():
     assert isinstance(entities[0], NumericalEntity)
 
 
-def test_entity_json_to_object_people_entity():
-    entities_json = [
-        {
-            "body": "3 people",
-            "start": 67,
-            "value": {"value": 3, "type": "value", "unit": "person"},
-            "end": 75,
-            "dim": "people",
-            "latent": False,
-        }
-    ]
+# == Test transformation of entity-json to PeopleEntity ==
+def test_entity_json_to_object_people_entity() -> None:
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for PeopleEntity here.
+
+    """
+    entities_json = [config.mock_people_entity]
     parser = DucklingParser(locale="en_IN")
     entities = parser.reshape(entities_json)
     assert isinstance(entities[0], PeopleEntity)
 
 
-def test_entity_object_not_implemented():
-    entities_json = [
-        {
-            "body": "3 foobars",
-            "start": 67,
-            "value": {"value": 3, "type": "foobar", "unit": "person"},
-            "end": 75,
-            "dim": "number",
-            "latent": False,
-        }
-    ]
+# == Test transformation of unknown entity type ==
+def test_entity_object_not_implemented() -> None:
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for an unknown entity type here.
+    This would lead to a `NotImplementedError`.
+    """
+    entities_json = [config.mock_unknown_entity]
     parser = DucklingParser(locale="en_IN")
 
     with pytest.raises(NotImplementedError):
         parser.reshape(entities_json)
 
 
-def test_entity_object_error_on_missing_value():
+# == Test transormation of entity-json with missing value. ==
+def test_entity_object_error_on_missing_value() -> None:
+    """
+    This json has missing `value` key. We can see that we will get a
+    `KeyError` raised, this happens during the validation phase.
+    """
     entities_json = [
         {
             "body": "3 people",
@@ -457,7 +297,13 @@ def test_entity_object_error_on_missing_value():
         parser.reshape(entities_json)
 
 
-def test_plugin_io_missing():
+# == Test missing i/o ==
+def test_plugin_io_missing() -> None:
+    """
+    Here we are chcking if the plugin has access to workflow.
+    Since we haven't provided `access`, `mutate` to `DucklingParser`
+    we will receive a `TypeError`.
+    """
     parser = DucklingParser(locale="en_IN")
     plugin = parser()
 
@@ -466,7 +312,13 @@ def test_plugin_io_missing():
         workflow.run("")
 
 
-def test_plugin_io_type_mismatch():
+# == Test invalid i/o ==
+def test_plugin_io_type_mismatch() -> None:
+    """
+    Here we are chcking if the plugin has access to workflow.
+    Since we have provided `access`, `mutate` of incorrect types to `DucklingParser`
+    we will receive a `TypeError`.
+    """
     parser = DucklingParser(access=5, mutate=54, locale="en_IN")
     plugin = parser()
 
@@ -475,15 +327,13 @@ def test_plugin_io_type_mismatch():
         workflow.run("")
 
 
+# == Test plugin usage with Worfklow ==
 @httpretty.activate
-def test_plugin():
+def test_plugin() -> None:
     """
-    [summary]
-
-    Returns:
-        [type]: [description]
+    An end-to-end example showing how to use `DucklingParser` with a `Worflow`.
     """
-    body = "I need it for 4 people."
+    body = "I need it for 3 people."
 
     def access(workflow):
         return workflow.input, None
@@ -491,10 +341,10 @@ def test_plugin():
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
 
-    duckling_header = "application/x-www-form-urlencoded; charset=UTF-8"
     parser = DucklingParser(
         access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
     )
+
     expected_response = [
         {
             "body": "4 people",
@@ -506,13 +356,7 @@ def test_plugin():
         }
     ]
 
-    def request_callback(request, _, response_headers):
-        content_type = request.headers.get("Content-Type")
-        assert (
-            content_type == duckling_header
-        ), f"expected {duckling_header} but received Content-Type: {content_type}"
-        return [200, response_headers, json.dumps(expected_response)]
-
+    request_callback = request_builder(expected_response)
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
