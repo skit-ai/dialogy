@@ -17,5 +17,6 @@ exclude_paths:
   - "dialogy/types/__init__.py"
   - "dialogy/utils/__init__.py"
   - "README.md"
+  - "LICENSE.md"
   - "tests/**"
   - "docs/**"
