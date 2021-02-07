@@ -66,6 +66,12 @@ class BaseEntity:
 
     @classmethod
     def validate(cls, dict_: Dict[str, Any]) -> None:
+        """
+        Check attributes of instance match expected types.
+
+        Args:
+            dict_ (Dict[str, Any]): A `Dict` where each key is an attribute of the instance and value is the expected type.
+        """
         for prop, prop_type in cls.__properties_map:
             validate_type(traverse_dict(dict_, prop), prop_type)
 
