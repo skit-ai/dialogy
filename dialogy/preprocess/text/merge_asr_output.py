@@ -1,4 +1,10 @@
-"""Module provides access to a Plugin to combine ASR output."""
+"""
+Module provides access to a Plugin to combine ASR output.
+
+Import functions:
+
+    - merge_asr_output
+"""
 from typing import List
 from dialogy.workflow import Workflow
 from dialogy.types.plugin import (
@@ -63,3 +69,8 @@ def merge_asr_output(
         mutate(workflow, merged_string)
 
     return inner
+
+
+"""
+[Tutorial](../../../tests/preprocess/text/test_merge_asr_output.html)
+"""

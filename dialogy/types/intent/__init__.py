@@ -77,3 +77,8 @@ class Intent:
             else:
                 self.slots[entity.slot_name].clear()
         return self
+
+
+"""
+[Tutorial](../../../tests/types/intents/test_intents.html)
+"""

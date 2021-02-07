@@ -44,14 +44,10 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      
+      <p>Creating an instance.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_intent_parser</span><span class="p">():</span>
-    <span class="n">intent</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;intent_name&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-    <span class="n">intent</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">mock_plugin</span><span class="p">)</span>
-
-    <span class="k">assert</span> <span class="n">intent</span><span class="o">.</span><span class="n">parsers</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;mock_plugin&quot;</span><span class="p">]</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_intent_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -63,19 +59,10 @@
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_rule_application</span><span class="p">():</span>
-    <span class="n">rules</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;intent&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;slot_name&quot;</span><span class="p">:</span> <span class="s2">&quot;date_slot&quot;</span><span class="p">,</span> <span class="s2">&quot;entity_type&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span><span class="p">},</span>
-            <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;slot_name&quot;</span><span class="p">:</span> <span class="s2">&quot;number_slot&quot;</span><span class="p">,</span> <span class="s2">&quot;entity_type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="n">intent</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;intent&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-    <span class="n">intent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="s2">&quot;date_slot&quot;</span> <span class="ow">in</span> <span class="n">intent</span><span class="o">.</span><span class="n">slots</span><span class="p">,</span> <span class="s2">&quot;date_slot should be present.&quot;</span>
-    <span class="k">assert</span> <span class="s2">&quot;number_slot&quot;</span> <span class="ow">in</span> <span class="n">intent</span><span class="o">.</span><span class="n">slots</span><span class="p">,</span> <span class="s2">&quot;number_slot should be present.&quot;</span>
-    <span class="k">assert</span> <span class="n">intent</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="s2">&quot;date_slot&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span>
-    <span class="k">assert</span> <span class="n">intent</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="s2">&quot;number_slot&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">]</span></pre></div>
+      <div class="highlight"><pre>    <span class="n">intent</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;intent_name&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">intent</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">mock_plugin</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">intent</span><span class="o">.</span><span class="n">parsers</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;mock_plugin&quot;</span><span class="p">]</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -84,11 +71,63 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-4'>#</a>
       </div>
+      <p>A rule application case.</p>
+<p>This is helpful if you wish to understand how slots are filled within an intent.
+An initial setup is rule application, once that&rsquo;s done, you can expect
+the slots to be ready for containing entities.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_rule_application</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_slot_filling</span><span class="p">():</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th december&quot;</span>
+      <div class="highlight"><pre>    <span class="n">rules</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;intent&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;slot_name&quot;</span><span class="p">:</span> <span class="s2">&quot;date_slot&quot;</span><span class="p">,</span> <span class="s2">&quot;entity_type&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;slot_name&quot;</span><span class="p">:</span> <span class="s2">&quot;number_slot&quot;</span><span class="p">,</span> <span class="s2">&quot;entity_type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">intent</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;intent&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">intent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="s2">&quot;date_slot&quot;</span> <span class="ow">in</span> <span class="n">intent</span><span class="o">.</span><span class="n">slots</span><span class="p">,</span> <span class="s2">&quot;date_slot should be present.&quot;</span>
+    <span class="k">assert</span> <span class="s2">&quot;number_slot&quot;</span> <span class="ow">in</span> <span class="n">intent</span><span class="o">.</span><span class="n">slots</span><span class="p">,</span> <span class="s2">&quot;number_slot should be present.&quot;</span>
+
+    <span class="k">assert</span> <span class="n">intent</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="s2">&quot;date_slot&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">intent</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="s2">&quot;number_slot&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>This test shows rule application, and filling an entity within a slot.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_slot_filling</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th december&quot;</span>
     <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span><span class="p">(</span>
         <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span>
         <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>

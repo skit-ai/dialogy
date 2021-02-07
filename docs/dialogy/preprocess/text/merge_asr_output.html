@@ -18,6 +18,9 @@
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
       <p>Module provides access to a Plugin to combine ASR output.</p>
+<p>Import functions:</p>
+<pre><code>- merge_asr_output
+</code></pre>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
@@ -93,7 +96,7 @@ by this function.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-4'>#</a>
       </div>
-      
+      <p><a href="../../../tests/preprocess/text/test_merge_asr_output.html">Tutorial</a></p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="n">utterances</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Utterance</span><span class="p">]</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
@@ -111,9 +114,19 @@ by this function.</p>
         <span class="n">merged_string</span> <span class="o">=</span> <span class="s2">&quot;&lt;s&gt; &quot;</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt; &lt;s&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flat_representation</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt;&quot;</span>
         <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">merged_string</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">inner</span>
-
-</pre></div>
+    <span class="k">return</span> <span class="n">inner</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
