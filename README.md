@@ -10,6 +10,8 @@ Dialogy is a battries-included 🔋 opinionated framework to build machine-learn
 -   Stack-agnostic: No assumptions made on ML stack; your choice of machine learning library will not be affected by using Dialogy. 👍
 -   Progressive: Minimal boilerplate writing to let you focus on your machine learning problems. 🤏
 
+[Documentation](https://github.com/Vernacular-ai/dialogy/blob/master/docs/index.html)
+
 ## Installation
 
 ```shell
@@ -68,17 +70,6 @@ Refer to the source for [`merge_asr_output`](./dialogy/preprocessing/text/merge_
 ## Note
 
 -   Popular workflow sub-classes will be accepted after code-review.
-
-## Docs
-
--   [Plugins](./docs/plugins/README.md)
--   [Workflow](./docs/workflow/README.md)
--   [Errors](./docs/errors/README.md) (WIP)
--   [Types](./docs/types/README.md) (WIP)
--   [Parsers](./docs/parsers/README.md) (WIP)
--   [Pre-Processors](./docs/preprocessing/README.md) (WIP)
--   [Post-Processors](./docs/postprocessing/README.md) (WIP)
-
 ## FAQs
 
 ### Training boilerplate
