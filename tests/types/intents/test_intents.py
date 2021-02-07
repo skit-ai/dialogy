@@ -20,8 +20,10 @@ def test_intent_parser():
 
 def test_rule_application():
     rules = {
-        "date": {"slot_name": "date_slot", "entity_type": "date"},
-        "number": {"slot_name": "number_slot", "entity_type": "number"},
+        "intent": {
+            "date": {"slot_name": "date_slot", "entity_type": "date"},
+            "number": {"slot_name": "number_slot", "entity_type": "number"},
+        }
     }
     intent = Intent(name="intent", score=0.8)
     intent.apply(rules)
@@ -41,7 +43,7 @@ def test_slot_filling():
         values=[{"key": "value"}],
         slot_name="basic_slot",
     )
-    rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
+    rules = {"intent": {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}}
     intent = Intent(name="intent", score=0.8)
     intent.apply(rules)
 
