@@ -41,7 +41,7 @@ def test_duckling_api_success() -> None:
     was originally generated using:
 
     ```shell
-    
+
     export month_q="I need four of those on 27th next month."
     export time_q="Can I have it at 5 am""&dims="[date"]"
     export text="$month_q $time_q"
