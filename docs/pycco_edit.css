@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400&display=swap');
 
 /*--------------------- Layout and Typography ----------------------------*/
 body {
@@ -119,9 +119,14 @@ div.code {
     font-size: 12px;
   }
     pre, tt, code {
+      color: #c70000;
+      background: #dfdfdf;
+      border-radius: 3px;
+      font-size: 12px;
+      padding: 0.2em 0.5em;
       line-height: 18px;
-      font-family: "Roboto-Mono", Monaco, Consolas, "Lucida Console", monospace;
-      margin: 0; padding: 0;
+      font-family: "Jetbrains Mono", Monaco, Consolas, "Lucida Console", monospace;
+      margin: 0;
     }
 div.clearall {
     clear: both;
@@ -209,4 +214,7 @@ ul {
 
 .code .highlight pre {
   font-size: 0.85rem;
+  background: none;
+  color: black;
 }
+
