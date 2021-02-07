@@ -1,6 +1,6 @@
 """Slot Type"""
 
-from typing import List
+from typing import List, Dict
 
 import attr
 
@@ -28,3 +28,10 @@ class Slot:
     def add(self, entity: BaseEntity) -> "Slot":
         self.values.append(entity)
         return self
+
+    def clear(self) -> "Slot":
+        self.values = []
+        return self
+
+
+Rule = Dict[str, Dict[str, Dict[str, str]]]
