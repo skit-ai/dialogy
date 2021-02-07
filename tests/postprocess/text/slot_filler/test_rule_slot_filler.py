@@ -1,8 +1,5 @@
 """
-[summary]
-
-Returns:
-    [type]: [description]
+This is a tutorial for understanding the use of `RuleBasedSlotFillerPlugin`.
 """
 from typing import Any
 import pytest
@@ -14,36 +11,206 @@ from dialogy.workflow import Workflow
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 
+# This tutorial would be centered around these rules:
+rules = {
+    "intent_1": {
+        "entity_1": {"slot_name": "entity_1_slot", "entity_type": "entity_1"}
+        # This means, `entity_1` will reside in a slot named `entity_1_slot` for `intent_1`.
+    },
+    "intent_2": {
+        "entity_1": {"slot_name": "entity_1_slot", "entity_type": "entity_1"},
+        "entity_2": {"slot_name": "entity_2_slot", "entity_type": "entity_2"},
+    },
+}
 
-def test_rule_slot_filler() -> None:
-    rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
+
+def test_slot_filling() -> None:
+    """
+    This test case covers a trivial usage of a slot-filler.
+    We have `rules` that demonstrate association of intents with entities and their respective slot-configuration.
+    """
 
     def access(workflow: Workflow) -> Any:
         return workflow.output
 
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)(access=access)
-    workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
-    intent = Intent(name="intent", score=0.8)
+    intent_name = "intent_1"
 
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+
+    # Create a mock `workflow`
+    workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
+
+    # ... a mock `Intent`
+    intent = Intent(name=intent_name, score=0.8)
+
+    # and a mock `Entity`.
     body = "12th december"
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        type="entity_1",
         values=[{"key": "value"}],
-        slot_name="basic_slot",
+        slot_name="entity_1_slot",
     )
 
+    # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
     workflow.output = (intent, [entity])
-    workflow.run("")
-    assert workflow.output[0].slots["basic_slot"].values[0] == entity
+    workflow.run(body)
+
+    # `workflow.output[0]` is the `Intent` we created.
+    # so we are checking if the `entity_1_slot` is filled by our mock entity.
+    assert workflow.output[0].slots["entity_1_slot"].values[0] == entity
 
 
-def test_missing_access_fn():
+def test_slot_no_fill() -> None:
+    """
+    Here, we will see that an entity will not fill an intent unless the intent has a slot for it.
+    `intent_1` doesn't have a slot for an entity of type `entity_2`.
+    """
+
+    def access(workflow: Workflow) -> Any:
+        return workflow.output
+
+    intent_name = "intent_1"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+
+    # Create a mock `workflow`
+    workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
+
+    # ... a mock `Intent`
+    intent = Intent(name=intent_name, score=0.8)
+
+    # and a mock `Entity`.
+    body = "12th december"
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_2",
+        values=[{"key": "value"}],
+        slot_name="entity_2_slot",
+    )
+
+    # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
+    workflow.output = (intent, [entity])
+    workflow.run(body)
+
+    # `workflow.output[0]` is the `Intent` we created.
+    # we can see that the `entity_2_slot` is not filled by our mock entity.
+    assert workflow.output[0].slots["entity_1_slot"].values == []
+
+
+def test_slot_dual_fill() -> None:
+    """
+    Let's try filling both the slots this time!
+    `intent_2` supports both `entity_1` and `entity_2`.
+    """
+
+    def access(workflow: Workflow) -> Any:
+        return workflow.output
+
+    intent_name = "intent_2"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+
+    # Create a mock `workflow`
+    workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
+
+    # ... a mock `Intent`
+    intent = Intent(name=intent_name, score=0.8)
+
+    # and mock `Entity`-ies.
+    body = "12th december"
+    entity_1 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_1",
+        values=[{"key": "value"}],
+        slot_name="entity_1_slot",
+    )
+
+    entity_2 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_2",
+        values=[{"key": "value"}],
+        slot_name="entity_2_slot",
+    )
+
+    # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
+    workflow.output = (intent, [entity_1, entity_2])
+    workflow.run(body)
+
+    # `workflow.output[0]` is the `Intent` we created.
+    # The `entity_1_slot` and `entity_2_slot` are filled.
+    assert workflow.output[0].slots["entity_1_slot"].values == [entity_1]
+    assert workflow.output[0].slots["entity_2_slot"].values == [entity_2]
+
+
+def test_slot_competition() -> None:
+    """
+    What happens when we have two entities of the same type but different value?
+    """
+
+    def access(workflow: Workflow) -> Any:
+        return workflow.output
+
+    intent_name = "intent_1"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+
+    # Create a mock `workflow`
+    workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
+
+    # ... a mock `Intent`
+    intent = Intent(name=intent_name, score=0.8)
+
+    # Here we have two entities which compete for the same slot but have different values.
+    body = "12th december"
+    entity_1 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_1",
+        values=[{"key": "value_1"}],
+        slot_name="entity_1_slot",
+    )
+
+    entity_2 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_1",
+        values=[{"key": "value_2"}],
+        slot_name="entity_1_slot",
+    )
+
+    # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
+    workflow.output = (intent, [entity_1, entity_2])
+    workflow.run(body)
+
+    # `workflow.output[0]` is the `Intent` we created.
+    # The `entity_1_slot` and `entity_2_slot` are filled.
+    assert workflow.output[0].slots["entity_1_slot"].values == []
+
+
+def test_incorrect_access_fn() -> None:
+    """
+    This test shows that the plugin needs `access` function to be a `PluginFn`,
+    or else it throws a `TypeError`.
+    """
     rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
+    access = 5
 
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
     workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
     intent = Intent(name="intent", score=0.8)
 
@@ -63,11 +230,11 @@ def test_missing_access_fn():
         workflow.run("")
 
 
-def test_incorrect_access_fn():
-    rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
-    access = 5
-
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)(access=access)
+def test_missing_access_fn() -> None:
+    """
+    This test shows that the plugin needs an `access` provided or else it raises a type error.
+    """
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)()
     workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
     intent = Intent(name="intent", score=0.8)
 
