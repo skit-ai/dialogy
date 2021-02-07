@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>test_entities.py</title>
+  <link rel="stylesheet" href="../../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>test_entities.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Tests for entities</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseEntity</span><span class="p">,</span>
+    <span class="n">NumericalEntity</span><span class="p">,</span>
+    <span class="n">PeopleEntity</span><span class="p">,</span>
+    <span class="n">TimeEntity</span><span class="p">,</span>
+    <span class="n">TimeIntervalEntity</span><span class="p">,</span>
+    <span class="n">LocationEntity</span><span class="p">,</span>
+    <span class="n">entity_synthesis</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">mock_plugin</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">pass</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">make_mock_entity</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;6pm&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-15T18:00:00.000-08:00&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-16T18:00:00.000-08:00&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-17T18:00:00.000-08:00&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-15T18:00:00.000-08:00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_parser</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th december&quot;</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span><span class="p">(</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span>
+        <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;basic&quot;</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}],</span>
+    <span class="p">)</span>
+    <span class="n">entity</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="n">mock_plugin</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">entity</span><span class="o">.</span><span class="n">parsers</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;mock_plugin&quot;</span><span class="p">],</span> <span class="s2">&quot;parser was not added&quot;</span>
+    <span class="k">assert</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;value incorrect&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_values_index_error</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th december&quot;</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span><span class="p">(</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span>
+        <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;basic&quot;</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">):</span>
+        <span class="n">entity</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_deep_copy</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th december&quot;</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span><span class="p">(</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span>
+        <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;basic&quot;</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span>
+
+    <span class="n">entity_copy</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">entity_copy</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th november&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Had this not been a deep copy, it would have matched.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">assert</span> <span class="n">entity_copy</span><span class="o">.</span><span class="n">body</span> <span class="o">!=</span> <span class="n">entity</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;Shouldn&#39;t be same&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_synthesis</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th december&quot;</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span><span class="p">(</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span>
+        <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;basic&quot;</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span>
+    <span class="n">synthetic_entity</span> <span class="o">=</span> <span class="n">entity_synthesis</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span> <span class="s2">&quot;12th november&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">synthetic_entity</span><span class="o">.</span><span class="n">body</span> <span class="o">!=</span> <span class="n">entity</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;Shouldn&#39;t be same&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_synthesis_exception</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th december&quot;</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">entity_synthesis</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span> <span class="s2">&quot;12th november&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_values_key_error</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12th december&quot;</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span><span class="p">(</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span>
+        <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;basic&quot;</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">}],</span>
+    <span class="p">)</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+        <span class="n">entity</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_parser_from_dict</span><span class="p">():</span>
+    <span class="n">mock_entity</span> <span class="o">=</span> <span class="n">make_mock_entity</span><span class="p">()</span>
+    <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]}</span>
+    <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;basic&quot;</span>
+    <span class="k">del</span> <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span>
+    <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">mock_entity</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+    <span class="n">BaseEntity</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">mock_entity</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_numerical_type_not_str_error</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12 december&quot;</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">NumericalEntity</span><span class="p">(</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span>
+        <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_people_entity_unit_not_str_error</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12 people&quot;</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">PeopleEntity</span><span class="p">(</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;people&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_time_entity_grain_not_str_error</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;12 pm&quot;</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">TimeEntity</span><span class="p">(</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">grain</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_time_interval_entity_value_not_dict_error</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;from 4 pm to 12 am&quot;</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">TimeIntervalEntity</span><span class="p">(</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">grain</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_location_entity_value_not_int_error</span><span class="p">():</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;bangalore&quot;</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">LocationEntity</span><span class="p">(</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)},</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;location&quot;</span>
+        <span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

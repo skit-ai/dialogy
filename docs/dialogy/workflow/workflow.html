@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>workflow.py</title>
+  <link rel="stylesheet" href="../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>workflow.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>A <code>workflow</code> is supposed to run tasks that can be anticipated well in advance. We are prioritizing tasks that can be performed in production
+so you may find it odd to miss <code>train</code> and <code>test</code> methods. This is a deliberate decision since that choice is upto the user and a <code>workflow</code>
+targets performance in a production environment, where <code>train</code> and <code>test</code> are not the expected set of tasks, rather <code>inference</code> is.</p>
+<ol>
+<li>Eliminate low-confidence output.</li>
+<li>Slot-filling.</li>
+<li>Sorting items by order of confidence.</li>
+</ol>
+<p><em>What&rsquo;s slot filling?</em></p>
+<blockquote>
+<p>The goal of Slot Filling is to identify from a running dialog, different slots, which correspond to different parameters of the user’s query. For instance, when a user queries for nearby restaurants, key slots for location and preferred food are required for a dialog system to retrieve the appropriate information. Thus, the main challenge in the slot-filling task is to extract the target entity.</p>
+</blockquote>
+<p><a href="../../tests/workflow/test_workflow.html">Tutorial</a></p>
+<p>Import Class:
+    - Workflow</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">log</span><span class="p">,</span> <span class="n">change_log_level</span>
+
+
+<span class="n">PluginFn</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Workflow&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h1><span id="workflow" href="workflow"> Workflow </span></h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Workflow</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>This is a light but fairly flexible workflow for building a machine learning pipeline.</p>
+<p>Requirements
+- A list of pre-processing functions.
+- A list of post-processing functions.</p>
+<p><em>Why are some methods raising NotImplementedError?</em></p>
+<blockquote>
+<p>This class is not supposed to be used as it is. Ideally this should have been an abstract class,
+there are some design considerations which make that a bad choice. We want methods to be overridden
+to offer flexibility of use.</p>
+</blockquote>
+<p>Abstract classes put constraints on method signatures which isn&rsquo;t desired because a couple of methods
+here could use more arguments, say, <code>load_model()</code> requires <code>path</code> and <code>version</code> and in some other cases
+<code>path</code>, <code>version</code> and <code>language</code>.</p>
+<p>All the attributes of the class that are meant for private use, have <code>__</code> preceeding their names.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <h2><span id="__init__" href="__init__"> <strong>init</strong> </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">preprocessors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">postprocessors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Setup a Workflow.</p>
+<p>Setup a list of functions to execute before and after <code>.inference(...)</code> call.</p>
+<p>Attributes:</p>
+<ul>
+<li>input (<code>Any</code>): The input to a workflow. This is supposed to be flexible.</li>
+<li>output (<code>Any</code>): The outputs of a workflow. This is supposed to be flexible.</li>
+<li>__preprocessors (<code>List[PluginFn]</code>): A list of functions to execute before inference.</li>
+<li>__postprocessors (<code>List[PluginFn]</code>): A list of functions to execute after inference.</li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li>load_model: Load models</li>
+<li>update: Update input and output attributes. This is the effect of running either processors.</li>
+<li>preprocess: Update input attributes. This is the effect of running pre-processors.</li>
+<li>postprocess: Update output attributes. This is the effect of running post-processors.</li>
+<li>inference: Model related functionality.</li>
+<li>run: Wraps over pre/post processing and inference.</li>
+<li>__log: Log the changes in the input/output as pre/post processing functions execute. REQUIRES log-level set to <code>DEBUG</code>.</li>
+</ul>
+<p>Args:</p>
+<ul>
+<li>preprocessors (<code>Optional[List[PluginFn]]</code>): A list of functions to execute before inference. Defaults to None.</li>
+<li>postprocessors (<code>Optional[List[PluginFn]]</code>): A list of functions to execute after inference. Defaults to None.</li>
+<li>debug (Optional[<code>bool</code>]): Changes to input/output are logged if log-level is set to <code>DEBUG</code>. Defaults to False.</li>
+</ul>
+<p><strong>input</strong></p>
+<p>Initially <code>None</code>, expects value from the <code>.run(...)</code> method.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p><strong>output</strong></p>
+<p>Initially <code>None</code>. Final value depends on the plugins in the workflow.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">preprocessors</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Type check to ensure preprocessors are lists.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;preprocessors=</span><span class="si">{</span><span class="n">preprocessors</span><span class="si">}</span><span class="s2"> should be a list&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__preprocessors</span> <span class="o">=</span> <span class="n">preprocessors</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">postprocessors</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Type check to ensure postprocessors are lists.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;preprocessors=</span><span class="si">{</span><span class="n">postprocessors</span><span class="si">}</span><span class="s2"> should be a list&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__postprocessors</span> <span class="o">=</span> <span class="n">postprocessors</span>
+
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>We have debug logs, which can be opted in but are off by default.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Changing log-level to error would mean, logs from log.debug(&hellip;) would not appear.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <h2><span id="load_model" href="load_model"> load_model </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Override method in sub-class to load model(s).</p>
+<p>Raises:
+    NotImplementedError: Safeguard against using this class directly.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Override method `load_model` in class </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <h2><span id="update" href="update"> update </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Update input, output attributes.</p>
+<p>We iterate through pre/post processing functions and update the input and
+output attributes of the class. It is expected that pre-processing functions
+would modify the input, and post-processing functions would modify the output.</p>
+<p>Args:
+    processor_type (<code>str</code>): One of [&ldquo;__preprocessor&rdquo;, &ldquo;__postprocessor&rdquo;]
+    processors (<code>List</code>): The list of preprocess or postprocess functions.</p>
+<p>Raises:
+    <code>TypeError</code>: If any element in processors list is not a Callable.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">processor_type</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">processor</span><span class="si">}</span><span class="s2"> is not a callable&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>logs are available only when debug=True during class initialization</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s2">&quot;Before&quot;</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">,</span> <span class="n">processor</span><span class="p">)</span>
+            <span class="n">processor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>logs are available only when debug=True during class initialization</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s2">&quot;After&quot;</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">,</span> <span class="n">processor</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <h2><span id="preprocess" href="preprocess"> preprocess </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Convenience over <code>update</code> method.</p>
+<p>Uses preprocessors over the <code>update</code> method, expect input to change.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">PREPROCESSORS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__preprocessors</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <h2><span id="postprocess" href="postprocess"> postprocess </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Convenience over <code>update</code> method.</p>
+<p>Uses postprocessors over the <code>update</code> method, expect output to change.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">POSTPROCESSORS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__postprocessors</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <h2><span id="inference" href="inference"> inference </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Get model predictions.</p>
+<p>Depending on the number of models in use. This place can be used to collate results, sort, filter, etc.</p>
+<p>Raises:
+    <code>NotImplementedError</code>: This method needs to be implemented by the sub-classes.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">!=</span> <span class="s2">&quot;Workflow&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Override method `inference` in class </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <h2><span id="run" href="run"> run </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Get final results from the workflow.</p>
+<p>The current workflow exhibits the following simple procedure:
+pre-processing -&gt; inference -&gt; post-processing.</p>
+<p>Args:
+    input_ (<code>Any</code>): This function receives any arbitrary input. Subclasses may enforce
+    a stronger check.</p>
+<p>Returns:
+    (<code>Any</code>): This function can return any arbitrary value. Subclasses may enforce a stronger check.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">input_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <h2><span id="__log" href="__log"> __log </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processor</span><span class="p">:</span> <span class="n">PluginFn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Log the changes in the input/output as pre/post processing functions execute.</p>
+<p>Args:
+    message (<code>str</code>): One of [&ldquo;Before&rdquo;, &ldquo;After&rdquo;].
+    processor_type (<code>str</code>): One of [&ldquo;__preprocessor&rdquo;, &ldquo;__postprocessor&rdquo;].
+    processor (<code>str</code>): A callable within __preprocessor or __postprocessor.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">processor</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

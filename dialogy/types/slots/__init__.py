@@ -1,10 +1,16 @@
-"""Slot Type"""
+"""
+Type definition for Slots.
 
-from typing import List
+Import classes:
+
+    - Slot
+"""
+
+from typing import List, Dict
 
 import attr
 
-from dialogy.types.entities import BaseEntity
+from dialogy.types.entity import BaseEntity
 
 
 @attr.s
@@ -20,3 +26,20 @@ class Slot:
     name = attr.ib(type=str)
     type = attr.ib(type=List[str])
     values = attr.ib(type=List[BaseEntity])
+
+    def add(self, entity: BaseEntity) -> "Slot":
+        """
+        Insert the `BaseEntity` within the current `Slot` instance.
+        """
+        self.values.append(entity)
+        return self
+
+    def clear(self) -> "Slot":
+        """
+        Remove all `BaseEntity` within the current `Slot` instance.
+        """
+        self.values = []
+        return self
+
+
+Rule = Dict[str, Dict[str, Dict[str, str]]]

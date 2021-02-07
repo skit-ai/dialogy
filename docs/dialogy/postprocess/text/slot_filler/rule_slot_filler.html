@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>rule_slot_filler.py</title>
+  <link rel="stylesheet" href="../../../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>rule_slot_filler.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Module provides access to a rule-based <a href="../__init__.html">SlotFiller</a>.</p>
+<h2>Tutorials</h2>
+<ul>
+<li><a href="../../../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html">RuleSlotFiller</a></li>
+</ul>
+<p>Imports:</p>
+<ul>
+<li>RuleBasedSlotFillerPlugin</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.slots</span> <span class="kn">import</span> <span class="n">Rule</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2><span id="rulebasedslotfillerplugin" href="rulebasedslotfillerplugin"> RuleBasedSlotFillerPlugin </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>An instance of this class is used for generating a slot-filler.</p>
+<p>Schema for rules looks like:</p>
+<pre><code class="language-python">
+{
+    &quot;&lt;intent_name&gt;&quot;: {
+        &quot;&lt;entity_type&gt;&quot;: {
+            &quot;slot_name&quot;: &quot;&lt;slot_name&gt;&quot;,
+            &quot;entity_name&quot;: &quot;&lt;entity_name&gt;&quot;
+        }
+    }
+}
+</code></pre>
+<p>Plugin signature:</p>
+<ul>
+<li><code>access(workflow) -&gt; (Intent, List[BaseEntity])</code></li>
+<li><code>mutate</code> not required since the mutation is implied through Intent structure change.</li>
+</ul>
+<p>Irrespective of the entities that are found, only the listed type in the slot shall be present in <code>values</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p><strong>rules</strong></p>
+<p>A <code>Dict</code> where each key is an intent name, and each value is another <code>Dict</code>,
+in which, each key is an entity and value contains the <code>slot_name</code> and <code>entity_type.</code></p>
+<p>example:</p>
+<pre><code>rules = {&quot;basic&quot;: {&quot;slot_name&quot;: &quot;basic_slot&quot;, &quot;entity_type&quot;: &quot;basic&quot;}}
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">rules</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Rule</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="n">Dict</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <h2><span id="filler" href="filler"> filler </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">filler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Update an intent slot with compatible entity.</p>
+<ul>
+<li><code>access(workflow)</code> should return a tuple. <code>Intent</code>, <code>List[BaseEntity]</code>.</li>
+<li>Only 1 entity fills the slot type.</li>
+</ul>
+<p>Args:
+    workflow (Workflow)</p>
+<p>Raises:
+    TypeError: self.access should be a Callable.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">intent_and_entities</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">(</span>
+                    <span class="n">workflow</span>
+                <span class="p">)</span>
+                <span class="n">intent</span><span class="p">,</span> <span class="n">entities</span> <span class="o">=</span> <span class="n">intent_and_entities</span>
+                <span class="n">intent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+                    <span class="n">intent</span><span class="o">.</span><span class="n">fill_slot</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">type_error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;`access` passed to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; is not a Callable. Received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">type_error</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;`access` passed to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; is not a Callable. Received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+            <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <h2><span id="__call__" href="__call__"> <strong>call</strong> </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p><a href="../../../plugin/plugin.html#__call__">callable-plugin</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filler</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
