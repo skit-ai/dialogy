@@ -1,24 +1,20 @@
 ---
-engines:
-  pylint:
-    enabled: true
-    exclude_paths:
-      - "dialogy/parser/text/entity/__init__.py"
-      - "dialogy/plugin/__init__.py"
-      - "dialogy/postprocess/text/__init__.py"
-      - "dialogy/constants/__init__.py"
-      - "dialogy/errors/__init__.py"
-      - "dialogy/types/entity/__init__.py"
-      - "dialogy/types/intent/__init__.py"
-      - "dialogy/parsers/text/entities/duckling_parser/__init__.py"
-      - "dialogy/parsers/text/entities/__init__.py"
-      - "dialogy/parsers/text/__init__.py"
-      - "dialogy/parsers/__init__.py"
-      - "dialogy/__init__.py"
-      - "dialogy/workflow/__init__.py"
-      - "dialogy/types/__init__.py"
-      - "dialogy/utils/__init__.py"
-      - "README.md"
-      - "tests/**"
-      - "docs/**"
-
+exclude_paths:
+  - "dialogy/parser/text/entity/__init__.py"
+  - "dialogy/plugin/__init__.py"
+  - "dialogy/postprocess/text/__init__.py"
+  - "dialogy/constants/__init__.py"
+  - "dialogy/errors/__init__.py"
+  - "dialogy/types/entity/__init__.py"
+  - "dialogy/types/intent/__init__.py"
+  - "dialogy/parser/text/entity/duckling_parser/__init__.py"
+  - "dialogy/parser/text/entity/__init__.py"
+  - "dialogy/parser/text/__init__.py"
+  - "dialogy/parser/__init__.py"
+  - "dialogy/__init__.py"
+  - "dialogy/workflow/__init__.py"
+  - "dialogy/types/__init__.py"
+  - "dialogy/utils/__init__.py"
+  - "README.md"
+  - "tests/**"
+  - "docs/**"
