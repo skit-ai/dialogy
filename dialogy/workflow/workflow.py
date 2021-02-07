@@ -1,5 +1,16 @@
 """
-Module provides access to workflow implementation.
+A `workflow` is supposed to run tasks that can be anticipated well in advance. We are prioritizing tasks that can be performed in production
+so you may find it odd to miss `train` and `test` methods. This is a deliberate decision since that choice is upto the user and a `workflow`
+targets performance in a production environment, where `train` and `test` are not the expected set of tasks, rather `inference` is.
+
+1. Eliminate low-confidence output.
+2. Slot-filling.
+3. Sorting items by order of confidence.
+
+_What's slot filling?_
+> The goal of Slot Filling is to identify from a running dialog, different slots, which correspond to different parameters of the user’s query. For instance, when a user queries for nearby restaurants, key slots for location and preferred food are required for a dialog system to retrieve the appropriate information. Thus, the main challenge in the slot-filling task is to extract the target entity.
+
+[Tutorial](../../tests/workflow/test_workflow.html)
 
 Import Class:
     - Workflow
@@ -12,18 +23,18 @@ from dialogy.utils.logger import log, change_log_level
 
 PluginFn = Callable[["Workflow"], None]
 
-
+# = Workflow =
 class Workflow:
 
     """
-    This is a light but fairly flexible workflow for a machine learning pipeline.
+    This is a light but fairly flexible workflow for building a machine learning pipeline.
 
     Requirements
     - A list of pre-processing functions.
     - A list of post-processing functions.
 
-    Why are some methods raising NotImplementedError?
-    This class is not supposed to be used as it is. Ideally this should have been an abstract class,
+    _Why are some methods raising NotImplementedError?_
+    > This class is not supposed to be used as it is. Ideally this should have been an abstract class,
     there are some design considerations which make that a bad choice. We want methods to be overridden
     to offer flexibility of use.
 
@@ -32,12 +43,9 @@ class Workflow:
     `path`, `version` and `language`.
 
     All the attributes of the class that are meant for private use, have `__` preceeding their names.
-
-    DO NOT USE THIS CLASS DIRECTLY
-    This class is meant for sub-classing, it has few important methods missing, namely inference which does nothing.
-    This behaviour is retained for testability of this class.
     """
 
+    # == __init__ ==
     def __init__(
         self,
         preprocessors: Optional[List[PluginFn]] = None,
@@ -50,24 +58,27 @@ class Workflow:
         Setup a list of functions to execute before and after `.inference(...)` call.
 
         Attributes:
-            - input (Any): The input to a workflow. This is supposed to be flexible.
-            - output (Any): The outputs of a workflow. This is supposed to be flexible.
-            - __preprocessors (List[PluginFn]): A list of functions to execute before inference.
-            - __postprocessors (List[PluginFn]): A list of functions to execute after inference.
+
+        - input (Any): The input to a workflow. This is supposed to be flexible.
+        - output (Any): The outputs of a workflow. This is supposed to be flexible.
+        - __preprocessors (List[PluginFn]): A list of functions to execute before inference.
+        - __postprocessors (List[PluginFn]): A list of functions to execute after inference.
 
         Methods:
-            - load_model: Load models
-            - update: Update input and output attributes. This is the effect of running either processors.
-            - preprocess: Update input attributes. This is the effect of running pre-processors.
-            - postprocess: Update output attributes. This is the effect of running post-processors.
-            - inference: Model related functionality.
-            - run: Wraps over pre/post processing and inference.
-            - __log: Log the changes in the input/output as pre/post processing functions execute. REQUIRES log-level set to `DEBUG`.
+
+        - load_model: Load models
+        - update: Update input and output attributes. This is the effect of running either processors.
+        - preprocess: Update input attributes. This is the effect of running pre-processors.
+        - postprocess: Update output attributes. This is the effect of running post-processors.
+        - inference: Model related functionality.
+        - run: Wraps over pre/post processing and inference.
+        - __log: Log the changes in the input/output as pre/post processing functions execute. REQUIRES log-level set to `DEBUG`.
 
         Args:
-            preprocessors (List[PluginFn], optional): A list of functions to execute before inference. Defaults to None.
-            postprocessors (List[PluginFn], optional): A list of functions to execute after inference. Defaults to None.
-            debug (bool, optional): [description]. Changes to input/output are logged if log-level is set to `DEBUG`. Defaults to False.
+
+        - preprocessors (List[PluginFn], optional): A list of functions to execute before inference. Defaults to None.
+        - postprocessors (List[PluginFn], optional): A list of functions to execute after inference. Defaults to None.
+        - debug (bool, optional): [description]. Changes to input/output are logged if log-level is set to `DEBUG`. Defaults to False.
         """
         self.input: Any = None
         self.output: Any = None
@@ -89,6 +100,7 @@ class Workflow:
             # Changing log-level to error would mean, logs from log.debug(...) would not appear.
             change_log_level("ERROR")
 
+    # == load_model ==
     def load_model(self) -> None:
         """
         Override method in sub-class to load model(s).
@@ -101,6 +113,7 @@ class Workflow:
             f"Override method `load_model` in class {class_name}."
         )
 
+    # == update ==
     def update(self, processor_type: str, processors: List[PluginFn]) -> None:
         """
         Update input, output attributes.
@@ -126,6 +139,7 @@ class Workflow:
             # logs are available only when debug=True during class initialization
             self.__log("After", processor_type, processor)
 
+    # == preprocess ==
     def preprocess(self) -> None:
         """
         Convenience over `update` method.
@@ -134,6 +148,7 @@ class Workflow:
         """
         self.update(constants.PREPROCESSORS, self.__preprocessors)
 
+    # == postprocess ==
     def postprocess(self) -> None:
         """
         Convenience over `update` method.
@@ -142,6 +157,7 @@ class Workflow:
         """
         self.update(constants.POSTPROCESSORS, self.__postprocessors)
 
+    # == inference ==
     def inference(self) -> None:
         """
         Get model predictions.
@@ -157,6 +173,7 @@ class Workflow:
                 f"Override method `inference` in class {class_name}."
             )
 
+    # == run ==
     def run(self, input_: Any) -> Any:
         """
         Get final results from the workflow.
@@ -177,6 +194,7 @@ class Workflow:
         self.postprocess()
         return self.output
 
+    # == __log ==
     def __log(self, message: str, processor_type: str, processor: PluginFn) -> None:
         """
         Log the changes in the input/output as pre/post processing functions execute.

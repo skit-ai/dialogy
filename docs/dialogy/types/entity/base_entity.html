@@ -195,21 +195,13 @@ from which this entity was picked up. This may be None.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-13'>#</a>
       </div>
-      <p>Create an instance of a given class <code>cls</code> from a <code>dict</code> that complies
-with attributes of <code>cls</code> through its keys and values.
-Compliance is verified using the <code>__validate</code> method. It is expected that each subclass
-will implement their own flavor of <code>__validate</code> to check their respective inputs.</p>
-<p>Returns:
-    BaseEntity: Instance of class</p>
+      <p>Check attributes of instance match expected types.</p>
+<p>Args:
+    dict_ (Dict[str, Any]): A <code>Dict</code> where each key is an attribute of the instance and value is the expected type.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">prop</span><span class="p">,</span> <span class="n">prop_type</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__properties_map</span><span class="p">:</span>
-            <span class="n">validate_type</span><span class="p">(</span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">prop</span><span class="p">),</span> <span class="n">prop_type</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span></pre></div>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -221,8 +213,8 @@ will implement their own flavor of <code>__validate</code> to check their respec
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">dict_</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">prop</span><span class="p">,</span> <span class="n">prop_type</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__properties_map</span><span class="p">:</span>
+            <span class="n">validate_type</span><span class="p">(</span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">prop</span><span class="p">),</span> <span class="n">prop_type</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -230,6 +222,37 @@ will implement their own flavor of <code>__validate</code> to check their respec
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Create an instance of a given class <code>cls</code> from a <code>dict</code> that complies
+with attributes of <code>cls</code> through its keys and values.
+Compliance is verified using the <code>__validate</code> method. It is expected that each subclass
+will implement their own flavor of <code>__validate</code> to check their respective inputs.</p>
+<p>Returns:
+    BaseEntity: Instance of class</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">dict_</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
       </div>
       <p>Update parsers with the postprocessor function name</p>
 <p>This helps us identify the progression in which the postprocessing functions
@@ -242,10 +265,10 @@ were applied to an entity. This helps in debugging and has no production utility
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       
     </div>
@@ -254,10 +277,10 @@ were applied to an entity. This helps in debugging and has no production utility
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-19'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-19'>#</a>
       </div>
       <p>Get value of an entity.</p>
 <p>The structure of an entity conceals the value in different data structures.
@@ -273,10 +296,10 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-20'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-20'>#</a>
       </div>
       
     </div>
@@ -294,23 +317,35 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Create a deep copy of the instance and return.</p>
+<p>This is needed to prevent mutation of an original entity.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
       <p>Update a property=<code>property_</code> of a BaseEntity, with a given value=<code>value</code>.</p>
 <p>Args:
@@ -327,10 +362,10 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
       </div>
       
     </div>
