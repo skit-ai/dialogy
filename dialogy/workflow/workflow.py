@@ -59,10 +59,10 @@ class Workflow:
 
         Attributes:
 
-        - input (Any): The input to a workflow. This is supposed to be flexible.
-        - output (Any): The outputs of a workflow. This is supposed to be flexible.
-        - __preprocessors (List[PluginFn]): A list of functions to execute before inference.
-        - __postprocessors (List[PluginFn]): A list of functions to execute after inference.
+        - input (`Any`): The input to a workflow. This is supposed to be flexible.
+        - output (`Any`): The outputs of a workflow. This is supposed to be flexible.
+        - __preprocessors (`List[PluginFn]`): A list of functions to execute before inference.
+        - __postprocessors (`List[PluginFn]`): A list of functions to execute after inference.
 
         Methods:
 
@@ -76,11 +76,18 @@ class Workflow:
 
         Args:
 
-        - preprocessors (List[PluginFn], optional): A list of functions to execute before inference. Defaults to None.
-        - postprocessors (List[PluginFn], optional): A list of functions to execute after inference. Defaults to None.
-        - debug (bool, optional): [description]. Changes to input/output are logged if log-level is set to `DEBUG`. Defaults to False.
+        - preprocessors (`Optional[List[PluginFn]]`): A list of functions to execute before inference. Defaults to None.
+        - postprocessors (`Optional[List[PluginFn]]`): A list of functions to execute after inference. Defaults to None.
+        - debug (Optional[`bool`]): Changes to input/output are logged if log-level is set to `DEBUG`. Defaults to False.
         """
+        # **input**
+        #
+        # Initially `None`, expects value from the `.run(...)` method.
         self.input: Any = None
+
+        # **output**
+        #
+        # Initially `None`. Final value depends on the plugins in the workflow.
         self.output: Any = None
 
         if not isinstance(preprocessors, list):
@@ -123,11 +130,11 @@ class Workflow:
         would modify the input, and post-processing functions would modify the output.
 
         Args:
-            processor_type (str): One of ["__preprocessor", "__postprocessor"]
-            processors (List): The list of preprocess or postprocess functions.
+            processor_type (`str`): One of ["__preprocessor", "__postprocessor"]
+            processors (`List`): The list of preprocess or postprocess functions.
 
         Raises:
-            TypeError: If any element in processors list is not a Callable.
+            `TypeError`: If any element in processors list is not a Callable.
         """
         for processor in processors:
             if not isinstance(processor, Callable):  # type: ignore
@@ -165,7 +172,7 @@ class Workflow:
         Depending on the number of models in use. This place can be used to collate results, sort, filter, etc.
 
         Raises:
-            NotImplementedError: This method needs to be implemented by the sub-classes.
+            `NotImplementedError`: This method needs to be implemented by the sub-classes.
         """
         class_name = self.__class__.__name__
         if class_name != "Workflow":
@@ -182,11 +189,11 @@ class Workflow:
         pre-processing -> inference -> post-processing.
 
         Args:
-            input_ (Any): This function receives any arbitrary input. Subclasses may enforce
+            input_ (`Any`): This function receives any arbitrary input. Subclasses may enforce
             a stronger check.
 
         Returns:
-            (Any): This function can return any arbitrary value. Subclasses may enforce a stronger check.
+            (`Any`): This function can return any arbitrary value. Subclasses may enforce a stronger check.
         """
         self.input = input_
         self.preprocess()
@@ -200,9 +207,9 @@ class Workflow:
         Log the changes in the input/output as pre/post processing functions execute.
 
         Args:
-            message (str): One of ["Before", "After"].
-            processor_type (str): One of ["__preprocessor", "__postprocessor"].
-            processor (str): A callable within __preprocessor or __postprocessor.
+            message (`str`): One of ["Before", "After"].
+            processor_type (`str`): One of ["__preprocessor", "__postprocessor"].
+            processor (`str`): A callable within __preprocessor or __postprocessor.
         """
         log.debug("%s %s %s:", message, processor_type[:-1], processor.__name__)
         log.debug("input")

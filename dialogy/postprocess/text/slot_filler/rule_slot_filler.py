@@ -47,10 +47,10 @@ class RuleBasedSlotFillerPlugin(Plugin):
     """
 
     # **rules**
-    # 
+    #
     # A `Dict` where each key is an intent name, and each value is another `Dict`,
     # in which, each key is an entity and value contains the `slot_name` and `entity_type.`
-    # 
+    #
     # example:
     # ```
     # rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}

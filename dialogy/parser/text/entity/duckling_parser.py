@@ -6,7 +6,7 @@ We will expect Duckling to be running as an http service, and provide means to c
 
 Import classes:
 
-    - DucklingParser
+- DucklingParser
 """
 import json
 from typing import List, Dict, Optional, Any

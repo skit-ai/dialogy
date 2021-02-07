@@ -6,7 +6,8 @@ These methods of this class that are supposed to be overridden:
 - get_value
 
 Import classes:
-    - BaseEntity
+
+- BaseEntity
 """
 from typing import Any, Dict, List, Optional
 
@@ -17,7 +18,7 @@ from dialogy import constants
 from dialogy.types.plugin import PluginFn
 from dialogy.types.entity.utils import traverse_dict, validate_type
 
-
+# = BaseEntity =
 @attr.s
 class BaseEntity:
     """
@@ -27,43 +28,64 @@ class BaseEntity:
     Its intended purpose is to define a base for all entity types.
     """
 
-    # `range` is the character range in the alternative where the entity is parsed.
+    # **range**
+    #
+    # is the character range in the alternative where the entity is parsed.
     range = attr.ib(type=Dict[str, int])
 
-    # `type` is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
+    # **type**
+    #
+    # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
     type = attr.ib(type=str, validator=attr.validators.instance_of(str))
 
-    # `body` is the string from which the entity is extracted.
+    # **body**
+    #
+    # is the string from which the entity is extracted.
     body = attr.ib(type=str, validator=attr.validators.instance_of(str))
 
-    # `dim` is influenced from Duckling's convention of categorization.
+    # **dim**
+    #
+    # is influenced from Duckling's convention of categorization.
     dim = attr.ib(type=str, validator=attr.validators.instance_of(str))
 
-    # `parsers` gives the trail of all the functions that have changed this entity in the sequence of application.
+    # **parsers**
+    #
+    # gives the trail of all the functions that have changed this entity in the sequence of application.
     parsers = attr.ib(
         type=List[str],
         default=attr.Factory(list),
         validator=attr.validators.instance_of(list),
     )
 
-    # `score` is the confidence that the range is the entity.
+    # **score**
+    #
+    # is the confidence that the range is the entity.
     score = attr.ib(type=Optional[float], default=None)
 
+    # **slot_names**
+    #
     # Entities have awareness of the slots they should fill.
     slot_names = attr.ib(type=List[str], default=attr.Factory(list))
 
-    # `alternative_index` is the index of transcript within the ASR output: `List[Utterances]`
+    # **alternative_index**
+    #
+    # is the index of transcript within the ASR output: `List[Utterances]`
     # from which this entity was picked up. This may be None.
     alternative_index = attr.ib(type=Optional[int], default=None)
 
+    # **latent**
+    #
     # Duckling influenced attribute, tells if there is less evidence for an entity if latent is True.
     latent = attr.ib(type=bool, default=False)
 
+    # **values**
+    #
     # The parsed value of an entity resides within this attribute.
     values = attr.ib(type=List[Any], default=attr.Factory(list))
 
     __properties_map = constants.BASE_ENTITY_PROPS
 
+    # == validate ==
     @classmethod
     def validate(cls, dict_: Dict[str, Any]) -> None:
         """
@@ -75,6 +97,7 @@ class BaseEntity:
         for prop, prop_type in cls.__properties_map:
             validate_type(traverse_dict(dict_, prop), prop_type)
 
+    # == from_dict ==
     @classmethod
     def from_dict(cls, dict_: Dict[str, Any]) -> "BaseEntity":
         """
@@ -89,6 +112,7 @@ class BaseEntity:
         cls.validate(dict_)
         return cls(**dict_)
 
+    # == add_parser ==
     def add_parser(self, postprocessor: PluginFn) -> None:
         """
         Update parsers with the postprocessor function name
@@ -101,6 +125,7 @@ class BaseEntity:
         """
         self.parsers.append(postprocessor.__name__)
 
+    # == get_value ==
     def get_value(self) -> Any:
         """
         Get value of an entity.
@@ -126,6 +151,7 @@ class BaseEntity:
                 'entity value should be in values[0]["value"]'
             ) from key_error
 
+    # == copy ==
     def copy(self) -> "BaseEntity":
         """
         Create a deep copy of the instance and return.
@@ -135,6 +161,7 @@ class BaseEntity:
         return copy.deepcopy(self)
 
 
+# = entity_synthesis =
 def entity_synthesis(entity: BaseEntity, property_: str, value: Any) -> BaseEntity:
     """
     Update a property=`property_` of a BaseEntity, with a given value=`value`.
