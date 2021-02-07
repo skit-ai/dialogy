@@ -127,6 +127,11 @@ class BaseEntity:
             ) from key_error
 
     def copy(self) -> "BaseEntity":
+        """
+        Create a deep copy of the instance and return.
+
+        This is needed to prevent mutation of an original entity.
+        """
         return copy.deepcopy(self)
 
 
