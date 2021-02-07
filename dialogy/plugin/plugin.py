@@ -1,5 +1,11 @@
 """Module provides access to an abstract plugin class.
 
+## Tutorials
+
+- [MakePlugins](../../tests/plugin/test_plugins.html)
+- [DucklingParser](../../tests/parser/text/entity/test_duckling_parser.html)
+- [RuleSlotFiller](../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
+
 Import classes:
     - Plugin
 """
@@ -39,12 +45,6 @@ class Plugin:
 
 
 """
-## Tutorials
-
-- [MakePlugins](../../tests/plugin/test_plugins.html)
-- [DucklingParser](../../tests/parser/text/entity/test_duckling_parser.html)
-- [RuleSlotFiller](../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
-
 ## Summary
 
 We will summarize a few key points for creating plugins:
