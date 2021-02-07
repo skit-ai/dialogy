@@ -21,17 +21,16 @@
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
 
 <span class="kn">import</span> <span class="nn">pytest</span>
 <span class="kn">import</span> <span class="nn">pytz</span>
 <span class="kn">import</span> <span class="nn">httpretty</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">dialogy.parser.text.entity</span> <span class="kn">import</span> <span class="n">DucklingParser</span>
 <span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">tests.parser.text.entity</span> <span class="kn">import</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BaseEntity</span><span class="p">,</span>
     <span class="n">NumericalEntity</span><span class="p">,</span>
     <span class="n">PeopleEntity</span><span class="p">,</span>
     <span class="n">TimeIntervalEntity</span><span class="p">,</span>
@@ -45,16 +44,13 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      <p>Initialize DucklingParser and <code>.get_entities</code>.</p>
-<p>This test-case bypasses duckling API calls via httpretty. The expected response
-was originally generated using:</p>
-<pre><code>curl -XPOST http://0.0.0.0:8000/parse \\
-    --data 'locale=en_US&amp;text=&quot;I need four of those on 27th next month. Can I have it at 5 am&quot;&quot;&amp;dims=&quot;[date&quot;]&quot;'
-</code></pre>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
-<span class="k">def</span> <span class="nf">test_duckling_api_success</span><span class="p">():</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">request_builder</span><span class="p">(</span>
+    <span class="n">expected_response</span><span class="p">,</span> <span class="n">response_code</span><span class="o">=</span><span class="mi">200</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -66,66 +62,14 @@ was originally generated using:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;I need four of those on 27th next month. Can I have it at 5 am&quot;</span>
-    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
-    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;four&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;on 27th next month&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-27T00:00:00.000-08:00&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-27T00:00:00.000-08:00&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;at 5 am&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-12-24T05:00:00.000-08:00&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-12-25T05:00:00.000-08:00&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-12-26T05:00:00.000-08:00&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                <span class="p">],</span>
-                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-12-24T05:00:00.000-08:00&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">62</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">},</span>
-    <span class="p">]</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">content_type</span> <span class="o">==</span> <span class="n">header</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">response_code</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">request_callback</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -134,16 +78,39 @@ was originally generated using:</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-3'>#</a>
       </div>
-      
+      <h2><span id="test-successful-api-call" href="test-successful-api-call"> Test successful api call </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
-        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_duckling_api_success</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Initialize DucklingParser and <code>.get_entities</code>.</p>
+<p>This test-case bypasses duckling API calls via httpretty. The expected response
+was originally generated using:</p>
+<pre><code class="language-shell">
+export month_q=&quot;I need four of those on 27th next month.&quot;
+export time_q=&quot;Can I have it at 5 am&quot;&quot;&amp;dims=&quot;[date&quot;]&quot;
+export text=&quot;$month_q $time_q&quot;
+curl -XPOST http://0.0.0.0:8000/parse --data 'locale=en_US&amp;text=$text'
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;I need four of those on 27th next month. Can I have it at 5 am&quot;</span>
 
+    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">mock_number_entity</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">mock_date_entity</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">mock_time_entity</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)</span>
     <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
         <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
     <span class="p">)</span>
@@ -155,50 +122,16 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-4'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
-      </div>
-      <p>Simulate Duckling returning 500.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
-<span class="k">def</span> <span class="nf">test_duckling_api_failure</span><span class="p">():</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
   <div class='section' id='section-5'>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-5'>#</a>
       </div>
-      
+      <h2><span id="test-duckling-api-returning-500" href="test-duckling-api-returning-500"> Test duckling api returning 500 </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;27th next month&quot;</span>
-    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
-    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;27th next month&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-27T00:00:00.000-08:00&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-27T00:00:00.000-08:00&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">]</span></pre></div>
+      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_duckling_api_failure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -207,15 +140,13 @@ was originally generated using:</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-6'>#</a>
       </div>
-      
+      <p>Simulate Duckling returning 500.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
-        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;27th next month&quot;</span>
+    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">mock_date_entity</span><span class="p">]</span>
+
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">(</span><span class="n">expected_response</span><span class="p">,</span> <span class="n">response_code</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
 
     <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
         <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
@@ -233,11 +164,11 @@ was originally generated using:</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-7'>#</a>
       </div>
-      <p>Simulate Duckling returning 500.</p>
+      <h2><span id="test-duckling-with-timezone-info" href="test-duckling-with-timezone-info"> Test duckling with timezone info </span></h2>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
-<span class="k">def</span> <span class="nf">test_duckling_with_tz</span><span class="p">():</span></pre></div>
+<span class="k">def</span> <span class="nf">test_duckling_with_tz</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -246,60 +177,13 @@ was originally generated using:</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-8'>#</a>
       </div>
-      
+      <p>Using DucklingParser with timezone.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;i need it at 4 am&quot;</span>
-    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
-    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;4 am&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T04:00:00.000+05:30&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T04:00:00.000+05:30&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T04:00:00.000+05:30&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                <span class="p">],</span>
-                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T04:00:00.000+05:30&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">]</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-9'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
-        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;i need it at 5 am&quot;</span>
+    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">mock_time_entity</span><span class="p">]</span>
 
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)</span>
     <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
         <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
     <span class="p">)</span>
@@ -311,46 +195,29 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <h2><span id="test-duckling-with-incorrect-timezone" href="test-duckling-with-incorrect-timezone"> Test duckling with incorrect timezone </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_duckling_wrong_tz</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
   <div class='section' id='section-10'>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-10'>#</a>
       </div>
-      <p>Simulate Duckling returning 500.</p>
+      <p>In case the timezone is incorrect or exceptions need to be handled.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_duckling_wrong_tz</span><span class="p">():</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-11'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;i need it at 4 am&quot;</span>
-    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-12'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
-        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({})]</span>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;i need it at 5 am&quot;</span>
 
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">({})</span>
     <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
         <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
     <span class="p">)</span>
@@ -362,26 +229,30 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-13'>
+  <div class='section' id='section-11'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
+        <a class='octothorpe' href='#section-11'>#</a>
       </div>
-      
+      <h2><span id="test-entity-structure-modifications-for-numerical-entities" href="test-entity-structure-modifications-for-numerical-entities"> Test entity structure modifications for numerical entities </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_mutation_dict</span><span class="p">():</span>
-    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;four&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">},</span>
-        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
-        <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">}</span>
-
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_mutation_dict</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>This piece of code is run by DucklingParser when the Duckling API
+returns a set of entities. There are a few keys added/removed.
+We are making sure of those for numerical entities here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">entities_json</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_number_entity</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
-
     <span class="n">entity</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">mutate_entity</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="s2">&quot;range&quot;</span> <span class="ow">in</span> <span class="n">entity</span>
@@ -392,16 +263,29 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <h2><span id="test-entity-structure-modifications-for-time-entities" href="test-entity-structure-modifications-for-time-entities"> Test entity structure modifications for time entities </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_mutation_list</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
   <div class='section' id='section-14'>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-14'>#</a>
       </div>
-      
+      <p>This piece of code is run by DucklingParser when the Duckling API
+returns a set of entities. There are a few keys added/removed.
+We are making sure of those for time entities here.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_mutation_list</span><span class="p">():</span>
-    <span class="n">entity_json</span> <span class="o">=</span> <span class="p">{</span>
+      <div class="highlight"><pre>    <span class="n">entity_json</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;at 5 am&quot;</span><span class="p">,</span>
         <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
         <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -432,7 +316,6 @@ was originally generated using:</p>
     <span class="p">}</span>
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
-
     <span class="n">entity</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">mutate_entity</span><span class="p">(</span><span class="n">entity_json</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="s2">&quot;range&quot;</span> <span class="ow">in</span> <span class="n">entity</span>
@@ -449,45 +332,10 @@ was originally generated using:</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-15'>#</a>
       </div>
-      
+      <h2><span id="test-transformation-of-entity-json-to-timeentity" href="test-transformation-of-entity-json-to-timeentity"> Test transformation of entity-json to TimeEntity </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_time_entity</span><span class="p">():</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
-    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;at 5 am&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T05:00:00.000+05:30&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T05:00:00.000+05:30&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T05:00:00.000+05:30&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                <span class="p">],</span>
-                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-21T05:00:00.000+05:30&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">62</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
-
-    <span class="n">entities</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TimeEntity</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_time_entity</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -496,63 +344,16 @@ was originally generated using:</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-16'>#</a>
       </div>
-      
+      <p>Reshape converts json response from Duckling APIs
+to dialogy&rsquo;s BaseEntity.</p>
+<p>We are checking for TimeEntity here.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_time_interval_entity</span><span class="p">():</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
-    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;between 2 to 4 am&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T05:00:00.000+05:30&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="p">},</span>
-                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T02:00:00.000+05:30&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="p">},</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T05:00:00.000+05:30&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="p">},</span>
-                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-23T02:00:00.000+05:30&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="p">},</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-24T05:00:00.000+05:30&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="p">},</span>
-                        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-24T02:00:00.000+05:30&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-                        <span class="p">},</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
-                    <span class="p">},</span>
-                <span class="p">],</span>
-                <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T05:00:00.000+05:30&quot;</span><span class="p">,</span> <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">},</span>
-                <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-22T02:00:00.000+05:30&quot;</span><span class="p">,</span> <span class="s2">&quot;grain&quot;</span><span class="p">:</span> <span class="s2">&quot;hour&quot;</span><span class="p">},</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
+      <div class="highlight"><pre>    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">mock_time_entity</span><span class="p">]</span>
 
     <span class="n">entities</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TimeIntervalEntity</span><span class="p">)</span></pre></div>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TimeEntity</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -561,11 +362,54 @@ was originally generated using:</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-17'>#</a>
       </div>
-      
+      <h2><span id="test-transformation-of-entity-json-to-timeintervalentity" href="test-transformation-of-entity-json-to-timeintervalentity"> Test transformation of entity-json to TimeIntervalEntity </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_numerical_entity</span><span class="p">():</span>
-    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_time_interval_entity</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Reshape converts json response from Duckling APIs
+to dialogy&rsquo;s BaseEntity.</p>
+<p>We are checking for TimeIntervalEntity here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">mock_interval_entity</span><span class="p">]</span>
+
+    <span class="n">entities</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TimeIntervalEntity</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <h2><span id="test-transformation-of-entity-json-to-numericalentity" href="test-transformation-of-entity-json-to-numericalentity"> Test transformation of entity-json to NumericalEntity </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_numerical_entity</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Reshape converts json response from Duckling APIs
+to dialogy&rsquo;s BaseEntity.</p>
+<p>We are checking for NumericalEntity here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;four&quot;</span><span class="p">,</span>
             <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
@@ -581,50 +425,59 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-21'>#</a>
       </div>
-      
+      <h2><span id="test-transformation-of-entity-json-to-peopleentity" href="test-transformation-of-entity-json-to-peopleentity"> Test transformation of entity-json to PeopleEntity </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_people_entity</span><span class="p">():</span>
-    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;3 people&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_json_to_object_people_entity</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Reshape converts json response from Duckling APIs
+to dialogy&rsquo;s BaseEntity.</p>
+<p>We are checking for PeopleEntity here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">mock_people_entity</span><span class="p">]</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
     <span class="n">entities</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">PeopleEntity</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
-      
+      <h2><span id="test-transformation-of-unknown-entity-type" href="test-transformation-of-unknown-entity-type"> Test transformation of unknown entity type </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_object_not_implemented</span><span class="p">():</span>
-    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;3 foobars&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;foobar&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_object_not_implemented</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Reshape converts json response from Duckling APIs
+to dialogy&rsquo;s BaseEntity.</p>
+<p>We are checking for an unknown entity type here.
+This would lead to a <code>NotImplementedError</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">mock_unknown_entity</span><span class="p">]</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">):</span>
@@ -632,16 +485,28 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-25'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
-      
+      <h2><span id="test-transormation-of-entity-json-with-missing-value." href="test-transormation-of-entity-json-with-missing-value."> Test transormation of entity-json with missing value. </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_object_error_on_missing_value</span><span class="p">():</span>
-    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_entity_object_error_on_missing_value</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>This json has missing <code>value</code> key. We can see that we will get a
+<code>KeyError</code> raised, this happens during the validation phase.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;3 people&quot;</span><span class="p">,</span>
             <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
@@ -657,16 +522,29 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-27'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
-      
+      <h2><span id="test-missing-i/o" href="test-missing-i/o"> Test missing i/o </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_missing</span><span class="p">():</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_missing</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Here we are chcking if the plugin has access to workflow.
+Since we haven&rsquo;t provided <code>access</code>, <code>mutate</code> to <code>DucklingParser</code>
+we will receive a <code>TypeError</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
     <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="p">()</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
@@ -675,16 +553,29 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-22'>
+  <div class='section' id='section-29'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
+        <a class='octothorpe' href='#section-29'>#</a>
       </div>
-      
+      <h2><span id="test-invalid-i/o" href="test-invalid-i/o"> Test invalid i/o </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_type_mismatch</span><span class="p">():</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="mi">54</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_type_mismatch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>Here we are chcking if the plugin has access to workflow.
+Since we have provided <code>access</code>, <code>mutate</code> of incorrect types to <code>DucklingParser</code>
+we will receive a <code>TypeError</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="mi">54</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
     <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="p">()</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
@@ -693,37 +584,35 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-31'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-31'>#</a>
       </div>
-      <p>[summary]</p>
-<p>Returns:
-    [type]: [description]</p>
+      <h2><span id="test-plugin-usage-with-worfklow" href="test-plugin-usage-with-worfklow"> Test plugin usage with Worfklow </span></h2>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
-<span class="k">def</span> <span class="nf">test_plugin</span><span class="p">():</span></pre></div>
+<span class="k">def</span> <span class="nf">test_plugin</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-24'>
+  <div class='section' id='section-32'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
+        <a class='octothorpe' href='#section-32'>#</a>
       </div>
-      
+      <p>An end-to-end example showing how to use <code>DucklingParser</code> with a <code>Worflow</code>.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;I need it for 4 people.&quot;</span></pre></div>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;I need it for 3 people.&quot;</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-25'>
+  <div class='section' id='section-33'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-25'>#</a>
+        <a class='octothorpe' href='#section-33'>#</a>
       </div>
       
     </div>
@@ -733,10 +622,10 @@ was originally generated using:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-26'>
+  <div class='section' id='section-34'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-26'>#</a>
+        <a class='octothorpe' href='#section-34'>#</a>
       </div>
       
     </div>
@@ -744,10 +633,10 @@ was originally generated using:</p>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">):</span>
         <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;entities&quot;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
 
-    <span class="n">duckling_header</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span>
         <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;people&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span>
     <span class="p">)</span>
+
     <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;4 people&quot;</span><span class="p">,</span>
@@ -757,25 +646,9 @@ was originally generated using:</p>
             <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
             <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">}</span>
-    <span class="p">]</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-27'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-27'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">request_callback</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">):</span>
-        <span class="n">content_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="n">content_type</span> <span class="o">==</span> <span class="n">duckling_header</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">duckling_header</span><span class="si">}</span><span class="s2"> but received Content-Type: </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)]</span>
+    <span class="p">]</span>
 
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)</span>
     <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
         <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
     <span class="p">)</span>
