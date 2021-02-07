@@ -34,6 +34,13 @@ class DucklingParser(Plugin):
 
     This object when used as a plugin, transforms the `List[Dict[str, Any]]` returned from the API to a [BaseEntity](../../../types/entity/base_entity.html).
 
+    Plugin signature:
+
+    - `access(Workflow) -> (str, int)`
+        - int here should be `datetime.timestamp()`.
+    - `mutate(Workflow, List[BaseEntity]) -> None`
+        - insert `List[BaseEntity]` into `Workflow`.
+
     Attributes:
 
     - dimensions (Optional[List[str]])
@@ -308,3 +315,10 @@ class DucklingParser(Plugin):
         [callable-plugin](../../../plugin/plugin.html#__call__)
         """
         return self.plugin
+
+
+"""
+## Tutorials
+
+- [DucklingParser](../../../../tests/parser/text/entity/test_duckling_parser.html)
+"""
