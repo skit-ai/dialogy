@@ -13,6 +13,7 @@ from dialogy.plugin import Plugin
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
+from dialogy.types.slots import Rule
 from dialogy.workflow import Workflow
 
 # == RuleBasedSlotFillerPlugin ==
@@ -34,7 +35,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
     }
     ```
 
-    Plugin signature: 
+    Plugin signature:
 
     - `access(workflow) -> (Intent, List[BaseEntity])`
     - `mutate` not required since the mutation is implied through Intent structure change.
@@ -46,7 +47,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         - `slots` Dict[str, Slot]: A container for slots for a given intent.
     """
 
-    rules = attr.ib(type=Dict[str, Dict[str, str]], default=attr.Factory(Dict))
+    rules = attr.ib(type=Rule, default=attr.Factory(Dict))
 
     def filler(self, workflow: Workflow) -> None:
         """
@@ -89,8 +90,9 @@ class RuleBasedSlotFillerPlugin(Plugin):
         """
         return self.filler
 
+
 """
 ## Tutorials
 
-- [RuleSlotFiller](../../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
+- [RuleSlotFiller](../../../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
 """
