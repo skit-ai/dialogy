@@ -1,4 +1,5 @@
-"""Module provides access to pre-defined plugin types. 
+"""
+Module provides access to pre-defined plugin types.
 
 Import Types:
     - PluginFn
