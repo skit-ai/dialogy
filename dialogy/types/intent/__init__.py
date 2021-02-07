@@ -13,31 +13,32 @@ from dialogy.types.entity import BaseEntity
 
 @attr.s
 class Intent:
-    """Intent Type
-
-    Keys are:
-    - `name` is the name of the intent to be used.
-    - `score` is the probability of this intent being present in the utterance.
-    - `type` is the type of the intent. Intent type can be "main" or "special".
-        Intents predicted by a model have type "main" and everything else has "special".
-        Any modification to a "main" intent makes it a "special" intent.
-    - `parsers` gives the list of all the functions that have changed this intent.
-        This list will be in sorted order, which means that the first element has worked
-        on the intent first.
-    - `alternative_index` is the index of transcript within the ASR output: `List[Utterances]`
-        from which this intent was picked up. This may be None if the model uses all the utterances
-        to make the prediction.
-    - `slots` are the slots associated with this intent.
+    """
+    An instance of this class contains the name of the action associated with a body of text.
     """
 
+    # The name of the intent to be used.
     name = attr.ib(type=str)
+
+    # The confidence of this intent being present in the utterance.
     score = attr.ib(type=float)
-    type = attr.ib(type=str, default="main")
+
+    # Trail of functions that modify the attributes of an instance.
     parsers = attr.ib(type=List[str], default=attr.Factory(list))
-    alternative_index = attr.ib(type=Optional[int], default=None)
+
+    # In case of an ASR, `alternative_index` points at one of the nth
+    # alternatives that help in predictions.
+    alternative_index = attr.ib(type=Optional[int], default=0)
+
+    # Container for holding `List[BaseEntity]`.
     slots = attr.ib(type=Dict[str, Slot], default=attr.Factory(dict))
 
     def apply(self, rules: Rule) -> "Intent":
+        """
+        Create slots within the `slots` attribute.
+
+        An intent can hold different entities within associated slot-types.
+        """
         rule = rules.get(self.name)
         if not rule:
             return self
@@ -48,17 +49,27 @@ class Intent:
             )
         return self
 
-    def add_parser(self, postprocessor: PluginFn) -> None:
+    def add_parser(self, postprocessor: PluginFn) -> "Intent":
         """Update parsers with the postprocessor function name
 
         This helps us identify the progression in which the postprocessing functions
         were applied to an intent. This helps in debugging and has no production utility
         """
         self.parsers.append(postprocessor.__name__)
+        return self
 
-    def fill_slot(self, entity: BaseEntity) -> None:
+    def fill_slot(self, entity: BaseEntity) -> "Intent":
+        """
+        Update `slots[slot_type].values` with a single entity.
+
+        We will explore the possibility of sharing/understanding the meaning of multiple entities
+        in the same slot type.
+        Args:
+            entity (BaseEntity): [entities](../../docs/entity/__init__.html)
+        """
         if entity.slot_name in self.slots:
             if not self.slots[entity.slot_name].values:
                 self.slots[entity.slot_name].add(entity)
             else:
                 self.slots[entity.slot_name].clear()
+        return self
