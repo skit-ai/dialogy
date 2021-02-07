@@ -7,6 +7,7 @@ exclude_paths:
   - "dialogy/errors/__init__.py"
   - "dialogy/types/entity/__init__.py"
   - "dialogy/types/intent/__init__.py"
+  - "dialogy/plugin/plugin.py"
   - "dialogy/parser/text/entity/duckling_parser/__init__.py"
   - "dialogy/parser/text/entity/__init__.py"
   - "dialogy/parser/text/__init__.py"

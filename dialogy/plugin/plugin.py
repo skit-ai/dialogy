@@ -6,6 +6,15 @@
 - [DucklingParser](../../tests/parser/text/entity/test_duckling_parser.html)
 - [RuleSlotFiller](../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
 
+## Summary
+
+We will summarize a few key points for creating plugins:
+
+-   Don't interact with the workflow directly, use functions to access and mutate.
+-   The convention for workflow access is `access(workflow)`.
+-   The convention for workflow modification is `mutate(workflow, value)`.
+-   **Plugin names must end with Plugin for classes and _plugin for functions.** examples: `Sentence2VecPlugin`, `words2num_plugin`.
+
 Import classes:
     - Plugin
 """
@@ -42,15 +51,3 @@ class Plugin:
         to have a `__call__()` method.
         """
         ...
-
-
-"""
-## Summary
-
-We will summarize a few key points for creating plugins:
-
--   Don't interact with the workflow directly, use functions to access and mutate.
--   The convention for workflow access is `access(workflow)`.
--   The convention for workflow modification is `mutate(workflow, value)`.
--   **Plugin names must end with Plugin for classes and _plugin for functions.** examples: `Sentence2VecPlugin`, `words2num_plugin`.
-"""
