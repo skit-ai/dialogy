@@ -7,7 +7,7 @@ Module provides access to a Plugin to combine ASR output.
 
 Import functions:
 
-    - merge_asr_output
+- merge_asr_output
 """
 from typing import List
 from dialogy.workflow import Workflow
