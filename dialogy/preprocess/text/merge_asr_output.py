@@ -1,6 +1,10 @@
 """
 Module provides access to a Plugin to combine ASR output.
 
+## Tutorial
+
+- [merge_asr_output](../../../tests/preprocess/text/test_merge_asr_output.html)
+
 Import functions:
 
     - merge_asr_output
@@ -69,8 +73,3 @@ def merge_asr_output(
         mutate(workflow, merged_string)
 
     return inner
-
-
-"""
-[Tutorial](../../../tests/preprocess/text/test_merge_asr_output.html)
-"""
