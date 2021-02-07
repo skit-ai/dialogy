@@ -43,6 +43,7 @@ class Plugin:
 
 - [MakePlugins](../../tests/plugin/test_plugins.html)
 - [DucklingParser](../../tests/parser/text/entity/test_duckling_parser.html)
+- [RuleSlotFiller](../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
 
 ## Summary
 
