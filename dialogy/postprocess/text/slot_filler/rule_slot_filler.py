@@ -1,6 +1,9 @@
 """
 Module provides access to a rule-based [SlotFiller](../__init__.html).
 
+## Tutorials
+- [RuleSlotFiller](../../../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
+
 Imports:
 
 - RuleBasedSlotFillerPlugin
@@ -41,14 +44,20 @@ class RuleBasedSlotFillerPlugin(Plugin):
     - `mutate` not required since the mutation is implied through Intent structure change.
 
     Irrespective of the entities that are found, only the listed type in the slot shall be present in `values`.
-
-    Attributes:
-        - `rules` Dict[str, List[str]]: A relationship between intent and entities.
-        - `slots` Dict[str, Slot]: A container for slots for a given intent.
     """
 
+    # **rules**
+    # 
+    # A `Dict` where each key is an intent name, and each value is another `Dict`,
+    # in which, each key is an entity and value contains the `slot_name` and `entity_type.`
+    # 
+    # example:
+    # ```
+    # rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
+    # ```
     rules = attr.ib(type=Rule, default=attr.Factory(Dict))
 
+    # == filler ==
     def filler(self, workflow: Workflow) -> None:
         """
         Update an intent slot with compatible entity.
@@ -84,15 +93,9 @@ class RuleBasedSlotFillerPlugin(Plugin):
                 f" is not a Callable. Received {type(self.access)} instead."
             )
 
+    # == __call__ ==
     def __call__(self) -> PluginFn:
         """
         [callable-plugin](../../../plugin/plugin.html#__call__)
         """
         return self.filler
-
-
-"""
-## Tutorials
-
-- [RuleSlotFiller](../../../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
-"""
