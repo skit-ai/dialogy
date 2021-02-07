@@ -1,12 +1,13 @@
 """Module provides Constants to be used throughtout the project.
 
 Import:
-    - PREPROCESSORS
-    - POSTPROCESSORS
-    - WORKFLOW_PUBLIC_PROPERTIES
-    - BASE_ENTITY_PROPS
-    - TIME_ENTITY_PROPS
-    - PEOPLE_ENTITY_PROPS
+
+- PREPROCESSORS
+- POSTPROCESSORS
+- WORKFLOW_PUBLIC_PROPERTIES
+- BASE_ENTITY_PROPS
+- TIME_ENTITY_PROPS
+- PEOPLE_ENTITY_PROPS
 """
 PREPROCESSORS = "__preprocessors"
 POSTPROCESSORS = "__postprocessors"
@@ -30,10 +31,6 @@ class EntityKeys:
     VALUES = "values"
 
 
-# ----------------------------------------------------------------
-
-
-# ----------------------------------------------------------------
 # This section is needed for dialogy.types.entities.*
 # Each entity type has a few properties which need to be
 # validated for their type.
@@ -54,4 +51,3 @@ BASE_ENTITY_PROPS = [
 
 TIME_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.GRAIN], str)]
 PEOPLE_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.UNIT], str)]
-# ----------------------------------------------------------------
