@@ -64,6 +64,17 @@ We will expect Duckling to be running as an http service, and provide means to c
       <p><a href="../../../plugin/plugin.html">Plugin</a> for extracting entities using <a href="https://github.com/facebook/duckling">Duckling</a>.
 Once instantiated, a <code>duckling_parser</code> object will interface to an http server, running <a href="https://github.com/facebook/duckling">Duckling</a>.</p>
 <p>This object when used as a plugin, transforms the <code>List[Dict[str, Any]]</code> returned from the API to a <a href="../../../types/entity/base_entity.html">BaseEntity</a>.</p>
+<p>Plugin signature:</p>
+<ul>
+<li><code>access(Workflow) -&gt; (str, int)</code><ul>
+<li>int here should be <code>datetime.timestamp()</code>.</li>
+</ul>
+</li>
+<li><code>mutate(Workflow, List[BaseEntity]) -&gt; None</code><ul>
+<li>insert <code>List[BaseEntity]</code> into <code>Workflow</code>.</li>
+</ul>
+</li>
+</ul>
 <p>Attributes:</p>
 <ul>
 <li>dimensions (Optional[List[str]])</li>
@@ -592,9 +603,22 @@ To prevent rest of the things from crashing, we will raise an exception.</p>
       <p><a href="../../../plugin/plugin.html#__call__">callable-plugin</a></p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span>
-
-</pre></div>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <h2>Tutorials</h2>
+<ul>
+<li><a href="../../../../tests/parser/text/entity/test_duckling_parser.html">DucklingParser</a></li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
