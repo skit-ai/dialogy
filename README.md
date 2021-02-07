@@ -10,7 +10,7 @@ Dialogy is a battries-included 🔋 opinionated framework to build machine-learn
 -   Stack-agnostic: No assumptions made on ML stack; your choice of machine learning library will not be affected by using Dialogy. 👍
 -   Progressive: Minimal boilerplate writing to let you focus on your machine learning problems. 🤏
 
-[Documentation](https://github.com/Vernacular-ai/dialogy/blob/master/docs/index.html)
+[Documentation](https://vernacular-ai.github.io/dialogy/)
 
 ## Installation
 
@@ -65,7 +65,7 @@ workflow = TfidfMLPClfWorkflow(preprocessors=preprocessors, postprocessors=[])
 output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # output -> _greeting_
 ```
 
-Refer to the source for [`merge_asr_output`](./dialogy/preprocessing/text/merge_asr_output.py) and [`Plugins`](./docs/plugins/README.md) to understand this example better.
+Refer to the source for [`merge_asr_output`](https://vernacular-ai.github.io/dialogy/dialogy/preprocess/text/merge_asr_output.html) and [`Plugins`](https://vernacular-ai.github.io/dialogy/dialogy/plugin/plugin.html) to understand this example better.
 
 ## Note
 
@@ -82,8 +82,8 @@ like:
 -   hardware support
 -   Need for visualizations/reports during/after training.
 
-Any rigidity here would lead to distractions both to maintainers and users of this project. [`Plugins`](./docs/plugins/README.md) and custom
-[Workflow](./docs/workflow/README.md) are certainly welcome and can take care of recipe-based needs. 
+Any rigidity here would lead to distractions both to maintainers and users of this project. [`Plugins`](https://vernacular-ai.github.io/dialogy/dialogy/plugin/plugin.html) and custom
+[Workflow](https://vernacular-ai.github.io/dialogy/dialogy/workflow/workflow.html) are certainly welcome and can take care of recipe-based needs. 
 
 ### Common Evaluation Plans
 
@@ -91,7 +91,7 @@ Any rigidity here would lead to distractions both to maintainers and users of th
 
 ### Benefits
 
--   ✅. This project offers a conduit for an untrained model. This means once a [workflow](./dialogy/workflow/README.md) is ready you can use it anywhere:
+-   ✅. This project offers a conduit for an untrained model. This means once a [Workflow](https://vernacular-ai.github.io/dialogy/dialogy/workflow/workflow.html) is ready you can use it anywhere:
     evaluation scripts, serving your models via an API, custom training/evaluation scripts, combining another workflow, etc. 
 
 -   ✅. If your application needs spoken language understanding, you should find little need to write data processing functions.
