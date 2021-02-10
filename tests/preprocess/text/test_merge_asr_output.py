@@ -1,6 +1,6 @@
 import pytest
 from dialogy.workflow import Workflow
-from dialogy.preprocess.text.merge_asr_output import merge_asr_output
+from dialogy.preprocess.text.merge_asr_output import merge_asr_output_plugin
 
 
 def access(workflow):
@@ -17,7 +17,7 @@ def test_merge_asr_output() -> None:
     """
 
     workflow = Workflow(
-        preprocessors=[merge_asr_output(access, mutate)], postprocessors=[]
+        preprocessors=[merge_asr_output_plugin(access, mutate)], postprocessors=[]
     )
 
     workflow.run([[{"transcript": "hello world", "confidence": None}]])
@@ -29,7 +29,7 @@ def test_merge_longer_asr_output() -> None:
     This case shows the merge in case there are multiple options.
     """
     workflow = Workflow(
-        preprocessors=[merge_asr_output(access, mutate)], postprocessors=[]
+        preprocessors=[merge_asr_output_plugin(access, mutate)], postprocessors=[]
     )
 
     workflow.run(
@@ -54,7 +54,7 @@ def test_merge_keyerror_on_missing_transcript() -> None:
     """
 
     workflow = Workflow(
-        preprocessors=[merge_asr_output(access, mutate)], postprocessors=[]
+        preprocessors=[merge_asr_output_plugin(access, mutate)], postprocessors=[]
     )
 
     with pytest.raises(KeyError):

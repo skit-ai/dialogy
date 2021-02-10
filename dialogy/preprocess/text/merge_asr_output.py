@@ -19,7 +19,63 @@ from dialogy.types.plugin import (
 from dialogy.types.utterances import Utterance
 
 
-def merge_asr_output(
+# == merge_asr_output ==
+def merge_asr_output(utterances: List[Utterance]) -> str:
+    """
+    Join ASR output to single string.
+
+    This function provides a merging strategy for n-best ASR transcripts by
+    joining each transcript, such that:
+
+    - each sentence end is marked by " &lt;/s&gt;" and,
+    - sentence start marked by " &lt;s&gt;".
+
+
+    The key "transcript" is expected in the ASR output, the value of which would be operated on
+    by this function.
+
+    Example:
+    ```python
+
+    input = [
+        {"transcript": "This is a sentence"},
+        {"transcript": "That is a sentence"}
+    ]
+
+    "<s> This is a sentence </s> <s> That is a sentence </s>"
+    ```
+
+    Args:
+
+    - utterances (`List[Utterance]`): ASR transcriptions
+
+
+    Raises:
+
+    - KeyError: Missing key `"transcript"` within alternatives.
+
+
+    Returns:
+
+    - str: concatenated ASR transcripts into a string.
+    """
+    try:
+        flat_representation: List[str] = [
+            alternative["transcript"]
+            for utterance in utterances
+            for alternative in utterance
+            if isinstance(alternative["transcript"], str)
+        ]
+    except KeyError as key_error:
+        raise KeyError("`transcript` is expected in the ASR output.") from key_error
+
+    return "<s> " + " </s> <s> ".join(flat_representation) + " </s>"
+
+
+# ---
+
+# == merge_asr_output_plugin ==
+def merge_asr_output_plugin(
     access: GetWorkflowUtteranceFn, mutate: UpdateWorkflowStringFn
 ) -> PluginFn:
     """
@@ -37,39 +93,12 @@ def merge_asr_output(
 
     def inner(workflow: Workflow) -> None:
         """
-        Join ASR output to single string.
-
-        This function provides a merging strategy for n-best ASR transcripts by
-        joining each transcript, such that:
-            - each sentence end is marked by "</s>" and,
-            - sentence start marked by "<s>".
-
-        The key "transcript" is expected in the ASR output, the value of which would be operated on
-        by this function.
-
-        Example:
-            input: [{"transcript": "This is a sentence"}, {"transcript": "That is a sentence"}]
-            output: "<s> This is a sentence </s> <s> That is a sentence </s>"
+        Uses the `merge_asr_output` to build the plugin.
 
         Args:
-            workflow (Workflow): Model pipeline to read and modify.
-
-        Raises:
-            KeyError: `transcript` is a necessary key in ASR output. If missing, KeyError is raised.
+        - workflow (Workflow):
         """
-        utterances: List[Utterance] = access(workflow)
-
-        try:
-            flat_representation: List[str] = [
-                alternative["transcript"]
-                for utterance in utterances
-                for alternative in utterance
-                if isinstance(alternative["transcript"], str)
-            ]
-        except KeyError as key_error:
-            raise KeyError("`transcript` is expected in the ASR output.") from key_error
-
-        merged_string = "<s> " + " </s> <s> ".join(flat_representation) + " </s>"
+        merged_string = merge_asr_output(access(workflow))
         mutate(workflow, merged_string)
 
     return inner
