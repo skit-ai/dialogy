@@ -23,8 +23,9 @@
 <li><a href="../../../tests/preprocess/text/test_merge_asr_output.html">merge_asr_output</a></li>
 </ul>
 <p>Import functions:</p>
-<pre><code>- merge_asr_output
-</code></pre>
+<ul>
+<li>merge_asr_output</li>
+</ul>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
@@ -43,6 +44,95 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
+      <h2><span id="merge_asr_output" href="merge_asr_output"> merge_asr_output </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Utterance</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Join ASR output to single string.</p>
+<p>This function provides a merging strategy for n-best ASR transcripts by
+joining each transcript, such that:</p>
+<ul>
+<li>each sentence end is marked by &rdquo; &lt;/s&gt;&rdquo; and,</li>
+<li>sentence start marked by &rdquo; &lt;s&gt;&ldquo;.</li>
+</ul>
+<p>The key &ldquo;transcript&rdquo; is expected in the ASR output, the value of which would be operated on
+by this function.</p>
+<p>Example:</p>
+<pre><code class="language-python">
+input = [
+    {&quot;transcript&quot;: &quot;This is a sentence&quot;},
+    {&quot;transcript&quot;: &quot;That is a sentence&quot;}
+]
+
+&quot;&lt;s&gt; This is a sentence &lt;/s&gt; &lt;s&gt; That is a sentence &lt;/s&gt;&quot;
+</code></pre>
+<p>Args:</p>
+<ul>
+<li>utterances (<code>List[Utterance]</code>): ASR transcriptions</li>
+</ul>
+<p>Raises:</p>
+<ul>
+<li>KeyError: Missing key <code>"transcript"</code> within alternatives.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>str: concatenated ASR transcripts into a string.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
+        <span class="n">flat_representation</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">alternative</span><span class="p">[</span><span class="s2">&quot;transcript&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">utterance</span> <span class="ow">in</span> <span class="n">utterances</span>
+            <span class="k">for</span> <span class="n">alternative</span> <span class="ow">in</span> <span class="n">utterance</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alternative</span><span class="p">[</span><span class="s2">&quot;transcript&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;`transcript` is expected in the ASR output.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
+
+    <span class="k">return</span> <span class="s2">&quot;&lt;s&gt; &quot;</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt; &lt;s&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flat_representation</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <h2><span id="merge_asr_output_plugin" href="merge_asr_output_plugin"> merge_asr_output_plugin </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">merge_asr_output_plugin</span><span class="p">(</span>
+    <span class="n">access</span><span class="p">:</span> <span class="n">GetWorkflowUtteranceFn</span><span class="p">,</span> <span class="n">mutate</span><span class="p">:</span> <span class="n">UpdateWorkflowStringFn</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
       <p>Create a closure for single text representation for ASR output.</p>
 <p>This Plugin provides a merging strategy for n-best ASR transcripts.</p>
 <p>Args:
@@ -52,70 +142,33 @@
     PluginFn: Closure function returned</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span>
-    <span class="n">access</span><span class="p">:</span> <span class="n">GetWorkflowUtteranceFn</span><span class="p">,</span> <span class="n">mutate</span><span class="p">:</span> <span class="n">UpdateWorkflowStringFn</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-2'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-2'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
       <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-3'>
+  <div class='section' id='section-6'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
+        <a class='octothorpe' href='#section-6'>#</a>
       </div>
-      <p>Join ASR output to single string.</p>
-<p>This function provides a merging strategy for n-best ASR transcripts by
-joining each transcript, such that:
-    - each sentence end is marked by &ldquo;</s>&rdquo; and,
-    - sentence start marked by &ldquo;<s>&ldquo;.</p>
-<p>The key &ldquo;transcript&rdquo; is expected in the ASR output, the value of which would be operated on
-by this function.</p>
-<p>Example:
-    input: [{&ldquo;transcript&rdquo;: &ldquo;This is a sentence&rdquo;}, {&ldquo;transcript&rdquo;: &ldquo;That is a sentence&rdquo;}]
-    output: &ldquo;<s> This is a sentence </s> <s> That is a sentence </s>&ldquo;</p>
+      <p>Uses the <code>merge_asr_output</code> to build the plugin.</p>
 <p>Args:
-    workflow (Workflow): Model pipeline to read and modify.</p>
-<p>Raises:
-    KeyError: <code>transcript</code> is a necessary key in ASR output. If missing, KeyError is raised.</p>
+- workflow (Workflow):</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-4'>
+  <div class='section' id='section-7'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
+        <a class='octothorpe' href='#section-7'>#</a>
       </div>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="n">utterances</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Utterance</span><span class="p">]</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">flat_representation</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">alternative</span><span class="p">[</span><span class="s2">&quot;transcript&quot;</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">utterance</span> <span class="ow">in</span> <span class="n">utterances</span>
-                <span class="k">for</span> <span class="n">alternative</span> <span class="ow">in</span> <span class="n">utterance</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alternative</span><span class="p">[</span><span class="s2">&quot;transcript&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;`transcript` is expected in the ASR output.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
-
-        <span class="n">merged_string</span> <span class="o">=</span> <span class="s2">&quot;&lt;s&gt; &quot;</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt; &lt;s&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flat_representation</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt;&quot;</span>
+      <div class="highlight"><pre>        <span class="n">merged_string</span> <span class="o">=</span> <span class="n">merge_asr_output</span><span class="p">(</span><span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">))</span>
         <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">merged_string</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">inner</span>
