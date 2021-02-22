@@ -5,7 +5,7 @@ from copier import copy  # type: ignore
 
 
 def new_project(
-    template: str, destination_path: str, namespace: str = "vernacular-ai"
+    destination_path: str, template: str, namespace: str = "vernacular-ai"
 ) -> None:
     """
     Create project scaffolding.
