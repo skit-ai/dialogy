@@ -1,0 +1,4 @@
+[run]
+omit =
+    */cli/project.py
+    */cli/__init__.py
