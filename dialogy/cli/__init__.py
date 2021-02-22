@@ -9,7 +9,7 @@ Options:
     -h --help               Show this screen.
     --version               Show current project version.
 """
-from docopt import docopt
+from docopt import docopt  # type: ignore
 
 from dialogy.cli.project import new_project
 
