@@ -82,6 +82,8 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
                 for entity in entities:
                     intent.fill_slot(entity)
+
+                intent.cleanup()
             except TypeError as type_error:
                 raise TypeError(
                     f"`access` passed to {self.__class__.__name__}"

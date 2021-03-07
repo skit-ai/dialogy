@@ -80,6 +80,15 @@ class Intent:
                     self.slots[slot_name].clear()
         return self
 
+    def cleanup(self) -> None:
+        """
+        Remove slots that were not filled.
+        """
+        slot_names = list(self.slots.keys())
+        for slot_name in slot_names:
+            if not self.slots[slot_name].values:
+                del self.slots[slot_name]
+
 
 """
 [Tutorial](../../../tests/types/intents/test_intents.html)
