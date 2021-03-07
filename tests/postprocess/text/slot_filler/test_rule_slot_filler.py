@@ -101,7 +101,7 @@ def test_slot_no_fill() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # we can see that the `entity_2_slot` is not filled by our mock entity.
-    assert workflow.output[0].slots["entity_1_slot"].values == []
+    assert "entity_1_slot" not in workflow.output[0].slots
 
 
 def test_slot_dual_fill() -> None:
@@ -199,7 +199,7 @@ def test_slot_competition() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert workflow.output[0].slots["entity_1_slot"].values == []
+    assert "entity_1_slot" not in workflow.output[0].slots
 
 
 def test_incorrect_access_fn() -> None:
