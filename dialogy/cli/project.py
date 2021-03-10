@@ -1,7 +1,9 @@
 """
 This module offers utilities to create a new project from a given template.
 """
-from copier import copy  # type: ignore
+import os
+from copier import copy
+from dialogy.utils.logger import log
 
 
 def new_project(
@@ -20,4 +22,8 @@ def new_project(
         destination_path (str):
         namespace (str, optional): A github/gitlab Organization or Username. Defaults to "vernacular-ai".
     """
+    if os.listdir(destination_path):
+        log.error("There are files on the destination path. Aborting !")
+        return None
     copy(f"gh:{namespace}/{template}.git", destination_path)
+    return None
