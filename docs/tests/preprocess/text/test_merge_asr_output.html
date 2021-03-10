@@ -21,8 +21,9 @@
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
-<span class="kn">from</span> <span class="nn">dialogy.preprocess.text.merge_asr_output</span> <span class="kn">import</span> <span class="n">merge_asr_output_plugin</span></pre></div>
+
+<span class="kn">from</span> <span class="nn">dialogy.preprocess.text.merge_asr_output</span> <span class="kn">import</span> <span class="n">merge_asr_output_plugin</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -146,7 +147,7 @@ then this plugin would not work for you.</p>
         <span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">merge_asr_output_plugin</span><span class="p">(</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="p">)],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[]</span>
     <span class="p">)</span>
 
-    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
         <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">([[{</span><span class="s2">&quot;not_transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;hello world&quot;</span><span class="p">,</span> <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}]])</span>
 
 </pre></div>

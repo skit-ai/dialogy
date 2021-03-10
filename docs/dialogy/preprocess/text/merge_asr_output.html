@@ -28,14 +28,16 @@
 </ul>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">dialogy.preprocess.text.normalize_utterance</span> <span class="kn">import</span> <span class="n">normalize</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.plugin</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">GetWorkflowUtteranceFn</span><span class="p">,</span>
-    <span class="n">UpdateWorkflowStringFn</span><span class="p">,</span>
     <span class="n">PluginFn</span><span class="p">,</span>
+    <span class="n">UpdateWorkflowStringFn</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.utterances</span> <span class="kn">import</span> <span class="n">Utterance</span></pre></div>
+<span class="kn">from</span> <span class="nn">dialogy.types.utterances</span> <span class="kn">import</span> <span class="n">Utterance</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -47,7 +49,7 @@
       <h2><span id="merge_asr_output" href="merge_asr_output"> merge_asr_output </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Utterance</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -89,16 +91,10 @@ input = [
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
-        <span class="n">flat_representation</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">alternative</span><span class="p">[</span><span class="s2">&quot;transcript&quot;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">utterance</span> <span class="ow">in</span> <span class="n">utterances</span>
-            <span class="k">for</span> <span class="n">alternative</span> <span class="ow">in</span> <span class="n">utterance</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alternative</span><span class="p">[</span><span class="s2">&quot;transcript&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;`transcript` is expected in the ASR output.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
-
-    <span class="k">return</span> <span class="s2">&quot;&lt;s&gt; &quot;</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt; &lt;s&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flat_representation</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt;&quot;</span></pre></div>
+        <span class="n">flat_representation</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">utterances</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;s&gt; &quot;</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt; &lt;s&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flat_representation</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &lt;/s&gt;&quot;</span>
+    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">type_error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`transcript` is expected in the ASR output.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">type_error</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>

@@ -21,21 +21,21 @@
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
 
+<span class="kn">import</span> <span class="nn">httpretty</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
 <span class="kn">import</span> <span class="nn">pytz</span>
-<span class="kn">import</span> <span class="nn">httpretty</span>
 
 <span class="kn">from</span> <span class="nn">dialogy.parser.text.entity</span> <span class="kn">import</span> <span class="n">DucklingParser</span>
-<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
-<span class="kn">from</span> <span class="nn">tests.parser.text.entity</span> <span class="kn">import</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">NumericalEntity</span><span class="p">,</span>
     <span class="n">PeopleEntity</span><span class="p">,</span>
-    <span class="n">TimeIntervalEntity</span><span class="p">,</span>
     <span class="n">TimeEntity</span><span class="p">,</span>
-<span class="p">)</span></pre></div>
+    <span class="n">TimeIntervalEntity</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">tests.parser.text.entity</span> <span class="kn">import</span> <span class="n">config</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -117,7 +117,7 @@ curl -XPOST http://0.0.0.0:8000/parse --data 'locale=en_US&amp;text=$text'
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
 
-    <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">response</span> <span class="o">==</span> <span class="n">expected_response</span></pre></div>
     </div>
   </div>
@@ -155,7 +155,7 @@ curl -XPOST http://0.0.0.0:8000/parse --data 'locale=en_US&amp;text=$text'
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></pre></div>
+        <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -190,7 +190,7 @@ curl -XPOST http://0.0.0.0:8000/parse --data 'locale=en_US&amp;text=$text'
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;Asia/Kolkata&quot;</span><span class="p">)</span>
 
-    <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">response</span> <span class="o">==</span> <span class="n">expected_response</span></pre></div>
     </div>
   </div>
@@ -225,7 +225,7 @@ curl -XPOST http://0.0.0.0:8000/parse --data 'locale=en_US&amp;text=$text'
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;Earth/Someplace&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">pytz</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">):</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></pre></div>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>

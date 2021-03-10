@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>intent.py</title>
+  <link rel="stylesheet" href="../../../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>intent.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>This module provides utilities to handle multiple intents from each
+alternative from the ASR.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>An instance of VoteIntentPlugin helps in voting for a strong
+evidence over other candidates.</p>
+<p>This plugin takes into consideration a list of predictions (signals)
+some of which can be strong, (decided by their confidence score for now)
+and weak signals are filtered out. If there is a healthy vote proportion,
+we will consider the winning signal as the true output.</p>
+<p>This class handles signals which are produced by an intent classifier that
+classifies a set of ASR alternatives (strings).</p>
+<p>The voting algorithm here is naive as it is based on heuristics
+and plain counting. This can be improved by using learned trees/forests.</p>
+<p>Ideal design should provide the signals, their strengths (confidence) and
+signal boosters, any contextual information that implies a weak signal has
+more weight than its counterparts.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">VotePlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">fallback_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">S_INTENT_OOS</span><span class="p">)</span>
+    <span class="n">constituency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Reduce a list of intents.</p>
+<p>This is a naive voting algorithm. We filter intents with high confidence.
+Count the frequency of the remaining intents. If the proportion of votes
+goes beyond the expected constituency, then the intent is elected else
+a fallback intent is emitted.</p>
+<p>Args:
+    intents (List[Intent]): A list of predictions over ASR output. (size ~ 1-10)
+    constituency (float, optional): Threshold for proportion of votes,
+        proportion over this qualifies an intent for victory. Defaults to 0.5.</p>
+<p>Returns:
+    Intent: Voted signal or fallback in case of no consensus.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">vote_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Intent</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">fallback</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">intents</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fallback</span>
+
+        <span class="n">qualified_intents</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">intent</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span> <span class="k">if</span> <span class="n">intent</span><span class="o">.</span><span class="n">score</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
+        <span class="p">]</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">qualified_intents</span><span class="p">)</span>
+        <span class="n">ballot</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">qualified_intents</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>victory is a list of tuples like:
+[(&ldquo;name&rdquo;, 4)], where 4 is the frequency.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">victory</span> <span class="o">=</span> <span class="n">ballot</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>To defend against Counter init with <code>[]</code>.
+due to the filter.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">victory</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fallback</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>We want the name of the winning entry.
+and the votes it received.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">winner</span><span class="p">,</span> <span class="n">votes</span> <span class="o">=</span> <span class="n">victory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">winner</span><span class="p">,</span> <span class="n">votes</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">votes</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>don&rsquo;t divide by 0</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">proportion</span> <span class="o">=</span> <span class="n">votes</span> <span class="o">/</span> <span class="n">candidates</span>
+            <span class="k">if</span> <span class="n">proportion</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">constituency</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">winner</span><span class="p">,</span>
+                    <span class="n">score</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+                            <span class="p">[</span>
+                                <span class="n">intent</span><span class="o">.</span><span class="n">score</span>
+                                <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span>
+                                <span class="k">if</span> <span class="n">intent</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">winner</span>
+                            <span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Plugin to ease workflow io.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">access</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span>
+        <span class="n">mutate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span>
+
+        <span class="k">if</span> <span class="n">access</span> <span class="ow">and</span> <span class="n">mutate</span><span class="p">:</span>
+            <span class="n">intents</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vote_signal</span><span class="p">(</span><span class="n">intents</span><span class="p">)</span>
+            <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected `access` and `mutate` to be Callable,&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Convenience.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

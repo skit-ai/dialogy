@@ -139,6 +139,8 @@ in which, each key is an entity and value contains the <code>slot_name</code> an
 
                 <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
                     <span class="n">intent</span><span class="o">.</span><span class="n">fill_slot</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+
+                <span class="n">intent</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">type_error</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;`access` passed to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>

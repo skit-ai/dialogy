@@ -31,20 +31,17 @@ We will expect Duckling to be running as an http service, and provide means to c
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
-<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">pytz</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">pytz.tzinfo</span> <span class="kn">import</span> <span class="n">BaseTzInfo</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">dialogy.constants</span> <span class="kn">import</span> <span class="n">EntityKeys</span>
 
+<span class="kn">from</span> <span class="nn">dialogy.constants</span> <span class="kn">import</span> <span class="n">EntityKeys</span>
 <span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
-<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BaseEntity</span><span class="p">,</span>
-    <span class="n">dimension_entity_map</span><span class="p">,</span>
-<span class="p">)</span></pre></div>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">dimension_entity_map</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -475,7 +472,7 @@ Under normal circumstances this error shouldn&rsquo;t be raised.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_entities</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span></pre></div>
     </div>
   </div>
@@ -571,7 +568,7 @@ To prevent rest of the things from crashing, we will raise an exception.</p>
         <span class="k">if</span> <span class="n">access</span> <span class="ow">and</span> <span class="n">mutate</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
-                <span class="n">entities_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">)</span>
+                <span class="n">entities_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">entities_json</span><span class="p">:</span>
                     <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
                     <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span>
