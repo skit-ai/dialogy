@@ -26,6 +26,7 @@ bandit = "^1.7.0"
 pylint = "^2.6.0"
 pycco = "^0.6.0"
 watchdog = "^1.0.2"
+isort = "^5.7.0"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
