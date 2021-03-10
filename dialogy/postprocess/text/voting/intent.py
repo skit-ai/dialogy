@@ -6,7 +6,7 @@ from collections import Counter
 from typing import List
 
 import attr
-import numpy as np  # type: ignore
+import numpy as np
 
 from dialogy import constants as const
 from dialogy.plugin import Plugin
@@ -88,8 +88,14 @@ class VotePlugin(Plugin):
             if proportion > self.constituency:
                 return Intent(
                     name=winner,
-                    score=np.mean(
-                        [intent.score for intent in intents if intent.name == winner]
+                    score=float(
+                        np.mean(
+                            [
+                                intent.score
+                                for intent in intents
+                                if intent.name == winner
+                            ]
+                        )
                     ),
                 )
         return Intent(name=self.fallback_intent, score=1)
