@@ -20,7 +20,11 @@
       <p>This module offers utilities to create a new project from a given template.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">copier</span> <span class="kn">import</span> <span class="n">copy</span>  <span class="c1"># type: ignore</span></pre></div>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">copier</span> <span class="kn">import</span> <span class="n">copy</span>  <span class="c1"># type: ignore</span>
+
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">log</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -54,7 +58,11 @@ to use an existing template.</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">copy</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gh:</span><span class="si">{</span><span class="n">namespace</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">template</span><span class="si">}</span><span class="s2">.git&quot;</span><span class="p">,</span> <span class="n">destination_path</span><span class="p">)</span>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">destination_path</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;There are files on the destination path. Aborting !&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">copy</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gh:</span><span class="si">{</span><span class="n">namespace</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">template</span><span class="si">}</span><span class="s2">.git&quot;</span><span class="p">,</span> <span class="n">destination_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span>
 
 </pre></div>
     </div>
