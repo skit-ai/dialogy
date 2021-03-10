@@ -9,18 +9,17 @@ Import functions:
 
 - merge_asr_output
 """
-from typing import List
-from dialogy.workflow import Workflow
-from dialogy.types.plugin import (
-    GetWorkflowUtteranceFn,
-    UpdateWorkflowStringFn,
-    PluginFn,
-)
+from typing import Any, List
+
+from dialogy.preprocess.text.normalize_utterance import normalize
+from dialogy.types.plugin import (GetWorkflowUtteranceFn, PluginFn,
+                                  UpdateWorkflowStringFn)
 from dialogy.types.utterances import Utterance
+from dialogy.workflow import Workflow
 
 
 # == merge_asr_output ==
-def merge_asr_output(utterances: List[Utterance]) -> str:
+def merge_asr_output(utterances: Any) -> str:
     """
     Join ASR output to single string.
 
@@ -60,12 +59,7 @@ def merge_asr_output(utterances: List[Utterance]) -> str:
     - str: concatenated ASR transcripts into a string.
     """
     try:
-        flat_representation: List[str] = [
-            alternative["transcript"]
-            for utterance in utterances
-            for alternative in utterance
-            if isinstance(alternative["transcript"], str)
-        ]
+        flat_representation: List[str] = normalize(utterances)
     except KeyError as key_error:
         raise KeyError("`transcript` is expected in the ASR output.") from key_error
 

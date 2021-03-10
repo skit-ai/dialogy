@@ -1,6 +1,7 @@
 import pytest
-from dialogy.workflow import Workflow
+
 from dialogy.preprocess.text.merge_asr_output import merge_asr_output_plugin
+from dialogy.workflow import Workflow
 
 
 def access(workflow):
@@ -57,5 +58,5 @@ def test_merge_keyerror_on_missing_transcript() -> None:
         preprocessors=[merge_asr_output_plugin(access, mutate)], postprocessors=[]
     )
 
-    with pytest.raises(KeyError):
+    with pytest.raises(TypeError):
         workflow.run([[{"not_transcript": "hello world", "confidence": None}]])
