@@ -80,7 +80,6 @@ class VotePlugin(Plugin):
         # We want the name of the winning entry.
         # and the votes it received.
         winner, votes = victory[0]
-        print(winner, votes)
 
         if votes:
             # don't divide by 0
