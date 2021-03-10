@@ -242,7 +242,7 @@ class DucklingParser(Plugin):
 
     # == get_entities ==
     def get_entities(
-        self, text: str, reference_time: Optional[int]
+        self, text: str, reference_time: Optional[int] = None
     ) -> Optional[List[Dict[str, Any]]]:
         """
         Get entities from duckling-server.
@@ -298,7 +298,7 @@ class DucklingParser(Plugin):
         if access and mutate:
             try:
                 text, reference_time = access(workflow)
-                entities_json = self.get_entities(text, reference_time)
+                entities_json = self.get_entities(text, reference_time=reference_time)
                 if entities_json:
                     entities = self.reshape(entities_json)
                     mutate(workflow, entities)

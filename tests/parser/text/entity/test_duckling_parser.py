@@ -63,7 +63,7 @@ def test_duckling_api_success() -> None:
 
     parser = DucklingParser(locale="en_IN")
 
-    response = parser.get_entities(body, None)
+    response = parser.get_entities(body)
     assert response == expected_response
 
 
@@ -85,7 +85,7 @@ def test_duckling_api_failure() -> None:
     parser = DucklingParser(dimensions=["time"], locale="en_IN")
 
     with pytest.raises(ValueError):
-        parser.get_entities(body, None)
+        parser.get_entities(body)
 
 
 # == Test duckling with timezone info ==
@@ -104,7 +104,7 @@ def test_duckling_with_tz() -> None:
 
     parser = DucklingParser(locale="en_IN", timezone="Asia/Kolkata")
 
-    response = parser.get_entities(body, None)
+    response = parser.get_entities(body)
     assert response == expected_response
 
 
@@ -123,7 +123,7 @@ def test_duckling_wrong_tz() -> None:
     parser = DucklingParser(locale="en_IN", timezone="Earth/Someplace")
 
     with pytest.raises(pytz.UnknownTimeZoneError):
-        response = parser.get_entities(body, None)
+        response = parser.get_entities(body)
 
 
 # == Test entity structure modifications for numerical entities ==
