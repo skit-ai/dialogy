@@ -13,6 +13,7 @@ PREPROCESSORS = "__preprocessors"
 POSTPROCESSORS = "__postprocessors"
 WORKFLOW_PUBLIC_PROPERTIES = [PREPROCESSORS, POSTPROCESSORS]
 S_INTENT_OOS = "_oos_"
+TRANSCRIPT = "transcript"
 
 
 class EntityKeys:
