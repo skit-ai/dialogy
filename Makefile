@@ -5,6 +5,8 @@ lint:
 	@echo -e "Running linter"
 	@black dialogy
 	@black tests
+	@isort dialogy
+	@isort tests
 	@echo -e "Running type checker"
 	@mypy dialogy
 
