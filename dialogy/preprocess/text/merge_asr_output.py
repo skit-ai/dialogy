@@ -12,8 +12,11 @@ Import functions:
 from typing import Any, List
 
 from dialogy.preprocess.text.normalize_utterance import normalize
-from dialogy.types.plugin import (GetWorkflowUtteranceFn, PluginFn,
-                                  UpdateWorkflowStringFn)
+from dialogy.types.plugin import (
+    GetWorkflowUtteranceFn,
+    PluginFn,
+    UpdateWorkflowStringFn,
+)
 from dialogy.types.utterances import Utterance
 from dialogy.workflow import Workflow
 
@@ -60,10 +63,9 @@ def merge_asr_output(utterances: Any) -> str:
     """
     try:
         flat_representation: List[str] = normalize(utterances)
-    except KeyError as key_error:
-        raise KeyError("`transcript` is expected in the ASR output.") from key_error
-
-    return "<s> " + " </s> <s> ".join(flat_representation) + " </s>"
+        return "<s> " + " </s> <s> ".join(flat_representation) + " </s>"
+    except TypeError as type_error:
+        raise TypeError("`transcript` is expected in the ASR output.") from type_error
 
 
 # ---
