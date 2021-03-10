@@ -17,7 +17,6 @@ from dialogy.types.plugin import (
     PluginFn,
     UpdateWorkflowStringFn,
 )
-from dialogy.types.utterances import Utterance
 from dialogy.workflow import Workflow
 
 
