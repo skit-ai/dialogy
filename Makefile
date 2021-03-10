@@ -3,10 +3,10 @@ python_version = 3.8.5
 
 lint:
 	@echo -e "Running linter"
-	@black dialogy
-	@black tests
 	@isort dialogy
 	@isort tests
+	@black dialogy
+	@black tests
 	@echo -e "Running type checker"
 	@mypy dialogy
 
