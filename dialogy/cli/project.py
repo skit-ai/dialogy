@@ -3,7 +3,7 @@ This module offers utilities to create a new project from a given template.
 """
 import os
 
-from copier import copy
+from copier import copy  # type: ignore
 
 from dialogy.utils.logger import log
 
