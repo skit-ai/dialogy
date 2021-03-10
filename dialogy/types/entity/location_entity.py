@@ -4,7 +4,7 @@ Module provides access to an entity type (class) to handle locations.
 Import classes:
     - LocationEntity
 """
-from typing import List, Dict
+from typing import Dict, List
 
 import attr
 

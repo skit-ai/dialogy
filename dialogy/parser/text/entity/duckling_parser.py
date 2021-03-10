@@ -13,20 +13,17 @@ Import classes:
 - DucklingParser
 """
 import json
-from typing import List, Dict, Optional, Any
+from typing import Any, Dict, List, Optional
 
 import attr
-import requests
 import pytz
+import requests
 from pytz.tzinfo import BaseTzInfo  # type: ignore
-from dialogy.constants import EntityKeys
 
+from dialogy.constants import EntityKeys
 from dialogy.plugin import Plugin, PluginFn
+from dialogy.types.entity import BaseEntity, dimension_entity_map
 from dialogy.workflow import Workflow
-from dialogy.types.entity import (
-    BaseEntity,
-    dimension_entity_map,
-)
 
 
 # == DucklingParser ==

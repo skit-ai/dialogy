@@ -4,8 +4,8 @@ Import functions:
     - dict_traversal
     - validate_type
 """
-from typing import List, Any, Tuple, Union, Dict
 from functools import reduce
+from typing import Any, Dict, List, Tuple, Union
 
 
 def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:

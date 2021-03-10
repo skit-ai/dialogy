@@ -5,7 +5,7 @@ Import classes:
     - NumericalEntity
 """
 
-from typing import Any, List, Dict, Callable
+from typing import Any, Callable, Dict, List
 
 import attr
 

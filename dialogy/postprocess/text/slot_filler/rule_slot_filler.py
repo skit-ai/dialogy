@@ -19,6 +19,7 @@ from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule
 from dialogy.workflow import Workflow
 
+
 # == RuleBasedSlotFillerPlugin ==
 @attr.s
 class RuleBasedSlotFillerPlugin(Plugin):

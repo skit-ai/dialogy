@@ -21,6 +21,7 @@ Import classes:
 from typing import Optional
 
 import attr
+
 from dialogy.types.plugin import PluginFn
 
 

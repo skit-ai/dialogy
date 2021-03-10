@@ -5,8 +5,7 @@ Import Types:
     - Alternative
     - Utterance
 """
-from typing import List, Dict, Union, Optional
-
+from typing import Dict, List, Optional, Union
 
 Alternative = Dict[str, Union[str, Optional[float]]]
 Utterance = List[Alternative]

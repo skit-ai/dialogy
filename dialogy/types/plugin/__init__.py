@@ -6,9 +6,10 @@ Import Types:
     - GetWorkflowUtteranceFn
     - UpdateWorkflowStringFn
 """
-from typing import List, Callable, Any
-from dialogy.workflow import Workflow
+from typing import Any, Callable, List
+
 from dialogy.types.utterances import Utterance
+from dialogy.workflow import Workflow
 
 PluginFn = Callable[..., Any]
 GetWorkflowUtteranceFn = Callable[[Workflow], List[Utterance]]

@@ -7,8 +7,8 @@ Import functions:
     - change_log_level
 """
 import logging
-import coloredlogs
 
+import coloredlogs
 
 log = logging.getLogger("Dialogy")
 fmt = "%(asctime)s:%(msecs)03d %(name)s [%(filename)s:%(lineno)s] %(levelname)s %(message)s"

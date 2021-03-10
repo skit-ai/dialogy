@@ -2,15 +2,14 @@
 This is a tutorial for understanding the use of `VotePlugin`.
 """
 from typing import Any, List
+
 import pytest
 
-from dialogy.postprocess.text.voting.intent import (
-    VotePlugin,
-)
-from dialogy.workflow import Workflow
+from dialogy import constants as const
+from dialogy.postprocess.text.voting.intent import VotePlugin
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
-from dialogy import constants as const
+from dialogy.workflow import Workflow
 
 
 def update_intent(workflow, value):

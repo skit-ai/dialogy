@@ -2,17 +2,17 @@
 This module provides utilities to handle multiple intents from each
 alternative from the ASR.
 """
-from typing import List
 from collections import Counter
+from typing import List
 
-import numpy as np  # type: ignore
 import attr
-from dialogy.types.intent import Intent
-from dialogy.plugin import Plugin
-from dialogy.types.plugin import PluginFn
-from dialogy.workflow import Workflow
+import numpy as np  # type: ignore
 
 from dialogy import constants as const
+from dialogy.plugin import Plugin
+from dialogy.types.intent import Intent
+from dialogy.types.plugin import PluginFn
+from dialogy.workflow import Workflow
 
 
 @attr.s

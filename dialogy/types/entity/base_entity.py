@@ -9,14 +9,15 @@ Import classes:
 
 - BaseEntity
 """
+import copy
 from typing import Any, Dict, List, Optional
 
 import attr
-import copy
 
 from dialogy import constants
-from dialogy.types.plugin import PluginFn
 from dialogy.types.entity.utils import traverse_dict, validate_type
+from dialogy.types.plugin import PluginFn
+
 
 # = BaseEntity =
 @attr.s

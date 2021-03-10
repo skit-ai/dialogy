@@ -2,8 +2,8 @@
 Tests for intents
 """
 
-from dialogy.types.intent import Intent
 from dialogy.types.entity import BaseEntity
+from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
 
 

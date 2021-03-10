@@ -1,4 +1,5 @@
 import pytest
+
 from dialogy.types.entity.utils import traverse_dict, validate_type
 
 

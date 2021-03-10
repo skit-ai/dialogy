@@ -1,19 +1,15 @@
 import json
-from typing import List, Any, Callable
+from typing import Any, Callable, List
 
+import httpretty
 import pytest
 import pytz
-import httpretty
 
 from dialogy.parser.text.entity import DucklingParser
+from dialogy.types.entity import (NumericalEntity, PeopleEntity, TimeEntity,
+                                  TimeIntervalEntity)
 from dialogy.workflow import Workflow
 from tests.parser.text.entity import config
-from dialogy.types.entity import (
-    NumericalEntity,
-    PeopleEntity,
-    TimeIntervalEntity,
-    TimeEntity,
-)
 
 
 def request_builder(

@@ -16,10 +16,10 @@ Import Class:
     - Workflow
 """
 from pprint import pformat
-from typing import List, Callable, Any, Optional
-from dialogy import constants
-from dialogy.utils.logger import log, change_log_level
+from typing import Any, Callable, List, Optional
 
+from dialogy import constants
+from dialogy.utils.logger import change_log_level, log
 
 PluginFn = Callable[["Workflow"], None]
 

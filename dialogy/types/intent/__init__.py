@@ -10,9 +10,9 @@ from typing import Callable, Dict, List, Optional
 
 import attr
 
-from dialogy.types.slots import Slot, Rule
-from dialogy.types.plugin import PluginFn
 from dialogy.types.entity import BaseEntity
+from dialogy.types.plugin import PluginFn
+from dialogy.types.slots import Rule, Slot
 
 
 @attr.s

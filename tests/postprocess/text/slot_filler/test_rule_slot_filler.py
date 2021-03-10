@@ -2,14 +2,14 @@
 This is a tutorial for understanding the use of `RuleBasedSlotFillerPlugin`.
 """
 from typing import Any
+
 import pytest
 
-from dialogy.postprocess.text.slot_filler.rule_slot_filler import (
-    RuleBasedSlotFillerPlugin,
-)
-from dialogy.workflow import Workflow
+from dialogy.postprocess.text.slot_filler.rule_slot_filler import \
+    RuleBasedSlotFillerPlugin
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
+from dialogy.workflow import Workflow
 
 # This tutorial would be centered around these rules:
 rules = {
