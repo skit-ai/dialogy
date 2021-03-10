@@ -6,8 +6,12 @@ import pytest
 import pytz
 
 from dialogy.parser.text.entity import DucklingParser
-from dialogy.types.entity import (NumericalEntity, PeopleEntity, TimeEntity,
-                                  TimeIntervalEntity)
+from dialogy.types.entity import (
+    NumericalEntity,
+    PeopleEntity,
+    TimeEntity,
+    TimeIntervalEntity,
+)
 from dialogy.workflow import Workflow
 from tests.parser.text.entity import config
 
