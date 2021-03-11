@@ -3,15 +3,9 @@ Tests for entities
 """
 import pytest
 
-from dialogy.types.entity import (
-    BaseEntity,
-    LocationEntity,
-    NumericalEntity,
-    PeopleEntity,
-    TimeEntity,
-    TimeIntervalEntity,
-    entity_synthesis,
-)
+from dialogy.types.entity import (BaseEntity, LocationEntity, NumericalEntity,
+                                  PeopleEntity, TimeEntity, TimeIntervalEntity,
+                                  entity_synthesis)
 from dialogy.workflow import Workflow
 
 

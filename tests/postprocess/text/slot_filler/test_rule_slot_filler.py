@@ -5,9 +5,8 @@ from typing import Any
 
 import pytest
 
-from dialogy.postprocess.text.slot_filler.rule_slot_filler import (
-    RuleBasedSlotFillerPlugin,
-)
+from dialogy.postprocess.text.slot_filler.rule_slot_filler import \
+    RuleBasedSlotFillerPlugin
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
