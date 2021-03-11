@@ -24,8 +24,12 @@ def new_project(
         destination_path (str):
         namespace (str, optional): A github/gitlab Organization or Username. Defaults to "vernacular-ai".
     """
+    if not os.path.exists(destination_path):
+        os.mkdir(destination_path)
+
     if os.listdir(destination_path):
         log.error("There are files on the destination path. Aborting !")
         return None
+
     copy(f"gh:{namespace}/{template}.git", destination_path)
     return None
