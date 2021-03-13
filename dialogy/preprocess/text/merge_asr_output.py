@@ -12,8 +12,11 @@ Import functions:
 from typing import Any, List
 
 from dialogy.preprocess.text.normalize_utterance import normalize
-from dialogy.types.plugin import (GetWorkflowUtteranceFn, PluginFn,
-                                  UpdateWorkflowStringFn)
+from dialogy.types.plugin import (
+    GetWorkflowUtteranceFn,
+    PluginFn,
+    UpdateWorkflowStringFn,
+)
 from dialogy.workflow import Workflow
 
 
