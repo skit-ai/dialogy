@@ -13,7 +13,7 @@ Import classes:
 - DucklingParser
 """
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import attr
 import pytz
@@ -117,7 +117,7 @@ class DucklingParser(Plugin):
     # == __create_req_body ==
     def __create_req_body(
         self, text: str, reference_time: Optional[int]
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Dict[str, Any]:
         """
         create request body for entity parsing
 
@@ -240,7 +240,7 @@ class DucklingParser(Plugin):
     # == get_entities ==
     def get_entities(
         self, text: str, reference_time: Optional[int] = None
-    ) -> Optional[List[Dict[str, Any]]]:
+    ) -> List[Dict[str, Any]]:
         """
         Get entities from duckling-server.
 
@@ -292,24 +292,47 @@ class DucklingParser(Plugin):
         """
         access = self.access
         mutate = self.mutate
-        if access and mutate:
-            try:
-                text, reference_time = access(workflow)
-                entities_json = self.get_entities(text, reference_time=reference_time)
-                if entities_json:
-                    entities = self.reshape(entities_json)
-                    mutate(workflow, entities)
-            except TypeError as type_error:
-                raise TypeError(
-                    "Expected `access` and `mutate` to be Callable,"
-                    f" got access={type(access)} mutate={type(mutate)} | {type_error}"
-                ) from type_error
-
-        else:
+        input_ = Union[str, List[str]]
+        if not isinstance(access, Callable):  # type: ignore
             raise TypeError(
-                "Expected `access` and `mutate` to be Callable,"
+                "Expected `access` to be Callable,"
                 f" got access={type(access)} mutate={type(mutate)}"
             )
+        if not isinstance(mutate, Callable):  # type: ignore
+            raise TypeError(
+                "Expected `mutate` to be Callable,"
+                f" got access={type(access)} mutate={type(mutate)}"
+            )
+
+        entities = []
+        if access and mutate:
+            input_, reference_time = access(workflow)
+            try:
+                if isinstance(input_, str):
+                    entities.append(
+                        self.get_entities(input_, reference_time=reference_time)
+                    )
+                elif isinstance(input_, list) and all(
+                    isinstance(text, str) for text in input_
+                ):
+                    for text in input_:
+                        entities.append(
+                            self.get_entities(text, reference_time=reference_time)
+                        )
+                else:
+                    raise TypeError(f"Expected {input_} to be a List[str] or str.")
+
+                entities_flattened = [
+                    entity for entity_list in entities for entity in entity_list
+                ]
+
+                if entities_flattened:
+                    shaped_entities = self.reshape(entities_flattened)
+                    mutate(workflow, shaped_entities)
+                else:
+                    mutate(workflow, [])
+            except ValueError as value_error:
+                raise ValueError(str(value_error)) from value_error
 
     # == __call__ ==
     def __call__(self) -> PluginFn:

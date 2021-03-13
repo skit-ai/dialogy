@@ -119,7 +119,7 @@ def test_duckling_wrong_tz() -> None:
     parser = DucklingParser(locale="en_IN", timezone="Earth/Someplace")
 
     with pytest.raises(pytz.UnknownTimeZoneError):
-        response = parser.get_entities(body)
+        _ = parser.get_entities(body)
 
 
 # == Test entity structure modifications for numerical entities ==
@@ -309,13 +309,21 @@ def test_plugin_io_missing() -> None:
 
 
 # == Test invalid i/o ==
-def test_plugin_io_type_mismatch() -> None:
+@pytest.mark.parametrize(
+    "access,mutate",
+    [
+        (1, 1),
+        (lambda x: x, 1),
+        (1, lambda x: x),
+    ],
+)
+def test_plugin_io_type_mismatch(access, mutate) -> None:
     """
     Here we are chcking if the plugin has access to workflow.
     Since we have provided `access`, `mutate` of incorrect types to `DucklingParser`
     we will receive a `TypeError`.
     """
-    parser = DucklingParser(access=5, mutate=54, locale="en_IN")
+    parser = DucklingParser(access=access, mutate=mutate, locale="en_IN")
     plugin = parser()
 
     workflow = Workflow(preprocessors=[plugin], postprocessors=[])
@@ -324,12 +332,42 @@ def test_plugin_io_type_mismatch() -> None:
 
 
 # == Test plugin usage with Worfklow ==
+@pytest.mark.parametrize(
+    "body,expected",
+    [
+        (
+            "I need it for 3 people.",
+            [
+                {
+                    "body": "4 people",
+                    "start": 14,
+                    "value": {"value": 4, "type": "value", "unit": "person"},
+                    "end": 22,
+                    "dim": "people",
+                    "latent": False,
+                }
+            ],
+        ),
+        (
+            ["I need it for 3 people."],
+            [
+                {
+                    "body": "4 people",
+                    "start": 14,
+                    "value": {"value": 4, "type": "value", "unit": "person"},
+                    "end": 22,
+                    "dim": "people",
+                    "latent": False,
+                }
+            ],
+        ),
+    ],
+)
 @httpretty.activate
-def test_plugin() -> None:
+def test_plugin(body, expected) -> None:
     """
     An end-to-end example showing how to use `DucklingParser` with a `Worflow`.
     """
-    body = "I need it for 3 people."
 
     def access(workflow):
         return workflow.input, None
@@ -341,18 +379,7 @@ def test_plugin() -> None:
         access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
     )
 
-    expected_response = [
-        {
-            "body": "4 people",
-            "start": 14,
-            "value": {"value": 4, "type": "value", "unit": "person"},
-            "end": 22,
-            "dim": "people",
-            "latent": False,
-        }
-    ]
-
-    request_callback = request_builder(expected_response)
+    request_callback = request_builder(expected)
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
@@ -360,3 +387,91 @@ def test_plugin() -> None:
     workflow = Workflow(preprocessors=[parser()], postprocessors=[])
     workflow.run(body)
     assert isinstance(workflow.output["entities"][0], PeopleEntity)
+
+
+# Test plugin with no possible entity from input.
+@httpretty.activate
+def test_plugin_no_entities() -> None:
+    """
+    An end-to-end example showing how `DucklingParser` works in case
+    the input has no entities.
+    """
+    body = "i need it"
+    expected = []
+
+    def access(workflow):
+        return workflow.input, None
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+
+    parser = DucklingParser(
+        access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
+    )
+
+    request_callback = request_builder(expected)
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
+    )
+
+    workflow = Workflow(preprocessors=[parser()], postprocessors=[])
+    workflow.run(body)
+    assert workflow.output["entities"] == []
+
+
+@pytest.mark.parametrize(
+    "body",
+    [42, None, {"key", 42}, [12]],
+)
+@httpretty.activate
+def test_plugin_type_errors(body) -> None:
+    """
+    An end-to-end example showing how `DucklingParser` works in case
+    the input is invalid.
+    """
+
+    def access(workflow):
+        return workflow.input, None
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+
+    parser = DucklingParser(
+        access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
+    )
+
+    request_callback = request_builder([])
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
+    )
+
+    with pytest.raises(TypeError):
+        workflow = Workflow(preprocessors=[parser()], postprocessors=[])
+        workflow.run(body)
+
+
+@httpretty.activate
+def test_plugin_value_errors() -> None:
+    """
+    An end-to-end example showing how `DucklingParser` works in case
+    the input is invalid.
+    """
+
+    def access(workflow):
+        return workflow.input, None
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+
+    parser = DucklingParser(
+        access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
+    )
+
+    request_callback = request_builder([], response_code=500)
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
+    )
+
+    with pytest.raises(ValueError):
+        workflow = Workflow(preprocessors=[parser()], postprocessors=[])
+        workflow.run("")
