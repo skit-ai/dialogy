@@ -225,7 +225,7 @@ curl -XPOST http://0.0.0.0:8000/parse --data 'locale=en_US&amp;text=$text'
     <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;Earth/Someplace&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">pytz</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">):</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">)</span></pre></div>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">body</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -561,7 +561,15 @@ we will receive a <code>TypeError</code>.</p>
       <h2><span id="test-invalid-i/o" href="test-invalid-i/o"> Test invalid i/o </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_plugin_io_type_mismatch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+      <div class="highlight"><pre><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;access,mutate&quot;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_plugin_io_type_mismatch</span><span class="p">(</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -575,7 +583,7 @@ Since we have provided <code>access</code>, <code>mutate</code> of incorrect typ
 we will receive a <code>TypeError</code>.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="mi">54</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
+      <div class="highlight"><pre>    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span><span class="p">)</span>
     <span class="n">plugin</span> <span class="o">=</span> <span class="n">parser</span><span class="p">()</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">plugin</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
@@ -592,8 +600,39 @@ we will receive a <code>TypeError</code>.</p>
       <h2><span id="test-plugin-usage-with-worfklow" href="test-plugin-usage-with-worfklow"> Test plugin usage with Worfklow </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
-<span class="k">def</span> <span class="nf">test_plugin</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+      <div class="highlight"><pre><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;body,expected&quot;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span>
+            <span class="s2">&quot;I need it for 3 people.&quot;</span><span class="p">,</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;4 people&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">},</span>
+                    <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+                    <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">],</span>
+        <span class="p">),</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;I need it for 3 people.&quot;</span><span class="p">],</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;4 people&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">},</span>
+                    <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+                    <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">],</span>
+        <span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_plugin</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -605,7 +644,7 @@ we will receive a <code>TypeError</code>.</p>
       <p>An end-to-end example showing how to use <code>DucklingParser</code> with a <code>Worflow</code>.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;I need it for 3 people.&quot;</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -637,25 +676,214 @@ we will receive a <code>TypeError</code>.</p>
         <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;people&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span>
     <span class="p">)</span>
 
-    <span class="n">expected_response</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;4 people&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">},</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
-            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;people&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
-
-    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">(</span><span class="n">expected_response</span><span class="p">)</span>
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">(</span><span class="n">expected</span><span class="p">)</span>
     <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
         <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
     <span class="p">)</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">parser</span><span class="p">()],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">PeopleEntity</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">PeopleEntity</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Test plugin with no possible entity from input.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_plugin_no_entities</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>An end-to-end example showing how <code>DucklingParser</code> works in case
+the input has no entities.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;i need it&quot;</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="kc">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">):</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;entities&quot;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span>
+        <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;people&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">(</span><span class="n">expected</span><span class="p">)</span>
+    <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
+        <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
+    <span class="p">)</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">parser</span><span class="p">()],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">workflow</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>An end-to-end example showing how <code>DucklingParser</code> works in case
+the input is invalid.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;body&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="mi">42</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">,</span> <span class="mi">42</span><span class="p">},</span> <span class="p">[</span><span class="mi">12</span><span class="p">]],</span>
+<span class="p">)</span>
+<span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_plugin_type_errors</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="kc">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">):</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;entities&quot;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span>
+        <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;people&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">([])</span>
+    <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
+        <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">parser</span><span class="p">()],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">body</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>An end-to-end example showing how <code>DucklingParser</code> works in case
+the input is invalid.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@httpretty</span><span class="o">.</span><span class="n">activate</span>
+<span class="k">def</span> <span class="nf">test_plugin_value_errors</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="kc">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">):</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;entities&quot;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">DucklingParser</span><span class="p">(</span>
+        <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;people&quot;</span><span class="p">],</span> <span class="n">locale</span><span class="o">=</span><span class="s2">&quot;en_IN&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">request_callback</span> <span class="o">=</span> <span class="n">request_builder</span><span class="p">([],</span> <span class="n">response_code</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    <span class="n">httpretty</span><span class="o">.</span><span class="n">register_uri</span><span class="p">(</span>
+        <span class="n">httpretty</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">request_callback</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">parser</span><span class="p">()],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
 </pre></div>
     </div>

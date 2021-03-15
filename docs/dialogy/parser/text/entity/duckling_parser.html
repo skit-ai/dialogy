@@ -31,7 +31,7 @@ We will expect Duckling to be running as an http service, and provide means to c
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 <span class="kn">import</span> <span class="nn">pytz</span>
@@ -230,7 +230,7 @@ and pass a friendly message.</p>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__create_req_body</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span></pre></div>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -473,7 +473,7 @@ Under normal circumstances this error shouldn&rsquo;t be raised.</p>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_entities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span></pre></div>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -565,24 +565,47 @@ To prevent rest of the things from crashing, we will raise an exception.</p>
     <div class='code'>
       <div class="highlight"><pre>        <span class="n">access</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span>
         <span class="n">mutate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span>
-        <span class="k">if</span> <span class="n">access</span> <span class="ow">and</span> <span class="n">mutate</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
-                <span class="n">entities_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">entities_json</span><span class="p">:</span>
-                    <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_json</span><span class="p">)</span>
-                    <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">type_error</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Expected `access` and `mutate` to be Callable,&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">type_error</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">type_error</span>
-
-        <span class="k">else</span><span class="p">:</span>
+        <span class="n">input_</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">access</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;Expected `access` and `mutate` to be Callable,&quot;</span>
+                <span class="s2">&quot;Expected `access` to be Callable,&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot; got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span></pre></div>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mutate</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected `mutate` to be Callable,&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">entities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">access</span> <span class="ow">and</span> <span class="n">mutate</span><span class="p">:</span>
+            <span class="n">input_</span><span class="p">,</span> <span class="n">reference_time</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span>
+                <span class="p">):</span>
+                    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span><span class="p">:</span>
+                        <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="n">input_</span><span class="si">}</span><span class="s2"> to be a List[str] or str.&quot;</span><span class="p">)</span>
+
+                <span class="n">entities_flattened</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">entity</span> <span class="k">for</span> <span class="n">entity_list</span> <span class="ow">in</span> <span class="n">entities</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entity_list</span>
+                <span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">entities_flattened</span><span class="p">:</span>
+                    <span class="n">shaped_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">entities_flattened</span><span class="p">)</span>
+                    <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">shaped_entities</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">value_error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value_error</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">value_error</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
