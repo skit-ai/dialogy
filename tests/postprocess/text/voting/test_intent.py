@@ -7,7 +7,6 @@ import pytest
 
 from dialogy import constants as const
 from dialogy.postprocess.text.voting.intent import VotePlugin
-from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
 
@@ -23,7 +22,7 @@ def test_voting_0_intents():
     have a test to see if it takes care of division 0.
     """
     intents: List[Intent] = []
-    vote_plugin = VotePlugin(access=lambda w: w.output[0], mutate=update_intent)()
+    vote_plugin = VotePlugin(access=lambda w: (w.output[0], 0), mutate=update_intent)()
     workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -37,10 +36,12 @@ def test_voting_n_intents():
     intents = [
         Intent(name="a", score=1),
         Intent(name="a", score=1),
-        Intent(name="b", score=0.33),
-        Intent(name="b", score=1),
+        Intent(name="b", score=0.13),
+        Intent(name="a", score=1),
     ]
-    vote_plugin = VotePlugin(access=lambda w: w.output[0], mutate=update_intent)()
+    vote_plugin = VotePlugin(
+        debug=True, access=lambda w: (w.output[0], len(intents)), mutate=update_intent
+    )()
     workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -49,7 +50,7 @@ def test_voting_n_intents():
 
 def test_voting_on_conflicts():
     """
-    Testing the usual case.
+    Testing the case with conflicts.
     """
     intents = [
         Intent(name="a", score=1),
@@ -57,7 +58,9 @@ def test_voting_on_conflicts():
         Intent(name="b", score=1),
         Intent(name="b", score=1),
     ]
-    vote_plugin = VotePlugin(access=lambda w: w.output[0], mutate=update_intent)()
+    vote_plugin = VotePlugin(
+        access=lambda w: (w.output[0], len(intents)), mutate=update_intent
+    )()
     workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -74,7 +77,9 @@ def test_voting_on_weak_signals():
         Intent(name="b", score=0.1),
         Intent(name="b", score=0.1),
     ]
-    vote_plugin = VotePlugin(access=lambda w: w.output[0], mutate=update_intent)()
+    vote_plugin = VotePlugin(
+        access=lambda w: (w.output[0], len(intents)), mutate=update_intent
+    )()
     workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")

@@ -2,17 +2,54 @@
 This module provides utilities to handle multiple intents from each
 alternative from the ASR.
 """
-from collections import Counter
 from typing import List
 
 import attr
-import numpy as np
+import numpy as np  # type: ignore
+import pydash as py_  # type: ignore
 
 from dialogy import constants as const
 from dialogy.plugin import Plugin
+from dialogy.types import Signal
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
+from dialogy.utils.logger import change_log_level, log
 from dialogy.workflow import Workflow
+
+
+def adjust_signal_strength(signals: List[Signal], trials: int) -> List[Signal]:
+    """
+    Re-evaluate signal strength.
+
+    Re-evaluation is based on frequency of occurrence and strength of each occurrence,
+    normalized by trials.
+
+    Here trials are total attempts made to generate signals.
+    - Worst case could be, each attempt yields a unique signal. In this case the signal strength is dampened.
+    - Best case, each attempt yields a single signal. In this case the signal strength is boosted.
+
+    Args:
+        signals (List[Signal]): A signal is a tuple of name and strength.
+        trials (int): Total attempts made to generate signals.
+
+    Returns:
+        List[Signal]: A list of strength adjusted signals. May not be as long as the input.
+    """
+    signal_groups = py_.group_by(signals, lambda signal: signal[0])
+    signals_ = [
+        (
+            signal_name,
+            (
+                # Averaging signal strength values.
+                np.mean([signal[const.SIGNAL.STRENGTH] for signal in signals])
+                * (len(signals) / trials)  # normalizing coefficient.
+            ),
+        )
+        for signal_name, signals in signal_groups.items()
+    ]
+    return sorted(
+        signals_, key=lambda signal: signal[const.SIGNAL.STRENGTH], reverse=True
+    )
 
 
 @attr.s
@@ -20,6 +57,8 @@ class VotePlugin(Plugin):
     """
     An instance of VoteIntentPlugin helps in voting for a strong
     evidence over other candidates.
+
+    **threshold**: Signal strength should atleast match this value, or else it will be dropped.
 
     This plugin takes into consideration a list of predictions (signals)
     some of which can be strong, (decided by their confidence score for now)
@@ -37,11 +76,11 @@ class VotePlugin(Plugin):
     more weight than its counterparts.
     """
 
+    threshold: float = attr.ib(default=0.6)
     fallback_intent: str = attr.ib(default=const.S_INTENT_OOS)
-    constituency: float = attr.ib(default=0.5)
-    threshold: float = attr.ib(default=0.9)
+    debug: bool = attr.ib(default=False)
 
-    def vote_signal(self, intents: List[Intent]) -> Intent:
+    def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
         """
         Reduce a list of intents.
 
@@ -62,41 +101,21 @@ class VotePlugin(Plugin):
         if not intents:
             return fallback
 
-        qualified_intents = [
-            intent.name for intent in intents if intent.score > self.threshold
-        ]
-        candidates = len(qualified_intents)
-        ballot = Counter(qualified_intents)
+        intent_signals = [(intent.name, intent.score) for intent in intents]
+        intent_signals = adjust_signal_strength(intent_signals, trials)
+        main_intent: Signal = intent_signals[0]
 
-        # victory is a list of tuples like:
-        # [("name", 4)], where 4 is the frequency.
-        victory = ballot.most_common(1)
+        if self.debug:
+            change_log_level("DEBUG")
+            log.debug("Intents with adjusted signal strength: ")
+            log.debug(intent_signals)
+            change_log_level("INFO")
 
-        # To defend against Counter init with `[]`.
-        # due to the filter.
-        if not victory:
-            return fallback
-
-        # We want the name of the winning entry.
-        # and the votes it received.
-        winner, votes = victory[0]
-
-        if votes:
-            # don't divide by 0
-            proportion = votes / candidates
-            if proportion > self.constituency:
-                return Intent(
-                    name=winner,
-                    score=float(
-                        np.mean(
-                            [
-                                intent.score
-                                for intent in intents
-                                if intent.name == winner
-                            ]
-                        )
-                    ),
-                )
+        if main_intent[const.SIGNAL.STRENGTH] >= self.threshold:  # type: ignore
+            return Intent(
+                name=main_intent[const.SIGNAL.NAME],  # type: ignore
+                score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
+            )
         return Intent(name=self.fallback_intent, score=1)
 
     def plugin(self, workflow: Workflow) -> None:
@@ -107,8 +126,8 @@ class VotePlugin(Plugin):
         mutate = self.mutate
 
         if access and mutate:
-            intents = access(workflow)
-            intent = self.vote_signal(intents)
+            intents, trials = access(workflow)
+            intent = self.vote_signal(intents, trials)
             mutate(workflow, intent)
         else:
             raise TypeError(
