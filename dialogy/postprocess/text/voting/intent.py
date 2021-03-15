@@ -5,7 +5,7 @@ alternative from the ASR.
 from typing import List
 
 import attr
-import numpy as np  # type: ignore
+import numpy as np
 import pydash as py_  # type: ignore
 
 from dialogy import constants as const
@@ -39,7 +39,7 @@ def adjust_signal_strength(signals: List[Signal], trials: int) -> List[Signal]:
     signals_ = [
         (
             signal_name,
-            (
+            float(
                 # Averaging signal strength values.
                 np.mean([signal[const.SIGNAL.STRENGTH] for signal in signals])
                 * (len(signals) / trials)  # normalizing coefficient.
