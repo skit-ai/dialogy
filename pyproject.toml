@@ -14,6 +14,7 @@ python-dateutil = "^2.8.1"
 watchdog = "^1.0.2"
 docopt = "^0.6.2"
 copier = "^5.1.0"
+pydash = "^4.9.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
