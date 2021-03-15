@@ -53,3 +53,8 @@ BASE_ENTITY_PROPS = [
 
 TIME_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.GRAIN], str)]
 PEOPLE_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.UNIT], str)]
+
+# This section covers signals tuple indices
+class SIGNAL:
+    NAME = 0
+    STRENGTH = 1
