@@ -5,4 +5,5 @@ from typing import Tuple
 
 Name = str
 Strength = float
-Signal = Tuple[Name, Strength]
+Representation = float
+Signal = Tuple[Name, Strength, Representation]
