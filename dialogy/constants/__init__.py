@@ -58,3 +58,4 @@ PEOPLE_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.UNIT], str)]
 class SIGNAL:
     NAME = 0
     STRENGTH = 1
+    REPRESENTATION = 2
