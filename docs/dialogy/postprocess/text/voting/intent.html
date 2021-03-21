@@ -83,8 +83,7 @@ normalized by trials.</p>
       <p>Averaging signal strength values.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>                <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">])</span>
-                <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span> <span class="o">/</span> <span class="n">trials</span><span class="p">)</span>  <span class="c1"># normalizing coefficient.</span>
+      <div class="highlight"><pre>                <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">])</span>
             <span class="p">),</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">signal_name</span><span class="p">,</span> <span class="n">signals</span> <span class="ow">in</span> <span class="n">signal_groups</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -130,6 +129,7 @@ more weight than its counterparts.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+    <span class="n">consensus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
     <span class="n">fallback_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">S_INTENT_OOS</span><span class="p">)</span>
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></pre></div>
     </div>
@@ -172,6 +172,9 @@ a fallback intent is emitted.</p>
         <span class="n">intent_signals</span> <span class="o">=</span> <span class="p">[(</span><span class="n">intent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">.</span><span class="n">score</span><span class="p">)</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">]</span>
         <span class="n">intent_signals</span> <span class="o">=</span> <span class="n">adjust_signal_strength</span><span class="p">(</span><span class="n">intent_signals</span><span class="p">,</span> <span class="n">trials</span><span class="p">)</span>
         <span class="n">main_intent</span><span class="p">:</span> <span class="n">Signal</span> <span class="o">=</span> <span class="n">intent_signals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">conflict_intent</span><span class="p">:</span> <span class="n">Signal</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">intent_signals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">intent_signals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
             <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
@@ -179,7 +182,12 @@ a fallback intent is emitted.</p>
             <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">intent_signals</span><span class="p">)</span>
             <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+        <span class="n">consensus_achieved</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">-</span> <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+            <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">consensus</span>
+        <span class="p">)</span>
+        <span class="n">strong_signal</span> <span class="o">=</span> <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>  <span class="c1"># type: ignore</span>
+        <span class="k">if</span> <span class="n">consensus_achieved</span> <span class="ow">and</span> <span class="n">strong_signal</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">NAME</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
                 <span class="n">score</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span>  <span class="c1"># type: ignore</span>

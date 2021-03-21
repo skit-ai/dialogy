@@ -41,8 +41,7 @@ def adjust_signal_strength(signals: List[Signal], trials: int) -> List[Signal]:
             signal_name,
             float(
                 # Averaging signal strength values.
-                np.mean([signal[const.SIGNAL.STRENGTH] for signal in signals])
-                * (len(signals) / trials)  # normalizing coefficient.
+                np.product([signal[const.SIGNAL.STRENGTH] for signal in signals])
             ),
         )
         for signal_name, signals in signal_groups.items()
@@ -77,6 +76,7 @@ class VotePlugin(Plugin):
     """
 
     threshold: float = attr.ib(default=0.6)
+    consensus: float = attr.ib(default=0.2)
     fallback_intent: str = attr.ib(default=const.S_INTENT_OOS)
     debug: bool = attr.ib(default=False)
 
@@ -104,6 +104,9 @@ class VotePlugin(Plugin):
         intent_signals = [(intent.name, intent.score) for intent in intents]
         intent_signals = adjust_signal_strength(intent_signals, trials)
         main_intent: Signal = intent_signals[0]
+        conflict_intent: Signal = (
+            intent_signals[1] if len(intent_signals) > 1 else ("_", 0)
+        )
 
         if self.debug:
             change_log_level("DEBUG")
@@ -111,7 +114,12 @@ class VotePlugin(Plugin):
             log.debug(intent_signals)
             change_log_level("INFO")
 
-        if main_intent[const.SIGNAL.STRENGTH] >= self.threshold:  # type: ignore
+        consensus_achieved = (
+            main_intent[const.SIGNAL.STRENGTH] - conflict_intent[const.SIGNAL.STRENGTH]  # type: ignore
+            > self.consensus
+        )
+        strong_signal = main_intent[const.SIGNAL.STRENGTH] > self.threshold  # type: ignore
+        if consensus_achieved and strong_signal:
             return Intent(
                 name=main_intent[const.SIGNAL.NAME],  # type: ignore
                 score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
