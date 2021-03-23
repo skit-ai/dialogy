@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 import attr
 
-from dialogy import constants
+from dialogy import constants as const
 from dialogy.types.entity.utils import traverse_dict, validate_type
 from dialogy.types.plugin import PluginFn
 
@@ -47,7 +47,7 @@ class BaseEntity:
     # **dim**
     #
     # is influenced from Duckling's convention of categorization.
-    dim = attr.ib(type=str, validator=attr.validators.instance_of(str))
+    dim = attr.ib(type=Optional[str], default=None)
 
     # **parsers**
     #
@@ -82,9 +82,18 @@ class BaseEntity:
     # **values**
     #
     # The parsed value of an entity resides within this attribute.
-    values = attr.ib(type=List[Any], default=attr.Factory(list))
+    values = attr.ib(
+        type=List[Dict[str, int]],
+        default=attr.Factory(list),
+        validator=attr.validators.instance_of(List),
+    )
 
-    __properties_map = constants.BASE_ENTITY_PROPS
+    # **values**
+    #
+    # A single value interpretation from values.
+    value: Any = attr.ib(default=None)
+
+    __properties_map = const.BASE_ENTITY_PROPS
 
     # == validate ==
     @classmethod
@@ -160,6 +169,22 @@ class BaseEntity:
         This is needed to prevent mutation of an original entity.
         """
         return copy.deepcopy(self)
+
+    def set_value(self, value: Any = None) -> None:
+        """
+        Set values and value attribute.
+
+        Args:
+            value (Any): The parsed value of an entity token.
+
+        Returns:
+            None
+        """
+        if value is None and isinstance(self.values, list) and len(self.values) > 0:
+            self.value = self.values[0][const.VALUE]
+        else:
+            self.values = [{const.VALUE: value}]
+            self.value = value
 
 
 # = entity_synthesis =
