@@ -155,6 +155,58 @@ def test_slot_dual_fill() -> None:
     assert workflow.output[0].slots["entity_2_slot"].values == [entity_2]
 
 
+def test_slot_filling_multiple() -> None:
+    """
+    Let's try filling both the slots this time with fill_multiple=True!
+    `intent_2` supports both `entity_1` and `entity_2`.
+    """
+
+    def access(workflow: Workflow) -> Any:
+        return workflow.output
+
+    intent_name = "intent_2"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(
+        rules=rules, access=access, fill_multiple=True
+    )()
+
+    # Create a mock `workflow`
+    workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
+
+    # ... a mock `Intent`
+    intent = Intent(name=intent_name, score=0.8)
+
+    # and mock `Entity`-ies.
+    body = "12th december"
+    entity_1 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_1",
+        values=[{"key": "value"}],
+        slot_names=["entity_1_slot"],
+    )
+
+    entity_2 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_2",
+        values=[{"key": "value"}],
+        slot_names=["entity_2_slot"],
+    )
+
+    # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
+    workflow.output = (intent, [entity_1, entity_2])
+    workflow.run(body)
+
+    # `workflow.output[0]` is the `Intent` we created.
+    # The `entity_1_slot` and `entity_2_slot` are filled.
+    assert workflow.output[0].slots["entity_1_slot"].values == [entity_1]
+    assert workflow.output[0].slots["entity_2_slot"].values == [entity_2]
+
+
 def test_slot_competition() -> None:
     """
     What happens when we have two entities of the same type but different value?

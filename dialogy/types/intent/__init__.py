@@ -61,17 +61,25 @@ class Intent:
         self.parsers.append(postprocessor.__name__)
         return self
 
-    def fill_slot(self, entity: BaseEntity) -> "Intent":
+    def fill_slot(self, entity: BaseEntity, fill_multiple: bool = False) -> "Intent":
         """
         Update `slots[slot_type].values` with a single entity.
 
         We will explore the possibility of sharing/understanding the meaning of multiple entities
         in the same slot type.
+
+        There maybe cases where we want to fill multiple entities of the same type within a slot.
+        In these cases fill_multiple should be set to True.
+
         Args:
             entity (BaseEntity): [entities](../../docs/entity/__init__.html)
         """
         for slot_name in entity.slot_names:
             if slot_name in self.slots:
+                if fill_multiple:
+                    self.slots[slot_name].add(entity)
+                    return self
+
                 if not self.slots[slot_name].values:
                     self.slots[slot_name].add(entity)
                 else:

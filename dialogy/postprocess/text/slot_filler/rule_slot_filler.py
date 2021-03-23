@@ -55,6 +55,11 @@ class RuleBasedSlotFillerPlugin(Plugin):
     # ```
     rules = attr.ib(type=Rule, default=attr.Factory(Dict))
 
+    # **fill_multiple**
+    # A boolean value that commands the slot filler to add multiple values of the
+    # same entity type within a slot.
+    fill_multiple = attr.ib(type=bool, default=False)
+
     # == filler ==
     def filler(self, workflow: Workflow) -> None:
         """
@@ -79,7 +84,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
                 intent.apply(self.rules)
 
                 for entity in entities:
-                    intent.fill_slot(entity)
+                    intent.fill_slot(entity, fill_multiple=self.fill_multiple)
 
                 intent.cleanup()
             except TypeError as type_error:
