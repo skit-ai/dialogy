@@ -140,17 +140,6 @@ def test_entity_parser_from_dict():
     BaseEntity.from_dict(mock_entity)
 
 
-def test_numerical_type_not_str_error():
-    body = "12 december"
-    with pytest.raises(TypeError):
-        _ = NumericalEntity(
-            range={"from": 0, "to": len(body)},
-            body=body,
-            origin="pattern",
-            type="numeric",
-        )
-
-
 def test_people_entity_unit_not_str_error():
     body = "12 people"
     with pytest.raises(TypeError):
@@ -181,3 +170,85 @@ def test_location_entity_value_not_int_error():
         _ = LocationEntity(
             range={"from": 0, "to": len(body)}, body=body, type="location"
         )
+
+
+def test_entity_set_value_values_present():
+    body = "four"
+    entity = NumericalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="basic",
+        values=[{"value": 4}],
+    )
+    entity.set_value()
+    assert entity.value == 4
+
+
+def test_entity_set_value_values_missing():
+    body = "four"
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="basic",
+    )
+    entity.set_value(value=4)
+    assert entity.value == 4
+
+
+def test_interval_entity_set_value_values_missing() -> None:
+    body = "between 2 to 4 am"
+    value = {
+        "to": {"value": "2021-01-22T05:00:00.000+05:30", "grain": "hour"},
+        "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
+    }
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+    )
+    entity.set_value()
+    assert entity.value == value
+
+
+def test_interval_entity_set_value_values_present() -> None:
+    body = "between 2 to 4 am"
+    value = {
+        "to": {"value": "2021-01-22T05:00:00.000+05:30", "grain": "hour"},
+        "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
+    }
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+    )
+    entity.set_value(value)
+    assert entity.value == value
+
+
+def test_interval_entity_value_not_dict() -> None:
+    body = "between 2 to 4 am"
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+    )
+    with pytest.raises(TypeError):
+        entity.set_value(4)
+
+
+def test_interval_entity_value_none() -> None:
+    body = "between 2 to 4 am"
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+    )
+    with pytest.raises(TypeError):
+        entity.set_value()
