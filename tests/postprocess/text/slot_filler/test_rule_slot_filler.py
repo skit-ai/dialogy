@@ -15,12 +15,12 @@ from dialogy.workflow import Workflow
 # This tutorial would be centered around these rules:
 rules = {
     "intent_1": {
-        "entity_1": {"slot_name": "entity_1_slot", "entity_type": "entity_1"}
+        "entity_1_slot": "entity_1"
         # This means, `entity_1` will reside in a slot named `entity_1_slot` for `intent_1`.
     },
     "intent_2": {
-        "entity_1": {"slot_name": "entity_1_slot", "entity_type": "entity_1"},
-        "entity_2": {"slot_name": "entity_2_slot", "entity_type": "entity_2"},
+        "entity_1_slot": "entity_1",
+        "entity_2_slot": "entity_2",
     },
 }
 

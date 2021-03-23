@@ -32,8 +32,8 @@ def test_rule_application() -> None:
 
     rules = {
         "intent": {
-            "date": {"slot_name": "date_slot", "entity_type": "date"},
-            "number": {"slot_name": "number_slot", "entity_type": "number"},
+            "date_slot": "date",
+            "number_slot": "number",
         }
     }
 
@@ -53,8 +53,8 @@ def test_missing_rule() -> None:
     """
     rules = {
         "intent": {
-            "date": {"slot_name": "date_slot", "entity_type": "date"},
-            "number": {"slot_name": "number_slot", "entity_type": "number"},
+            "date_slot": "date",
+            "number_slot": "number",
         }
     }
 
@@ -78,7 +78,7 @@ def test_slot_filling() -> None:
         values=[{"key": "value"}],
         slot_names=["basic_slot"],
     )
-    rules = {"intent": {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}}
+    rules = {"intent": {"basic_slot": "basic"}}
     intent = Intent(name="intent", score=0.8)
     intent.apply(rules)
 
