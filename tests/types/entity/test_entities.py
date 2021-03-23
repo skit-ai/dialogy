@@ -267,7 +267,6 @@ def test_entity_jsonify() -> None:
     )
     entity.set_value(value)
     entity_json = entity.json()
-    print(entity_json)
     assert "dim" not in entity_json
     assert entity_json.get("value") == value
 
@@ -284,7 +283,6 @@ def test_entity_jsonify_unrestricted() -> None:
         values=values,
     )
     entity_json = entity.json(add=["dim", "values"])
-    print(entity_json)
     assert entity_json.get("dim") == "default"
     assert entity_json.get("body") == body
     assert entity_json.get("values") == values
