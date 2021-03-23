@@ -42,4 +42,4 @@ class Slot:
         return self
 
 
-Rule = Dict[str, Dict[str, Dict[str, str]]]
+Rule = Dict[str, Dict[str, str]]
