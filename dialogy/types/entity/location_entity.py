@@ -17,14 +17,6 @@ class LocationEntity(BaseEntity):
 
     Use this type for handling locations available with reference-ids.
     This is not meant for (latitude, longitude) values, those will be covered in GeoPointEntity.
-
-    Attributes:
-        - `values` values is a List which contains the actual value of the entity
     """
 
-    values = attr.ib(
-        type=List[Dict[str, int]],
-        default=attr.Factory(List),
-        validator=attr.validators.instance_of(List),
-    )
     _meta = attr.ib(type=Dict[str, str], default=attr.Factory(Dict))
