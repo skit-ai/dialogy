@@ -6,10 +6,11 @@ Import classes:
     - Slot
 """
 
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import attr
 
+import dialogy.constants as const
 from dialogy.types.entity import BaseEntity
 
 
@@ -40,6 +41,18 @@ class Slot:
         """
         self.values = []
         return self
+
+    def json(self) -> Dict[str, Any]:
+        """
+        Convert the object to a dictionary.
+
+        Returns:
+            Dict[str, Any]
+        """
+        entities_json = [entity.json() for entity in self.values]
+        slot_json = attr.asdict(self)
+        slot_json[const.EntityKeys.VALUES] = entities_json
+        return slot_json
 
 
 Rule = Dict[str, Dict[str, str]]
