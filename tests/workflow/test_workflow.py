@@ -110,3 +110,28 @@ def test_workflow_run_debug_mode() -> None:
 
     assert workflow.input == 20, "workflow.get_input() should be 2."
     assert workflow.output == 10, "workflow.get_output() should be 10."
+
+
+def test_workflow_flush() -> None:
+    """
+    Trivial setup.
+    """
+
+    def mock_postproc(w) -> None:
+        w.output = 10
+
+    def mock_preproc(w) -> None:
+        w.input = 20
+
+    workflow = Workflow(preprocessors=[mock_preproc], postprocessors=[mock_postproc])
+
+    # initially the value of workflow.input is = 2
+    workflow.run(2)
+
+    # once the run method is complete, the value of input and output is modified by the
+    # mock_postproc and mock_preproc functions.
+    assert workflow.input == 20, "workflow.get_input() should be 20."
+    assert workflow.output == 10, "workflow.get_output() should be 10."
+    workflow.flush()
+    assert workflow.input == None, "workflow.get_input() should be None."
+    assert workflow.output == None, "workflow.get_output() should be None."
