@@ -201,6 +201,14 @@ class Workflow:
         self.postprocess()
         return self.output
 
+    # == flush ==
+    def flush(self) -> None:
+        """
+        Reset workflow state.
+        """
+        self.input = None
+        self.output = None
+
     # == __log ==
     def __log(self, message: str, processor_type: str, processor: PluginFn) -> None:
         """
