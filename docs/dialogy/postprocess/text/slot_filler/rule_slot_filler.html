@@ -64,10 +64,7 @@
 <pre><code class="language-python">
 {
     &quot;&lt;intent_name&gt;&quot;: {
-        &quot;&lt;entity_type&gt;&quot;: {
-            &quot;slot_name&quot;: &quot;&lt;slot_name&gt;&quot;,
-            &quot;entity_name&quot;: &quot;&lt;entity_name&gt;&quot;
-        }
+        &quot;&lt;slot_name&gt;&quot;:&quot;&lt;entity_name&gt;&quot;
     }
 }
 </code></pre>
@@ -92,7 +89,7 @@
 <p>A <code>Dict</code> where each key is an intent name, and each value is another <code>Dict</code>,
 in which, each key is an entity and value contains the <code>slot_name</code> and <code>entity_type.</code></p>
 <p>example:</p>
-<pre><code>rules = {&quot;basic&quot;: {&quot;slot_name&quot;: &quot;basic_slot&quot;, &quot;entity_type&quot;: &quot;basic&quot;}}
+<pre><code>rules = {&quot;intent&quot;: {&quot;slot_name&quot;: &quot;entity_type&quot;}}
 </code></pre>
     </div>
     <div class='code'>
@@ -105,10 +102,12 @@ in which, each key is an entity and value contains the <code>slot_name</code> an
       <div class='octowrap'>
         <a class='octothorpe' href='#section-4'>#</a>
       </div>
-      <h2><span id="filler" href="filler"> filler </span></h2>
+      <p><strong>fill_multiple</strong>
+A boolean value that commands the slot filler to add multiple values of the
+same entity type within a slot.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">filler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+      <div class="highlight"><pre>    <span class="n">fill_multiple</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -116,6 +115,18 @@ in which, each key is an entity and value contains the <code>slot_name</code> an
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <h2><span id="filler" href="filler"> filler </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">filler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
       </div>
       <p>Update an intent slot with compatible entity.</p>
 <ul>
@@ -138,7 +149,7 @@ in which, each key is an entity and value contains the <code>slot_name</code> an
                 <span class="n">intent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
-                    <span class="n">intent</span><span class="o">.</span><span class="n">fill_slot</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+                    <span class="n">intent</span><span class="o">.</span><span class="n">fill_slot</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">fill_multiple</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_multiple</span><span class="p">)</span>
 
                 <span class="n">intent</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">type_error</span><span class="p">:</span>
@@ -154,10 +165,10 @@ in which, each key is an entity and value contains the <code>slot_name</code> an
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-6'>
+  <div class='section' id='section-7'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-6'>#</a>
+        <a class='octothorpe' href='#section-7'>#</a>
       </div>
       <h2><span id="__call__" href="__call__"> <strong>call</strong> </span></h2>
     </div>
@@ -166,10 +177,10 @@ in which, each key is an entity and value contains the <code>slot_name</code> an
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-7'>
+  <div class='section' id='section-8'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-7'>#</a>
+        <a class='octothorpe' href='#section-8'>#</a>
       </div>
       <p><a href="../../../plugin/plugin.html#__call__">callable-plugin</a></p>
     </div>

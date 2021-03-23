@@ -197,7 +197,7 @@ from which this entity was picked up. This may be None.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">values</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
         <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span>
         <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="n">List</span><span class="p">),</span>
     <span class="p">)</span></pre></div>
@@ -213,9 +213,7 @@ from which this entity was picked up. This may be None.</p>
 <p>A single value interpretation from values.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-
-    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">BASE_ENTITY_PROPS</span></pre></div>
+      <div class="highlight"><pre>    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -223,6 +221,21 @@ from which this entity was picked up. This may be None.</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p><strong>entity_type</strong></p>
+<p>Mirrors type, to be deprecated.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">entity_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">BASE_ENTITY_PROPS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       <h2><span id="validate" href="validate"> validate </span></h2>
     </div>
@@ -232,10 +245,10 @@ from which this entity was picked up. This may be None.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-15'>
+  <div class='section' id='section-16'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
+        <a class='octothorpe' href='#section-16'>#</a>
       </div>
       <p>Check attributes of instance match expected types.</p>
 <p>Args:
@@ -247,10 +260,10 @@ from which this entity was picked up. This may be None.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-17'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-17'>#</a>
       </div>
       <h2><span id="from_dict" href="from_dict"> from_dict </span></h2>
     </div>
@@ -260,10 +273,10 @@ from which this entity was picked up. This may be None.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       <p>Create an instance of a given class <code>cls</code> from a <code>dict</code> that complies
 with attributes of <code>cls</code> through its keys and values.
@@ -278,10 +291,10 @@ will implement their own flavor of <code>__validate</code> to check their respec
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-19'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-19'>#</a>
       </div>
       <h2><span id="add_parser" href="add_parser"> add_parser </span></h2>
     </div>
@@ -290,10 +303,10 @@ will implement their own flavor of <code>__validate</code> to check their respec
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-20'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-20'>#</a>
       </div>
       <p>Update parsers with the postprocessor function name</p>
 <p>This helps us identify the progression in which the postprocessing functions
@@ -306,10 +319,10 @@ were applied to an entity. This helps in debugging and has no production utility
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-21'>#</a>
       </div>
       <h2><span id="get_value" href="get_value"> get_value </span></h2>
     </div>
@@ -318,10 +331,10 @@ were applied to an entity. This helps in debugging and has no production utility
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-22'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
       <p>Get value of an entity.</p>
 <p>The structure of an entity conceals the value in different data structures.
@@ -346,10 +359,10 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-22'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
       <h2><span id="copy" href="copy"> copy </span></h2>
     </div>
@@ -358,10 +371,10 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
       </div>
       <p>Create a deep copy of the instance and return.</p>
 <p>This is needed to prevent mutation of an original entity.</p>
@@ -371,10 +384,48 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-24'>
+  <div class='section' id='section-25'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <h2><span id="json" href="json"> json </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">skip</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">add</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>Convert the object to a dictionary.</p>
+<p>Applies some expected filters to prevent information bloat.</p>
+<p>Args:
+    skip (Optional[List[str]], optional): Names of attributes that should not be included while converting to a dict.
+    Defaults to None.</p>
+<pre><code>add (Optional[List[str]], optional): Names of attributes that should be included while converting to a dict.
+Defaults to None.
+</code></pre>
+<p>Returns:
+    Dict[str, Any]: Dictionary representation of the object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">skip_</span> <span class="o">=</span> <span class="n">skip</span> <span class="ow">or</span> <span class="n">const</span><span class="o">.</span><span class="n">SKIP_ENTITY_ATTRS</span>
+        <span class="k">if</span> <span class="n">add</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">skip_</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">SKIP_ENTITY_ATTRS</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">add</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">attr</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip_</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
       <p>Set values and value attribute.</p>
 <p>Args:
@@ -387,10 +438,10 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-25'>
+  <div class='section' id='section-28'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-25'>#</a>
+        <a class='octothorpe' href='#section-28'>#</a>
       </div>
       
     </div>
@@ -403,10 +454,10 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-26'>
+  <div class='section' id='section-29'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-26'>#</a>
+        <a class='octothorpe' href='#section-29'>#</a>
       </div>
       <h1><span id="entity_synthesis" href="entity_synthesis"> entity_synthesis </span></h1>
     </div>
@@ -415,10 +466,10 @@ This is sugar for access.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-27'>
+  <div class='section' id='section-30'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-27'>#</a>
+        <a class='octothorpe' href='#section-30'>#</a>
       </div>
       <p>Update a property=<code>property_</code> of a BaseEntity, with a given value=<code>value</code>.</p>
 <p>Args:

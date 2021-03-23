@@ -22,7 +22,9 @@
     - TimeEntity</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">attr</span>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity.numerical_entity</span> <span class="kn">import</span> <span class="n">NumericalEntity</span></pre></div>
@@ -58,7 +60,23 @@
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">dim</span> <span class="o">=</span> <span class="s2">&quot;time&quot;</span>
     <span class="n">grain</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
-    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__attrs_post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">grain_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">grain_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;grain&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">grain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="n">grain_</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span>
 
 </pre></div>
     </div>
