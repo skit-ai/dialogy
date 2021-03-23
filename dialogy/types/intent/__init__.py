@@ -99,7 +99,14 @@ class Intent:
         """
         Convert the object to a dictionary.
         """
-        return attr.asdict(self)
+        intent = self
+        intent_slots = {}
+        for slot_name in intent.slots:
+            intent_slots[slot_name] = intent.slots[slot_name].json()
+
+        intent_json = attr.asdict(self)
+        intent_json["slots"] = intent_slots
+        return intent_json
 
 
 """
