@@ -218,10 +218,14 @@ class DucklingParser(Plugin):
             for entity in entities_json:
                 if entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.INTERVAL:
                     cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.INTERVAL]  # type: ignore
-                    entity_object_list.append(cls.from_dict(self.mutate_entity(entity)))
+                    duckling_entity = cls.from_dict(self.mutate_entity(entity))
+                    duckling_entity.set_value()
+                    entity_object_list.append(duckling_entity)
                 elif entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.VALUE:
                     cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
-                    entity_object_list.append(cls.from_dict(self.mutate_entity(entity)))
+                    duckling_entity = cls.from_dict(self.mutate_entity(entity))
+                    duckling_entity.set_value()
+                    entity_object_list.append(duckling_entity)
                 else:
                     # Raised only if an unsupported `dimension` is used.
                     raise NotImplementedError(
