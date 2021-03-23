@@ -31,10 +31,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
     {
         "<intent_name>": {
-            "<entity_type>": {
-                "slot_name": "<slot_name>",
-                "entity_name": "<entity_name>"
-            }
+            "<slot_name>":"<entity_name>"
         }
     }
     ```
@@ -54,7 +51,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
     #
     # example:
     # ```
-    # rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
+    # rules = {"intent": {"slot_name": "entity_type"}}
     # ```
     rules = attr.ib(type=Rule, default=attr.Factory(Dict))
 
