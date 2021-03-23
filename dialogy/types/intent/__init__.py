@@ -47,10 +47,8 @@ class Intent:
         if not rule:
             return self
 
-        for entity_name, entity_meta in rule.items():
-            self.slots[entity_meta["slot_name"]] = Slot(
-                name=entity_name, type=[entity_meta["entity_type"]], values=[]
-            )
+        for slot_name, entity_type in rule.items():
+            self.slots[slot_name] = Slot(name=slot_name, type=[entity_type], values=[])
         return self
 
     def add_parser(self, postprocessor: PluginFn) -> "Intent":
