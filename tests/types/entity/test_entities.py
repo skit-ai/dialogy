@@ -304,3 +304,4 @@ def test_entity_grain_to_type() -> None:
         values=[value],
     )
     assert entity.entity_type == "hour"
+    assert entity.type == "hour"

@@ -35,3 +35,4 @@ class TimeEntity(NumericalEntity):
         if isinstance(self.values, list) and self.values:
             grain_ = self.values[0].get("grain") or self.grain
         self.entity_type = grain_ or self.type
+        self.type = grain_ or self.type
