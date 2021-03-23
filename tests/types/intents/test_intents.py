@@ -92,3 +92,25 @@ def test_intent_json() -> None:
     intent = Intent(name=name, score=0.5)
     intent_json = intent.json()
     assert intent_json.get("name") == name
+
+
+def test_slot_filling() -> None:
+    """
+    This test shows rule application, and filling an entity within a slot.
+    """
+    body = "12th december"
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="basic",
+        values=[{"key": "value"}],
+        slot_names=["basic_slot"],
+    )
+    rules = {"intent": {"basic_slot": "basic"}}
+    intent = Intent(name="intent", score=0.8)
+    intent.apply(rules)
+    intent.fill_slot(entity)
+
+    intent_json = intent.json()
+    assert "dim" not in intent_json["slots"]["basic_slot"]["values"][0]
