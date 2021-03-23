@@ -252,3 +252,55 @@ def test_interval_entity_value_none() -> None:
     )
     with pytest.raises(TypeError):
         entity.set_value()
+
+
+def test_entity_jsonify() -> None:
+    body = "12th december"
+    value = "value"
+    values = [{"key": value}]
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="basic",
+        values=values,
+    )
+    entity.set_value(value)
+    entity_json = entity.json()
+    print(entity_json)
+    assert "dim" not in entity_json
+    assert entity_json.get("value") == value
+
+
+def test_entity_jsonify_unrestricted() -> None:
+    body = "12th december"
+    value = "value"
+    values = [{"key": value}]
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="basic",
+        values=values,
+    )
+    entity_json = entity.json(add=["dim", "values"])
+    print(entity_json)
+    assert entity_json.get("dim") == "default"
+    assert entity_json.get("body") == body
+    assert entity_json.get("values") == values
+
+
+def test_entity_grain_to_type() -> None:
+    body = "between 2 to 4 am"
+    value = {
+        "to": {"value": "2021-01-22T05:00:00.000+05:30", "grain": "hour"},
+        "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
+    }
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+    )
+    assert entity.entity_type == "hour"

@@ -85,3 +85,10 @@ def test_slot_filling() -> None:
     intent.fill_slot(entity)
 
     assert intent.slots["basic_slot"].values[0] == entity
+
+
+def test_intent_json() -> None:
+    name = "intent_name"
+    intent = Intent(name=name, score=0.5)
+    intent_json = intent.json()
+    assert intent_json.get("name") == name
