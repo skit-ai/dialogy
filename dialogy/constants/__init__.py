@@ -34,7 +34,17 @@ class EntityKeys:
     UNIT = "unit"
     VALUE = "value"
     VALUES = "values"
+    ORIGIN = "origin"
+    SLOT_NAMES = "slot_names"
 
+
+SKIP_ENTITY_ATTRS = [
+    EntityKeys.DIM,
+    EntityKeys.VALUES,
+    EntityKeys.LATENT,
+    EntityKeys.ORIGIN,
+    EntityKeys.SLOT_NAMES,
+]
 
 # This section is needed for dialogy.types.entities.*
 # Each entity type has a few properties which need to be
