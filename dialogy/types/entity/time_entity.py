@@ -4,6 +4,8 @@ Module provides access to entity types that can be parsed to obtain datetime val
 Import classes:
     - TimeEntity
 """
+from typing import Optional
+
 import attr
 
 from dialogy import constants
@@ -27,3 +29,9 @@ class TimeEntity(NumericalEntity):
     dim = "time"
     grain = attr.ib(type=str, default=None, validator=attr.validators.instance_of(str))
     __properties_map = constants.TIME_ENTITY_PROPS
+
+    def __attrs_post_init__(self) -> None:
+        grain_: Optional[str] = None
+        if isinstance(self.values, list) and self.values:
+            grain_ = self.values[0].get("grain") or self.grain
+        self.entity_type = grain_ or self.type

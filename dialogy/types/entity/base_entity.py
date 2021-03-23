@@ -83,7 +83,7 @@ class BaseEntity:
     #
     # The parsed value of an entity resides within this attribute.
     values = attr.ib(
-        type=List[Dict[str, int]],
+        type=List[Dict[str, Any]],
         default=attr.Factory(list),
         validator=attr.validators.instance_of(List),
     )
@@ -99,9 +99,6 @@ class BaseEntity:
     entity_type: Optional[str] = attr.ib(default=None)
 
     __properties_map = const.BASE_ENTITY_PROPS
-
-    def __attrs_post_init__(self) -> None:
-        self.entity_type = self.type
 
     # == validate ==
     @classmethod
@@ -177,6 +174,30 @@ class BaseEntity:
         This is needed to prevent mutation of an original entity.
         """
         return copy.deepcopy(self)
+
+    # == json ==
+    def json(
+        self, skip: Optional[List[str]] = None, add: Optional[List[str]] = None
+    ) -> Dict[str, Any]:
+        """
+        Convert the object to a dictionary.
+
+        Applies some expected filters to prevent information bloat.
+
+        Args:
+            skip (Optional[List[str]], optional): Names of attributes that should not be included while converting to a dict.
+            Defaults to None.
+
+            add (Optional[List[str]], optional): Names of attributes that should be included while converting to a dict.
+            Defaults to None.
+
+        Returns:
+            Dict[str, Any]: Dictionary representation of the object
+        """
+        skip_ = skip or const.SKIP_ENTITY_ATTRS
+        if add and isinstance(add, list):
+            skip_ = [name for name in const.SKIP_ENTITY_ATTRS if name not in add]
+        return attr.asdict(self, filter=lambda attr, _: attr.name not in skip_)
 
     def set_value(self, value: Any = None) -> None:
         """
