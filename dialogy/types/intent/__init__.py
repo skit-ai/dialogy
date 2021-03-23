@@ -6,7 +6,7 @@ Import classes:
     - Intent
 """
 
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import attr
 
@@ -94,6 +94,12 @@ class Intent:
         for slot_name in slot_names:
             if not self.slots[slot_name].values:
                 del self.slots[slot_name]
+
+    def json(self) -> Dict[str, Any]:
+        """
+        Convert the object to a dictionary.
+        """
+        return attr.asdict(self)
 
 
 """
