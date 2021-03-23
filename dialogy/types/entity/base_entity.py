@@ -93,7 +93,15 @@ class BaseEntity:
     # A single value interpretation from values.
     value: Any = attr.ib(default=None)
 
+    # **entity_type**
+    #
+    # Mirrors type, to be deprecated.
+    entity_type: Optional[str] = attr.ib(default=None)
+
     __properties_map = const.BASE_ENTITY_PROPS
+
+    def __attrs_post_init__(self) -> None:
+        self.entity_type = self.type
 
     # == validate ==
     @classmethod
