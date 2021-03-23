@@ -26,11 +26,9 @@ class NumericalEntity(BaseEntity):
 
     Attributes:
         - `dim` dimension of the entity from duckling parser
-        - `reader` gives the list of all functions that have changed the entity in some way
         - `type` is the type of the entity which can have values in ["value", "interval"]
     """
 
-    reader = attr.ib(type=List[Callable[[Any], Any]], default=attr.Factory(list))
     origin = attr.ib(
         type=str, default="value", validator=attr.validators.instance_of(str)
     )
