@@ -24,5 +24,6 @@ class TimeEntity(NumericalEntity):
     - `grain` tells us the smallest unit of time in the utterance
     """
 
+    dim = "time"
     grain = attr.ib(type=str, default=None, validator=attr.validators.instance_of(str))
     __properties_map = constants.TIME_ENTITY_PROPS
