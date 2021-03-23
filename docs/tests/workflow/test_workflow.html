@@ -346,7 +346,88 @@ mock_postproc and mock_preproc functions.</p>
     <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span> <span class="o">==</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;workflow.get_input() should be 2.&quot;</span>
+    <span class="k">assert</span> <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">==</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;workflow.get_output() should be 10.&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Trivial setup.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_workflow_flush</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mock_postproc</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="mi">10</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mock_preproc</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="mi">20</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">mock_preproc</span><span class="p">],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">mock_postproc</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>initially the value of workflow.input is = 2</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>once the run method is complete, the value of input and output is modified by the
+mock_postproc and mock_preproc functions.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">assert</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span> <span class="o">==</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;workflow.get_input() should be 20.&quot;</span>
     <span class="k">assert</span> <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">==</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;workflow.get_output() should be 10.&quot;</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;workflow.get_input() should be None.&quot;</span>
+    <span class="k">assert</span> <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;workflow.get_output() should be None.&quot;</span>
 
 </pre></div>
     </div>

@@ -227,7 +227,61 @@ have a test to see if it takes care of division 0.</p>
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">vote_plugin</span><span class="p">])</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">intents</span><span class="p">,</span> <span class="p">[]</span>
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-        <span class="n">intent</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">intent</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_representation_oos</span><span class="p">():</span>
+    <span class="n">intents</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.99</span><span class="p">),</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.31</span><span class="p">),</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.44</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">vote_plugin</span> <span class="o">=</span> <span class="n">VotePlugin</span><span class="p">(</span>
+        <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">intents</span><span class="p">)),</span> <span class="n">mutate</span><span class="o">=</span><span class="n">update_intent</span>
+    <span class="p">)()</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">vote_plugin</span><span class="p">])</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">intents</span><span class="p">,</span> <span class="p">[]</span>
+    <span class="n">intent</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">intent</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;_oos_&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">test_representation_intent</span><span class="p">():</span>
+    <span class="n">intents</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.99</span><span class="p">),</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.99</span><span class="p">),</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.91</span><span class="p">),</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.31</span><span class="p">),</span>
+        <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.44</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">vote_plugin</span> <span class="o">=</span> <span class="n">VotePlugin</span><span class="p">(</span>
+        <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">intents</span><span class="p">)),</span> <span class="n">mutate</span><span class="o">=</span><span class="n">update_intent</span>
+    <span class="p">)()</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">vote_plugin</span><span class="p">])</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">intents</span><span class="p">,</span> <span class="p">[]</span>
+    <span class="n">intent</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">intent</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span>
 
 </pre></div>
     </div>
