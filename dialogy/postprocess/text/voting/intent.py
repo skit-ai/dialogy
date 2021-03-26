@@ -2,7 +2,7 @@
 This module provides utilities to handle multiple intents from each
 alternative from the ASR.
 """
-from typing import List
+from typing import Any, List
 
 import attr
 import numpy as np
@@ -17,7 +17,11 @@ from dialogy.utils.logger import change_log_level, log
 from dialogy.workflow import Workflow
 
 
-def adjust_signal_strength(signals: List[Signal], trials: int) -> List[Signal]:
+def adjust_signal_strength(
+    signals: List[Signal],
+    trials: int,
+    aggregate_fn: Any = np.mean,
+) -> List[Signal]:
     """
     Re-evaluate signal strength.
 
@@ -35,13 +39,19 @@ def adjust_signal_strength(signals: List[Signal], trials: int) -> List[Signal]:
     Returns:
         List[Signal]: A list of strength adjusted signals. May not be as long as the input.
     """
+    # Group intents by name.
+    if not callable(aggregate_fn):
+        raise TypeError(
+            "Expected aggregate_fn to be a callable that"
+            f" operates on a list of floats. Found {type(aggregate_fn)} instead."
+        )
     signal_groups = py_.group_by(signals, lambda signal: signal[0])
     signals_ = [
         (
             signal_name,
             float(
-                # Averaging signal strength values.
-                np.product([signal[const.SIGNAL.STRENGTH] for signal in signals])
+                # Averaging (or some other aggregate fn) signal strength values.
+                aggregate_fn([signal[const.SIGNAL.STRENGTH] for signal in signals])
             ),
             float(len(signals) / trials),
         )
@@ -80,6 +90,7 @@ class VotePlugin(Plugin):
     consensus: float = attr.ib(default=0.2)
     representation: float = attr.ib(default=0.3)
     fallback_intent: str = attr.ib(default=const.S_INTENT_OOS)
+    aggregate_fn: Any = attr.ib(default=np.mean)
     debug: bool = attr.ib(default=False)
 
     def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
@@ -104,7 +115,9 @@ class VotePlugin(Plugin):
             return fallback
 
         intent_signals = [(intent.name, intent.score, 1.0) for intent in intents]
-        intent_signals = adjust_signal_strength(intent_signals, trials)
+        intent_signals = adjust_signal_strength(
+            intent_signals, trials, aggregate_fn=self.aggregate_fn
+        )
         main_intent: Signal = intent_signals[0]
         conflict_intent: Signal = (
             intent_signals[1] if len(intent_signals) > 1 else ("_", 0, 0)

@@ -150,3 +150,26 @@ def test_representation_intent():
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
     assert intent.name == "a"
+
+
+def test_aggregate_fn_incorrect():
+    intents = [
+        Intent(name="a", score=0.99),
+        Intent(name="a", score=0.99),
+        Intent(name="a", score=0.91),
+        Intent(name="b", score=0.1),
+        Intent(name="c", score=0.31),
+        Intent(name="d", score=0.44),
+    ]
+
+    vote_plugin = VotePlugin(
+        access=lambda w: (w.output[0], len(intents)),
+        mutate=update_intent,
+        aggregate_fn=5,
+    )()
+    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow.output = intents, []
+
+    with pytest.raises(TypeError):
+        intent, _ = workflow.run(input_="")
+        assert intent.name == "a"
