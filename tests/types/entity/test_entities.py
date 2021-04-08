@@ -288,6 +288,21 @@ def test_entity_jsonify_unrestricted() -> None:
     assert entity_json.get("values") == values
 
 
+def test_entity_jsonify_skip() -> None:
+    body = "12th december"
+    value = "value"
+    values = [{"key": value}]
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="basic",
+        values=values,
+    )
+    entity_json = entity.json(skip=["values"])
+    assert "values" not in entity_json
+
+
 def test_entity_grain_to_type() -> None:
     body = "between 2 to 4 am"
     value = {
