@@ -226,6 +226,11 @@ class DucklingParser(Plugin):
                     duckling_entity = cls.from_dict(self.mutate_entity(entity))
                     duckling_entity.set_value()
                     entity_object_list.append(duckling_entity)
+                elif entity[EntityKeys.TYPE] == EntityKeys.DURATION:
+                    cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
+                    duckling_entity = cls.from_dict(self.mutate_entity(entity))
+                    duckling_entity.set_value()
+                    entity_object_list.append(duckling_entity)
                 else:
                     # Raised only if an unsupported `dimension` is used.
                     raise NotImplementedError(
