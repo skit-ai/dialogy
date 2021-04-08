@@ -26,6 +26,7 @@ class EntityKeys:
     FROM = "from"
     GRAIN = "grain"
     INTERVAL = "interval"
+    DURATION = "duration"
     LATENT = "latent"
     RANGE = "range"
     START = "start"
