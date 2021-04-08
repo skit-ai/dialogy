@@ -28,6 +28,7 @@ pylint = "^2.6.0"
 pycco = "^0.6.0"
 watchdog = "^1.0.2"
 isort = "^5.7.0"
+sphinx = "^3.5.3"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
