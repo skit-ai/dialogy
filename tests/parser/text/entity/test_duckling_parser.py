@@ -7,6 +7,7 @@ import pytz
 
 from dialogy.parser.text.entity import DucklingParser
 from dialogy.types.entity import (
+    DurationEntity,
     NumericalEntity,
     PeopleEntity,
     TimeEntity,
@@ -243,6 +244,37 @@ def test_entity_json_to_object_numerical_entity() -> None:
     parser = DucklingParser(locale="en_IN")
     entities = parser.reshape(entities_json)
     assert isinstance(entities[0], NumericalEntity)
+
+
+# == Test transformation of entity-json to DurationEntity ==
+def test_entity_json_to_object_duration_entity() -> None:
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for NumericalEntity here.
+    """
+    entities_json = [
+        {
+            "body": "2 days",
+            "start": 0,
+            "value": {
+                "value": 2,
+                "day": 2,
+                "type": "value",
+                "unit": "day",
+                "normalized": {"value": 172800, "unit": "second"},
+            },
+            "end": 6,
+            "dim": "duration",
+            "latent": False,
+        }
+    ]
+    parser = DucklingParser(dimensions=["duration"], locale="en_IN")
+    entities = parser.reshape(entities_json)
+    print(entities)
+    if not isinstance(entities[0], DurationEntity):
+        pytest.fail("expected entities.")
 
 
 # == Test transformation of entity-json to PeopleEntity ==
