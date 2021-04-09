@@ -15,6 +15,7 @@ watchdog = "^1.0.2"
 docopt = "^0.6.2"
 copier = "^5.1.0"
 pydash = "^4.9.3"
+numpy = "^1.20.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
@@ -29,6 +30,7 @@ pycco = "^0.6.0"
 watchdog = "^1.0.2"
 isort = "^5.7.0"
 sphinx = "^3.5.3"
+Flask-Sphinx-Themes = "^1.0.2"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
