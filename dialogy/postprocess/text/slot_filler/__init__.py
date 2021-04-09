@@ -1,4 +1,6 @@
 """
+.. _slot_filler:
+
 To handle a single dialog we need a system that can:
 
 1. Classify inputs into categories.

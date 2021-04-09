@@ -1,21 +1,14 @@
 """
-Parser for [Duckling](https://github.com/facebook/duckling), the open source project.
+.. _duckling_parser:
 
-We use [Duckling](https://github.com/facebook/duckling) for parsing and extracting date, time, numbers, currency etc.
-We will expect Duckling to be running as an http service, and provide means to connect from the implementation here.
+This module exposes a parser for `Duckling <https://github.com/facebook/duckling>`_.
 
-## Tutorials
-
-- [DucklingParser](../../../../tests/parser/text/entity/test_duckling_parser.html)
-
-Import classes:
-
-- DucklingParser
+`Duckling <https://github.com/facebook/duckling>`_ helps parsing values like: :code:`date`, :code:`time`, :code:`numbers`, :code:`currency` etc. 
+The parser will expect Duckling to be running as an http service, and provide means to connect from the implementation here.
 """
 import json
 from typing import Any, Callable, Dict, List, Optional, Union
 
-import attr
 import pytz
 import requests
 from pytz.tzinfo import BaseTzInfo  # type: ignore
@@ -26,82 +19,66 @@ from dialogy.types.entity import BaseEntity, dimension_entity_map
 from dialogy.workflow import Workflow
 
 
-# == DucklingParser ==
-@attr.s(kw_only=True)
 class DucklingParser(Plugin):
     """
-    [Plugin](../../../plugin/plugin.html) for extracting entities using [Duckling](https://github.com/facebook/duckling).
-    Once instantiated, a `duckling_parser` object will interface to an http server, running [Duckling](https://github.com/facebook/duckling).
+    A :ref:`Plugin<plugin>` for extracting entities using `Duckling <https://github.com/facebook/duckling>`_.
+    Once instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling <https://github.com/facebook/duckling>`_.
 
-    This object when used as a plugin, transforms the `List[Dict[str, Any]]` returned from the API to a [BaseEntity](../../../types/entity/base_entity.html).
+    This object when used as a plugin, transforms the :code:`List[Dict[str, Any]]` returned from the API to a :ref:`BaseEntity<base_entity>` or one of its subclasses.
 
-    Plugin signature:
+    :param dimensions: `Dimensions <https://github.com/facebook/duckling#supported-dimensions>`_. Of the listed dimensions, we support:
 
-    - `access(Workflow) -> (str, int)`
-        - int here should be `datetime.timestamp()`.
-    - `mutate(Workflow, List[BaseEntity]) -> None`
-        - insert `List[BaseEntity]` into `Workflow`.
+        - `Numeral`
+        - `Time`
+        - `TimeInterval`
+        - `Duration`
+        - `People` - This isn't part of the standard, we have a private fork to support this.
 
-    Attributes:
+        Do note, passing more dimensions is not free. Duckling would search for extra set of patterns just because
+        those dimensions were expected.
+    :type dimensions: Optional[List[str]]
 
-    - dimensions (Optional[List[str]])
-    - locale (str):
-    - timezone (Optional[str]):
-    - timeout (Optional[float]): (default `0.05`)
-    - url (str): (default: `"http://0.0.0.0:8000/parse"`)
+    :param locale: The format for expressing locale requires language code and country name ids. Read about 
+        `sections <https://github.com/facebook/duckling#extending-duckling>`_ that define 
+        `ISO-639-codes <https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes>`_ for languages and
+        `ISO3166 alpha2 country code <https://www.iso.org/obp/ui/#search/code/>`_ for country codes.
+        Examples: `"en_IN"`, `"en_US"`, `"en_GB"`.
+    :type locale: str
+
+    :param timezone: `pytz` Timezone. This is especially important when services are deployed across different geographies
+        and consistency is expected in the responses. Get a valid value from a `list of tz database timezones <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>`_.
+        Example: `"Asia/Kolkata"`
+    :type timezone: Optional[str]
+
+    :param timeout: There are certain strings which tend to stall Duckling: `example <https://github.com/facebook/duckling/issues/338>`_.
+        In such cases, to prevent the overall experience to slow down as well, provide a certain timeout value, defaults to 0.5.
+    :type timeout: float
+
+    :param url: The address where Duckling's entity parser can be reached, defaults to "http://0.0.0.0:8000/parse".
+    :type url: Optional[str]
     """
+    def __init__(self) -> None:
+        self.dimensions: Optional[List[str]] = None
+        self.locale: Optional[str] = None
+        self.timezone: Optional[str] = None
+        self.timeout: Optional[float] = 0.5
+        self.url: str = "http://0.0.0.0:8000/parse"
+        self.headers: Dict[str, str] = {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+        }
 
-    # **dimensions**
-    #
-    # [[Read](https://github.com/facebook/duckling#supported-dimensions)]
-    # We support:
-    # - `Numeral`
-    # - `Time`
-    # - `People` - This isn't part of the standard, we have a private fork to support this.
-    # Do note, passing more dimensions is not free. Duckling would search for extra set of patterns just because
-    # those dimensions were expected.
-    dimensions: Optional[List[str]] = attr.ib(default=None)
-
-    # **locale**
-    #
-    # The format for expressing locale requires language code and country name ids. [[Read](https://github.com/facebook/duckling#extending-duckling)]
-    # about sections that define [ISO-639-codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) for languages and
-    # [ISO3166 alpha2 country code](https://www.iso.org/obp/ui/#search/code/) for country codes.
-    # Examples: `"en_IN"`, `"en_US"`, `"en_GB"`.
-    locale: str = attr.ib(default=None)
-
-    # **timezone**
-    #
-    # `pytz` Timezone. This is especially important when services are deployed across different geographies
-    # and consistency is expected in the responses. Get a valid value from a [list of tz database timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
-    # Example: `"Asia/Kolkata"`
-    timezone: Optional[str] = attr.ib(default=None)
-
-    # **timeout**
-    #
-    # There are certain strings which tend to stall Duckling: [example](https://github.com/facebook/duckling/issues/338).
-    # In such cases, to prevent the overall experience to slow down as well, provide a certain timeout value.
-    timeout: Optional[float] = attr.ib(default=0.05)
-
-    # **url**: The address where Duckling's entity parser can be reached.
-    url: str = attr.ib(default="http://0.0.0.0:8000/parse")
-
-    headers: Dict[str, str] = {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-    }
-
-    # == __set_timezone ==
     def __set_timezone(self) -> Optional[BaseTzInfo]:
         """
         Set timezone as BaseTzInfo from compatible timezone string.
 
         Raises:
-            pytz.UnknownTimeZoneError: If `self.timezone` is not in [list of tz database timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+            pytz.UnknownTimeZoneError: 
 
-        Returns:
-            [BaseTzInfo]
+        :raises pytz.UnknownTimeZoneError: If `self.timezone` is not in `list of tz database 
+            timezones <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>`_.
+        :return: A valid timezone 
+        :rtype: Optional[BaseTzInfo]
         """
-
         # If timezone is an unsafe string, we will handle a `pytz.UnknownTimeZoneError` exception
         # and pass a friendly message.
         if isinstance(self.timezone, str):
@@ -114,27 +91,29 @@ class DucklingParser(Plugin):
                 ) from unknown_timezone_error
         return None
 
-    # == __create_req_body ==
     def __create_req_body(
         self, text: str, reference_time: Optional[int]
     ) -> Dict[str, Any]:
         """
         create request body for entity parsing
 
-        Args:
+        **Payload Description**
+        
+        text - example: "3 people tomorrow"
+        
+        reftime - Resolve relative time like "yesterday", "next month", etc.
+        Make your own reference time using the current timestamp using: :code:`int(datetime.now().timestamp() * 1000)`
+        These are the seconds since the `Unix epoch <https://en.wikipedia.org/wiki/Unix_time>`_
 
-        - text (str): A sentence or document.
-        - reference_time (Optional[int]):
+        :param text: A sentence or document.
+        :type text: str
+        :param reference_time: Impart context of timestamp, relevant for time related entities.
+        :type reference_time: Optional[int]
+        :return: request object for Duckling server.
+        :rtype: Dict[str, Any]
         """
         dimensions = self.dimensions
 
-        # **Payload Description**
-        #
-        # text - example: "3 people tomorrow"
-        #
-        # reftime - Resolve relative time like "yesterday", "next month", etc.
-        # Make your own reference time using the current timestamp using: `int(datetime.now().timestamp() * 1000)`
-        # These are the seconds since the [Unix epoch](https://en.wikipedia.org/wiki/Unix_time)
         payload = {
             "text": text,
             "locale": self.locale,
@@ -145,7 +124,6 @@ class DucklingParser(Plugin):
 
         return payload
 
-    # == mutate_entity ==
     @staticmethod
     def mutate_entity(entity: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -153,11 +131,10 @@ class DucklingParser(Plugin):
 
         The purpose is to simplify BaseEntity initialization by calling `BaseEntity.from_dict(**entity)`.
 
-        Args:
-            entity (Dict[str, Any]): An entity returned from Duckling's API.
-
-        Returns:
-            Dict[str, Any]: Updated keys and structure.
+        :param entity: An entity returned from Duckling's API.
+        :type entity: Dict[str, Any]
+        :return: Updated keys and structure.
+        :rtype: Dict[str, Any]
         """
 
         # **range** describes the span of string from which the entity was found.
@@ -191,7 +168,6 @@ class DucklingParser(Plugin):
         del entity[EntityKeys.VALUE]
         return entity
 
-    # == reshape ==
     def reshape(
         self, entities_json: List[Dict[str, Any]]
     ) -> Optional[List[BaseEntity]]:
@@ -199,14 +175,21 @@ class DucklingParser(Plugin):
         Create `BaseEntity` from a list of entity dicts.
 
         Args:
-            entities_json (List[Dict[str, Any]]): List of entities derived from Duckling's API.
+            entities_json (List[Dict[str, Any]]): 
 
         Raises:
-            NotImplementedError: Raised when dimensions not supported by the project are used.
-            KeyError: Expected keys in entity dict don't match the Entity class.
+            NotImplementedError: 
+            KeyError: 
 
         Returns:
-            Optional[List[BaseEntity]]: A list of Entity objects.
+            Optional[List[BaseEntity]]: 
+
+        :param entities_json: List of entities derived from Duckling's API.
+        :type entities_json: List[Dict[str, Any]]
+        :raises NotImplementedError: Raised when dimensions not supported by the project are used.
+        :raises KeyError: Expected keys in entity dict don't match the Entity class.
+        :return: A list of objects subclassed from :ref:`BaseEntity <base_entity>`
+        :rtype: Optional[List[BaseEntity]]
         """
         entity_object_list: List[BaseEntity] = []
 
@@ -244,7 +227,6 @@ class DucklingParser(Plugin):
             ) from key_error
         return entity_object_list
 
-    # == get_entities ==
     def get_entities(
         self, text: str, reference_time: Optional[int] = None
     ) -> List[Dict[str, Any]]:
@@ -256,10 +238,8 @@ class DucklingParser(Plugin):
 
         Args:
 
-        - text (str): The sentence or document in which entities must be looked up.
-        - reference_time (int): Cases where relative units of time are mentioned,
-                                like "today", "now", etc. We need to know the current time
-                                to parse the values into usable dates/times.
+        - text (str): 
+        - reference_time (int): 
 
         Raises:
             requests.exceptions.ConnectionError: Duckling cannot be reached at `self.url`
@@ -268,6 +248,16 @@ class DucklingParser(Plugin):
 
         Returns:
             Optional[List[Dict[str, Any]]]
+
+        :param text: The sentence or document in which entities must be looked up.
+        :type text: str
+        :param reference_time: Cases where relative units of time are mentioned,
+                                like "today", "now", etc. We need to know the current time
+                                to parse the values into usable dates/times, defaults to None
+        :type reference_time: Optional[int], optional
+        :raises ValueError: Duckling API call failure leading to no json response.
+        :return: Duckling entities as python :code:`dicts`.
+        :rtype: List[Dict[str, Any]]
         """
         body = self.__create_req_body(text, reference_time)
         response = requests.post(
@@ -285,7 +275,6 @@ class DucklingParser(Plugin):
             f"Duckling API call failed | [{response.status_code}]: {response.text}"
         )
 
-    # == plugin ==
     def plugin(self, workflow: Workflow) -> None:
         """
         Insert Entity objects into the workflow.

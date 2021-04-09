@@ -1,4 +1,5 @@
 """
+.. _base_entity:
 Module provides access to a base class to create other entities.
 
 These methods of this class that are supposed to be overridden:

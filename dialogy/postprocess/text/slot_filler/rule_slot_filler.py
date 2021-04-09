@@ -1,12 +1,7 @@
 """
-Module provides access to a rule-based [SlotFiller](../__init__.html).
+.. _rule_slot_filler:
 
-## Tutorials
-- [RuleSlotFiller](../../../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
-
-Imports:
-
-- RuleBasedSlotFillerPlugin
+Module provides access to a rule-based :ref:`slot filler<slot_filler>`.
 """
 from typing import Dict, List, Tuple
 
@@ -20,21 +15,19 @@ from dialogy.types.slots import Rule
 from dialogy.workflow import Workflow
 
 
-# == RuleBasedSlotFillerPlugin ==
 @attr.s
 class RuleBasedSlotFillerPlugin(Plugin):
     """
     An instance of this class is used for generating a slot-filler.
 
     Schema for rules looks like:
-    ```python
+    .. code-block:: json
 
     {
         "<intent_name>": {
             "<slot_name>":"<entity_name>"
         }
     }
-    ```
 
     Plugin signature:
 
@@ -44,7 +37,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
     Irrespective of the entities that are found, only the listed type in the slot shall be present in `values`.
     """
 
-    # **rules**
+    # rules
     #
     # A `Dict` where each key is an intent name, and each value is another `Dict`,
     # in which, each key is an entity and value contains the `slot_name` and `entity_type.`
@@ -55,7 +48,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
     # ```
     rules = attr.ib(type=Rule, default=attr.Factory(Dict))
 
-    # **fill_multiple**
+    # fill_multiple
     # A boolean value that commands the slot filler to add multiple values of the
     # same entity type within a slot.
     fill_multiple = attr.ib(type=bool, default=False)

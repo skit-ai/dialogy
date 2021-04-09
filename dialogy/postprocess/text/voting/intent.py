@@ -32,12 +32,18 @@ def adjust_signal_strength(
     - Worst case could be, each attempt yields a unique signal. In this case the signal strength is dampened.
     - Best case, each attempt yields a single signal. In this case the signal strength is boosted.
 
-    Args:
-        signals (List[Signal]): A signal is a tuple of name and strength.
-        trials (int): Total attempts made to generate signals.
-
     Returns:
         List[Signal]: A list of strength adjusted signals. May not be as long as the input.
+
+    :param signals: A signal is a tuple of name and strength.
+    :type signals: List[Signal]
+    :param trials: Total attempts made to generate signals.
+    :type trials: int
+    :param aggregate_fn: A function to normalize a list of floating point values, defaults to np.mean
+    :type aggregate_fn: Any, optional
+    :raises TypeError: :code:`aggregate_fn` if passed should be a :code:`callable`.
+    :return: A list of normalized signale.
+    :rtype: List[Signal]
     """
     # Group intents by name.
     if not callable(aggregate_fn):

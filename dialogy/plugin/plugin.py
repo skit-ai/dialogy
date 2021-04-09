@@ -1,4 +1,7 @@
-"""Module provides access to an abstract plugin class.
+"""
+.. _plugin:
+
+Module provides access to an abstract plugin class.
 
 ## Tutorials
 
@@ -20,25 +23,22 @@ Import classes:
 """
 from typing import Optional
 
-import attr
-
 from dialogy.types.plugin import PluginFn
 
 
 # = Plugin =
-@attr.s
 class Plugin:
     """
-    A plugin object interacts with a [`workflow`](../workflow/workflow.html). Workflows expect a set of plugins
+    A plugin object interacts with a :ref:`workflow<workflow>`. Workflows expect a set of plugins
     to be inserted into different stages: pre and post processing. A plugin can be conveniently written being unaware of the
     structure of a given [`workflow`](../workflow/workflow.html) by expecting `access` and `mutate` functions.
     """
+    def __init__(self) -> None:
+        # An `access` function is defined to safely extract data from a workflow.
+        self.access: Optional[PluginFn] = None
 
-    # An `access` function is defined to safely extract data from a workflow.
-    access: Optional[PluginFn] = attr.ib(default=None)
-
-    # A `mutate` function allows inserting/overwriting data into a workflow.
-    mutate: Optional[PluginFn] = attr.ib(default=None)
+        # A `mutate` function allows inserting/overwriting data into a workflow.
+        self.mutate: Optional[PluginFn] = None
 
     def __call__(self) -> PluginFn:
         """
