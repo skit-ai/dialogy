@@ -33,12 +33,13 @@ class Plugin:
     to be inserted into different stages: pre and post processing. A plugin can be conveniently written being unaware of the
     structure of a given [`workflow`](../workflow/workflow.html) by expecting `access` and `mutate` functions.
     """
-    def __init__(self) -> None:
+
+    def __init__(self, access: Optional[PluginFn], mutate: Optional[PluginFn]) -> None:
         # An `access` function is defined to safely extract data from a workflow.
-        self.access: Optional[PluginFn] = None
+        self.access = access
 
         # A `mutate` function allows inserting/overwriting data into a workflow.
-        self.mutate: Optional[PluginFn] = None
+        self.mutate = mutate
 
     def __call__(self) -> PluginFn:
         """
