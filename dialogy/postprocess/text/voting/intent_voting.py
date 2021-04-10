@@ -2,9 +2,8 @@
 This module provides utilities to handle multiple intents from each
 alternative from the ASR.
 """
-from typing import Any, List
+from typing import Any, List, Optional
 
-import attr
 import numpy as np
 import pydash as py_  # type: ignore
 
@@ -68,7 +67,6 @@ def adjust_signal_strength(
     )
 
 
-@attr.s
 class VotePlugin(Plugin):
     """
     An instance of VoteIntentPlugin helps in voting for a strong
@@ -92,12 +90,24 @@ class VotePlugin(Plugin):
     more weight than its counterparts.
     """
 
-    threshold: float = attr.ib(default=0.6)
-    consensus: float = attr.ib(default=0.2)
-    representation: float = attr.ib(default=0.3)
-    fallback_intent: str = attr.ib(default=const.S_INTENT_OOS)
-    aggregate_fn: Any = attr.ib(default=np.mean)
-    debug: bool = attr.ib(default=False)
+    def __init__(
+        self,
+        access: Optional[PluginFn] = None,
+        mutate: Optional[PluginFn] = None,
+        threshold: float = 0.6,
+        consensus: float = 0.2,
+        representation: float = 0.3,
+        fallback_intent: str = const.S_INTENT_OOS,
+        aggregate_fn: Any = np.mean,
+        debug: bool = False,
+    ):
+        super().__init__(access, mutate)
+        self.threshold: float = threshold
+        self.consensus: float = consensus
+        self.representation: float = representation
+        self.fallback_intent: str = fallback_intent
+        self.aggregate_fn: Any = aggregate_fn
+        self.debug: bool = debug
 
     def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
         """
