@@ -3,8 +3,9 @@
 
 This module exposes a parser for `Duckling <https://github.com/facebook/duckling>`_.
 
-`Duckling <https://github.com/facebook/duckling>`_ helps parsing values like: :code:`date`, :code:`time`, :code:`numbers`, :code:`currency` etc. 
-The parser will expect Duckling to be running as an http service, and provide means to connect from the implementation here.
+`Duckling <https://github.com/facebook/duckling>`_ helps parsing values like: :code:`date`, :code:`time`,
+:code:`numbers`, :code:`currency` etc. The parser will expect Duckling to be running as an http service, and provide
+means to connect from the implementation here.
 """
 import json
 from typing import Any, Callable, Dict, List, Optional, Union
@@ -21,12 +22,15 @@ from dialogy.workflow import Workflow
 
 class DucklingParser(Plugin):
     """
-    A :ref:`Plugin<plugin>` for extracting entities using `Duckling <https://github.com/facebook/duckling>`_.
-    Once instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling <https://github.com/facebook/duckling>`_.
+    A :ref:`Plugin<plugin>` for extracting entities using `Duckling <https://github.com/facebook/duckling>`_. Once
+    instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling
+    <https://github.com/facebook/duckling>`_.
 
-    This object when used as a plugin, transforms the :code:`List[Dict[str, Any]]` returned from the API to a :ref:`BaseEntity<base_entity>` or one of its subclasses.
+    This object when used as a plugin, transforms the :code:`List[Dict[str, Any]]` returned from the API to a
+    :ref:`BaseEntity<base_entity>` or one of its subclasses.
 
-    :param dimensions: `Dimensions <https://github.com/facebook/duckling#supported-dimensions>`_. Of the listed dimensions, we support:
+    :param dimensions: `Dimensions <https://github.com/facebook/duckling#supported-dimensions>`_. Of the listed
+    dimensions, we support:
 
         - `Numeral`
         - `Time`
@@ -72,11 +76,11 @@ class DucklingParser(Plugin):
         Set timezone as BaseTzInfo from compatible timezone string.
 
         Raises:
-            pytz.UnknownTimeZoneError: 
+            pytz.UnknownTimeZoneError:
 
-        :raises pytz.UnknownTimeZoneError: If `self.timezone` is not in `list of tz database 
+        :raises pytz.UnknownTimeZoneError: If `self.timezone` is not in `list of tz database
             timezones <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>`_.
-        :return: A valid timezone 
+        :return: A valid timezone
         :rtype: Optional[BaseTzInfo]
         """
         # If timezone is an unsafe string, we will handle a `pytz.UnknownTimeZoneError` exception
@@ -97,19 +101,18 @@ class DucklingParser(Plugin):
         """
         create request body for entity parsing
 
-        **Payload Description**
-        
-        text - example: "3 people tomorrow"
-        
-        reftime - Resolve relative time like "yesterday", "next month", etc.
+        example: "3 people tomorrow"
+
         Make your own reference time using the current timestamp using: :code:`int(datetime.now().timestamp() * 1000)`
         These are the seconds since the `Unix epoch <https://en.wikipedia.org/wiki/Unix_time>`_
 
         :param text: A sentence or document.
         :type text: str
-        :param reference_time: Impart context of timestamp, relevant for time related entities.
-        :type reference_time: Optional[int]
-        :return: request object for Duckling server.
+        :param reference_time: Impart context of timestamp,
+        relevant for time related entities. Resolve relative time like "yesterday", "next month", etc.
+        :type Optional[int]
+        :param reference_time: Optional[int]
+        :return: request object for Duckling API.
         :rtype: Dict[str, Any]
         """
         dimensions = self.dimensions
@@ -129,7 +132,8 @@ class DucklingParser(Plugin):
         """
         Mutate entity obtained from Duckling API.
 
-        The purpose is to simplify BaseEntity initialization by calling `BaseEntity.from_dict(**entity)`.
+        The purpose is to simplify :ref:`BaseEntity <base_entity>` initialization by calling `BaseEntity.from_dict(
+        **entity)`.
 
         :param entity: An entity returned from Duckling's API.
         :type entity: Dict[str, Any]
@@ -172,17 +176,7 @@ class DucklingParser(Plugin):
         self, entities_json: List[Dict[str, Any]]
     ) -> Optional[List[BaseEntity]]:
         """
-        Create `BaseEntity` from a list of entity dicts.
-
-        Args:
-            entities_json (List[Dict[str, Any]]): 
-
-        Raises:
-            NotImplementedError: 
-            KeyError: 
-
-        Returns:
-            Optional[List[BaseEntity]]: 
+        Create a list of :ref:`BaseEntity <base_entity>` objects from a list of entity dicts.
 
         :param entities_json: List of entities derived from Duckling's API.
         :type entities_json: List[Dict[str, Any]]
@@ -195,22 +189,25 @@ class DucklingParser(Plugin):
 
         try:
             # For each entity dict:
-            #
-            # 1. Get the Entity class
-            # 2. create an Entity object from the entity dict.
             for entity in entities_json:
-                if entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.INTERVAL:
-                    cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.INTERVAL]  # type: ignore
-                    duckling_entity = cls.from_dict(self.mutate_entity(entity))
-                    duckling_entity.set_value()
-                    entity_object_list.append(duckling_entity)
-                elif entity[EntityKeys.VALUE][EntityKeys.TYPE] in [
+                if entity[EntityKeys.VALUE][EntityKeys.TYPE] in [
                     EntityKeys.VALUE,
                     EntityKeys.DURATION,
+                    EntityKeys.INTERVAL,
                 ]:
-                    cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
+                    # We can auto convert dict forms of duckling entities to dialogy entity classes only if they are
+                    # known in advance. We currently support only the types in the condition above.
+                    if entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.INTERVAL:
+                        # Duckling entities with interval type have a different structure for value(s).
+                        # They have a need to express units in "from", "to" format.
+                        cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.INTERVAL]  # type: ignore
+                    else:
+                        cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
+                    # The most appropriate class is picked for making an object from the dict.
                     duckling_entity = cls.from_dict(self.mutate_entity(entity))
+                    # Depending on the type of entity, the value is searched and filled.
                     duckling_entity.set_value()
+                    # Collect the entity object in a list.
                     entity_object_list.append(duckling_entity)
                 else:
                     # Raised only if an unsupported `dimension` is used.
@@ -235,19 +232,6 @@ class DucklingParser(Plugin):
 
         Assuming duckling-server is running at expected `url`. The entities are returned in
         `json` compatible format.
-
-        Args:
-
-        - text (str): 
-        - reference_time (int): 
-
-        Raises:
-            requests.exceptions.ConnectionError: Duckling cannot be reached at `self.url`
-            requests.exceptions.Timeout: Duckling request times out.
-            ValueError: The status code of the response is not 200.
-
-        Returns:
-            Optional[List[Dict[str, Any]]]
 
         :param text: The sentence or document in which entities must be looked up.
         :type text: str
@@ -277,14 +261,10 @@ class DucklingParser(Plugin):
 
     def plugin(self, workflow: Workflow) -> None:
         """
-        Insert Entity objects into the workflow.
+        Insert a list of :ref:`BaseEntity <base_entity>` objects into the Workflow.
 
-        Args:
-
-        - workflow (Workflow)
-
-        Raises:
-            TypeError: If access and mutate functions are not callable.
+        :param workflow: A :ref:`Workflow <workflow>` on which the plugin should operate.
+        :return:
         """
         access = self.access
         mutate = self.mutate
@@ -333,6 +313,6 @@ class DucklingParser(Plugin):
     # == __call__ ==
     def __call__(self) -> PluginFn:
         """
-        [callable-plugin](../../../plugin/plugin.html#__call__)
+        Syntactical sugar.
         """
         return self.plugin
