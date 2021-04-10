@@ -6,7 +6,7 @@ from typing import Any, List
 import pytest
 
 from dialogy import constants as const
-from dialogy.postprocess.text.voting.intent import VotePlugin
+from dialogy.postprocess.text.voting.intent_voting import VotePlugin
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
 
