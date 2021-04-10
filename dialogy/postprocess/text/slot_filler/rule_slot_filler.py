@@ -3,9 +3,7 @@
 
 Module provides access to a rule-based :ref:`slot filler<slot_filler>`.
 """
-from typing import Dict, List, Tuple
-
-import attr
+from typing import Dict, List, Optional, Tuple
 
 from dialogy.plugin import Plugin
 from dialogy.types.entity import BaseEntity
@@ -15,10 +13,10 @@ from dialogy.types.slots import Rule
 from dialogy.workflow import Workflow
 
 
-@attr.s
 class RuleBasedSlotFillerPlugin(Plugin):
     """
-    An instance of this class is used for generating a slot-filler.
+    A utility :ref:`plugin <plugin>` for `slot filling
+    <https://nlpprogress.com/english/intent_detection_slot_filling.html>`._ An :ref:`Intent <intent>` may have
 
     Schema for rules looks like:
     .. code-block:: json
@@ -37,21 +35,29 @@ class RuleBasedSlotFillerPlugin(Plugin):
     Irrespective of the entities that are found, only the listed type in the slot shall be present in `values`.
     """
 
-    # rules
-    #
-    # A `Dict` where each key is an intent name, and each value is another `Dict`,
-    # in which, each key is an entity and value contains the `slot_name` and `entity_type.`
-    #
-    # example:
-    # ```
-    # rules = {"intent": {"slot_name": "entity_type"}}
-    # ```
-    rules = attr.ib(type=Rule, default=attr.Factory(Dict))
+    def __init__(
+        self,
+        rules: Rule,
+        fill_multiple: bool = False,
+        access: Optional[PluginFn] = None,
+        mutate: Optional[PluginFn] = None,
+    ) -> None:
+        # rules
+        #
+        # A `Dict` where each key is an intent name, and each value is another `Dict`,
+        # in which, each key is an entity and value contains the `slot_name` and `entity_type.`
+        #
+        # example:
+        # ```
+        # rules = {"intent": {"slot_name": "entity_type"}}
+        # ```
+        super().__init__(access=access, mutate=mutate)
+        self.rules: Rule = rules or {}
 
-    # fill_multiple
-    # A boolean value that commands the slot filler to add multiple values of the
-    # same entity type within a slot.
-    fill_multiple = attr.ib(type=bool, default=False)
+        # fill_multiple
+        # A boolean value that commands the slot filler to add multiple values of the
+        # same entity type within a slot.
+        self.fill_multiple = fill_multiple
 
     # == filler ==
     def filler(self, workflow: Workflow) -> None:
