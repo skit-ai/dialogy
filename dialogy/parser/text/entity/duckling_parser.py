@@ -42,31 +42,45 @@ class DucklingParser(Plugin):
         those dimensions were expected.
     :type dimensions: Optional[List[str]]
 
-    :param locale: The format for expressing locale requires language code and country name ids. Read about 
-        `sections <https://github.com/facebook/duckling#extending-duckling>`_ that define 
+    :param locale: The format for expressing locale requires language code and country name ids. Read about
+        `sections <https://github.com/facebook/duckling#extending-duckling>`_ that define
         `ISO-639-codes <https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes>`_ for languages and
         `ISO3166 alpha2 country code <https://www.iso.org/obp/ui/#search/code/>`_ for country codes.
         Examples: `"en_IN"`, `"en_US"`, `"en_GB"`.
     :type locale: str
 
-    :param timezone: `pytz` Timezone. This is especially important when services are deployed across different geographies
-        and consistency is expected in the responses. Get a valid value from a `list of tz database timezones <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>`_.
-        Example: `"Asia/Kolkata"`
-    :type timezone: Optional[str]
+    :param timezone: `pytz` Timezone. This is especially important when services are deployed across different
+    geographies and consistency is expected in the responses. Get a valid value from a `list of tz database timezones
+    <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>`_. Example: `"Asia/Kolkata"` :type timezone:
+    Optional[str]
 
-    :param timeout: There are certain strings which tend to stall Duckling: `example <https://github.com/facebook/duckling/issues/338>`_.
-        In such cases, to prevent the overall experience to slow down as well, provide a certain timeout value, defaults to 0.5.
-    :type timeout: float
+    :param timeout: There are certain strings which tend to stall Duckling: `example
+    <https://github.com/facebook/duckling/issues/338>`_. In such cases, to prevent the overall experience to slow
+    down as well, provide a certain timeout value, defaults to 0.5. :type timeout: float
 
     :param url: The address where Duckling's entity parser can be reached, defaults to "http://0.0.0.0:8000/parse".
     :type url: Optional[str]
     """
-    def __init__(self) -> None:
-        self.dimensions: Optional[List[str]] = None
-        self.locale: Optional[str] = None
-        self.timezone: Optional[str] = None
-        self.timeout: Optional[float] = 0.5
-        self.url: str = "http://0.0.0.0:8000/parse"
+
+    def __init__(
+        self,
+        dimensions: List[str],
+        locale: str,
+        timezone: str,
+        timeout: float = 0.5,
+        url: str = "http://0.0.0.0:8000/parse",
+        access: Optional[PluginFn] = None,
+        mutate: Optional[PluginFn] = None,
+    ) -> None:
+        """
+        constructor
+        """
+        super().__init__(access=access, mutate=mutate)
+        self.dimensions = dimensions
+        self.locale = locale
+        self.timezone = timezone
+        self.timeout = timeout
+        self.url = url
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
@@ -85,15 +99,13 @@ class DucklingParser(Plugin):
         """
         # If timezone is an unsafe string, we will handle a `pytz.UnknownTimeZoneError` exception
         # and pass a friendly message.
-        if isinstance(self.timezone, str):
-            try:
-                return pytz.timezone(self.timezone)
-            except pytz.UnknownTimeZoneError as unknown_timezone_error:
-                raise pytz.UnknownTimeZoneError(
-                    f"The timezone {self.timezone} is invalid"
-                    " check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
-                ) from unknown_timezone_error
-        return None
+        try:
+            return pytz.timezone(self.timezone)
+        except pytz.UnknownTimeZoneError as unknown_timezone_error:
+            raise pytz.UnknownTimeZoneError(
+                f"The timezone {self.timezone} is invalid"
+                " check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
+            ) from unknown_timezone_error
 
     def __create_req_body(
         self, text: str, reference_time: Optional[int]
@@ -142,9 +154,13 @@ class DucklingParser(Plugin):
         """
 
         # **range** describes the span of string from which the entity was found.
+
+        match_start = entity[EntityKeys.START]
+        match_end = entity[EntityKeys.END]
+
         entity[EntityKeys.RANGE] = {
-            EntityKeys.START: entity[EntityKeys.START],
-            EntityKeys.END: entity[EntityKeys.END],
+            EntityKeys.START: match_start,
+            EntityKeys.END: match_end,
         }
 
         # **type** of an entity is same as its **dimension**.
