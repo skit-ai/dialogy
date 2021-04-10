@@ -62,7 +62,9 @@ def test_duckling_api_success() -> None:
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        dimensions=["number", "date", "time"], timezone="Asia/Kolkata", locale="en_IN"
+    )
 
     response = parser.get_entities(body)
     assert response == expected_response
@@ -83,7 +85,9 @@ def test_duckling_api_failure() -> None:
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    parser = DucklingParser(dimensions=["time"], locale="en_IN")
+    parser = DucklingParser(
+        dimensions=["time"], locale="en_IN", timezone="Asia/Kolkata"
+    )
 
     with pytest.raises(ValueError):
         parser.get_entities(body)
@@ -103,7 +107,9 @@ def test_duckling_with_tz() -> None:
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    parser = DucklingParser(locale="en_IN", timezone="Asia/Kolkata")
+    parser = DucklingParser(
+        locale="en_IN", timezone="Asia/Kolkata", dimensions=["time"]
+    )
 
     response = parser.get_entities(body)
     assert response == expected_response
@@ -121,7 +127,9 @@ def test_duckling_wrong_tz() -> None:
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    parser = DucklingParser(locale="en_IN", timezone="Earth/Someplace")
+    parser = DucklingParser(
+        locale="en_IN", timezone="Earth/Someplace", dimensions=["time"]
+    )
 
     with pytest.raises(pytz.UnknownTimeZoneError):
         _ = parser.get_entities(body)
@@ -135,7 +143,9 @@ def test_entity_mutation_dict() -> None:
     We are making sure of those for numerical entities here.
     """
     entities_json = config.mock_number_entity
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["number"], timezone="Asia/Kolkata"
+    )
     entity = parser.mutate_entity(entities_json)
 
     assert "range" in entity
@@ -182,7 +192,9 @@ def test_entity_mutation_list() -> None:
         "latent": False,
     }
 
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["time"], timezone="Asia/Kolkata"
+    )
     entity = parser.mutate_entity(entity_json)
 
     assert "range" in entity
@@ -201,7 +213,9 @@ def test_entity_json_to_object_time_entity() -> None:
 
     We are checking for TimeEntity here.
     """
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["time"], timezone="Asia/Kolkata"
+    )
     entities_json = [config.mock_time_entity]
 
     entities = parser.reshape(entities_json)
@@ -216,7 +230,9 @@ def test_entity_json_to_object_time_interval_entity():
 
     We are checking for TimeIntervalEntity here.
     """
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["time"], timezone="Asia/Kolkata"
+    )
     entities_json = [config.mock_interval_entity]
 
     entities = parser.reshape(entities_json)
@@ -241,7 +257,9 @@ def test_entity_json_to_object_numerical_entity() -> None:
             "latent": False,
         }
     ]
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["number"], timezone="Asia/Kolkata"
+    )
     entities = parser.reshape(entities_json)
     assert isinstance(entities[0], NumericalEntity)
 
@@ -270,7 +288,9 @@ def test_entity_json_to_object_duration_entity() -> None:
             "latent": False,
         }
     ]
-    parser = DucklingParser(dimensions=["duration"], locale="en_IN")
+    parser = DucklingParser(
+        dimensions=["duration"], locale="en_IN", timezone="Asia/Kolkata"
+    )
     entities = parser.reshape(entities_json)
     print(entities)
     if not isinstance(entities[0], DurationEntity):
@@ -287,7 +307,9 @@ def test_entity_json_to_object_people_entity() -> None:
 
     """
     entities_json = [config.mock_people_entity]
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["people"], timezone="Asia/Kolkata"
+    )
     entities = parser.reshape(entities_json)
     assert isinstance(entities[0], PeopleEntity)
 
@@ -302,7 +324,9 @@ def test_entity_object_not_implemented() -> None:
     This would lead to a `NotImplementedError`.
     """
     entities_json = [config.mock_unknown_entity]
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["unknown"], timezone="Asia/Kolkata"
+    )
 
     with pytest.raises(NotImplementedError):
         parser.reshape(entities_json)
@@ -323,7 +347,9 @@ def test_entity_object_error_on_missing_value() -> None:
             "latent": False,
         }
     ]
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", timezone="Asia/Kolkata", dimensions=["people"]
+    )
 
     with pytest.raises(KeyError):
         parser.reshape(entities_json)
@@ -332,11 +358,13 @@ def test_entity_object_error_on_missing_value() -> None:
 # == Test missing i/o ==
 def test_plugin_io_missing() -> None:
     """
-    Here we are chcking if the plugin has access to workflow.
+    Here we are checking if the plugin has access to workflow.
     Since we haven't provided `access`, `mutate` to `DucklingParser`
     we will receive a `TypeError`.
     """
-    parser = DucklingParser(locale="en_IN")
+    parser = DucklingParser(
+        locale="en_IN", timezone="Asia/Kolkata", dimensions=["time"]
+    )
     plugin = parser()
 
     workflow = Workflow(preprocessors=[plugin], postprocessors=[])
@@ -359,7 +387,13 @@ def test_plugin_io_type_mismatch(access, mutate) -> None:
     Since we have provided `access`, `mutate` of incorrect types to `DucklingParser`
     we will receive a `TypeError`.
     """
-    parser = DucklingParser(access=access, mutate=mutate, locale="en_IN")
+    parser = DucklingParser(
+        access=access,
+        mutate=mutate,
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+    )
     plugin = parser()
 
     workflow = Workflow(preprocessors=[plugin], postprocessors=[])
@@ -412,7 +446,11 @@ def test_plugin(body, expected) -> None:
         workflow.output = {"entities": entities}
 
     parser = DucklingParser(
-        access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
+        access=access,
+        mutate=mutate,
+        dimensions=["people"],
+        locale="en_IN",
+        timezone="Asia/Kolkata",
     )
 
     request_callback = request_builder(expected)
@@ -442,7 +480,11 @@ def test_plugin_no_entities() -> None:
         workflow.output = {"entities": entities}
 
     parser = DucklingParser(
-        access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
+        access=access,
+        mutate=mutate,
+        dimensions=["people"],
+        locale="en_IN",
+        timezone="Asia/Kolkata",
     )
 
     request_callback = request_builder(expected)
@@ -473,7 +515,11 @@ def test_plugin_type_errors(body) -> None:
         workflow.output = {"entities": entities}
 
     parser = DucklingParser(
-        access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
+        access=access,
+        mutate=mutate,
+        dimensions=["people"],
+        locale="en_IN",
+        timezone="Asia/Kolkata",
     )
 
     request_callback = request_builder([])
@@ -500,7 +546,11 @@ def test_plugin_value_errors() -> None:
         workflow.output = {"entities": entities}
 
     parser = DucklingParser(
-        access=access, mutate=mutate, dimensions=["people"], locale="en_IN"
+        access=access,
+        mutate=mutate,
+        dimensions=["people"],
+        locale="en_IN",
+        timezone="Asia/Kolkata",
     )
 
     request_callback = request_builder([], response_code=500)
