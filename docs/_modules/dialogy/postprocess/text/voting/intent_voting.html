@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dialogy.postprocess.text.voting.intent_voting &#8212; dialogy 0.4.5 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/flasky.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.postprocess.text.voting.intent_voting</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dialogy.postprocess.text.voting.intent_voting</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides utilities to handle multiple intents from each</span>
+<span class="sd">alternative from the ASR.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pydash</span> <span class="k">as</span> <span class="nn">py_</span>  <span class="c1"># type: ignore</span>
+
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Signal</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">change_log_level</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+
+
+<div class="viewcode-block" id="adjust_signal_strength"><a class="viewcode-back" href="../../../../../dialogy.postprocess.text.voting.html#dialogy.postprocess.text.voting.intent_voting.adjust_signal_strength">[docs]</a><span class="k">def</span> <span class="nf">adjust_signal_strength</span><span class="p">(</span>
+    <span class="n">signals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Signal</span><span class="p">],</span>
+    <span class="n">trials</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">aggregate_fn</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Signal</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Re-evaluate signal strength.</span>
+
+<span class="sd">    Re-evaluation is based on frequency of occurrence and strength of each occurrence,</span>
+<span class="sd">    normalized by trials.</span>
+
+<span class="sd">    Here trials are total attempts made to generate signals.</span>
+<span class="sd">    - Worst case could be, each attempt yields a unique signal. In this case the signal strength is dampened.</span>
+<span class="sd">    - Best case, each attempt yields a single signal. In this case the signal strength is boosted.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Signal]: A list of strength adjusted signals. May not be as long as the input.</span>
+
+<span class="sd">    :param signals: A signal is a tuple of name and strength.</span>
+<span class="sd">    :type signals: List[Signal]</span>
+<span class="sd">    :param trials: Total attempts made to generate signals.</span>
+<span class="sd">    :type trials: int</span>
+<span class="sd">    :param aggregate_fn: A function to normalize a list of floating point values, defaults to np.mean</span>
+<span class="sd">    :type aggregate_fn: Any, optional</span>
+<span class="sd">    :raises TypeError: :code:`aggregate_fn` if passed should be a :code:`callable`.</span>
+<span class="sd">    :return: A list of normalized signale.</span>
+<span class="sd">    :rtype: List[Signal]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Group intents by name.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">aggregate_fn</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;Expected aggregate_fn to be a callable that&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; operates on a list of floats. Found </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">aggregate_fn</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">signal_groups</span> <span class="o">=</span> <span class="n">py_</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">signal</span><span class="p">:</span> <span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">signals_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span>
+            <span class="n">signal_name</span><span class="p">,</span>
+            <span class="nb">float</span><span class="p">(</span>
+                <span class="c1"># Averaging (or some other aggregate fn) signal strength values.</span>
+                <span class="n">aggregate_fn</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">])</span>
+            <span class="p">),</span>
+            <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span> <span class="o">/</span> <span class="n">trials</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">signal_name</span><span class="p">,</span> <span class="n">signals</span> <span class="ow">in</span> <span class="n">signal_groups</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">signals_</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">signal</span><span class="p">:</span> <span class="n">signal</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VotePlugin"><a class="viewcode-back" href="../../../../../dialogy.postprocess.text.voting.html#dialogy.postprocess.text.voting.intent_voting.VotePlugin">[docs]</a><span class="k">class</span> <span class="nc">VotePlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An instance of VoteIntentPlugin helps in voting for a strong</span>
+<span class="sd">    evidence over other candidates.</span>
+
+<span class="sd">    **threshold**: Signal strength should atleast match this value, or else it will be dropped.</span>
+
+<span class="sd">    This plugin takes into consideration a list of predictions (signals)</span>
+<span class="sd">    some of which can be strong, (decided by their confidence score for now)</span>
+<span class="sd">    and weak signals are filtered out. If there is a healthy vote proportion,</span>
+<span class="sd">    we will consider the winning signal as the true output.</span>
+
+<span class="sd">    This class handles signals which are produced by an intent classifier that</span>
+<span class="sd">    classifies a set of ASR alternatives (strings).</span>
+
+<span class="sd">    The voting algorithm here is naive as it is based on heuristics</span>
+<span class="sd">    and plain counting. This can be improved by using learned trees/forests.</span>
+
+<span class="sd">    Ideal design should provide the signals, their strengths (confidence) and</span>
+<span class="sd">    signal boosters, any contextual information that implies a weak signal has</span>
+<span class="sd">    more weight than its counterparts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+        <span class="n">consensus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">representation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+        <span class="n">fallback_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">S_INTENT_OOS</span><span class="p">,</span>
+        <span class="n">aggregate_fn</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consensus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">consensus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">representation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">representation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">fallback_intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_fn</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">aggregate_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">debug</span>
+
+<div class="viewcode-block" id="VotePlugin.vote_signal"><a class="viewcode-back" href="../../../../../dialogy.postprocess.text.voting.html#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal">[docs]</a>    <span class="k">def</span> <span class="nf">vote_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">],</span> <span class="n">trials</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intent</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reduce a list of intents.</span>
+
+<span class="sd">        This is a naive voting algorithm. We filter intents with high confidence.</span>
+<span class="sd">        Count the frequency of the remaining intents. If the proportion of votes</span>
+<span class="sd">        goes beyond the expected constituency, then the intent is elected else</span>
+<span class="sd">        a fallback intent is emitted.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            intents (List[Intent]): A list of predictions over ASR output. (size ~ 1-10)</span>
+<span class="sd">            constituency (float, optional): Threshold for proportion of votes,</span>
+<span class="sd">                proportion over this qualifies an intent for victory. Defaults to 0.5.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Intent: Voted signal or fallback in case of no consensus.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fallback</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">intents</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fallback</span>
+
+        <span class="n">intent_signals</span> <span class="o">=</span> <span class="p">[(</span><span class="n">intent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">]</span>
+        <span class="n">intent_signals</span> <span class="o">=</span> <span class="n">adjust_signal_strength</span><span class="p">(</span>
+            <span class="n">intent_signals</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">aggregate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregate_fn</span>
+        <span class="p">)</span>
+        <span class="n">main_intent</span><span class="p">:</span> <span class="n">Signal</span> <span class="o">=</span> <span class="n">intent_signals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">conflict_intent</span><span class="p">:</span> <span class="n">Signal</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">intent_signals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">intent_signals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Intents with adjusted signal strength: &quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">intent_signals</span><span class="p">)</span>
+            <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">representation</span> <span class="o">&gt;</span> <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">]:</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">consensus_achieved</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">-</span> <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+            <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">consensus</span>
+        <span class="p">)</span>
+
+        <span class="n">strong_signal</span> <span class="o">=</span> <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>  <span class="c1"># type: ignore</span>
+        <span class="k">if</span> <span class="n">consensus_achieved</span> <span class="ow">and</span> <span class="n">strong_signal</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">NAME</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
+                <span class="n">score</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VotePlugin.plugin"><a class="viewcode-back" href="../../../../../dialogy.postprocess.text.voting.html#dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin">[docs]</a>    <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plugin to ease workflow io.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">access</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span>
+        <span class="n">mutate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span>
+
+        <span class="k">if</span> <span class="n">access</span> <span class="ow">and</span> <span class="n">mutate</span><span class="p">:</span>
+            <span class="n">intents</span><span class="p">,</span> <span class="n">trials</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vote_signal</span><span class="p">(</span><span class="n">intents</span><span class="p">,</span> <span class="n">trials</span><span class="p">)</span>
+            <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected `access` and `mutate` to be Callable,&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, ltbringer.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+    </div>
+    
+
+  </body>
+</html>

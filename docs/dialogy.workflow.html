@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>dialogy.workflow package &#8212; dialogy 0.4.5 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="dialogy.utils package" href="dialogy.utils.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dialogy.utils.html" title="dialogy.utils package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >dialogy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="dialogy.html" accesskey="U">dialogy package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.workflow package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="dialogy-workflow-package">
+<h1>dialogy.workflow package<a class="headerlink" href="#dialogy-workflow-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-dialogy.workflow.workflow">
+<span id="dialogy-workflow-workflow-module"></span><h2>dialogy.workflow.workflow module<a class="headerlink" href="#module-dialogy.workflow.workflow" title="Permalink to this headline">¶</a></h2>
+<p id="workflow">A <cite>workflow</cite> is supposed to run tasks that can be anticipated well in advance. We are prioritizing tasks that can be performed in production
+so you may find it odd to miss <cite>train</cite> and <cite>test</cite> methods. This is a deliberate decision since that choice is upto the user and a <cite>workflow</cite>
+targets performance in a production environment, where <cite>train</cite> and <cite>test</cite> are not the expected set of tasks, rather <cite>inference</cite> is.</p>
+<ol class="arabic simple">
+<li><p>Eliminate low-confidence output.</p></li>
+<li><p>Slot-filling.</p></li>
+<li><p>Sorting items by order of confidence.</p></li>
+</ol>
+<p>_What’s slot filling?_
+&gt; The goal of Slot Filling is to identify from a running dialog, different slots, which correspond to different parameters of the user’s query. For instance, when a user queries for nearby restaurants, key slots for location and preferred food are required for a dialog system to retrieve the appropriate information. Thus, the main challenge in the slot-filling task is to extract the target entity.</p>
+<p>[Tutorial](../../tests/workflow/test_workflow.html)</p>
+<dl class="simple">
+<dt>Import Class:</dt><dd><ul class="simple">
+<li><p>Workflow</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt id="dialogy.workflow.workflow.Workflow">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Workflow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dialogy/workflow/workflow.html#Workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is a light but fairly flexible workflow for building a machine learning pipeline.</p>
+<p>Requirements
+- A list of pre-processing functions.
+- A list of post-processing functions.</p>
+<p>_Why are some methods raising NotImplementedError?_
+&gt; This class is not supposed to be used as it is. Ideally this should have been an abstract class,
+there are some design considerations which make that a bad choice. We want methods to be overridden
+to offer flexibility of use.</p>
+<p>Abstract classes put constraints on method signatures which isn’t desired because a couple of methods
+here could use more arguments, say, <cite>load_model()</cite> requires <cite>path</cite> and <cite>version</cite> and in some other cases
+<cite>path</cite>, <cite>version</cite> and <cite>language</cite>.</p>
+<p>All the attributes of the class that are meant for private use, have <cite>__</cite> preceeding their names.</p>
+<dl class="py method">
+<dt id="dialogy.workflow.workflow.Workflow.flush">
+<code class="sig-name descname"><span class="pre">flush</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/dialogy/workflow/workflow.html#Workflow.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset workflow state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.workflow.workflow.Workflow.inference">
+<code class="sig-name descname"><span class="pre">inference</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/dialogy/workflow/workflow.html#Workflow.inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.inference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get model predictions.</p>
+<p>Depending on the number of models in use. This place can be used to collate results, sort, filter, etc.</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p><cite>NotImplementedError</cite>: This method needs to be implemented by the sub-classes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.workflow.workflow.Workflow.load_model">
+<code class="sig-name descname"><span class="pre">load_model</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/dialogy/workflow/workflow.html#Workflow.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override method in sub-class to load model(s).</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>NotImplementedError: Safeguard against using this class directly.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.workflow.workflow.Workflow.postprocess">
+<code class="sig-name descname"><span class="pre">postprocess</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/dialogy/workflow/workflow.html#Workflow.postprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience over <cite>update</cite> method.</p>
+<p>Uses postprocessors over the <cite>update</cite> method, expect output to change.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.workflow.workflow.Workflow.preprocess">
+<code class="sig-name descname"><span class="pre">preprocess</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/dialogy/workflow/workflow.html#Workflow.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience over <cite>update</cite> method.</p>
+<p>Uses preprocessors over the <cite>update</cite> method, expect input to change.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.workflow.workflow.Workflow.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/dialogy/workflow/workflow.html#Workflow.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get final results from the workflow.</p>
+<p>The current workflow exhibits the following simple procedure:
+pre-processing -&gt; inference -&gt; post-processing.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><a href="#id1"><span class="problematic" id="id2">input_</span></a> (<cite>Any</cite>): This function receives any arbitrary input. Subclasses may enforce
+a stronger check.</p>
+</dd>
+<dt>Returns:</dt><dd><p>(<cite>Any</cite>): This function can return any arbitrary value. Subclasses may enforce a stronger check.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.workflow.workflow.Workflow.update">
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processor_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/dialogy/workflow/workflow.html#Workflow.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update input, output attributes.</p>
+<p>We iterate through pre/post processing functions and update the input and
+output attributes of the class. It is expected that pre-processing functions
+would modify the input, and post-processing functions would modify the output.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>processor_type (<cite>str</cite>): One of [“__preprocessor”, “__postprocessor”]
+processors (<cite>List</cite>): The list of preprocess or postprocess functions.</p>
+</dd>
+<dt>Raises:</dt><dd><p><cite>TypeError</cite>: If any element in processors list is not a Callable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-dialogy.workflow">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.workflow" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dialogy.workflow package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.workflow.workflow">dialogy.workflow.workflow module</a></li>
+<li><a class="reference internal" href="#module-dialogy.workflow">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">dialogy</a><ul>
+  <li><a href="dialogy.html">dialogy package</a><ul>
+      <li>Previous: <a href="dialogy.utils.html" title="previous chapter">dialogy.utils package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dialogy.workflow.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, ltbringer.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+    </div>
+    
+
+  </body>
+</html>

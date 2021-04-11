@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dialogy.workflow.workflow &#8212; dialogy 0.4.5 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/flasky.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.workflow.workflow</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dialogy.workflow.workflow</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. _workflow:</span>
+
+<span class="sd">A `workflow` is supposed to run tasks that can be anticipated well in advance. We are prioritizing tasks that can be performed in production</span>
+<span class="sd">so you may find it odd to miss `train` and `test` methods. This is a deliberate decision since that choice is upto the user and a `workflow`</span>
+<span class="sd">targets performance in a production environment, where `train` and `test` are not the expected set of tasks, rather `inference` is.</span>
+
+<span class="sd">1. Eliminate low-confidence output.</span>
+<span class="sd">2. Slot-filling.</span>
+<span class="sd">3. Sorting items by order of confidence.</span>
+
+<span class="sd">_What&#39;s slot filling?_</span>
+<span class="sd">&gt; The goal of Slot Filling is to identify from a running dialog, different slots, which correspond to different parameters of the user’s query. For instance, when a user queries for nearby restaurants, key slots for location and preferred food are required for a dialog system to retrieve the appropriate information. Thus, the main challenge in the slot-filling task is to extract the target entity.</span>
+
+<span class="sd">[Tutorial](../../tests/workflow/test_workflow.html)</span>
+
+<span class="sd">Import Class:</span>
+<span class="sd">    - Workflow</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">change_log_level</span><span class="p">,</span> <span class="n">log</span>
+
+<span class="n">PluginFn</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Workflow&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+
+<span class="c1"># = Workflow =</span>
+<div class="viewcode-block" id="Workflow"><a class="viewcode-back" href="../../../dialogy.workflow.html#dialogy.workflow.workflow.Workflow">[docs]</a><span class="k">class</span> <span class="nc">Workflow</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a light but fairly flexible workflow for building a machine learning pipeline.</span>
+
+<span class="sd">    Requirements</span>
+<span class="sd">    - A list of pre-processing functions.</span>
+<span class="sd">    - A list of post-processing functions.</span>
+
+<span class="sd">    _Why are some methods raising NotImplementedError?_</span>
+<span class="sd">    &gt; This class is not supposed to be used as it is. Ideally this should have been an abstract class,</span>
+<span class="sd">    there are some design considerations which make that a bad choice. We want methods to be overridden</span>
+<span class="sd">    to offer flexibility of use.</span>
+
+<span class="sd">    Abstract classes put constraints on method signatures which isn&#39;t desired because a couple of methods</span>
+<span class="sd">    here could use more arguments, say, `load_model()` requires `path` and `version` and in some other cases</span>
+<span class="sd">    `path`, `version` and `language`.</span>
+
+<span class="sd">    All the attributes of the class that are meant for private use, have `__` preceeding their names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># == __init__ ==</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">preprocessors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">postprocessors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setup a Workflow.</span>
+
+<span class="sd">        Setup a list of functions to execute before and after `.inference(...)` call.</span>
+
+<span class="sd">        Attributes:</span>
+
+<span class="sd">        - input (`Any`): The input to a workflow. This is supposed to be flexible.</span>
+<span class="sd">        - output (`Any`): The outputs of a workflow. This is supposed to be flexible.</span>
+<span class="sd">        - __preprocessors (`List[PluginFn]`): A list of functions to execute before inference.</span>
+<span class="sd">        - __postprocessors (`List[PluginFn]`): A list of functions to execute after inference.</span>
+
+<span class="sd">        Methods:</span>
+
+<span class="sd">        - load_model: Load models</span>
+<span class="sd">        - update: Update input and output attributes. This is the effect of running either processors.</span>
+<span class="sd">        - preprocess: Update input attributes. This is the effect of running pre-processors.</span>
+<span class="sd">        - postprocess: Update output attributes. This is the effect of running post-processors.</span>
+<span class="sd">        - inference: Model related functionality.</span>
+<span class="sd">        - run: Wraps over pre/post processing and inference.</span>
+<span class="sd">        - __log: Log the changes in the input/output as pre/post processing functions execute. REQUIRES log-level set to `DEBUG`.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        - preprocessors (`Optional[List[PluginFn]]`): A list of functions to execute before inference. Defaults to None.</span>
+<span class="sd">        - postprocessors (`Optional[List[PluginFn]]`): A list of functions to execute after inference. Defaults to None.</span>
+<span class="sd">        - debug (Optional[`bool`]): Changes to input/output are logged if log-level is set to `DEBUG`. Defaults to False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># **input**</span>
+        <span class="c1">#</span>
+        <span class="c1"># Initially `None`, expects value from the `.run(...)` method.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># **output**</span>
+        <span class="c1">#</span>
+        <span class="c1"># Initially `None`. Final value depends on the plugins in the workflow.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">preprocessors</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># Type check to ensure preprocessors are lists.</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;preprocessors=</span><span class="si">{</span><span class="n">preprocessors</span><span class="si">}</span><span class="s2"> should be a list&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__preprocessors</span> <span class="o">=</span> <span class="n">preprocessors</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">postprocessors</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># Type check to ensure postprocessors are lists.</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;preprocessors=</span><span class="si">{</span><span class="n">postprocessors</span><span class="si">}</span><span class="s2"> should be a list&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__postprocessors</span> <span class="o">=</span> <span class="n">postprocessors</span>
+
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="c1"># We have debug logs, which can be opted in but are off by default.</span>
+            <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Changing log-level to error would mean, logs from log.debug(...) would not appear.</span>
+            <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+
+    <span class="c1"># == load_model ==</span>
+<div class="viewcode-block" id="Workflow.load_model"><a class="viewcode-back" href="../../../dialogy.workflow.html#dialogy.workflow.workflow.Workflow.load_model">[docs]</a>    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override method in sub-class to load model(s).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: Safeguard against using this class directly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Override method `load_model` in class </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span></div>
+
+    <span class="c1"># == update ==</span>
+<div class="viewcode-block" id="Workflow.update"><a class="viewcode-back" href="../../../dialogy.workflow.html#dialogy.workflow.workflow.Workflow.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update input, output attributes.</span>
+
+<span class="sd">        We iterate through pre/post processing functions and update the input and</span>
+<span class="sd">        output attributes of the class. It is expected that pre-processing functions</span>
+<span class="sd">        would modify the input, and post-processing functions would modify the output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            processor_type (`str`): One of [&quot;__preprocessor&quot;, &quot;__postprocessor&quot;]</span>
+<span class="sd">            processors (`List`): The list of preprocess or postprocess functions.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            `TypeError`: If any element in processors list is not a Callable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">processor_type</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">processor</span><span class="si">}</span><span class="s2"> is not a callable&quot;</span><span class="p">)</span>
+
+            <span class="c1"># logs are available only when debug=True during class initialization</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s2">&quot;Before&quot;</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">,</span> <span class="n">processor</span><span class="p">)</span>
+            <span class="n">processor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="c1"># logs are available only when debug=True during class initialization</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s2">&quot;After&quot;</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">,</span> <span class="n">processor</span><span class="p">)</span></div>
+
+    <span class="c1"># == preprocess ==</span>
+<div class="viewcode-block" id="Workflow.preprocess"><a class="viewcode-back" href="../../../dialogy.workflow.html#dialogy.workflow.workflow.Workflow.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience over `update` method.</span>
+
+<span class="sd">        Uses preprocessors over the `update` method, expect input to change.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">PREPROCESSORS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__preprocessors</span><span class="p">)</span></div>
+
+    <span class="c1"># == postprocess ==</span>
+<div class="viewcode-block" id="Workflow.postprocess"><a class="viewcode-back" href="../../../dialogy.workflow.html#dialogy.workflow.workflow.Workflow.postprocess">[docs]</a>    <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience over `update` method.</span>
+
+<span class="sd">        Uses postprocessors over the `update` method, expect output to change.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">POSTPROCESSORS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__postprocessors</span><span class="p">)</span></div>
+
+    <span class="c1"># == inference ==</span>
+<div class="viewcode-block" id="Workflow.inference"><a class="viewcode-back" href="../../../dialogy.workflow.html#dialogy.workflow.workflow.Workflow.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get model predictions.</span>
+
+<span class="sd">        Depending on the number of models in use. This place can be used to collate results, sort, filter, etc.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            `NotImplementedError`: This method needs to be implemented by the sub-classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">!=</span> <span class="s2">&quot;Workflow&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Override method `inference` in class </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span></div>
+
+    <span class="c1"># == run ==</span>
+<div class="viewcode-block" id="Workflow.run"><a class="viewcode-back" href="../../../dialogy.workflow.html#dialogy.workflow.workflow.Workflow.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get final results from the workflow.</span>
+
+<span class="sd">        The current workflow exhibits the following simple procedure:</span>
+<span class="sd">        pre-processing -&gt; inference -&gt; post-processing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_ (`Any`): This function receives any arbitrary input. Subclasses may enforce</span>
+<span class="sd">            a stronger check.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (`Any`): This function can return any arbitrary value. Subclasses may enforce a stronger check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">input_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span></div>
+
+    <span class="c1"># == flush ==</span>
+<div class="viewcode-block" id="Workflow.flush"><a class="viewcode-back" href="../../../dialogy.workflow.html#dialogy.workflow.workflow.Workflow.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset workflow state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="c1"># == __log ==</span>
+    <span class="k">def</span> <span class="nf">__log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processor</span><span class="p">:</span> <span class="n">PluginFn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log the changes in the input/output as pre/post processing functions execute.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (`str`): One of [&quot;Before&quot;, &quot;After&quot;].</span>
+<span class="sd">            processor_type (`str`): One of [&quot;__preprocessor&quot;, &quot;__postprocessor&quot;].</span>
+<span class="sd">            processor (`str`): A callable within __preprocessor or __postprocessor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">processor</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, ltbringer.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+    </div>
+    
+
+  </body>
+</html>

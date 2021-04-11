@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>dialogy.postprocess.text.voting package &#8212; dialogy 0.4.5 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="dialogy.preprocess package" href="dialogy.preprocess.html" />
+    <link rel="prev" title="dialogy.postprocess.text.slot_filler package" href="dialogy.postprocess.text.slot_filler.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dialogy.preprocess.html" title="dialogy.preprocess package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dialogy.postprocess.text.slot_filler.html" title="dialogy.postprocess.text.slot_filler package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >dialogy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="dialogy.html" >dialogy package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="dialogy.postprocess.html" >dialogy.postprocess package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="dialogy.postprocess.text.html" accesskey="U">dialogy.postprocess.text package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.postprocess.text.voting package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="dialogy-postprocess-text-voting-package">
+<h1>dialogy.postprocess.text.voting package<a class="headerlink" href="#dialogy-postprocess-text-voting-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-dialogy.postprocess.text.voting.intent_voting">
+<span id="dialogy-postprocess-text-voting-intent-voting-module"></span><h2>dialogy.postprocess.text.voting.intent_voting module<a class="headerlink" href="#module-dialogy.postprocess.text.voting.intent_voting" title="Permalink to this headline">¶</a></h2>
+<p>This module provides utilities to handle multiple intents from each
+alternative from the ASR.</p>
+<dl class="py class">
+<dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">VotePlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">access:</span> <span class="pre">Optional[Callable[[...],</span> <span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">mutate:</span> <span class="pre">Optional[Callable[[...],</span> <span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">threshold:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.6,</span> <span class="pre">consensus:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.2,</span> <span class="pre">representation:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.3,</span> <span class="pre">fallback_intent:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'_oos_',</span> <span class="pre">aggregate_fn:</span> <span class="pre">Any</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">debug:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
+<p>An instance of VoteIntentPlugin helps in voting for a strong
+evidence over other candidates.</p>
+<p><strong>threshold</strong>: Signal strength should atleast match this value, or else it will be dropped.</p>
+<p>This plugin takes into consideration a list of predictions (signals)
+some of which can be strong, (decided by their confidence score for now)
+and weak signals are filtered out. If there is a healthy vote proportion,
+we will consider the winning signal as the true output.</p>
+<p>This class handles signals which are produced by an intent classifier that
+classifies a set of ASR alternatives (strings).</p>
+<p>The voting algorithm here is naive as it is based on heuristics
+and plain counting. This can be improved by using learned trees/forests.</p>
+<p>Ideal design should provide the signals, their strengths (confidence) and
+signal boosters, any contextual information that implies a weak signal has
+more weight than its counterparts.</p>
+<dl class="py method">
+<dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin">
+<code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plugin to ease workflow io.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal">
+<code class="sig-name descname"><span class="pre">vote_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trials</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><a class="reference internal" href="_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.vote_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce a list of intents.</p>
+<p>This is a naive voting algorithm. We filter intents with high confidence.
+Count the frequency of the remaining intents. If the proportion of votes
+goes beyond the expected constituency, then the intent is elected else
+a fallback intent is emitted.</p>
+<dl>
+<dt>Args:</dt><dd><p>intents (List[Intent]): A list of predictions over ASR output. (size ~ 1-10)
+constituency (float, optional): Threshold for proportion of votes,</p>
+<blockquote>
+<div><p>proportion over this qualifies an intent for victory. Defaults to 0.5.</p>
+</div></blockquote>
+</dd>
+<dt>Returns:</dt><dd><p>Intent: Voted signal or fallback in case of no consensus.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="dialogy.postprocess.text.voting.intent_voting.adjust_signal_strength">
+<code class="sig-name descname"><span class="pre">adjust_signal_strength</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">signals:</span> <span class="pre">List[Tuple[str,</span> <span class="pre">float,</span> <span class="pre">float]],</span> <span class="pre">trials:</span> <span class="pre">int,</span> <span class="pre">aggregate_fn:</span> <span class="pre">Any</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/dialogy/postprocess/text/voting/intent_voting.html#adjust_signal_strength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.adjust_signal_strength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Re-evaluate signal strength.</p>
+<p>Re-evaluation is based on frequency of occurrence and strength of each occurrence,
+normalized by trials.</p>
+<p>Here trials are total attempts made to generate signals.
+- Worst case could be, each attempt yields a unique signal. In this case the signal strength is dampened.
+- Best case, each attempt yields a single signal. In this case the signal strength is boosted.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>List[Signal]: A list of strength adjusted signals. May not be as long as the input.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signals</strong> (<em>List</em><em>[</em><em>Signal</em><em>]</em>) – A signal is a tuple of name and strength.</p></li>
+<li><p><strong>trials</strong> (<em>int</em>) – Total attempts made to generate signals.</p></li>
+<li><p><strong>aggregate_fn</strong> (<em>Any</em><em>, </em><em>optional</em>) – A function to normalize a list of floating point values, defaults to np.mean</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – <code class="code docutils literal notranslate"><span class="pre">aggregate_fn</span></code> if passed should be a <code class="code docutils literal notranslate"><span class="pre">callable</span></code>.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of normalized signale.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Signal]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-dialogy.postprocess.text.voting">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.postprocess.text.voting" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dialogy.postprocess.text.voting package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.postprocess.text.voting.intent_voting">dialogy.postprocess.text.voting.intent_voting module</a></li>
+<li><a class="reference internal" href="#module-dialogy.postprocess.text.voting">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">dialogy</a><ul>
+  <li><a href="dialogy.html">dialogy package</a><ul>
+  <li><a href="dialogy.postprocess.html">dialogy.postprocess package</a><ul>
+  <li><a href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a><ul>
+      <li>Previous: <a href="dialogy.postprocess.text.slot_filler.html" title="previous chapter">dialogy.postprocess.text.slot_filler package</a></li>
+      <li>Next: <a href="dialogy.preprocess.html" title="next chapter">dialogy.preprocess package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dialogy.postprocess.text.voting.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, ltbringer.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+    </div>
+    
+
+  </body>
+</html>
