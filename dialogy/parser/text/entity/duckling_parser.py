@@ -179,7 +179,7 @@ class DucklingParser(Plugin):
         return payload
 
     @staticmethod
-    def mutate_entity(entity: Dict[str, Any]) -> Dict[str, Any]:
+    def __mutate_entity(entity: Dict[str, Any]) -> Dict[str, Any]:
         """
         Mutate entity obtained from Duckling API.
 
@@ -227,7 +227,7 @@ class DucklingParser(Plugin):
         del entity[EntityKeys.VALUE]
         return entity
 
-    def reshape(
+    def __reshape(
         self, entities_json: List[Dict[str, Any]]
     ) -> Optional[List[BaseEntity]]:
         """
@@ -259,7 +259,7 @@ class DucklingParser(Plugin):
                     else:
                         cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
                     # The most appropriate class is picked for making an object from the dict.
-                    duckling_entity = cls.from_dict(self.mutate_entity(entity))
+                    duckling_entity = cls.from_dict(self.__mutate_entity(entity))
                     # Depending on the type of entity, the value is searched and filled.
                     duckling_entity.set_value()
                     # Collect the entity object in a list.
@@ -279,7 +279,7 @@ class DucklingParser(Plugin):
             ) from key_error
         return entity_object_list
 
-    def get_entities(
+    def __get_entities(
         self, text: str, reference_time: Optional[int] = None
     ) -> List[Dict[str, Any]]:
         """
@@ -318,12 +318,13 @@ class DucklingParser(Plugin):
         """
         Insert a list of :ref:`BaseEntity <base_entity>` objects into the Workflow.
 
+        This function is also available through the __call__ method as syntactic sugar.
+
         :param workflow: A :ref:`Workflow <workflow>` on which the plugin should operate.
         :return:
         """
         access = self.access
         mutate = self.mutate
-        input_ = Union[str, List[str]]
         if not isinstance(access, Callable):  # type: ignore
             raise TypeError(
                 "Expected `access` to be Callable,"
@@ -341,14 +342,14 @@ class DucklingParser(Plugin):
             try:
                 if isinstance(input_, str):
                     entities.append(
-                        self.get_entities(input_, reference_time=reference_time)
+                        self.__get_entities(input_, reference_time=reference_time)
                     )
                 elif isinstance(input_, list) and all(
                     isinstance(text, str) for text in input_
                 ):
                     for text in input_:
                         entities.append(
-                            self.get_entities(text, reference_time=reference_time)
+                            self.__get_entities(text, reference_time=reference_time)
                         )
                 else:
                     raise TypeError(f"Expected {input_} to be a List[str] or str.")
@@ -358,7 +359,7 @@ class DucklingParser(Plugin):
                 ]
 
                 if entities_flattened:
-                    shaped_entities = self.reshape(entities_flattened)
+                    shaped_entities = self.__reshape(entities_flattened)
                     mutate(workflow, shaped_entities)
                 else:
                     mutate(workflow, [])

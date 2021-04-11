@@ -66,7 +66,7 @@ def test_duckling_api_success() -> None:
         dimensions=["number", "date", "time"], timezone="Asia/Kolkata", locale="en_IN"
     )
 
-    response = parser.get_entities(body)
+    response = parser.__get_entities(body)
     assert response == expected_response
 
 
@@ -90,7 +90,7 @@ def test_duckling_api_failure() -> None:
     )
 
     with pytest.raises(ValueError):
-        parser.get_entities(body)
+        parser.__get_entities(body)
 
 
 # == Test duckling with timezone info ==
@@ -111,7 +111,7 @@ def test_duckling_with_tz() -> None:
         locale="en_IN", timezone="Asia/Kolkata", dimensions=["time"]
     )
 
-    response = parser.get_entities(body)
+    response = parser.__get_entities(body)
     assert response == expected_response
 
 
@@ -132,7 +132,7 @@ def test_duckling_wrong_tz() -> None:
     )
 
     with pytest.raises(pytz.UnknownTimeZoneError):
-        _ = parser.get_entities(body)
+        _ = parser.__get_entities(body)
 
 
 # == Test entity structure modifications for numerical entities ==
@@ -146,7 +146,7 @@ def test_entity_mutation_dict() -> None:
     parser = DucklingParser(
         locale="en_IN", dimensions=["number"], timezone="Asia/Kolkata"
     )
-    entity = parser.mutate_entity(entities_json)
+    entity = parser.__mutate_entity(entities_json)
 
     assert "range" in entity
     assert "start" in entity["range"]
@@ -195,7 +195,7 @@ def test_entity_mutation_list() -> None:
     parser = DucklingParser(
         locale="en_IN", dimensions=["time"], timezone="Asia/Kolkata"
     )
-    entity = parser.mutate_entity(entity_json)
+    entity = parser.__mutate_entity(entity_json)
 
     assert "range" in entity
     assert "start" in entity["range"]
@@ -218,7 +218,7 @@ def test_entity_json_to_object_time_entity() -> None:
     )
     entities_json = [config.mock_time_entity]
 
-    entities = parser.reshape(entities_json)
+    entities = parser.__reshape(entities_json)
     assert isinstance(entities[0], TimeEntity)
 
 
@@ -235,7 +235,7 @@ def test_entity_json_to_object_time_interval_entity():
     )
     entities_json = [config.mock_interval_entity]
 
-    entities = parser.reshape(entities_json)
+    entities = parser.__reshape(entities_json)
     assert isinstance(entities[0], TimeIntervalEntity)
 
 
@@ -260,7 +260,7 @@ def test_entity_json_to_object_numerical_entity() -> None:
     parser = DucklingParser(
         locale="en_IN", dimensions=["number"], timezone="Asia/Kolkata"
     )
-    entities = parser.reshape(entities_json)
+    entities = parser.__reshape(entities_json)
     assert isinstance(entities[0], NumericalEntity)
 
 
@@ -291,7 +291,7 @@ def test_entity_json_to_object_duration_entity() -> None:
     parser = DucklingParser(
         dimensions=["duration"], locale="en_IN", timezone="Asia/Kolkata"
     )
-    entities = parser.reshape(entities_json)
+    entities = parser.__reshape(entities_json)
     print(entities)
     if not isinstance(entities[0], DurationEntity):
         pytest.fail("expected entities.")
@@ -310,7 +310,7 @@ def test_entity_json_to_object_people_entity() -> None:
     parser = DucklingParser(
         locale="en_IN", dimensions=["people"], timezone="Asia/Kolkata"
     )
-    entities = parser.reshape(entities_json)
+    entities = parser.__reshape(entities_json)
     assert isinstance(entities[0], PeopleEntity)
 
 
@@ -329,7 +329,7 @@ def test_entity_object_not_implemented() -> None:
     )
 
     with pytest.raises(NotImplementedError):
-        parser.reshape(entities_json)
+        parser.__reshape(entities_json)
 
 
 # == Test transormation of entity-json with missing value. ==
@@ -352,7 +352,7 @@ def test_entity_object_error_on_missing_value() -> None:
     )
 
     with pytest.raises(KeyError):
-        parser.reshape(entities_json)
+        parser.__reshape(entities_json)
 
 
 # == Test missing i/o ==
