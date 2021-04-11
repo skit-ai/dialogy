@@ -17,8 +17,8 @@ test: lint ## Run the tests.
 docs: test
 	@echo -e "🦆🦕🐬🐶"
 	@rm -rf dialogy/docs/dialogy
-	@pycco dialogy/**/*.py -p -i
-	@pycco tests/**/*.py -p
-	@cp docs/pycco_edit.css docs/pycco.css
+	@$(MAKE) html -C docs_src
+	@rm -rf docs/*
+	@mv docs_src/build/html/* docs
 
 all: docs
