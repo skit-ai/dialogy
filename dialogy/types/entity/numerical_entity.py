@@ -5,9 +5,6 @@ Module provides access to entity types that can be parsed to obtain numeric valu
 Import classes:
     - NumericalEntity
 """
-
-from typing import Any, Callable, Dict, List
-
 import attr
 
 from dialogy import constants

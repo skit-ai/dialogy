@@ -9,7 +9,6 @@ from typing import Any, Dict, Optional
 
 import attr
 
-from dialogy import constants
 from dialogy import constants as const
 from dialogy.types.entity.time_entity import TimeEntity
 
@@ -29,7 +28,7 @@ class TimeIntervalEntity(TimeEntity):
 
     origin = "interval"
     dim = "time"
-    __properties_map = constants.TIME_ENTITY_PROPS
+    __properties_map = const.TIME_ENTITY_PROPS
 
     def set_value(self, value: Optional[Dict[str, Any]] = None) -> None:
         """
