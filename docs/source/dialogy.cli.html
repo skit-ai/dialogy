@@ -8,27 +8,47 @@
 
     <title>dialogy.cli package &#8212; dialogy 0.4.5 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="next" title="dialogy.constants package" href="dialogy.constants.html" />
+    <link rel="prev" title="dialogy package" href="dialogy.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
 
   </head><body>
-  
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dialogy.constants.html" title="dialogy.constants package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dialogy.html" title="dialogy package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="dialogy.html" accesskey="U">dialogy package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.cli package</a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <section id="dialogy-cli-package">
@@ -41,7 +61,7 @@
 <p>This module offers utilities to create a new project from a given template.</p>
 <dl class="py function">
 <dt id="dialogy.cli.project.new_project">
-<code class="sig-prename descclassname"><span class="pre">dialogy.cli.project.</span></code><code class="sig-name descname"><span class="pre">new_project</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'vernacular-ai'</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli/project.html#new_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.project.new_project" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">new_project</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'vernacular-ai'</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli/project.html#new_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.project.new_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new project using scaffolding from an existing template.</p>
 <p>This function uses <a class="reference external" href="https://copier.readthedocs.io/en/stable/">copier’s</a> <a class="reference external" href="https://copier.readthedocs.io/en/stable/#quick-usage">copy</a> to use an existing template.</p>
 <p>An example template is <a class="reference external" href="https://github.com/Vernacular-ai/dialogy-template-simple-transformers">here:</a>.</p>
@@ -100,7 +120,7 @@ Show current project version.</p>
 </div></blockquote>
 <dl class="py function">
 <dt id="dialogy.cli.main">
-<code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.main" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create project scaffolding cli.</p>
 </dd></dl>
 
@@ -108,30 +128,37 @@ Show current project version.</p>
 </section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">dialogy</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dialogy.cli package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.cli.project">dialogy.cli.project module</a></li>
+<li><a class="reference internal" href="#module-dialogy.cli">Module contents</a></li>
+</ul>
+</li>
+</ul>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="dialogy.html">dialogy package</a><ul>
+      <li>Previous: <a href="dialogy.html" title="previous chapter">dialogy package</a></li>
+      <li>Next: <a href="dialogy.constants.html" title="next chapter">dialogy.constants package</a></li>
+  </ul></li>
   </ul></li>
 </ul>
-</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/dialogy.cli.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -142,32 +169,18 @@ Show current project version.</p>
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/source/dialogy.cli.rst.txt"
-          rel="nofollow">Page source</a>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
     </div>
-
     
 
-    
   </body>
 </html>

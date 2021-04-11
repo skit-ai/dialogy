@@ -8,27 +8,49 @@
 
     <title>dialogy.postprocess.text.voting package &#8212; dialogy 0.4.5 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="next" title="dialogy.preprocess package" href="dialogy.preprocess.html" />
+    <link rel="prev" title="dialogy.postprocess.text.slot_filler package" href="dialogy.postprocess.text.slot_filler.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
 
   </head><body>
-  
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dialogy.preprocess.html" title="dialogy.preprocess package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dialogy.postprocess.text.slot_filler.html" title="dialogy.postprocess.text.slot_filler package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="dialogy.html" >dialogy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="dialogy.postprocess.html" >dialogy.postprocess package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="dialogy.postprocess.text.html" accesskey="U">dialogy.postprocess.text package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.postprocess.text.voting package</a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <section id="dialogy-postprocess-text-voting-package">
@@ -42,7 +64,7 @@
 alternative from the ASR.</p>
 <dl class="py class">
 <dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.postprocess.text.voting.intent_voting.</span></code><code class="sig-name descname"><span class="pre">VotePlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">access:</span> <span class="pre">Optional[Callable[[...],</span> <span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">mutate:</span> <span class="pre">Optional[Callable[[...],</span> <span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">threshold:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.6,</span> <span class="pre">consensus:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.2,</span> <span class="pre">representation:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.3,</span> <span class="pre">fallback_intent:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'_oos_',</span> <span class="pre">aggregate_fn:</span> <span class="pre">Any</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">debug:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">VotePlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">access:</span> <span class="pre">Optional[Callable[[...],</span> <span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">mutate:</span> <span class="pre">Optional[Callable[[...],</span> <span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">threshold:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.6,</span> <span class="pre">consensus:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.2,</span> <span class="pre">representation:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.3,</span> <span class="pre">fallback_intent:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'_oos_',</span> <span class="pre">aggregate_fn:</span> <span class="pre">Any</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">debug:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
 <p>An instance of VoteIntentPlugin helps in voting for a strong
 evidence over other candidates.</p>
@@ -88,7 +110,7 @@ constituency (float, optional): Threshold for proportion of votes,</p>
 
 <dl class="py function">
 <dt id="dialogy.postprocess.text.voting.intent_voting.adjust_signal_strength">
-<code class="sig-prename descclassname"><span class="pre">dialogy.postprocess.text.voting.intent_voting.</span></code><code class="sig-name descname"><span class="pre">adjust_signal_strength</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">signals:</span> <span class="pre">List[Tuple[str,</span> <span class="pre">float,</span> <span class="pre">float]],</span> <span class="pre">trials:</span> <span class="pre">int,</span> <span class="pre">aggregate_fn:</span> <span class="pre">Any</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#adjust_signal_strength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.adjust_signal_strength" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">adjust_signal_strength</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">signals:</span> <span class="pre">List[Tuple[str,</span> <span class="pre">float,</span> <span class="pre">float]],</span> <span class="pre">trials:</span> <span class="pre">int,</span> <span class="pre">aggregate_fn:</span> <span class="pre">Any</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#adjust_signal_strength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.adjust_signal_strength" title="Permalink to this definition">¶</a></dt>
 <dd><p>Re-evaluate signal strength.</p>
 <p>Re-evaluation is based on frequency of occurrence and strength of each occurrence,
 normalized by trials.</p>
@@ -126,30 +148,41 @@ normalized by trials.</p>
 </section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">dialogy</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dialogy.postprocess.text.voting package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.postprocess.text.voting.intent_voting">dialogy.postprocess.text.voting.intent_voting module</a></li>
+<li><a class="reference internal" href="#module-dialogy.postprocess.text.voting">Module contents</a></li>
+</ul>
+</li>
+</ul>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="dialogy.html">dialogy package</a><ul>
+  <li><a href="dialogy.postprocess.html">dialogy.postprocess package</a><ul>
+  <li><a href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a><ul>
+      <li>Previous: <a href="dialogy.postprocess.text.slot_filler.html" title="previous chapter">dialogy.postprocess.text.slot_filler package</a></li>
+      <li>Next: <a href="dialogy.preprocess.html" title="next chapter">dialogy.preprocess package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
   </ul></li>
 </ul>
-</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/dialogy.postprocess.text.voting.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -160,32 +193,18 @@ normalized by trials.</p>
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/source/dialogy.postprocess.text.voting.rst.txt"
-          rel="nofollow">Page source</a>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
     </div>
-
     
 
-    
   </body>
 </html>

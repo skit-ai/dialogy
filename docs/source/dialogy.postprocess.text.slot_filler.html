@@ -8,27 +8,49 @@
 
     <title>dialogy.postprocess.text.slot_filler package &#8212; dialogy 0.4.5 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="next" title="dialogy.postprocess.text.voting package" href="dialogy.postprocess.text.voting.html" />
+    <link rel="prev" title="dialogy.postprocess.text package" href="dialogy.postprocess.text.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
 
   </head><body>
-  
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dialogy.postprocess.text.voting.html" title="dialogy.postprocess.text.voting package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dialogy.postprocess.text.html" title="dialogy.postprocess.text package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="dialogy.html" >dialogy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="dialogy.postprocess.html" >dialogy.postprocess package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="dialogy.postprocess.text.html" accesskey="U">dialogy.postprocess.text package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.postprocess.text.slot_filler package</a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <section id="dialogy-postprocess-text-slot-filler-package">
@@ -41,7 +63,7 @@
 <p id="rule-slot-filler">Module provides access to a rule-based <a class="reference internal" href="#slot-filler"><span class="std std-ref">slot filler</span></a>.</p>
 <dl class="py class">
 <dt id="dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.postprocess.text.slot_filler.rule_slot_filler.</span></code><code class="sig-name descname"><span class="pre">RuleBasedSlotFillerPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_multiple</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">RuleBasedSlotFillerPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_multiple</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
 <p>A utility <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">plugin</span></a> for
 <cite>slot filling &lt;https://nlpprogress.com/english/intent_detection_slot_filling.html&gt;</cite>._
@@ -115,30 +137,41 @@ fills an entity of a pre-defined type.</p>
 </section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">dialogy</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dialogy.postprocess.text.slot_filler package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.postprocess.text.slot_filler.rule_slot_filler">dialogy.postprocess.text.slot_filler.rule_slot_filler module</a></li>
+<li><a class="reference internal" href="#module-dialogy.postprocess.text.slot_filler">Module contents</a></li>
+</ul>
+</li>
+</ul>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="dialogy.html">dialogy package</a><ul>
+  <li><a href="dialogy.postprocess.html">dialogy.postprocess package</a><ul>
+  <li><a href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a><ul>
+      <li>Previous: <a href="dialogy.postprocess.text.html" title="previous chapter">dialogy.postprocess.text package</a></li>
+      <li>Next: <a href="dialogy.postprocess.text.voting.html" title="next chapter">dialogy.postprocess.text.voting package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
   </ul></li>
 </ul>
-</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/dialogy.postprocess.text.slot_filler.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -149,32 +182,18 @@ fills an entity of a pre-defined type.</p>
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/source/dialogy.postprocess.text.slot_filler.rst.txt"
-          rel="nofollow">Page source</a>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
     </div>
-
     
 
-    
   </body>
 </html>
