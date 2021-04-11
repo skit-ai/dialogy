@@ -7,39 +7,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>dialogy.preprocess.text.merge_asr_output &#8212; dialogy 0.4.5 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-     
-    
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
-    
-    
-
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.preprocess.text.merge_asr_output</a></li> 
-      </ul>
-    </div>  
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for dialogy.preprocess.text.merge_asr_output</h1><div class="highlight"><pre>
@@ -66,7 +54,7 @@
 
 
 <span class="c1"># == merge_asr_output ==</span>
-<div class="viewcode-block" id="merge_asr_output"><a class="viewcode-back" href="../../../../dialogy.preprocess.text.html#dialogy.preprocess.text.merge_asr_output.merge_asr_output">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="merge_asr_output"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.merge_asr_output.merge_asr_output">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Join ASR output to single string.</span>
 
@@ -115,7 +103,7 @@
 <span class="c1"># ---</span>
 
 <span class="c1"># == merge_asr_output_plugin ==</span>
-<div class="viewcode-block" id="merge_asr_output_plugin"><a class="viewcode-back" href="../../../../dialogy.preprocess.text.html#dialogy.preprocess.text.merge_asr_output.merge_asr_output_plugin">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output_plugin</span><span class="p">(</span>
+<div class="viewcode-block" id="merge_asr_output_plugin"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.merge_asr_output.merge_asr_output_plugin">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output_plugin</span><span class="p">(</span>
     <span class="n">access</span><span class="p">:</span> <span class="n">GetWorkflowUtteranceFn</span><span class="p">,</span> <span class="n">mutate</span><span class="p">:</span> <span class="n">UpdateWorkflowStringFn</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -144,18 +132,32 @@
     <span class="k">return</span> <span class="n">inner</span></div>
 </pre></div>
 
-            <div class="clearer"></div>
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">dialogy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
 <ul>
   <li><a href="../../../../index.html">Documentation overview</a><ul>
   <li><a href="../../../index.html">Module code</a><ul>
   </ul></li>
   </ul></li>
 </ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -166,18 +168,29 @@
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
     </div>
+
     
 
+    
   </body>
 </html>

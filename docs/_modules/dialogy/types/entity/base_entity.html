@@ -7,39 +7,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>dialogy.types.entity.base_entity &#8212; dialogy 0.4.5 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-     
-    
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
-    
-    
-
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.types.entity.base_entity</a></li> 
-      </ul>
-    </div>  
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for dialogy.types.entity.base_entity</h1><div class="highlight"><pre>
@@ -66,7 +54,7 @@
 
 
 <span class="c1"># = BaseEntity =</span>
-<div class="viewcode-block" id="BaseEntity"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<div class="viewcode-block" id="BaseEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
 <span class="k">class</span> <span class="nc">BaseEntity</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base Entity Type.</span>
@@ -147,7 +135,7 @@
     <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">BASE_ENTITY_PROPS</span>
 
     <span class="c1"># == validate ==</span>
-<div class="viewcode-block" id="BaseEntity.validate"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.validate">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="BaseEntity.validate"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.validate">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check attributes of instance match expected types.</span>
@@ -159,7 +147,7 @@
             <span class="n">validate_type</span><span class="p">(</span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">prop</span><span class="p">),</span> <span class="n">prop_type</span><span class="p">)</span></div>
 
     <span class="c1"># == from_dict ==</span>
-<div class="viewcode-block" id="BaseEntity.from_dict"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="BaseEntity.from_dict"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an instance of a given class `cls` from a `dict` that complies</span>
@@ -174,7 +162,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">dict_</span><span class="p">)</span></div>
 
     <span class="c1"># == add_parser ==</span>
-<div class="viewcode-block" id="BaseEntity.add_parser"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.add_parser">[docs]</a>    <span class="k">def</span> <span class="nf">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">postprocessor</span><span class="p">:</span> <span class="n">PluginFn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseEntity.add_parser"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.add_parser">[docs]</a>    <span class="k">def</span> <span class="nf">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">postprocessor</span><span class="p">:</span> <span class="n">PluginFn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update parsers with the postprocessor function name</span>
 
@@ -187,7 +175,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">postprocessor</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
 
     <span class="c1"># == get_value ==</span>
-<div class="viewcode-block" id="BaseEntity.get_value"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseEntity.get_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get value of an entity.</span>
 
@@ -213,7 +201,7 @@
             <span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span></div>
 
     <span class="c1"># == copy ==</span>
-<div class="viewcode-block" id="BaseEntity.copy"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseEntity.copy"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a deep copy of the instance and return.</span>
 
@@ -222,7 +210,7 @@
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     <span class="c1"># == json ==</span>
-<div class="viewcode-block" id="BaseEntity.json"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span>
+<div class="viewcode-block" id="BaseEntity.json"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">skip</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">add</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -245,7 +233,7 @@
             <span class="n">skip_</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">SKIP_ENTITY_ATTRS</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">add</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">attr</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip_</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseEntity.set_value"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseEntity.set_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set values and value attribute.</span>
 
@@ -263,7 +251,7 @@
 
 
 <span class="c1"># = entity_synthesis =</span>
-<div class="viewcode-block" id="entity_synthesis"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.entity_synthesis">[docs]</a><span class="k">def</span> <span class="nf">entity_synthesis</span><span class="p">(</span><span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">property_</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEntity</span><span class="p">:</span>
+<div class="viewcode-block" id="entity_synthesis"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.entity_synthesis">[docs]</a><span class="k">def</span> <span class="nf">entity_synthesis</span><span class="p">(</span><span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">property_</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEntity</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update a property=`property_` of a BaseEntity, with a given value=`value`.</span>
 
@@ -285,18 +273,32 @@
     <span class="k">return</span> <span class="n">synthetic_entity</span></div>
 </pre></div>
 
-            <div class="clearer"></div>
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">dialogy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
 <ul>
   <li><a href="../../../../index.html">Documentation overview</a><ul>
   <li><a href="../../../index.html">Module code</a><ul>
   </ul></li>
   </ul></li>
 </ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -307,18 +309,29 @@
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
     </div>
+
     
 
+    
   </body>
 </html>

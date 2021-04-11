@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>dialogy.types.slots package &#8212; dialogy 0.4.5 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="dialogy-types-slots-package">
+<h1>dialogy.types.slots package<a class="headerlink" href="#dialogy-types-slots-package" title="Permalink to this headline">¶</a></h1>
+<section id="module-dialogy.types.slots">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.slots" title="Permalink to this headline">¶</a></h2>
+<p id="slot">Type definition for Slots.</p>
+<p>Import classes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Slot</p></li>
+</ul>
+</div></blockquote>
+<dl class="py class">
+<dt id="dialogy.types.slots.Slot">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.types.slots.</span></code><code class="sig-name descname"><span class="pre">Slot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/slots.html#Slot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.slots.Slot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Slot Type</p>
+<p>Keys are:
+- <cite>name</cite> of the slot
+- <cite>type</cite> is a list of types that can fill this slot
+- <cite>values</cite> list of entities extracted</p>
+<dl class="py method">
+<dt id="dialogy.types.slots.Slot.add">
+<code class="sig-name descname"><span class="pre">add</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#dialogy.types.slots.Slot" title="dialogy.types.slots.Slot"><span class="pre">dialogy.types.slots.Slot</span></a><a class="reference internal" href="../_modules/dialogy/types/slots.html#Slot.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.slots.Slot.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert the <cite>BaseEntity</cite> within the current <cite>Slot</cite> instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.types.slots.Slot.clear">
+<code class="sig-name descname"><span class="pre">clear</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#dialogy.types.slots.Slot" title="dialogy.types.slots.Slot"><span class="pre">dialogy.types.slots.Slot</span></a><a class="reference internal" href="../_modules/dialogy/types/slots.html#Slot.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.slots.Slot.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all <cite>BaseEntity</cite> within the current <cite>Slot</cite> instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="dialogy.types.slots.Slot.json">
+<code class="sig-name descname"><span class="pre">json</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/types/slots.html#Slot.json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.slots.Slot.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the object to a dictionary.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">dialogy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/dialogy.types.slots.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
