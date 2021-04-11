@@ -1,4 +1,6 @@
 """
+.. _slot:
+
 Type definition for Slots.
 
 Import classes:

@@ -1,4 +1,5 @@
 """
+.. _intent:
 Type definition for `Intent`.
 
 Import classes:

@@ -1,4 +1,5 @@
 """
+.. _time_entity:
 Module provides access to entity types that can be parsed to obtain datetime values.
 
 Import classes:

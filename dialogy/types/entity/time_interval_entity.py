@@ -1,4 +1,5 @@
 """
+.. _time_interval_entity:
 Module provides access to entity types that can be parsed to obtain intervals of datetime.
 
 Import classes:

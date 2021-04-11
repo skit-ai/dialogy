@@ -1,4 +1,5 @@
 """
+.. _location_entity:
 Module provides access to an entity type (class) to handle locations.
 
 Import classes:

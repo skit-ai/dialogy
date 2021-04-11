@@ -1,4 +1,5 @@
-"""Module provides utility functions for entities.
+"""
+Module provides utility functions for entities.
 
 Import functions:
     - dict_traversal

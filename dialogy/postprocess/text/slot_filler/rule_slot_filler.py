@@ -3,7 +3,7 @@
 
 Module provides access to a rule-based :ref:`slot filler<slot_filler>`.
 """
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from dialogy.plugin import Plugin
 from dialogy.types.entity import BaseEntity
@@ -15,22 +15,42 @@ from dialogy.workflow import Workflow
 
 class RuleBasedSlotFillerPlugin(Plugin):
     """
-    A utility :ref:`plugin <plugin>` for `slot filling
-    <https://nlpprogress.com/english/intent_detection_slot_filling.html>`._ An :ref:`Intent <intent>` may have
+    A utility :ref:`plugin <plugin>` for
+    `slot filling <https://nlpprogress.com/english/intent_detection_slot_filling.html>`._
+    An :ref:`Intent <intent>` may have a few slots that need to be filled.
+
+    This plugin can assist filling pertaining to certain intent:entity:slot-name association rules.
 
     Schema for rules looks like:
+
     .. code-block:: json
 
-    {
-        "<intent_name>": {
-            "<slot_name>":"<entity_name>"
+        {
+            "intent_name": {
+                "slot_name":"entity_type"
+            }
         }
-    }
 
-    Plugin signature:
+    This can be represented in a yaml format like so:
 
-    - `access(workflow) -> (Intent, List[BaseEntity])`
-    - `mutate` not required since the mutation is implied through Intent structure change.
+    .. code-block:: yaml
+
+        slots:
+            faqs:
+                action_slot: actions
+                item_slot: item
+            report:
+                action_slot: actions
+
+
+    :param rules: A mapping that defines relationship between an intent, its slots and the entities that fill them.
+    :type rules: Rule
+    :param fill_multiple: More than one item be allowed to fill a single slot.
+    :type fill_multiple: bool
+    :param access: Signature for workflow access is :code:`access(workflow) -> (Intent, List[BaseEntity])`
+    :type access: Optional[PluginFn]
+    :param mutate: Not needed, pass :code:`None`.
+    :type mutate: Optional[PluginFn]
 
     Irrespective of the entities that are found, only the listed type in the slot shall be present in `values`.
     """
@@ -42,6 +62,9 @@ class RuleBasedSlotFillerPlugin(Plugin):
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
     ) -> None:
+        """
+        constructor
+        """
         # rules
         #
         # A `Dict` where each key is an intent name, and each value is another `Dict`,
@@ -59,7 +82,6 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
-    # == filler ==
     def filler(self, workflow: Workflow) -> None:
         """
         Update an intent slot with compatible entity.
@@ -97,9 +119,8 @@ class RuleBasedSlotFillerPlugin(Plugin):
                 f" is not a Callable. Received {type(self.access)} instead."
             )
 
-    # == __call__ ==
     def __call__(self) -> PluginFn:
         """
-        [callable-plugin](../../../plugin/plugin.html#__call__)
+        syntactic sugar
         """
         return self.filler

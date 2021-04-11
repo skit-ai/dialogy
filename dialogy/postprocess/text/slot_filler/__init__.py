@@ -7,13 +7,13 @@ To handle a single dialog we need a system that can:
 2. Extract tokens of additional significance.
 3. Check for associations between the two.
 
-A slot-filler does the third bit. Once an [`Intent`](../../../types/intent/__init__.html) and a set of
-[`Entities`](../../../types/entity/__init__.html) are identified, there needs to be an arragement that
-tells us if any of the entities are related to an [`Intent`](../../../types/intent/__init__.html).
+A slot-filler does the third bit. Once an :ref:`Intent <intent>` and a set of
+:ref:`Entity <BaseEntity>` are identified, there needs to be an arrangement that
+tells us if any of these are related to each other.
 
-As per the current design, an [`Intent`](../../../types/intent/__init__.html) can contain `Slots`. A `Slot`
+As per the current design, an :ref:`Intent <intent>` can contain a number of :ref:`Slot <slot>`(s). A :ref:`Slot <slot>`
 fills an entity of a pre-defined type.
 
-- A `Slot` configured to fill a `TimeEntity` will not fill `LocationEntity`.
-- A `Slot` will not fill more than one entity even if the type matches.
+- A :ref:`Slot <slot>` configured to fill a :ref:`TimeEntity <time_entity>` will not fill a :ref:`LocationEntity <location_entity>`.
+- A :ref:`Slot <slot>` will not fill more than one entity even if the type matches, unless :code:`fill_multiple` is provided.
 """

@@ -1,4 +1,5 @@
 """
+.. _numerical_entity:
 Module provides access to entity types that can be parsed to obtain numeric values.
 
 Import classes:
