@@ -3,13 +3,7 @@
 
 Module provides access to an abstract plugin class.
 
-## Tutorials
-
-- [MakePlugins](../../tests/plugin/test_plugins.html)
-- [DucklingParser](../../tests/parser/text/entity/test_duckling_parser.html)
-- [RuleSlotFiller](../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
-
-## Summary
+Summary
 
 We will summarize a few key points for creating plugins:
 
@@ -17,16 +11,12 @@ We will summarize a few key points for creating plugins:
 -   The convention for workflow access is `access(workflow)`.
 -   The convention for workflow modification is `mutate(workflow, value)`.
 -   **Plugin names must end with Plugin for classes and _plugin for functions.** examples: `Sentence2VecPlugin`, `words2num_plugin`.
-
-Import classes:
-    - Plugin
 """
 from typing import Optional
 
 from dialogy.types.plugin import PluginFn
 
 
-# = Plugin =
 class Plugin:
     """
     A plugin object interacts with a :ref:`workflow<workflow>`. Workflows expect a set of plugins
