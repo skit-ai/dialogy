@@ -6,6 +6,45 @@ This module exposes a parser for `Duckling <https://github.com/facebook/duckling
 `Duckling <https://github.com/facebook/duckling>`_ helps parsing values like: :code:`date`, :code:`time`,
 :code:`numbers`, :code:`currency` etc. The parser will expect Duckling to be running as an http service, and provide
 means to connect from the implementation here.
+
+.. code-block:: python
+    :linenos:
+    :emphasize-lines: 4, 30
+
+    from dialogy.workflow import Workflow
+
+    def update_workflow(workflow, entities):
+        workflow.input["duckling_entities"] = entities
+
+    duckling_plugin = DucklingParser(
+        access=lambda workflow: workflow.input["sentence"],
+        # the access method guides the plugin to data within a workflow.
+        # in this case, the `input` property of a workflow is expected
+        # to be a `dict` with a key named "sentence". Check line 30.
+        mutate=update_workflow,
+        # the mutate method guides the plugin to place the processed output
+        # somewhere on the workflow.
+        dimensions=["people"],
+        # Duckling supports multiple dimensions, by specifying a list, we make sure
+        # we are searching for a match within the expected dimensions only.
+        locale="en_IN",
+        # Duckling supports a set of locales, we need to provide this info to
+        # get language specific matches.
+        timezone="Asia/Kolkata",
+        # Date/Time related entities make this field imperative.
+    )() # ⬅️ the instance is also getting called.
+    # Notice that we instantiate the class and also
+    # invoke __call__ method of the instance.
+    # The returned value from the instance is the plugin.
+    #
+    # This is a standard pattern across all plugins.
+
+    workflow = Workflow(preprocessors=[duckling_plugin])
+    workflow.run(input_={"sentence": "there are 7 people"})
+    # Once an input is run through the workflow as on line 30,
+    # we can expect the plugin mutation to create an artifact
+    # as per line 4.
+
 """
 import json
 from typing import Any, Callable, Dict, List, Optional, Union
