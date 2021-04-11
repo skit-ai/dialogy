@@ -19,6 +19,6 @@ docs: test
 	@rm -rf dialogy/docs/dialogy
 	@$(MAKE) html -C docs_src
 	@rm -rf docs/*
-	@mv docs_src/build/html/* docs
+	@mv docs_src/_build/html/* docs
 
 all: docs
