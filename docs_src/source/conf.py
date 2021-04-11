@@ -17,7 +17,6 @@ sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 # -- Project information -----------------------------------------------------
 
 project = 'dialogy'
-copyright = '2021, ltbringer'
 author = 'ltbringer'
 
 # The full version, including alpha/beta/rc tags
