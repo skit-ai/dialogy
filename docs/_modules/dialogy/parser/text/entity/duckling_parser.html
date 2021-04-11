@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dialogy.parser.text.entity.duckling_parser &#8212; dialogy 0.4.5 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/flasky.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.parser.text.entity.duckling_parser</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dialogy.parser.text.entity.duckling_parser</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. _duckling_parser:</span>
+
+<span class="sd">This module exposes a parser for `Duckling &lt;https://github.com/facebook/duckling&gt;`_.</span>
+
+<span class="sd">`Duckling &lt;https://github.com/facebook/duckling&gt;`_ helps parsing values like: :code:`date`, :code:`time`,</span>
+<span class="sd">:code:`numbers`, :code:`currency` etc. The parser will expect Duckling to be running as an http service, and provide</span>
+<span class="sd">means to connect from the implementation here.</span>
+
+<span class="sd">.. code-block:: python</span>
+<span class="sd">    :linenos:</span>
+<span class="sd">    :emphasize-lines: 4, 30</span>
+
+<span class="sd">    from dialogy.workflow import Workflow</span>
+
+<span class="sd">    def update_workflow(workflow, entities):</span>
+<span class="sd">        workflow.input[&quot;duckling_entities&quot;] = entities</span>
+
+<span class="sd">    duckling_plugin = DucklingParser(</span>
+<span class="sd">        access=lambda workflow: workflow.input[&quot;sentence&quot;],</span>
+<span class="sd">        # the access method guides the plugin to data within a workflow.</span>
+<span class="sd">        # in this case, the `input` property of a workflow is expected</span>
+<span class="sd">        # to be a `dict` with a key named &quot;sentence&quot;. Check line 30.</span>
+<span class="sd">        mutate=update_workflow,</span>
+<span class="sd">        # the mutate method guides the plugin to place the processed output</span>
+<span class="sd">        # somewhere on the workflow.</span>
+<span class="sd">        dimensions=[&quot;people&quot;],</span>
+<span class="sd">        # Duckling supports multiple dimensions, by specifying a list, we make sure</span>
+<span class="sd">        # we are searching for a match within the expected dimensions only.</span>
+<span class="sd">        locale=&quot;en_IN&quot;,</span>
+<span class="sd">        # Duckling supports a set of locales, we need to provide this info to</span>
+<span class="sd">        # get language specific matches.</span>
+<span class="sd">        timezone=&quot;Asia/Kolkata&quot;,</span>
+<span class="sd">        # Date/Time related entities make this field imperative.</span>
+<span class="sd">    )() # ⬅️ the instance is also getting called.</span>
+<span class="sd">    # Notice that we instantiate the class and also</span>
+<span class="sd">    # invoke __call__ method of the instance.</span>
+<span class="sd">    # The returned value from the instance is the plugin.</span>
+<span class="sd">    #</span>
+<span class="sd">    # This is a standard pattern across all plugins.</span>
+
+<span class="sd">    workflow = Workflow(preprocessors=[duckling_plugin])</span>
+<span class="sd">    workflow.run(input_={&quot;sentence&quot;: &quot;there are 7 people&quot;})</span>
+<span class="sd">    # Once an input is run through the workflow as on line 30,</span>
+<span class="sd">    # we can expect the plugin mutation to create an artifact</span>
+<span class="sd">    # as per line 4.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">pytz</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">pytz.tzinfo</span> <span class="kn">import</span> <span class="n">BaseTzInfo</span>  <span class="c1"># type: ignore</span>
+
+<span class="kn">from</span> <span class="nn">dialogy.constants</span> <span class="kn">import</span> <span class="n">EntityKeys</span>
+<span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">dimension_entity_map</span>
+<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+
+
+<div class="viewcode-block" id="DucklingParser"><a class="viewcode-back" href="../../../../../dialogy.parser.text.entity.html#dialogy.parser.text.entity.duckling_parser.DucklingParser">[docs]</a><span class="k">class</span> <span class="nc">DucklingParser</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A :ref:`Plugin&lt;plugin&gt;` for extracting entities using `Duckling &lt;https://github.com/facebook/duckling&gt;`_. Once</span>
+<span class="sd">    instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling</span>
+<span class="sd">    &lt;https://github.com/facebook/duckling&gt;`_.</span>
+
+<span class="sd">    This object when used as a plugin, transforms the :code:`List[Dict[str, Any]]` returned from the API to a</span>
+<span class="sd">    :ref:`BaseEntity&lt;base_entity&gt;` or one of its subclasses.</span>
+
+<span class="sd">    :param dimensions: `Dimensions &lt;https://github.com/facebook/duckling#supported-dimensions&gt;`_. Of the listed</span>
+<span class="sd">    dimensions, we support:</span>
+
+<span class="sd">        - `Numeral`</span>
+<span class="sd">        - `Time`</span>
+<span class="sd">        - `TimeInterval`</span>
+<span class="sd">        - `Duration`</span>
+<span class="sd">        - `People` - This isn&#39;t part of the standard, we have a private fork to support this.</span>
+
+<span class="sd">        Do note, passing more dimensions is not free. Duckling would search for extra set of patterns just because</span>
+<span class="sd">        those dimensions were expected.</span>
+<span class="sd">    :type dimensions: Optional[List[str]]</span>
+
+<span class="sd">    :param locale: The format for expressing locale requires language code and country name ids. Read about</span>
+<span class="sd">        `sections &lt;https://github.com/facebook/duckling#extending-duckling&gt;`_ that define</span>
+<span class="sd">        `ISO-639-codes &lt;https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes&gt;`_ for languages and</span>
+<span class="sd">        `ISO3166 alpha2 country code &lt;https://www.iso.org/obp/ui/#search/code/&gt;`_ for country codes.</span>
+<span class="sd">        Examples: `&quot;en_IN&quot;`, `&quot;en_US&quot;`, `&quot;en_GB&quot;`.</span>
+<span class="sd">    :type locale: str</span>
+
+<span class="sd">    :param timezone: `pytz` Timezone. This is especially important when services are deployed across different</span>
+<span class="sd">    geographies and consistency is expected in the responses. Get a valid value from a `list of tz database timezones</span>
+<span class="sd">    &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt;`_. Example: `&quot;Asia/Kolkata&quot;` :type timezone:</span>
+<span class="sd">    Optional[str]</span>
+
+<span class="sd">    :param timeout: There are certain strings which tend to stall Duckling: `example</span>
+<span class="sd">    &lt;https://github.com/facebook/duckling/issues/338&gt;`_. In such cases, to prevent the overall experience to slow</span>
+<span class="sd">    down as well, provide a certain timeout value, defaults to 0.5. :type timeout: float</span>
+
+<span class="sd">    :param url: The address where Duckling&#39;s entity parser can be reached, defaults to &quot;http://0.0.0.0:8000/parse&quot;.</span>
+<span class="sd">    :type url: Optional[str]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dimensions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;http://0.0.0.0:8000/parse&quot;</span><span class="p">,</span>
+        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        constructor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="n">locale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timezone</span> <span class="o">=</span> <span class="n">timezone</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__set_timezone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseTzInfo</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set timezone as BaseTzInfo from compatible timezone string.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            pytz.UnknownTimeZoneError:</span>
+
+<span class="sd">        :raises pytz.UnknownTimeZoneError: If `self.timezone` is not in `list of tz database</span>
+<span class="sd">            timezones &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt;`_.</span>
+<span class="sd">        :return: A valid timezone</span>
+<span class="sd">        :rtype: Optional[BaseTzInfo]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If timezone is an unsafe string, we will handle a `pytz.UnknownTimeZoneError` exception</span>
+        <span class="c1"># and pass a friendly message.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span> <span class="k">as</span> <span class="n">unknown_timezone_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">pytz</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The timezone </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="si">}</span><span class="s2"> is invalid&quot;</span>
+                <span class="s2">&quot; check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">unknown_timezone_error</span>
+
+    <span class="k">def</span> <span class="nf">__create_req_body</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        create request body for entity parsing</span>
+
+<span class="sd">        example: &quot;3 people tomorrow&quot;</span>
+
+<span class="sd">        Make your own reference time using the current timestamp using: :code:`int(datetime.now().timestamp() * 1000)`</span>
+<span class="sd">        These are the seconds since the `Unix epoch &lt;https://en.wikipedia.org/wiki/Unix_time&gt;`_</span>
+
+<span class="sd">        :param text: A sentence or document.</span>
+<span class="sd">        :type text: str</span>
+<span class="sd">        :param reference_time: Impart context of timestamp,</span>
+<span class="sd">        relevant for time related entities. Resolve relative time like &quot;yesterday&quot;, &quot;next month&quot;, etc.</span>
+<span class="sd">        :type Optional[int]</span>
+<span class="sd">        :param reference_time: Optional[int]</span>
+<span class="sd">        :return: request object for Duckling API.</span>
+<span class="sd">        :rtype: Dict[str, Any]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>
+
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+            <span class="s2">&quot;locale&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">locale</span><span class="p">,</span>
+            <span class="s2">&quot;tz&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_timezone</span><span class="p">(),</span>
+            <span class="s2">&quot;dims&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),</span>
+            <span class="s2">&quot;reftime&quot;</span><span class="p">:</span> <span class="n">reference_time</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">payload</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_mutate_entity</span><span class="p">(</span><span class="n">entity</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mutate entity obtained from Duckling API.</span>
+
+<span class="sd">        The purpose is to simplify :ref:`BaseEntity &lt;base_entity&gt;` initialization by calling `BaseEntity.from_dict(</span>
+<span class="sd">        **entity)`.</span>
+
+<span class="sd">        :param entity: An entity returned from Duckling&#39;s API.</span>
+<span class="sd">        :type entity: Dict[str, Any]</span>
+<span class="sd">        :return: Updated keys and structure.</span>
+<span class="sd">        :rtype: Dict[str, Any]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># **range** describes the span of string from which the entity was found.</span>
+
+        <span class="n">match_start</span> <span class="o">=</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
+        <span class="n">match_end</span> <span class="o">=</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>
+
+        <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">:</span> <span class="n">match_start</span><span class="p">,</span>
+            <span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">:</span> <span class="n">match_end</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># **type** of an entity is same as its **dimension**.</span>
+        <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]</span>
+
+        <span class="c1"># This piece is a preparation for multiple entity values.</span>
+        <span class="c1"># So, even though we are confident of the value found, we are still keeping the</span>
+        <span class="c1"># structure.</span>
+        <span class="k">if</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]:</span>
+            <span class="k">del</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span>
+        <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]]</span>
+
+        <span class="c1"># Pulling out the value of entity&#39;s **grain**. The value of **grain** helps</span>
+        <span class="c1"># us understand the precision of the entity. Usually present for `Time` dimension</span>
+        <span class="c1"># expect &quot;year&quot;, &quot;month&quot;, &quot;day&quot;, etc.</span>
+        <span class="k">if</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]:</span>
+            <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span><span class="p">:</span>
+            <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TO</span><span class="p">][</span>
+                <span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span>
+            <span class="p">]</span>
+
+        <span class="k">del</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">entity</span>
+
+    <span class="k">def</span> <span class="nf">_reshape</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entities_json</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a list of :ref:`BaseEntity &lt;base_entity&gt;` objects from a list of entity dicts.</span>
+
+<span class="sd">        :param entities_json: List of entities derived from Duckling&#39;s API.</span>
+<span class="sd">        :type entities_json: List[Dict[str, Any]]</span>
+<span class="sd">        :raises NotImplementedError: Raised when dimensions not supported by the project are used.</span>
+<span class="sd">        :raises KeyError: Expected keys in entity dict don&#39;t match the Entity class.</span>
+<span class="sd">        :return: A list of objects subclassed from :ref:`BaseEntity &lt;base_entity&gt;`</span>
+<span class="sd">        :rtype: Optional[List[BaseEntity]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">entity_object_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># For each entity dict:</span>
+            <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities_json</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">,</span>
+                    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">DURATION</span><span class="p">,</span>
+                    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span><span class="p">,</span>
+                <span class="p">]:</span>
+                    <span class="c1"># We can auto convert dict forms of duckling entities to dialogy entity classes only if they are</span>
+                    <span class="c1"># known in advance. We currently support only the types in the condition above.</span>
+                    <span class="k">if</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span><span class="p">:</span>
+                        <span class="c1"># Duckling entities with interval type have a different structure for value(s).</span>
+                        <span class="c1"># They have a need to express units in &quot;from&quot;, &quot;to&quot; format.</span>
+                        <span class="bp">cls</span> <span class="o">=</span> <span class="n">dimension_entity_map</span><span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">cls</span> <span class="o">=</span> <span class="n">dimension_entity_map</span><span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+                    <span class="c1"># The most appropriate class is picked for making an object from the dict.</span>
+                    <span class="n">duckling_entity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mutate_entity</span><span class="p">(</span><span class="n">entity</span><span class="p">))</span>
+                    <span class="c1"># Depending on the type of entity, the value is searched and filled.</span>
+                    <span class="n">duckling_entity</span><span class="o">.</span><span class="n">set_value</span><span class="p">()</span>
+                    <span class="c1"># Collect the entity object in a list.</span>
+                    <span class="n">entity_object_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">duckling_entity</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Raised only if an unsupported `dimension` is used.</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Entities with value.type </span><span class="si">{</span><span class="n">entity</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> are&quot;</span>
+                        <span class="s2">&quot; not implemented. Report this&quot;</span>
+                        <span class="s2">&quot; issue here: https://github.com/Vernacular-ai/dialogy/issues&quot;</span>
+                    <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
+            <span class="c1"># Being vary of structural changes in the API or entity dicts.</span>
+            <span class="c1"># Under normal circumstances this error shouldn&#39;t be raised.</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Missing key </span><span class="si">{</span><span class="n">key_error</span><span class="si">}</span><span class="s2"> in entity </span><span class="si">{</span><span class="n">entity</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
+        <span class="k">return</span> <span class="n">entity_object_list</span>
+
+    <span class="k">def</span> <span class="nf">_get_entities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get entities from duckling-server.</span>
+
+<span class="sd">        Assuming duckling-server is running at expected `url`. The entities are returned in</span>
+<span class="sd">        `json` compatible format.</span>
+
+<span class="sd">        :param text: The sentence or document in which entities must be looked up.</span>
+<span class="sd">        :type text: str</span>
+<span class="sd">        :param reference_time: Cases where relative units of time are mentioned,</span>
+<span class="sd">                                like &quot;today&quot;, &quot;now&quot;, etc. We need to know the current time</span>
+<span class="sd">                                to parse the values into usable dates/times, defaults to None</span>
+<span class="sd">        :type reference_time: Optional[int], optional</span>
+<span class="sd">        :raises ValueError: Duckling API call failure leading to no json response.</span>
+<span class="sd">        :return: Duckling entities as python :code:`dicts`.</span>
+<span class="sd">        :rtype: List[Dict[str, Any]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_req_body</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="c1"># The API call was successful, expect the following to contain entities.</span>
+            <span class="c1"># A list of dicts or an empty list.</span>
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="c1"># Control flow reaching here would mean the API call wasn&#39;t successful.</span>
+        <span class="c1"># To prevent rest of the things from crashing, we will raise an exception.</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Duckling API call failed | [</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">]: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="DucklingParser.plugin"><a class="viewcode-back" href="../../../../../dialogy.parser.text.entity.html#dialogy.parser.text.entity.duckling_parser.DucklingParser.plugin">[docs]</a>    <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert a list of :ref:`BaseEntity &lt;base_entity&gt;` objects into the Workflow.</span>
+
+<span class="sd">        This function is also available through the __call__ method as syntactic sugar.</span>
+
+<span class="sd">        :param workflow: A :ref:`Workflow &lt;workflow&gt;` on which the plugin should operate.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">access</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span>
+        <span class="n">mutate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">access</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected `access` to be Callable,&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mutate</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected `mutate` to be Callable,&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">entities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">access</span> <span class="ow">and</span> <span class="n">mutate</span><span class="p">:</span>
+            <span class="n">input_</span><span class="p">,</span> <span class="n">reference_time</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span>
+                <span class="p">):</span>
+                    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span><span class="p">:</span>
+                        <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="n">input_</span><span class="si">}</span><span class="s2"> to be a List[str] or str.&quot;</span><span class="p">)</span>
+
+                <span class="n">entities_flattened</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">entity</span> <span class="k">for</span> <span class="n">entity_list</span> <span class="ow">in</span> <span class="n">entities</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entity_list</span>
+                <span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">entities_flattened</span><span class="p">:</span>
+                    <span class="n">shaped_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">entities_flattened</span><span class="p">)</span>
+                    <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">shaped_entities</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">value_error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value_error</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">value_error</span></div>
+
+    <span class="c1"># == __call__ ==</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Syntactical sugar.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+    </div>
+    
+
+  </body>
+</html>

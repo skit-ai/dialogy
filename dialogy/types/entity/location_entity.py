@@ -1,10 +1,11 @@
 """
+.. _location_entity:
 Module provides access to an entity type (class) to handle locations.
 
 Import classes:
     - LocationEntity
 """
-from typing import Dict, List
+from typing import Dict
 
 import attr
 

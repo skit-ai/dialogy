@@ -1,4 +1,6 @@
 """
+.. _workflow:
+
 A `workflow` is supposed to run tasks that can be anticipated well in advance. We are prioritizing tasks that can be performed in production
 so you may find it odd to miss `train` and `test` methods. This is a deliberate decision since that choice is upto the user and a `workflow`
 targets performance in a production environment, where `train` and `test` are not the expected set of tasks, rather `inference` is.

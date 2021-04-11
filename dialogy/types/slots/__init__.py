@@ -1,4 +1,6 @@
 """
+.. _slot:
+
 Type definition for Slots.
 
 Import classes:
@@ -8,13 +10,10 @@ Import classes:
 
 from typing import Any, Dict, List
 
-import attr
-
 import dialogy.constants as const
 from dialogy.types.entity import BaseEntity
 
 
-@attr.s
 class Slot:
     """Slot Type
 
@@ -24,9 +23,10 @@ class Slot:
     - `values` list of entities extracted
     """
 
-    name = attr.ib(type=str)
-    type = attr.ib(type=List[str])
-    values = attr.ib(type=List[BaseEntity])
+    def __init__(self, name: str, type_: List[str], values: List[BaseEntity]) -> None:
+        self.name = name
+        self.type = type_
+        self.values = values
 
     def add(self, entity: BaseEntity) -> "Slot":
         """
@@ -50,8 +50,11 @@ class Slot:
             Dict[str, Any]
         """
         entities_json = [entity.json() for entity in self.values]
-        slot_json = attr.asdict(self)
-        slot_json[const.EntityKeys.VALUES] = entities_json
+        slot_json = {
+            "name": self.name,
+            "type": self.type,
+            const.EntityKeys.VALUES: entities_json,
+        }
         return slot_json
 
 

@@ -1,12 +1,9 @@
-"""Module provides access to an abstract plugin class.
+"""
+.. _plugin:
 
-## Tutorials
+Module provides access to an abstract plugin class.
 
-- [MakePlugins](../../tests/plugin/test_plugins.html)
-- [DucklingParser](../../tests/parser/text/entity/test_duckling_parser.html)
-- [RuleSlotFiller](../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)
-
-## Summary
+Summary
 
 We will summarize a few key points for creating plugins:
 
@@ -14,31 +11,25 @@ We will summarize a few key points for creating plugins:
 -   The convention for workflow access is `access(workflow)`.
 -   The convention for workflow modification is `mutate(workflow, value)`.
 -   **Plugin names must end with Plugin for classes and _plugin for functions.** examples: `Sentence2VecPlugin`, `words2num_plugin`.
-
-Import classes:
-    - Plugin
 """
 from typing import Optional
-
-import attr
 
 from dialogy.types.plugin import PluginFn
 
 
-# = Plugin =
-@attr.s
 class Plugin:
     """
-    A plugin object interacts with a [`workflow`](../workflow/workflow.html). Workflows expect a set of plugins
+    A plugin object interacts with a :ref:`workflow<workflow>`. Workflows expect a set of plugins
     to be inserted into different stages: pre and post processing. A plugin can be conveniently written being unaware of the
     structure of a given [`workflow`](../workflow/workflow.html) by expecting `access` and `mutate` functions.
     """
 
-    # An `access` function is defined to safely extract data from a workflow.
-    access: Optional[PluginFn] = attr.ib(default=None)
+    def __init__(self, access: Optional[PluginFn], mutate: Optional[PluginFn]) -> None:
+        # An `access` function is defined to safely extract data from a workflow.
+        self.access = access
 
-    # A `mutate` function allows inserting/overwriting data into a workflow.
-    mutate: Optional[PluginFn] = attr.ib(default=None)
+        # A `mutate` function allows inserting/overwriting data into a workflow.
+        self.mutate = mutate
 
     def __call__(self) -> PluginFn:
         """

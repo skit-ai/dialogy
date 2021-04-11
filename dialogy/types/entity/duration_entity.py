@@ -1,10 +1,11 @@
 """
+.. _duration_entity:
 Module provides access to an entity type (class) to handle locations.
 
 Import classes:
     - LocationEntity
 """
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import attr
 

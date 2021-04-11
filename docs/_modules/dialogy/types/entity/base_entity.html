@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dialogy.types.entity.base_entity &#8212; dialogy 0.4.5 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/flasky.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+     
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+    
+    
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">dialogy.types.entity.base_entity</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dialogy.types.entity.base_entity</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. _base_entity:</span>
+<span class="sd">Module provides access to a base class to create other entities.</span>
+
+<span class="sd">These methods of this class that are supposed to be overridden:</span>
+<span class="sd">- validate</span>
+<span class="sd">- get_value</span>
+
+<span class="sd">Import classes:</span>
+
+<span class="sd">- BaseEntity</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity.utils</span> <span class="kn">import</span> <span class="n">traverse_dict</span><span class="p">,</span> <span class="n">validate_type</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
+
+
+<span class="c1"># = BaseEntity =</span>
+<div class="viewcode-block" id="BaseEntity"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">BaseEntity</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base Entity Type.</span>
+
+<span class="sd">    This class is meant for subclassing.</span>
+<span class="sd">    Its intended purpose is to define a base for all entity types.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># **range**</span>
+    <span class="c1">#</span>
+    <span class="c1"># is the character range in the alternative where the entity is parsed.</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span>
+
+    <span class="c1"># **type**</span>
+    <span class="c1">#</span>
+    <span class="c1"># is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+
+    <span class="c1"># **body**</span>
+    <span class="c1">#</span>
+    <span class="c1"># is the string from which the entity is extracted.</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+
+    <span class="c1"># **dim**</span>
+    <span class="c1">#</span>
+    <span class="c1"># is influenced from Duckling&#39;s convention of categorization.</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># **parsers**</span>
+    <span class="c1">#</span>
+    <span class="c1"># gives the trail of all the functions that have changed this entity in the sequence of application.</span>
+    <span class="n">parsers</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span>
+        <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># **score**</span>
+    <span class="c1">#</span>
+    <span class="c1"># is the confidence that the range is the entity.</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># **slot_names**</span>
+    <span class="c1">#</span>
+    <span class="c1"># Entities have awareness of the slots they should fill.</span>
+    <span class="n">slot_names</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+
+    <span class="c1"># **alternative_index**</span>
+    <span class="c1">#</span>
+    <span class="c1"># is the index of transcript within the ASR output: `List[Utterances]`</span>
+    <span class="c1"># from which this entity was picked up. This may be None.</span>
+    <span class="n">alternative_index</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># **latent**</span>
+    <span class="c1">#</span>
+    <span class="c1"># Duckling influenced attribute, tells if there is less evidence for an entity if latent is True.</span>
+    <span class="n">latent</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># **values**</span>
+    <span class="c1">#</span>
+    <span class="c1"># The parsed value of an entity resides within this attribute.</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span>
+        <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="n">List</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># **values**</span>
+    <span class="c1">#</span>
+    <span class="c1"># A single value interpretation from values.</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># **entity_type**</span>
+    <span class="c1">#</span>
+    <span class="c1"># Mirrors type, to be deprecated.</span>
+    <span class="n">entity_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">BASE_ENTITY_PROPS</span>
+
+    <span class="c1"># == validate ==</span>
+<div class="viewcode-block" id="BaseEntity.validate"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.validate">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check attributes of instance match expected types.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dict_ (Dict[str, Any]): A `Dict` where each key is an attribute of the instance and value is the expected type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">prop</span><span class="p">,</span> <span class="n">prop_type</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__properties_map</span><span class="p">:</span>
+            <span class="n">validate_type</span><span class="p">(</span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">prop</span><span class="p">),</span> <span class="n">prop_type</span><span class="p">)</span></div>
+
+    <span class="c1"># == from_dict ==</span>
+<div class="viewcode-block" id="BaseEntity.from_dict"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an instance of a given class `cls` from a `dict` that complies</span>
+<span class="sd">        with attributes of `cls` through its keys and values.</span>
+<span class="sd">        Compliance is verified using the `__validate` method. It is expected that each subclass</span>
+<span class="sd">        will implement their own flavor of `__validate` to check their respective inputs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaseEntity: Instance of class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">dict_</span><span class="p">)</span></div>
+
+    <span class="c1"># == add_parser ==</span>
+<div class="viewcode-block" id="BaseEntity.add_parser"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.add_parser">[docs]</a>    <span class="k">def</span> <span class="nf">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">postprocessor</span><span class="p">:</span> <span class="n">PluginFn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update parsers with the postprocessor function name</span>
+
+<span class="sd">        This helps us identify the progression in which the postprocessing functions</span>
+<span class="sd">        were applied to an entity. This helps in debugging and has no production utility</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            postprocessor (PluginFn): Plugin function applied to an entity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">postprocessor</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+    <span class="c1"># == get_value ==</span>
+<div class="viewcode-block" id="BaseEntity.get_value"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get value of an entity.</span>
+
+<span class="sd">        The structure of an entity conceals the value in different data structures.</span>
+<span class="sd">        This is sugar for access.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: If `values` is not a `list`.</span>
+<span class="sd">            KeyError: If each element in `values` is not a `dict`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Any: Arbitrary return value, subclasses should override and return specific types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">index_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="s1">&#39;entity value should be in values[0][&quot;value&quot;]&#39;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">index_error</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="s1">&#39;entity value should be in values[0][&quot;value&quot;]&#39;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span></div>
+
+    <span class="c1"># == copy ==</span>
+<div class="viewcode-block" id="BaseEntity.copy"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseEntity&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a deep copy of the instance and return.</span>
+
+<span class="sd">        This is needed to prevent mutation of an original entity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="c1"># == json ==</span>
+<div class="viewcode-block" id="BaseEntity.json"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">skip</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">add</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the object to a dictionary.</span>
+
+<span class="sd">        Applies some expected filters to prevent information bloat.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            skip (Optional[List[str]], optional): Names of attributes that should not be included while converting to a dict.</span>
+<span class="sd">            Defaults to None.</span>
+
+<span class="sd">            add (Optional[List[str]], optional): Names of attributes that should be included while converting to a dict.</span>
+<span class="sd">            Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Any]: Dictionary representation of the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">skip_</span> <span class="o">=</span> <span class="n">skip</span> <span class="ow">or</span> <span class="n">const</span><span class="o">.</span><span class="n">SKIP_ENTITY_ATTRS</span>
+        <span class="k">if</span> <span class="n">add</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">skip_</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">SKIP_ENTITY_ATTRS</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">add</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">attr</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip_</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseEntity.set_value"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set values and value attribute.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (Any): The parsed value of an entity token.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[{</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">:</span> <span class="n">value</span><span class="p">}]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span></div></div>
+
+
+<span class="c1"># = entity_synthesis =</span>
+<div class="viewcode-block" id="entity_synthesis"><a class="viewcode-back" href="../../../../dialogy.types.entity.html#dialogy.types.entity.base_entity.entity_synthesis">[docs]</a><span class="k">def</span> <span class="nf">entity_synthesis</span><span class="p">(</span><span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">property_</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEntity</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update a property=`property_` of a BaseEntity, with a given value=`value`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entity (BaseEntity): The BaseEntity instance to update.</span>
+<span class="sd">        property_ (str): The attribute of a given entity that should be updated.</span>
+<span class="sd">        value (Any): The value that should updated.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: If `entity` is not a BaseEntity.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        BaseEntity: modified instance of BaseEntity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">entity</span><span class="si">}</span><span class="s2"> has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span><span class="si">}</span><span class="s2"> expected BaseEntity&quot;</span><span class="p">)</span>
+    <span class="n">synthetic_entity</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">synthetic_entity</span><span class="p">,</span> <span class="n">property_</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">synthetic_entity</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+    </div>
+    
+
+  </body>
+</html>

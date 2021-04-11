@@ -1,4 +1,5 @@
 """
+.. _intent:
 Type definition for `Intent`.
 
 Import classes:
@@ -8,34 +9,52 @@ Import classes:
 
 from typing import Any, Callable, Dict, List, Optional
 
-import attr
-
 from dialogy.types.entity import BaseEntity
 from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule, Slot
 
 
-@attr.s
 class Intent:
     """
     An instance of this class contains the name of the action associated with a body of text.
     """
 
-    # The name of the intent to be used.
-    name = attr.ib(type=str)
+    def __init__(
+        self,
+        name: str,
+        score: float,
+        parsers: Optional[List[str]] = None,
+        alternative_index: Optional[int] = 0,
+        slots: Optional[Dict[str, Slot]] = None,
+    ) -> None:
+        """
 
-    # The confidence of this intent being present in the utterance.
-    score = attr.ib(type=float)
+        :param name:
+        :type name: str
+        :param score:
+        :type score: float
+        :param parsers:
+        :type parsers: Optional[List[str]]
+        :param alternative_index:
+        :type alternative_index: Optional[int]
+        :param slots:
+        :type slots: Optional[Dict[str, Slot]]
+        """
+        # The name of the intent to be used.
+        self.name = name
 
-    # Trail of functions that modify the attributes of an instance.
-    parsers = attr.ib(type=List[str], default=attr.Factory(list))
+        # The confidence of this intent being present in the utterance.
+        self.score = score
 
-    # In case of an ASR, `alternative_index` points at one of the nth
-    # alternatives that help in predictions.
-    alternative_index = attr.ib(type=Optional[int], default=0)
+        # Trail of functions that modify the attributes of an instance.
+        self.parsers = parsers or []
 
-    # Container for holding `List[BaseEntity]`.
-    slots = attr.ib(type=Dict[str, Slot], default=attr.Factory(dict))
+        # In case of an ASR, `alternative_index` points at one of the nth
+        # alternatives that help in predictions.
+        self.alternative_index = alternative_index
+
+        # Container for holding `List[BaseEntity]`.
+        self.slots: Dict[str, Slot] = slots or {}
 
     def apply(self, rules: Rule) -> "Intent":
         """
@@ -48,7 +67,7 @@ class Intent:
             return self
 
         for slot_name, entity_type in rule.items():
-            self.slots[slot_name] = Slot(name=slot_name, type=[entity_type], values=[])
+            self.slots[slot_name] = Slot(name=slot_name, type_=[entity_type], values=[])
         return self
 
     def add_parser(self, postprocessor: PluginFn) -> "Intent":
@@ -99,14 +118,13 @@ class Intent:
         """
         Convert the object to a dictionary.
         """
-        intent = self
-        intent_slots = {}
-        for slot_name in intent.slots:
-            intent_slots[slot_name] = intent.slots[slot_name].json()
-
-        intent_json = attr.asdict(self)
-        intent_json["slots"] = intent_slots
-        return intent_json
+        return {
+            "name": self.name,
+            "score": self.score,
+            "alternative_index": self.alternative_index,
+            "slots": {slot_name: slot.json() for slot_name, slot in self.slots.items()},
+            "parsers": self.parsers,
+        }
 
 
 """
