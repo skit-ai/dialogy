@@ -47,7 +47,7 @@ means to connect from the implementation here.
 
 """
 import json
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional
 
 import pytz
 import requests

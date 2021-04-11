@@ -17,7 +17,7 @@ Options:
 
     <template>
         The source data directory; models, datasets, metrics will be copied from here.
-    
+
     <project>
         A directory with this name will be created at the root of command invocation.
 
