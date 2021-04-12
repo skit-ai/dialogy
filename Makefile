@@ -19,6 +19,7 @@ docs: test
 	@rm -rf dialogy/docs/dialogy
 	@$(MAKE) html -C docs_src
 	@rm -rf docs/*
+	@cp docs_src/_build/html/.nojekyll .nojekyll
 	@mv docs_src/_build/html/* docs
 
 all: docs
