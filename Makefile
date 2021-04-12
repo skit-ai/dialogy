@@ -16,8 +16,7 @@ test: lint ## Run the tests.
 
 docs: test
 	@echo -e "🦆🦕🐬🐶"
-	@rm -rf docs/dialogy
 	@$(MAKE) html -C docs_src
-	@cp -a  docs_src/_build/html/. ../docs
+	@cp -r docs_src/_build/html/. ./docs
 
 all: docs
