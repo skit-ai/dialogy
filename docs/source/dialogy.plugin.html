@@ -1,56 +1,119 @@
-
 <!DOCTYPE html>
-
-<html>
+<html >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>dialogy.plugin package &#8212; dialogy 0.4.5 documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="dialogy.postprocess package" href="dialogy.postprocess.html" />
-    <link rel="prev" title="dialogy.parser.text.entity package" href="dialogy.parser.text.entity.html" />
-     
+      <title>dialogy.plugin package</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+      <link rel="stylesheet" href="../_static/pygments.css">
+      <link rel="stylesheet" href="../_static/theme.css">
+      <link rel="stylesheet" href="../_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
 
-  </head><body>
-    
-    
+      <!-- sphinx script_files -->
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="dialogy.postprocess.html" title="dialogy.postprocess package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="dialogy.parser.text.entity.html" title="dialogy.parser.text.entity package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" >dialogy</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="dialogy.html" accesskey="U">dialogy package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.plugin package</a></li> 
+      
+      <script src="../_static/theme-vendors.js"></script>
+      <script src="../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../genindex.html" />
+  <link rel="search" title="Search" href="../search.html" />
+  <link rel="next" title="dialogy.postprocess package" href="dialogy.postprocess.html" />
+  <link rel="prev" title="dialogy.parser.text.entity package" href="dialogy.parser.text.entity.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../index.html" class="home-link">
+    
+      <span class="site-name">dialogy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="modules.html#dialogy">dialogy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="dialogy.html" class="reference internal ">dialogy package</a>
+
+            
+          </li>
+
+        
       </ul>
-    </div>  
+    </div>
+  
+</div>
+        </sidebar>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="modules.html">dialogy</a> &raquo;</li>
+    
+      <li><a href="dialogy.html">dialogy package</a> &raquo;</li>
+    
+    <li>dialogy.plugin package</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.parser.text.entity.html"
+       title="previous chapter">← dialogy.parser.text.entity package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.postprocess.html"
+       title="next chapter">dialogy.postprocess package →</a>
+  </li>
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <section id="dialogy-plugin-package">
 <h1>dialogy.plugin package<a class="headerlink" href="#dialogy-plugin-package" title="Permalink to this headline">¶</a></h1>
@@ -60,85 +123,123 @@
 <section id="module-dialogy.plugin.plugin">
 <span id="dialogy-plugin-plugin-module"></span><h2>dialogy.plugin.plugin module<a class="headerlink" href="#module-dialogy.plugin.plugin" title="Permalink to this headline">¶</a></h2>
 <p id="plugin">Module provides access to an abstract plugin class.</p>
-<p>Summary</p>
 <p>We will summarize a few key points for creating plugins:</p>
 <ul class="simple">
 <li><p>Don’t interact with the workflow directly, use functions to access and mutate.</p></li>
 <li><p>The convention for workflow access is <cite>access(workflow)</cite>.</p></li>
 <li><p>The convention for workflow modification is <cite>mutate(workflow, value)</cite>.</p></li>
-<li><p><strong>Plugin names must end with Plugin for classes and _plugin for functions.</strong> examples: <cite>Sentence2VecPlugin</cite>, <cite>words2num_plugin</cite>.</p></li>
+<li><p>Plugin names must end with Plugin for classes and _plugin for functions.</p></li>
 </ul>
+<p>examples:
+- Sentence2VecPlugin
+- words2num_plugin
+- RuleSlotFilerPlugin
+- VotePlugin</p>
 <dl class="py class">
 <dt id="dialogy.plugin.plugin.Plugin">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugin/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugin.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugin/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugin.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A plugin object interacts with a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>. Workflows expect a set of plugins
-to be inserted into different stages: pre and post processing. A plugin can be conveniently written being unaware of the
-structure of a given [<cite>workflow</cite>](../workflow/workflow.html) by expecting <cite>access</cite> and <cite>mutate</cite> functions.</p>
+<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> instance interacts with a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>. A <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> expects
+a set of plugins to be inserted into different stages: pre and post processing.
+A plugin can be conveniently written being unaware of the structure of any <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>
+by expecting <cite>access</cite> and <cite>mutate</cite> functions.</p>
+<p><strong>Dynamic Inputs</strong></p>
+<p>An <code class="code docutils literal notranslate"><span class="pre">access</span></code> method helps a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> to require dynamic inputs from the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>
+while a <code class="code docutils literal notranslate"><span class="pre">mutate</span></code> method offers a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> to update the processed output and place them as per
+expectations of the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> implementer’s design.</p>
+<p><strong>Static Inputs</strong></p>
+<p>In case there are static inputs that won’t change at runtime, these can be pre-loaded into the
+<a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> by extending it.</p>
+<p>An example for this is:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CustomPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
+        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `.load_corpus()` method reads some corpus.</span>
+<span class="sd">        This is useful since we expect to read this</span>
+<span class="sd">        just once and use it throughout the runtime.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access</span> <span class="o">=</span> <span class="n">access</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span> <span class="o">=</span> <span class="n">mutate</span>
+<span class="hll">        <span class="bp">self</span><span class="o">.</span><span class="n">corpus</span> <span class="o">=</span> <span class="kc">None</span>
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">load_corpus</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">load_corpus</span><span class="p">(</span><span class="n">corpus_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">corpus_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">corpus_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+<span class="hll">            <span class="bp">self</span><span class="o">.</span><span class="n">corpus</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+</span></pre></div>
+</td></tr></table></div>
+<p>We ship a few <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> with Dialogy, namely:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="dialogy.parser.text.entity.html#duckling-parser"><span class="std std-ref">DucklingParser</span></a> (pre-processing)</p></li>
+<li><p><a class="reference internal" href="dialogy.preprocess.text.html#merge-asr-output-plugin"><span class="std std-ref">merge_asr_output_plugin</span></a> (pre-processing)</p></li>
+<li><p><a class="reference internal" href="dialogy.postprocess.text.slot_filler.html#rule-slot-filler"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a> (post-processing)</p></li>
+<li><p><a class="reference internal" href="dialogy.postprocess.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a> (post-processing)</p></li>
+</ol>
 </dd></dl>
 
 </section>
 <section id="module-dialogy.plugin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugin" title="Permalink to this headline">¶</a></h2>
+<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is an abstraction to handle third-party features with custom <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> pipelines.</p>
+<p>We offer a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> that provides a simple API exposed via its <code class="code docutils literal notranslate"><span class="pre">run(input_=X)</span></code> method.
+The input has no restrictions, the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> will apply a set of pre-processing functions and
+post-processing functions.</p>
+<p>The challenge is <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> and <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> are not built usually by the same people.
+A tailor-made solution for a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> hampers the portability of the solution. These can be inserted
+in various ways, like methods, or external functions even. The hope here is to encourage better abstraction while
+writing plugins. This will help improvement, addition of existing features by keeping them in their separate, isolated,
+context-free boxes.</p>
+<p>An ideal <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a>  must therefore not assume a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> structure. It must use
+abstractions to specify requirements and expect these to be met for safe usage.</p>
 </section>
 </section>
 
 
-            <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">dialogy.plugin package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dialogy.plugin.plugin">dialogy.plugin.plugin module</a></li>
-<li><a class="reference internal" href="#module-dialogy.plugin">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">dialogy</a><ul>
-  <li><a href="dialogy.html">dialogy package</a><ul>
-      <li>Previous: <a href="dialogy.parser.text.entity.html" title="previous chapter">dialogy.parser.text.entity package</a></li>
-      <li>Next: <a href="dialogy.postprocess.html" title="next chapter">dialogy.postprocess package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/source/dialogy.plugin.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.parser.text.entity.html"
+       title="previous chapter">← dialogy.parser.text.entity package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.postprocess.html"
+       title="next chapter">dialogy.postprocess package →</a>
+  </li>
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright .
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+            </div>
+          </div>
+      </page>
     </div>
     
-
+    
   </body>
 </html>

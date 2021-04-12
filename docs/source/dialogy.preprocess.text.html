@@ -1,57 +1,121 @@
-
 <!DOCTYPE html>
-
-<html>
+<html >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>dialogy.preprocess.text package &#8212; dialogy 0.4.5 documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="dialogy.types package" href="dialogy.types.html" />
-    <link rel="prev" title="dialogy.preprocess package" href="dialogy.preprocess.html" />
-     
+      <title>dialogy.preprocess.text package</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+      <link rel="stylesheet" href="../_static/pygments.css">
+      <link rel="stylesheet" href="../_static/theme.css">
+      <link rel="stylesheet" href="../_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
 
-  </head><body>
-    
-    
+      <!-- sphinx script_files -->
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="dialogy.types.html" title="dialogy.types package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="dialogy.preprocess.html" title="dialogy.preprocess package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" >dialogy</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="dialogy.html" >dialogy package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="dialogy.preprocess.html" accesskey="U">dialogy.preprocess package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.preprocess.text package</a></li> 
+      
+      <script src="../_static/theme-vendors.js"></script>
+      <script src="../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../genindex.html" />
+  <link rel="search" title="Search" href="../search.html" />
+  <link rel="next" title="dialogy.types package" href="dialogy.types.html" />
+  <link rel="prev" title="dialogy.preprocess package" href="dialogy.preprocess.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../index.html" class="home-link">
+    
+      <span class="site-name">dialogy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="modules.html#dialogy">dialogy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="dialogy.html" class="reference internal ">dialogy package</a>
+
+            
+          </li>
+
+        
       </ul>
-    </div>  
+    </div>
+  
+</div>
+        </sidebar>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="modules.html">dialogy</a> &raquo;</li>
+    
+      <li><a href="dialogy.html">dialogy package</a> &raquo;</li>
+    
+      <li><a href="dialogy.preprocess.html">dialogy.preprocess package</a> &raquo;</li>
+    
+    <li>dialogy.preprocess.text package</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.preprocess.html"
+       title="previous chapter">← dialogy.preprocess package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.types.html"
+       title="next chapter">dialogy.types package →</a>
+  </li>
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <section id="dialogy-preprocess-text-package">
 <h1>dialogy.preprocess.text package<a class="headerlink" href="#dialogy-preprocess-text-package" title="Permalink to this headline">¶</a></h1>
@@ -60,61 +124,80 @@
 </section>
 <section id="module-dialogy.preprocess.text.merge_asr_output">
 <span id="dialogy-preprocess-text-merge-asr-output-module"></span><h2>dialogy.preprocess.text.merge_asr_output module<a class="headerlink" href="#module-dialogy.preprocess.text.merge_asr_output" title="Permalink to this headline">¶</a></h2>
-<p>Module provides access to a Plugin to combine ASR output.</p>
-<p>## Tutorial</p>
-<ul class="simple">
-<li><p>[merge_asr_output](../../../tests/preprocess/text/test_merge_asr_output.html)</p></li>
-</ul>
-<p>Import functions:</p>
-<ul class="simple">
-<li><p>merge_asr_output</p></li>
-</ul>
+<p>We expect ASR transcripts to be the most common inputs to the system. Since there is a chance that we can improve the
+performance by asking the ASR to provide more information in the form of multiple alternatives. The problem though, is
+they can’t be used as it is. Models that can operate on text data, need them to be vectorized. These vectors have
+semantic significance, where different text inputs imply different vectors. If their semantic differences are modeled
+well, we can expect these vectors to be similar or dissimilar just like the text that was used to create them.</p>
+<p>The problem with transcripts is, there <strong>will</strong> be noise in the transcripts, since we asked for <code class="code docutils literal notranslate"><span class="pre">N</span></code> transcripts,
+by definition, an ASR will provide N unique transcripts. The noise may in fact be inconsequential for downstream NLP
+tasks, but we have noticed that there are certain inputs owing to audio artifacts or state of LMs tend to have a great
+impact on the transcription.</p>
+<p>This module will ship a simple concatenation strategy to address this problem. The NLP model should be expected to
+handle documents (<code class="code docutils literal notranslate"><span class="pre">List[str]</span></code>) instead of single text. The plugin then will be able to produce a <code class="code docutils literal notranslate"><span class="pre">str</span></code> by
+simply concatenation of each transcript.</p>
+<p>This may not be very helpful, there is a <a class="reference internal" href="dialogy.postprocess.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a> under development so use it with caution. It may
+help with precision at the cost of recall.</p>
 <dl class="py function">
 <dt id="dialogy.preprocess.text.merge_asr_output.merge_asr_output">
 <code class="sig-name descname"><span class="pre">merge_asr_output</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">utterances</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/merge_asr_output.html#merge_asr_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.merge_asr_output.merge_asr_output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Join ASR output to single string.</p>
+<dd><p id="merge-asr-output">Join ASR output to single string.</p>
 <p>This function provides a merging strategy for n-best ASR transcripts by
 joining each transcript, such that:</p>
 <ul class="simple">
-<li><p>each sentence end is marked by ” &amp;lt;/s&amp;gt;” and,</p></li>
-<li><p>sentence start marked by ” &amp;lt;s&amp;gt;”.</p></li>
+<li><p>each sentence end is marked by ” &lt;/s&gt;” and,</p></li>
+<li><p>sentence start marked by ” &lt;s&gt;”.</p></li>
 </ul>
 <p>The key “transcript” is expected in the ASR output, the value of which would be operated on
 by this function.</p>
-<p>Example:
-<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python</p>
-<dl class="simple">
-<dt>input = [</dt><dd><p>{“transcript”: “This is a sentence”},
-{“transcript”: “That is a sentence”}</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.preprocess</span> <span class="kn">import</span> <span class="n">merge_asr_output</span>
+
+<span class="gp">In [2]: </span><span class="n">utterances</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;This is a sentence&quot;</span><span class="p">,</span> <span class="s2">&quot;That is a sentence&quot;</span><span class="p">]</span>
+
+<span class="gp">In [3]: </span><span class="n">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">)</span>
+<span class="gh">Out[3]: </span><span class="go">&#39;&lt;s&gt; This is a sentence &lt;/s&gt; &lt;s&gt; That is a sentence &lt;/s&gt;&#39;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>utterances</strong> (<em>Any</em>) – <p>A structure representing ASR output. We support only:</p>
+<ol class="arabic simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">List[str]</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">List[List[str]]</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">List[List[Dict[str,</span> <span class="pre">str]]]</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">List[Dict[str,</span> <span class="pre">str]]</span></code></p></li>
+</ol>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Concatenated string, separated by &lt;s&gt; and &lt;/s&gt; at respective terminal positions of each sentence.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>TypeError if transcript is missing in cases of <code class="code docutils literal notranslate"><span class="pre">List[List[Dict[str,</span> <span class="pre">str]]]</span></code> or
+<code class="code docutils literal notranslate"><span class="pre">List[Dict[str,</span> <span class="pre">str]]</span></code>.</p>
 </dd>
 </dl>
-<p>]</p>
-<p>“&lt;s&gt; This is a sentence &lt;/s&gt; &lt;s&gt; That is a sentence &lt;/s&gt;”
-<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
-<p>Args:</p>
-<ul class="simple">
-<li><p>utterances (<cite>List[Utterance]</cite>): ASR transcriptions</p></li>
-</ul>
-<p>Raises:</p>
-<ul class="simple">
-<li><p>KeyError: Missing key <cite>“transcript”</cite> within alternatives.</p></li>
-</ul>
-<p>Returns:</p>
-<ul class="simple">
-<li><p>str: concatenated ASR transcripts into a string.</p></li>
-</ul>
 </dd></dl>
 
 <dl class="py function">
 <dt id="dialogy.preprocess.text.merge_asr_output.merge_asr_output_plugin">
 <code class="sig-name descname"><span class="pre">merge_asr_output_plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/preprocess/text/merge_asr_output.html#merge_asr_output_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.merge_asr_output.merge_asr_output_plugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a closure for single text representation for ASR output.</p>
-<p>This Plugin provides a merging strategy for n-best ASR transcripts.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>access (GetWorkflowUtteranceFn): Function to access workflow elements.
-mutate (UpdateWorkflowStringFn): Function to modify workflow elements.</p>
+<dd><p id="merge-asr-output-plugin">Working details are covered in <a class="reference internal" href="#merge-asr-output"><span class="std std-ref">merge_asr_output</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>access</strong> (<em>GetWorkflowUtteranceFn</em>) – A function that provides a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> and returns the ASR Utterance.</p></li>
+<li><p><strong>mutate</strong> (<em>UpdateWorkflowStringFn</em>) – A function that places the concat’d string into the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> as required.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>PluginFn: Closure function returned</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The plugin function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable</p>
 </dd>
 </dl>
 </dd></dl>
@@ -128,11 +211,19 @@ we will ship functions to assist normalization of ASR output, we will refer to t
 <dt id="dialogy.preprocess.text.normalize_utterance.dict_get">
 <code class="sig-name descname"><span class="pre">dict_get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#dict_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.dict_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get value of prop within obj.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>prop (str): A key within a dict.
-obj (Dict[str, Any]): Any dict.</p>
+<p>This simple function exists to facilitate a partial function defined <a class="reference internal" href="#is-utterance"><span class="std std-ref">here</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prop</strong> (<em>str</em>) – A property within a <code class="code docutils literal notranslate"><span class="pre">dict</span></code>.</p></li>
+<li><p><strong>obj</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A <code class="code docutils literal notranslate"><span class="pre">dict</span></code>.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>Any</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of a property within a <code class="code docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
 </dd></dl>
@@ -141,17 +232,32 @@ obj (Dict[str, Any]): Any dict.</p>
 <dt id="dialogy.preprocess.text.normalize_utterance.is_each_element">
 <code class="sig-name descname"><span class="pre">is_each_element</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">type_:</span> <span class="pre">type,</span> <span class="pre">input_:</span> <span class="pre">List[Any],</span> <span class="pre">transform:</span> <span class="pre">Callable[[Any],</span> <span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#is_each_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.is_each_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if each element in a list is of a given type.</p>
-<dl>
-<dt>Args:</dt><dd><p><a href="#id9"><span class="problematic" id="id10">type_</span></a> (type): Expected type for each element.
-<a href="#id11"><span class="problematic" id="id12">input_</span></a> (List[Any]): Arbitrary list.
-transform (Callable[[Any], Any], optional): We may apply some transforms to</p>
-<blockquote>
-<div><p>each element before making these checks. This is to check if a certain key
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.preprocess.text.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_each_element</span>
+
+<span class="gp">In [2]: </span><span class="n">is_each_element</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;returns&quot;</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span><span class="p">,</span> <span class="s2">&quot;cuz:&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+<span class="gh">Out[2]: </span><span class="go">False</span>
+
+<span class="gp">In [3]: </span><span class="n">is_each_element</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;returns&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;cuz:&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span><span class="p">])</span>
+<span class="gh">Out[3]: </span><span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>Type</em>) – Expected <code class="code docutils literal notranslate"><span class="pre">Type</span></code> of each element in the <code class="code docutils literal notranslate"><span class="pre">input_</span></code> which is a <code class="code docutils literal notranslate"><span class="pre">list</span></code>.</p></li>
+<li><p><strong>input</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – A <code class="code docutils literal notranslate"><span class="pre">list</span></code>.</p></li>
+<li><p><strong>transform</strong> (<em>Callable</em><em>[</em><em>[</em><em>Any</em><em>]</em><em>, </em><em>Any</em><em>]</em>) – We may apply some transforms to
+each element before making these checks. This is to check if a certain key
 in a Dict matches the expected type. In case this is not needed,
-leave the argument unset and an identity transform is applied. Defaults to lambdax:x.</p>
-</div></blockquote>
+leave the argument unset and an identity transform is applied. Defaults to lambda x:x.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>bool: True if each element in input matches the type.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Checks each element in a list to match <code class="code docutils literal notranslate"><span class="pre">type_</span></code>, if any element fails the check,
+this returns False, else True.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -160,10 +266,15 @@ leave the argument unset and an identity transform is applied. Defaults to lambd
 <dt id="dialogy.preprocess.text.normalize_utterance.is_list">
 <code class="sig-name descname"><span class="pre">is_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#is_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.is_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check type of <cite>input_</cite></p>
-<dl class="simple">
-<dt>Args:</dt><dd><p><a href="#id13"><span class="problematic" id="id14">input_</span></a> (Any): Any arbitrary input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input</strong> (<em>Any</em>) – Any arbitrary input</p>
 </dd>
-<dt>Returns:</dt><dd><p>bool: True if <a href="#id15"><span class="problematic" id="id16">input_</span></a> is list.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if <a href="#id1"><span class="problematic" id="id2">input_</span></a> is a <code class="code docutils literal notranslate"><span class="pre">list</span></code> else False</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>True</p>
 </dd>
 </dl>
 </dd></dl>
@@ -172,13 +283,21 @@ leave the argument unset and an identity transform is applied. Defaults to lambd
 <dt id="dialogy.preprocess.text.normalize_utterance.is_list_of_string">
 <code class="sig-name descname"><span class="pre">is_list_of_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#is_list_of_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.is_list_of_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check input to be of <cite>List[str]</cite>.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>maybe_utterance (Any): Arbitrary type input.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.preprocess.text.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_list_of_string</span>
+
+<span class="gp">In [2]: </span><span class="n">is_list_of_string</span><span class="p">([</span><span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;works&quot;</span><span class="p">])</span>
+<span class="gh">Out[2]: </span><span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary input.</p>
 </dd>
-<dt>Returns:</dt><dd><p>bool</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if <code class="code docutils literal notranslate"><span class="pre">maybe_utterance</span></code> is a <code class="code docutils literal notranslate"><span class="pre">str</span></code>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>KeyError
-TypeError</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -186,11 +305,16 @@ TypeError</p>
 <dl class="py function">
 <dt id="dialogy.preprocess.text.normalize_utterance.is_string">
 <code class="sig-name descname"><span class="pre">is_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#is_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.is_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check input to be of <cite>str</cite>.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>maybe_utterance (Any): Arbitrary type input.</p>
+<dd><p>Check input’s type is <cite>str</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary type input.</p>
 </dd>
-<dt>Returns:</dt><dd><p>bool</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if <code class="code docutils literal notranslate"><span class="pre">maybe_utterance</span></code> is a <code class="code docutils literal notranslate"><span class="pre">str</span></code>, else False.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -199,17 +323,29 @@ TypeError</p>
 <dt id="dialogy.preprocess.text.normalize_utterance.is_unsqueezed_utterance">
 <code class="sig-name descname"><span class="pre">is_unsqueezed_utterance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#is_unsqueezed_utterance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.is_unsqueezed_utterance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check input to be of <cite>List[Dict]</cite>.</p>
-<dl>
-<dt>Args:</dt><dd><p>maybe_utterance (Any): Arbitrary type input.
-key (str, optional): The key within which transcription string resides.</p>
-<blockquote>
-<div><p>Defaults to const.TRANSCRIPT.</p>
-</div></blockquote>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.preprocess.text.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_unsqueezed_utterance</span>
+
+<span class="go"># 1. This fails</span>
+<span class="gp">In [2]: </span><span class="n">is_unsqueezed_utterance</span><span class="p">([[{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;this&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;works&quot;</span><span class="p">}]])</span>
+<span class="gh">Out[2]: </span><span class="go">False</span>
+
+<span class="go"># 2. key is configurable</span>
+<span class="gp">In [3]: </span><span class="n">is_unsqueezed_utterance</span><span class="p">([{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;this&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;works&quot;</span><span class="p">}],</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+<span class="gh">Out[3]: </span><span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary type input.</p></li>
+<li><p><strong>key</strong> (<em>str</em><em>, </em><em>Defaults to const.TRANSCRIPT.</em>) – The key within which transcription string resides.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>bool</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True, if the input is of type <code class="code docutils literal notranslate"><span class="pre">List[Dict[str,</span> <span class="pre">Any]]</span></code> else False.</p>
 </dd>
-<dt>Raises:</dt><dd><p>KeyError
-TypeError</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -221,17 +357,35 @@ TypeError</p>
 <p><code class="docutils literal notranslate"><span class="pre">`json</span>
 <span class="pre">[[{&quot;transcript&quot;:</span> <span class="pre">&quot;hi&quot;}]]</span>
 <span class="pre">`</span></code></p>
-<dl>
-<dt>Args:</dt><dd><p>maybe_utterance (Any): Arbitrary type input.
-key (str, optional): The key within which transcription string resides.</p>
-<blockquote>
-<div><p>Defaults to const.TRANSCRIPT.</p>
-</div></blockquote>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.preprocess.text.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_utterance</span>
+
+<span class="go"># 1. :code:`List[List[Dict[str, str]]]`</span>
+<span class="gp">In [2]: </span><span class="n">is_utterance</span><span class="p">([[{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;this&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;works&quot;</span><span class="p">}]])</span>
+<span class="gh">Out[2]: </span><span class="go">True</span>
+
+<span class="go"># 2. key is configurable</span>
+<span class="gp">In [3]: </span><span class="n">is_utterance</span><span class="p">([[{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;this&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;works&quot;</span><span class="p">}]],</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+<span class="gh">Out[3]: </span><span class="go">True</span>
+
+<span class="go"># 3. Hope for everything else... you have a mastercard.</span>
+<span class="go"># Or use this lib, works just fine 🍷.</span>
+<span class="gp">In [4]: </span><span class="n">is_utterance</span><span class="p">([{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;this&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;doesn&#39;t&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;work&quot;</span><span class="p">}])</span>
+<span class="gh">Out[4]: </span><span class="go">False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary input.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The key within which transcription string resides.
+Defaults to <code class="code docutils literal notranslate"><span class="pre">const.TRANSCRIPT</span></code>.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>bool</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the inputs is <code class="code docutils literal notranslate"><span class="pre">List[List[Dict[str,</span> <span class="pre">str]]]</span></code>, else False.</p>
 </dd>
-<dt>Raises:</dt><dd><p>KeyError
-TypeError</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -241,25 +395,39 @@ TypeError</p>
 <code class="sig-name descname"><span class="pre">normalize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adapt various non-standard ASR alternative forms.</p>
 <p>The output will be a list of strings since models will expect that.</p>
-<p>expected inputs:
-<code class="docutils literal notranslate"><span class="pre">`json</span>
-<span class="pre">[[{&quot;transcript&quot;:</span> <span class="pre">&quot;hi&quot;}]]</span>
-<span class="pre">`</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">`json</span>
-<span class="pre">[{&quot;transcript&quot;:</span> <span class="pre">&quot;I</span> <span class="pre">wanted</span> <span class="pre">to</span> <span class="pre">know</span> <span class="pre">umm</span> <span class="pre">hello?&quot;}]</span>
-<span class="pre">`</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">`json</span>
-<span class="pre">[&quot;I</span> <span class="pre">wanted</span> <span class="pre">to</span> <span class="pre">know</span> <span class="pre">umm</span> <span class="pre">hello?&quot;]</span>
-<span class="pre">`</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">`json</span>
-<span class="pre">&quot;I</span> <span class="pre">wanted</span> <span class="pre">to</span> <span class="pre">know</span> <span class="pre">umm</span> <span class="pre">hello?&quot;</span>
-<span class="pre">`</span></code></p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>maybe_utterance (Any): Non-standard input types.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.preprocess</span> <span class="kn">import</span> <span class="n">normalize</span>
+
+<span class="gp">In [2]: </span><span class="n">normalize</span><span class="p">([[{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;hi&quot;</span><span class="p">}]])</span>
+<span class="gh">Out[2]: </span><span class="go">[&#39;hi&#39;]</span>
+
+<span class="gp">In [3]: </span><span class="n">normalize</span><span class="p">([[{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">}],</span> <span class="p">[{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}]])</span>
+<span class="gh">Out[3]: </span><span class="go">[&#39;hello&#39;, &#39;world&#39;]</span>
+
+<span class="gp">In [4]: </span><span class="n">normalize</span><span class="p">([{</span><span class="s2">&quot;transcript&quot;</span><span class="p">:</span> <span class="s2">&quot;I wanted to know umm hello?&quot;</span><span class="p">}])</span>
+<span class="gh">Out[4]: </span><span class="go">[&#39;I wanted to know umm hello?&#39;]</span>
+
+<span class="gp">In [5]: </span><span class="n">normalize</span><span class="p">([</span><span class="s2">&quot;I wanted to know umm hello?&quot;</span><span class="p">])</span>
+<span class="gh">Out[5]: </span><span class="go">[&#39;I wanted to know umm hello?&#39;]</span>
+
+<span class="gp">In [6]: </span><span class="n">normalize</span><span class="p">(</span><span class="s2">&quot;I wanted to know umm hello?&quot;</span><span class="p">)</span>
+<span class="gh">Out[6]: </span><span class="go">[&#39;I wanted to know umm hello?&#39;]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary input.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – A string to be looked into <code class="code docutils literal notranslate"><span class="pre">List[List[Dict[str,</span> <span class="pre">str]]]</span></code>, <code class="code docutils literal notranslate"><span class="pre">List[Dict[str,</span> <span class="pre">str]]</span></code> type inputs.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>List[str]</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A flattened list of strings parsed from various formats.</p>
 </dd>
-<dt>Raises:</dt><dd><p>TypeError</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>TypeError: If <code class="code docutils literal notranslate"><span class="pre">maybe_utterance</span></code> is none of the expected types.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -271,64 +439,27 @@ TypeError</p>
 </section>
 
 
-            <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">dialogy.preprocess.text package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dialogy.preprocess.text.merge_asr_output">dialogy.preprocess.text.merge_asr_output module</a></li>
-<li><a class="reference internal" href="#module-dialogy.preprocess.text.normalize_utterance">dialogy.preprocess.text.normalize_utterance module</a></li>
-<li><a class="reference internal" href="#module-dialogy.preprocess.text">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">dialogy</a><ul>
-  <li><a href="dialogy.html">dialogy package</a><ul>
-  <li><a href="dialogy.preprocess.html">dialogy.preprocess package</a><ul>
-      <li>Previous: <a href="dialogy.preprocess.html" title="previous chapter">dialogy.preprocess package</a></li>
-      <li>Next: <a href="dialogy.types.html" title="next chapter">dialogy.types package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/source/dialogy.preprocess.text.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.preprocess.html"
+       title="previous chapter">← dialogy.preprocess package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.types.html"
+       title="next chapter">dialogy.types package →</a>
+  </li>
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright .
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+            </div>
+          </div>
+      </page>
     </div>
     
-
+    
   </body>
 </html>

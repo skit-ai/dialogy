@@ -1,58 +1,123 @@
-
 <!DOCTYPE html>
-
-<html>
+<html >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>dialogy.postprocess.text.voting package &#8212; dialogy 0.4.5 documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="dialogy.preprocess package" href="dialogy.preprocess.html" />
-    <link rel="prev" title="dialogy.postprocess.text.slot_filler package" href="dialogy.postprocess.text.slot_filler.html" />
-     
+      <title>dialogy.postprocess.text.voting package</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+      <link rel="stylesheet" href="../_static/pygments.css">
+      <link rel="stylesheet" href="../_static/theme.css">
+      <link rel="stylesheet" href="../_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
 
-  </head><body>
-    
-    
+      <!-- sphinx script_files -->
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="dialogy.preprocess.html" title="dialogy.preprocess package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="dialogy.postprocess.text.slot_filler.html" title="dialogy.postprocess.text.slot_filler package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" >dialogy</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="dialogy.html" >dialogy package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="dialogy.postprocess.html" >dialogy.postprocess package</a> &#187;</li>
-          <li class="nav-item nav-item-4"><a href="dialogy.postprocess.text.html" accesskey="U">dialogy.postprocess.text package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.postprocess.text.voting package</a></li> 
+      
+      <script src="../_static/theme-vendors.js"></script>
+      <script src="../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../genindex.html" />
+  <link rel="search" title="Search" href="../search.html" />
+  <link rel="next" title="dialogy.preprocess package" href="dialogy.preprocess.html" />
+  <link rel="prev" title="dialogy.postprocess.text.slot_filler package" href="dialogy.postprocess.text.slot_filler.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../index.html" class="home-link">
+    
+      <span class="site-name">dialogy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="modules.html#dialogy">dialogy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="dialogy.html" class="reference internal ">dialogy package</a>
+
+            
+          </li>
+
+        
       </ul>
-    </div>  
+    </div>
+  
+</div>
+        </sidebar>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="modules.html">dialogy</a> &raquo;</li>
+    
+      <li><a href="dialogy.html">dialogy package</a> &raquo;</li>
+    
+      <li><a href="dialogy.postprocess.html">dialogy.postprocess package</a> &raquo;</li>
+    
+      <li><a href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a> &raquo;</li>
+    
+    <li>dialogy.postprocess.text.voting package</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.postprocess.text.slot_filler.html"
+       title="previous chapter">← dialogy.postprocess.text.slot_filler package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.preprocess.html"
+       title="next chapter">dialogy.preprocess package →</a>
+  </li>
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <section id="dialogy-postprocess-text-voting-package">
 <h1>dialogy.postprocess.text.voting package<a class="headerlink" href="#dialogy-postprocess-text-voting-package" title="Permalink to this headline">¶</a></h1>
@@ -69,7 +134,6 @@ alternative from the ASR.</p>
 <dd><p>Bases: <a class="reference internal" href="dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
 <p>An instance of VoteIntentPlugin helps in voting for a strong
 evidence over other candidates.</p>
-<p><strong>threshold</strong>: Signal strength should atleast match this value, or else it will be dropped.</p>
 <p>This plugin takes into consideration a list of predictions (signals)
 some of which can be strong, (decided by their confidence score for now)
 and weak signals are filtered out. If there is a healthy vote proportion,
@@ -81,6 +145,30 @@ and plain counting. This can be improved by using learned trees/forests.</p>
 <p>Ideal design should provide the signals, their strengths (confidence) and
 signal boosters, any contextual information that implies a weak signal has
 more weight than its counterparts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>access</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – <p>A function that expects workflow as an argument and returns a Tuple.
+The Tuple contains: <code class="code docutils literal notranslate"><span class="pre">intents</span></code>, <code class="code docutils literal notranslate"><span class="pre">trials</span></code>. Here,</p>
+<ol class="arabic simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">intents</span></code> is a <code class="code docutils literal notranslate"><span class="pre">List[T]</span></code> where <code class="code docutils literal notranslate"><span class="pre">T</span></code> is an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">trials</span></code> is an <code class="code docutils literal notranslate"><span class="pre">int</span></code> that tells us the number of observations that produced the <code class="code docutils literal notranslate"><span class="pre">intents</span></code>.</p></li>
+</ol>
+</p></li>
+<li><p><strong>mutate</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – A function that places the safest value from the list of <code class="code docutils literal notranslate"><span class="pre">intents</span></code> or <code class="code docutils literal notranslate"><span class="pre">fallback_intent</span></code>
+in case nothing in the list is safe.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – A threshold for confidence scores for each <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
+<li><p><strong>consensus</strong> (<em>float</em>) – We rank each <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> by confidence score, if the top two have similar and high
+confidence scores, then it is a case of no-consensus. If the top two intents have considerable gap then there
+is consensus. The <em>considerable gap</em> is defined by <code class="code docutils literal notranslate"><span class="pre">consensus</span></code>.</p></li>
+<li><p><strong>representation</strong> (<em>float</em>) – A percentage that depicts how many votes did an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> receive. It is unsafe
+if the confidence threshold is met but representation is poor.</p></li>
+<li><p><strong>fallback_intent</strong> (<em>str</em>) – In case we fail to find a strong candidate, we resort to a <code class="code docutils literal notranslate"><span class="pre">fallback_intent</span></code>.</p></li>
+<li><p><strong>aggregate_fn</strong> (<em>Any</em>) – A function that allows us to aggregate over confidence scores of each <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – log intermediates if True.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin">
 <code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin" title="Permalink to this definition">¶</a></dt>
@@ -89,23 +177,8 @@ more weight than its counterparts.</p>
 
 <dl class="py method">
 <dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal">
-<code class="sig-name descname"><span class="pre">vote_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trials</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.vote_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reduce a list of intents.</p>
-<p>This is a naive voting algorithm. We filter intents with high confidence.
-Count the frequency of the remaining intents. If the proportion of votes
-goes beyond the expected constituency, then the intent is elected else
-a fallback intent is emitted.</p>
-<dl>
-<dt>Args:</dt><dd><p>intents (List[Intent]): A list of predictions over ASR output. (size ~ 1-10)
-constituency (float, optional): Threshold for proportion of votes,</p>
-<blockquote>
-<div><p>proportion over this qualifies an intent for victory. Defaults to 0.5.</p>
-</div></blockquote>
-</dd>
-<dt>Returns:</dt><dd><p>Intent: Voted signal or fallback in case of no consensus.</p>
-</dd>
-</dl>
-</dd></dl>
+<code class="sig-name descname"><span class="pre">vote_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -118,23 +191,20 @@ normalized by trials.</p>
 <p>Here trials are total attempts made to generate signals.
 - Worst case could be, each attempt yields a unique signal. In this case the signal strength is dampened.
 - Best case, each attempt yields a single signal. In this case the signal strength is boosted.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>List[Signal]: A list of strength adjusted signals. May not be as long as the input.</p>
-</dd>
-</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>signals</strong> (<em>List</em><em>[</em><em>Signal</em><em>]</em>) – A signal is a tuple of name and strength.</p></li>
 <li><p><strong>trials</strong> (<em>int</em>) – Total attempts made to generate signals.</p></li>
 <li><p><strong>aggregate_fn</strong> (<em>Any</em><em>, </em><em>optional</em>) – A function to normalize a list of floating point values, defaults to np.mean</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – Log if True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>TypeError</strong> – <code class="code docutils literal notranslate"><span class="pre">aggregate_fn</span></code> if passed should be a <code class="code docutils literal notranslate"><span class="pre">callable</span></code>.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A list of normalized signale.</p>
+<dd class="field-odd"><p>A list of normalized signal.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>List[Signal]</p>
@@ -149,65 +219,27 @@ normalized by trials.</p>
 </section>
 
 
-            <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">dialogy.postprocess.text.voting package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dialogy.postprocess.text.voting.intent_voting">dialogy.postprocess.text.voting.intent_voting module</a></li>
-<li><a class="reference internal" href="#module-dialogy.postprocess.text.voting">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">dialogy</a><ul>
-  <li><a href="dialogy.html">dialogy package</a><ul>
-  <li><a href="dialogy.postprocess.html">dialogy.postprocess package</a><ul>
-  <li><a href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a><ul>
-      <li>Previous: <a href="dialogy.postprocess.text.slot_filler.html" title="previous chapter">dialogy.postprocess.text.slot_filler package</a></li>
-      <li>Next: <a href="dialogy.preprocess.html" title="next chapter">dialogy.preprocess package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/source/dialogy.postprocess.text.voting.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.postprocess.text.slot_filler.html"
+       title="previous chapter">← dialogy.postprocess.text.slot_filler package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.preprocess.html"
+       title="next chapter">dialogy.preprocess package →</a>
+  </li>
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright .
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+            </div>
+          </div>
+      </page>
     </div>
     
-
+    
   </body>
 </html>

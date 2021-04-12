@@ -1,46 +1,106 @@
-
 <!DOCTYPE html>
-
-<html>
+<html >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dialogy.types.entity.utils &#8212; dialogy 0.4.5 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/flasky.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/jquery.js"></script>
-    <script src="../../../../_static/underscore.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-     
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>dialogy.types.entity.utils</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+      <link rel="stylesheet" href="../../../../_static/pygments.css">
+      <link rel="stylesheet" href="../../../../_static/theme.css">
+      <link rel="stylesheet" href="../../../../_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
 
-  </head><body>
-    
-    
+      <!-- sphinx script_files -->
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.types.entity.utils</a></li> 
+      
+      <script src="../../../../_static/theme-vendors.js"></script>
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">dialogy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../source/modules.html#dialogy">dialogy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="../../../../source/dialogy.html" class="reference internal ">dialogy package</a>
+
+            
+          </li>
+
+        
       </ul>
-    </div>  
+    </div>
+  
+</div>
+        </sidebar>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>dialogy.types.entity.utils</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <h1>Source code for dialogy.types.entity.utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
@@ -55,22 +115,43 @@
 
 
 <div class="viewcode-block" id="traverse_dict"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.utils.traverse_dict">[docs]</a><span class="k">def</span> <span class="nf">traverse_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">properties</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Traverse a dictionary for a given list of properties.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Traverse a dictionary for a given list of properties.</span>
 
 <span class="sd">    This is useful for traversing a deeply nested dictionary.</span>
 <span class="sd">    Instead of recursion, we are using reduce to update the `dict`.</span>
 <span class="sd">    Missing properties will lead to KeyErrors.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        obj (Dict[Any, Any]): The `dict` to traverse.</span>
-<span class="sd">        properties (List[int]): List of properties expected in the `dict`.</span>
+<span class="sd">    .. ipython:: python</span>
+<span class="sd">        :okexcept:</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        KeyError: There is a chance of the property list containing elements not present in the `dict`.</span>
-<span class="sd">        TypeError: There is a chance of the property being accessed over values that are not compatible.</span>
+<span class="sd">        from dialogy.types.entity.utils import traverse_dict</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        Any: The value within the `dict` described by the properties list.</span>
+<span class="sd">        input_ = {</span>
+<span class="sd">            &quot;planets&quot;: {</span>
+<span class="sd">                &quot;mars&quot;: [{</span>
+<span class="sd">                    &quot;name&quot;: &quot;&quot;,</span>
+<span class="sd">                    &quot;languages&quot;: [{</span>
+<span class="sd">                        &quot;beep&quot;: {&quot;speakers&quot;: 11},</span>
+<span class="sd">                    }, {</span>
+<span class="sd">                        &quot;bop&quot;: {&quot;speakers&quot;: 30},</span>
+<span class="sd">                    }]</span>
+<span class="sd">                }]</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+<span class="sd">        traverse_dict(input_, [&quot;planets&quot;, &quot;mars&quot;, 0 , &quot;languages&quot;, 1, &quot;bop&quot;])</span>
+
+<span class="sd">        # element with index 3 doesn&#39;t exist!</span>
+<span class="sd">        traverse_dict(input_, [&quot;planets&quot;, &quot;mars&quot;, 0 , &quot;languages&quot;, 3, &quot;bop&quot;])</span>
+
+<span class="sd">    :param obj: The `dict` to traverse.</span>
+<span class="sd">    :type obj: Dict[Any, Any]</span>
+<span class="sd">    :param properties: List of properties to be parsed as a path to be navigated in the `dict`.</span>
+<span class="sd">    :type properties: List[int]</span>
+<span class="sd">    :return: A value within a deeply nested dict.</span>
+<span class="sd">    :rtype: Any</span>
+<span class="sd">    :raises KeyError: Missing property in the dictionary.</span>
+<span class="sd">    :raises TypeError: Properties don&#39;t describe a path due to possible type error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
@@ -85,57 +166,43 @@
 
 
 <div class="viewcode-block" id="validate_type"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.utils.validate_type">[docs]</a><span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Raise TypeError on object type mismatch.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise TypeError on object type mismatch.</span>
 
-<span class="sd">    This is syntatic sugar for instance type checks.</span>
+<span class="sd">        This is syntatic sugar for instance type checks.</span>
 
-<span class="sd">    The check is by exclusion of types. Wraps exception raising logic.</span>
+<span class="sd">        The check is by exclusion of types. Wraps exception raising logic.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        obj (Any): The object available for type assertion.</span>
-<span class="sd">        obj_type (Union[type, Tuple[type]]): This must match the type of the object.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            obj (Any): The object available for type assertion.</span>
+<span class="sd">            obj_type (Union[type, Tuple[type]]): This must match the type of the object.</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        TypeError: If the type `obj_type` doesn&#39;t match the type of `obj`.</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: If the type `obj_type` doesn&#39;t match the type of `obj`.</span>
+<span class="sd">        :param obj:</span>
+<span class="sd">        :type obj:</span>
+<span class="sd">        :param obj_type:</span>
+<span class="sd">        :type obj_type:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> should be a </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </pre></div>
 
-            <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright .
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+            </div>
+          </div>
+      </page>
     </div>
     
-
+    
   </body>
 </html>

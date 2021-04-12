@@ -1,56 +1,119 @@
-
 <!DOCTYPE html>
-
-<html>
+<html >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>dialogy.utils package &#8212; dialogy 0.4.5 documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="dialogy.workflow package" href="dialogy.workflow.html" />
-    <link rel="prev" title="dialogy.types.utterances package" href="dialogy.types.utterances.html" />
-     
+      <title>dialogy.utils package</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+      <link rel="stylesheet" href="../_static/pygments.css">
+      <link rel="stylesheet" href="../_static/theme.css">
+      <link rel="stylesheet" href="../_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
 
-  </head><body>
-    
-    
+      <!-- sphinx script_files -->
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="dialogy.workflow.html" title="dialogy.workflow package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="dialogy.types.utterances.html" title="dialogy.types.utterances package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" >dialogy</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="dialogy.html" accesskey="U">dialogy package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.utils package</a></li> 
+      
+      <script src="../_static/theme-vendors.js"></script>
+      <script src="../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../genindex.html" />
+  <link rel="search" title="Search" href="../search.html" />
+  <link rel="next" title="dialogy.workflow package" href="dialogy.workflow.html" />
+  <link rel="prev" title="dialogy.types.utterances package" href="dialogy.types.utterances.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../index.html" class="home-link">
+    
+      <span class="site-name">dialogy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="modules.html#dialogy">dialogy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="dialogy.html" class="reference internal ">dialogy package</a>
+
+            
+          </li>
+
+        
       </ul>
-    </div>  
+    </div>
+  
+</div>
+        </sidebar>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="modules.html">dialogy</a> &raquo;</li>
+    
+      <li><a href="dialogy.html">dialogy package</a> &raquo;</li>
+    
+    <li>dialogy.utils package</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.types.utterances.html"
+       title="previous chapter">← dialogy.types.utterances package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.workflow.html"
+       title="next chapter">dialogy.workflow package →</a>
+  </li>
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <section id="dialogy-utils-package">
 <h1>dialogy.utils package<a class="headerlink" href="#dialogy-utils-package" title="Permalink to this headline">¶</a></h1>
@@ -77,6 +140,40 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="dialogy.utils.logger.debug_logs">
+<code class="sig-name descname"><span class="pre">debug_logs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/logger.html#debug_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.logger.debug_logs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change debug level briefly.</p>
+<p>There are methods that need debug logs but not all of them, not all the time.
+This decorator checks if it is being applied on a method or a function.</p>
+<ol class="arabic simple">
+<li><p>If function or method, it checks the kwargs to have set a <code class="code docutils literal notranslate"><span class="pre">debug=True</span></code> (configurable via <code class="code docutils literal notranslate"><span class="pre">arg_name</span></code>).</p></li>
+<li><p>If a method without the kwargs, then it makes a check analogous to <code class="code docutils literal notranslate"><span class="pre">if</span> <span class="pre">instance.debug</span> <span class="pre">==</span> <span class="pre">True</span></code>.</p></li>
+<li><dl class="simple">
+<dt>If either of the first two conditions pass, we change the log level to DEBUG, execute the function and change the</dt><dd><p>log-level back to ERROR.</p>
+</dd>
+</dl>
+</li>
+<li><p>If neither conditions pass, we run the function as it is.</p></li>
+</ol>
+<p>This way, we restrict debug logs to only those classes, methods and functions that need it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>Callable</em><em>[</em><em>..</em><em>, </em><em>Any</em><em>]</em>) – A function or a method</p></li>
+<li><p><strong>arg_name</strong> (<em>str</em>) – The name in kwargs that implies a debug flag.</p></li>
+<li><p><strong>attr_name</strong> (<em>str</em>) – The attribute in an instance that implies a debug flag.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Wrapper function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable[.., Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-dialogy.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.utils" title="Permalink to this headline">¶</a></h2>
@@ -84,61 +181,27 @@
 </section>
 
 
-            <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">dialogy.utils package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dialogy.utils.logger">dialogy.utils.logger module</a></li>
-<li><a class="reference internal" href="#module-dialogy.utils">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">dialogy</a><ul>
-  <li><a href="dialogy.html">dialogy package</a><ul>
-      <li>Previous: <a href="dialogy.types.utterances.html" title="previous chapter">dialogy.types.utterances package</a></li>
-      <li>Next: <a href="dialogy.workflow.html" title="next chapter">dialogy.workflow package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/source/dialogy.utils.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.types.utterances.html"
+       title="previous chapter">← dialogy.types.utterances package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.workflow.html"
+       title="next chapter">dialogy.workflow package →</a>
+  </li>
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright .
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+            </div>
+          </div>
+      </page>
     </div>
     
-
+    
   </body>
 </html>

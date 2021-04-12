@@ -1,58 +1,123 @@
-
 <!DOCTYPE html>
-
-<html>
+<html >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>dialogy.postprocess.text.slot_filler package &#8212; dialogy 0.4.5 documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="dialogy.postprocess.text.voting package" href="dialogy.postprocess.text.voting.html" />
-    <link rel="prev" title="dialogy.postprocess.text package" href="dialogy.postprocess.text.html" />
-     
+      <title>dialogy.postprocess.text.slot_filler package</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+      <link rel="stylesheet" href="../_static/pygments.css">
+      <link rel="stylesheet" href="../_static/theme.css">
+      <link rel="stylesheet" href="../_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
 
-  </head><body>
-    
-    
+      <!-- sphinx script_files -->
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="dialogy.postprocess.text.voting.html" title="dialogy.postprocess.text.voting package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="dialogy.postprocess.text.html" title="dialogy.postprocess.text package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" >dialogy</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="dialogy.html" >dialogy package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="dialogy.postprocess.html" >dialogy.postprocess package</a> &#187;</li>
-          <li class="nav-item nav-item-4"><a href="dialogy.postprocess.text.html" accesskey="U">dialogy.postprocess.text package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.postprocess.text.slot_filler package</a></li> 
+      
+      <script src="../_static/theme-vendors.js"></script>
+      <script src="../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../genindex.html" />
+  <link rel="search" title="Search" href="../search.html" />
+  <link rel="next" title="dialogy.postprocess.text.voting package" href="dialogy.postprocess.text.voting.html" />
+  <link rel="prev" title="dialogy.postprocess.text package" href="dialogy.postprocess.text.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../index.html" class="home-link">
+    
+      <span class="site-name">dialogy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="modules.html#dialogy">dialogy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="dialogy.html" class="reference internal ">dialogy package</a>
+
+            
+          </li>
+
+        
       </ul>
-    </div>  
+    </div>
+  
+</div>
+        </sidebar>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="modules.html">dialogy</a> &raquo;</li>
+    
+      <li><a href="dialogy.html">dialogy package</a> &raquo;</li>
+    
+      <li><a href="dialogy.postprocess.html">dialogy.postprocess package</a> &raquo;</li>
+    
+      <li><a href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a> &raquo;</li>
+    
+    <li>dialogy.postprocess.text.slot_filler package</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.postprocess.text.html"
+       title="previous chapter">← dialogy.postprocess.text package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.postprocess.text.voting.html"
+       title="next chapter">dialogy.postprocess.text.voting package →</a>
+  </li>
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <section id="dialogy-postprocess-text-slot-filler-package">
 <h1>dialogy.postprocess.text.slot_filler package<a class="headerlink" href="#dialogy-postprocess-text-slot-filler-package" title="Permalink to this headline">¶</a></h1>
@@ -100,19 +165,8 @@ An <a class="reference internal" href="dialogy.types.intent.html#intent"><span c
 <p>Irrespective of the entities that are found, only the listed type in the slot shall be present in <cite>values</cite>.</p>
 <dl class="py method">
 <dt id="dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.filler">
-<code class="sig-name descname"><span class="pre">filler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.filler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.filler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update an intent slot with compatible entity.</p>
-<ul class="simple">
-<li><p><cite>access(workflow)</cite> should return a tuple. <cite>Intent</cite>, <cite>List[BaseEntity]</cite>.</p></li>
-<li><p>Only 1 entity fills the slot type.</p></li>
-</ul>
-<dl class="simple">
-<dt>Args:</dt><dd><p>workflow (Workflow)</p>
-</dd>
-<dt>Raises:</dt><dd><p>TypeError: self.access should be a Callable.</p>
-</dd>
-</dl>
-</dd></dl>
+<code class="sig-name descname"><span class="pre">filler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.filler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -138,65 +192,27 @@ fills an entity of a pre-defined type.</p>
 </section>
 
 
-            <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">dialogy.postprocess.text.slot_filler package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dialogy.postprocess.text.slot_filler.rule_slot_filler">dialogy.postprocess.text.slot_filler.rule_slot_filler module</a></li>
-<li><a class="reference internal" href="#module-dialogy.postprocess.text.slot_filler">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">dialogy</a><ul>
-  <li><a href="dialogy.html">dialogy package</a><ul>
-  <li><a href="dialogy.postprocess.html">dialogy.postprocess package</a><ul>
-  <li><a href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a><ul>
-      <li>Previous: <a href="dialogy.postprocess.text.html" title="previous chapter">dialogy.postprocess.text package</a></li>
-      <li>Next: <a href="dialogy.postprocess.text.voting.html" title="next chapter">dialogy.postprocess.text.voting package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/source/dialogy.postprocess.text.slot_filler.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+  <li class="prev">
+    <a href="dialogy.postprocess.text.html"
+       title="previous chapter">← dialogy.postprocess.text package</a>
+  </li>
+  <li class="next">
+    <a href="dialogy.postprocess.text.voting.html"
+       title="next chapter">dialogy.postprocess.text.voting package →</a>
+  </li>
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright .
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+            </div>
+          </div>
+      </page>
     </div>
     
-
+    
   </body>
 </html>

@@ -1,46 +1,106 @@
-
 <!DOCTYPE html>
-
-<html>
+<html >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dialogy.preprocess.text.normalize_utterance &#8212; dialogy 0.4.5 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/flasky.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/jquery.js"></script>
-    <script src="../../../../_static/underscore.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-     
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>dialogy.preprocess.text.normalize_utterance</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+      <link rel="stylesheet" href="../../../../_static/pygments.css">
+      <link rel="stylesheet" href="../../../../_static/theme.css">
+      <link rel="stylesheet" href="../../../../_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
 
-  </head><body>
-    
-    
+      <!-- sphinx script_files -->
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.preprocess.text.normalize_utterance</a></li> 
+      
+      <script src="../../../../_static/theme-vendors.js"></script>
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">dialogy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../source/modules.html#dialogy">dialogy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="../../../../source/dialogy.html" class="reference internal ">dialogy package</a>
+
+            
+          </li>
+
+        
       </ul>
-    </div>  
+    </div>
+  
+</div>
+        </sidebar>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>dialogy.preprocess.text.normalize_utterance</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <h1>Source code for dialogy.preprocess.text.normalize_utterance</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
@@ -57,12 +117,14 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get value of prop within obj.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        prop (str): A key within a dict.</span>
-<span class="sd">        obj (Dict[str, Any]): Any dict.</span>
+<span class="sd">    This simple function exists to facilitate a partial function defined :ref:`here&lt;is_utterance&gt;`.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        Any</span>
+<span class="sd">    :param prop: A property within a :code:`dict`.</span>
+<span class="sd">    :type prop: str</span>
+<span class="sd">    :param obj: A :code:`dict`.</span>
+<span class="sd">    :type obj: Dict[str, Any]</span>
+<span class="sd">    :return: Value of a property within a :code:`dict`.</span>
+<span class="sd">    :rtype: Any</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">obj</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span></div>
 
@@ -71,11 +133,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check type of `input_`</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        input_ (Any): Any arbitrary input.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        bool: True if input_ is list.</span>
+<span class="sd">    :param input_: Any arbitrary input</span>
+<span class="sd">    :type input_: Any</span>
+<span class="sd">    :return: True if input_ is a :code:`list` else False</span>
+<span class="sd">    :rtype: True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span></div>
 
@@ -86,39 +147,59 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if each element in a list is of a given type.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        type_ (type): Expected type for each element.</span>
-<span class="sd">        input_ (List[Any]): Arbitrary list.</span>
-<span class="sd">        transform (Callable[[Any], Any], optional): We may apply some transforms to</span>
-<span class="sd">            each element before making these checks. This is to check if a certain key</span>
-<span class="sd">            in a Dict matches the expected type. In case this is not needed,</span>
-<span class="sd">            leave the argument unset and an identity transform is applied. Defaults to lambdax:x.</span>
+<span class="sd">    .. ipython:: python</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        bool: True if each element in input matches the type.</span>
+<span class="sd">        from dialogy.preprocess.text.normalize_utterance import is_each_element</span>
+
+<span class="sd">        is_each_element(str, [&quot;this&quot;, &quot;returns&quot;, &quot;False&quot;, &quot;cuz:&quot;, False])</span>
+<span class="sd">        is_each_element(str, [&quot;this&quot;, &quot;returns&quot;, &quot;True&quot;, &quot;cuz:&quot;, &quot;all&quot;, &quot;str&quot;])</span>
+
+<span class="sd">    :param type_: Expected :code:`Type` of each element in the :code:`input_` which is a :code:`list`.</span>
+<span class="sd">    :type type_: Type</span>
+<span class="sd">    :param input_: A :code:`list`.</span>
+<span class="sd">    :type input_: List[Any]</span>
+<span class="sd">    :param transform: We may apply some transforms to</span>
+<span class="sd">        each element before making these checks. This is to check if a certain key</span>
+<span class="sd">        in a Dict matches the expected type. In case this is not needed,</span>
+<span class="sd">        leave the argument unset and an identity transform is applied. Defaults to lambda x:x.</span>
+<span class="sd">    :type transform: Callable[[Any], Any]</span>
+<span class="sd">    :return: Checks each element in a list to match :code:`type_`, if any element fails the check,</span>
+<span class="sd">        this returns False, else True.</span>
+<span class="sd">    :rtype: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">transform</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">type_</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">input_</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="is_utterance"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.normalize_utterance.is_utterance">[docs]</a><span class="k">def</span> <span class="nf">is_utterance</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">TRANSCRIPT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. _is_utterance:</span>
 <span class="sd">    Check input to be of `List[List[Dict]]`.</span>
 
 <span class="sd">    ```json</span>
 <span class="sd">    [[{&quot;transcript&quot;: &quot;hi&quot;}]]</span>
 <span class="sd">    ```</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        maybe_utterance (Any): Arbitrary type input.</span>
-<span class="sd">        key (str, optional): The key within which transcription string resides.</span>
-<span class="sd">            Defaults to const.TRANSCRIPT.</span>
+<span class="sd">    .. ipython:: python</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        bool</span>
+<span class="sd">        from dialogy.preprocess.text.normalize_utterance import is_utterance</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        KeyError</span>
-<span class="sd">        TypeError</span>
+<span class="sd">        # 1. :code:`List[List[Dict[str, str]]]`</span>
+<span class="sd">        is_utterance([[{&quot;transcript&quot;: &quot;this&quot;}, {&quot;transcript&quot;: &quot;works&quot;}]])</span>
+
+<span class="sd">        # 2. key is configurable</span>
+<span class="sd">        is_utterance([[{&quot;text&quot;: &quot;this&quot;}, {&quot;text&quot;: &quot;works&quot;}]], key=&quot;text&quot;)</span>
+
+<span class="sd">        # 3. Hope for everything else... you have a mastercard.</span>
+<span class="sd">        # Or use this lib, works just fine 🍷.</span>
+<span class="sd">        is_utterance([{&quot;transcript&quot;: &quot;this&quot;}, {&quot;transcript&quot;: &quot;doesn&#39;t&quot;}, {&quot;transcript&quot;: &quot;work&quot;}])</span>
+
+<span class="sd">    :param maybe_utterance: Arbitrary input.</span>
+<span class="sd">    :type maybe_utterance: Any</span>
+<span class="sd">    :param key: The key within which transcription string resides.</span>
+<span class="sd">            Defaults to :code:`const.TRANSCRIPT`.</span>
+<span class="sd">    :type key: str</span>
+<span class="sd">    :return: True if the inputs is :code:`List[List[Dict[str, str]]]`, else False.</span>
+<span class="sd">    :rtype: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dict_get_key</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">dict_get</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -136,17 +217,22 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check input to be of `List[Dict]`.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        maybe_utterance (Any): Arbitrary type input.</span>
-<span class="sd">        key (str, optional): The key within which transcription string resides.</span>
-<span class="sd">            Defaults to const.TRANSCRIPT.</span>
+<span class="sd">    .. ipython:: python</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        bool</span>
+<span class="sd">        from dialogy.preprocess.text.normalize_utterance import is_unsqueezed_utterance</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        KeyError</span>
-<span class="sd">        TypeError</span>
+<span class="sd">        # 1. This fails</span>
+<span class="sd">        is_unsqueezed_utterance([[{&quot;transcript&quot;: &quot;this&quot;}, {&quot;transcript&quot;: &quot;works&quot;}]])</span>
+
+<span class="sd">        # 2. key is configurable</span>
+<span class="sd">        is_unsqueezed_utterance([{&quot;text&quot;: &quot;this&quot;}, {&quot;text&quot;: &quot;works&quot;}], key=&quot;text&quot;)</span>
+
+<span class="sd">    :param maybe_utterance: Arbitrary type input.</span>
+<span class="sd">    :type maybe_utterance: Any</span>
+<span class="sd">    :param key: The key within which transcription string resides.</span>
+<span class="sd">    :type key: str, Defaults to const.TRANSCRIPT.</span>
+<span class="sd">    :return: True, if the input is of type :code:`List[Dict[str, Any]]` else False.</span>
+<span class="sd">    :rtype: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dict_get_key</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">dict_get</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -161,15 +247,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check input to be of `List[str]`.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        maybe_utterance (Any): Arbitrary type input.</span>
+<span class="sd">    .. ipython:: python</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        bool</span>
+<span class="sd">        from dialogy.preprocess.text.normalize_utterance import is_list_of_string</span>
+<span class="sd">        is_list_of_string([&quot;this&quot;, &quot;works&quot;])</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        KeyError</span>
-<span class="sd">        TypeError</span>
+<span class="sd">    :param maybe_utterance: Arbitrary input.</span>
+<span class="sd">    :type maybe_utterance: Any</span>
+<span class="sd">    :return: True if :code:`maybe_utterance` is a :code:`str`.</span>
+<span class="sd">    :rtype: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">is_each_element</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">maybe_utterance</span><span class="p">)</span>
@@ -179,13 +265,12 @@
 
 <div class="viewcode-block" id="is_string"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.normalize_utterance.is_string">[docs]</a><span class="k">def</span> <span class="nf">is_string</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check input to be of `str`.</span>
+<span class="sd">    Check input&#39;s type is `str`.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        maybe_utterance (Any): Arbitrary type input.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        bool</span>
+<span class="sd">    :param maybe_utterance: Arbitrary type input.</span>
+<span class="sd">    :type maybe_utterance: Any</span>
+<span class="sd">    :return: True if :code:`maybe_utterance` is a :code:`str`, else False.</span>
+<span class="sd">    :rtype: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span></div>
 
@@ -196,31 +281,26 @@
 
 <span class="sd">    The output will be a list of strings since models will expect that.</span>
 
-<span class="sd">    expected inputs:</span>
-<span class="sd">    ```json</span>
-<span class="sd">    [[{&quot;transcript&quot;: &quot;hi&quot;}]]</span>
-<span class="sd">    ```</span>
 
-<span class="sd">    ```json</span>
-<span class="sd">    [{&quot;transcript&quot;: &quot;I wanted to know umm hello?&quot;}]</span>
-<span class="sd">    ```</span>
+<span class="sd">    .. ipython:: python</span>
 
-<span class="sd">    ```json</span>
-<span class="sd">    [&quot;I wanted to know umm hello?&quot;]</span>
-<span class="sd">    ```</span>
+<span class="sd">        from dialogy.preprocess import normalize</span>
 
-<span class="sd">    ```json</span>
-<span class="sd">    &quot;I wanted to know umm hello?&quot;</span>
-<span class="sd">    ```</span>
+<span class="sd">        normalize([[{&quot;transcript&quot;: &quot;hi&quot;}]])</span>
+<span class="sd">        normalize([[{&quot;transcript&quot;: &quot;hello&quot;}], [{&quot;transcript&quot;: &quot;world&quot;}]])</span>
+<span class="sd">        normalize([{&quot;transcript&quot;: &quot;I wanted to know umm hello?&quot;}])</span>
+<span class="sd">        normalize([&quot;I wanted to know umm hello?&quot;])</span>
+<span class="sd">        normalize(&quot;I wanted to know umm hello?&quot;)</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        maybe_utterance (Any): Non-standard input types.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        List[str]</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        TypeError</span>
+<span class="sd">    :param maybe_utterance: Arbitrary input.</span>
+<span class="sd">    :type maybe_utterance: Any</span>
+<span class="sd">    :param key: A string to be looked into :code:`List[List[Dict[str, str]]]`, :code:`List[Dict[str, str]]` type inputs.</span>
+<span class="sd">    :type key: str</span>
+<span class="sd">    :return: A flattened list of strings parsed from various formats.</span>
+<span class="sd">    :rtype: List[str]</span>
+<span class="sd">    :raises:</span>
+<span class="sd">        TypeError: If :code:`maybe_utterance` is none of the expected types.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">is_utterance</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span>
@@ -245,40 +325,19 @@
         <span class="p">)</span></div>
 </pre></div>
 
-            <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright .
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+            </div>
+          </div>
+      </page>
     </div>
     
-
+    
   </body>
 </html>

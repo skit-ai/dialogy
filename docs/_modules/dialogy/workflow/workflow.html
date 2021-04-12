@@ -1,46 +1,106 @@
-
 <!DOCTYPE html>
-
-<html>
+<html >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dialogy.workflow.workflow &#8212; dialogy 0.4.5 documentation</title>
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/flasky.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-     
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>dialogy.workflow.workflow</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+      <link rel="stylesheet" href="../../../_static/pygments.css">
+      <link rel="stylesheet" href="../../../_static/theme.css">
+      <link rel="stylesheet" href="../../../_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
 
-  </head><body>
-    
-    
+      <!-- sphinx script_files -->
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">dialogy 0.4.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">dialogy.workflow.workflow</a></li> 
+      
+      <script src="../../../_static/theme-vendors.js"></script>
+      <script src="../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../index.html" class="home-link">
+    
+      <span class="site-name">dialogy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../source/modules.html#dialogy">dialogy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 "><a href="../../../source/dialogy.html" class="reference internal ">dialogy package</a>
+
+            
+          </li>
+
+        
       </ul>
-    </div>  
+    </div>
+  
+</div>
+        </sidebar>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../index.html">Module code</a> &raquo;</li>
+    
+    <li>dialogy.workflow.workflow</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <h1>Source code for dialogy.workflow.workflow</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
@@ -66,13 +126,12 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">change_log_level</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">debug_logs</span><span class="p">,</span> <span class="n">log</span>
 
 <span class="n">PluginFn</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Workflow&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
 
-<span class="c1"># = Workflow =</span>
-<div class="viewcode-block" id="Workflow"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow">[docs]</a><span class="k">class</span> <span class="nc">Workflow</span><span class="p">:</span>
 
+<div class="viewcode-block" id="Workflow"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow">[docs]</a><span class="k">class</span> <span class="nc">Workflow</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This is a light but fairly flexible workflow for building a machine learning pipeline.</span>
 
@@ -146,15 +205,8 @@
             <span class="c1"># Type check to ensure postprocessors are lists.</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;preprocessors=</span><span class="si">{</span><span class="n">postprocessors</span><span class="si">}</span><span class="s2"> should be a list&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__postprocessors</span> <span class="o">=</span> <span class="n">postprocessors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
 
-        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-            <span class="c1"># We have debug logs, which can be opted in but are off by default.</span>
-            <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Changing log-level to error would mean, logs from log.debug(...) would not appear.</span>
-            <span class="n">change_log_level</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
-
-    <span class="c1"># == load_model ==</span>
 <div class="viewcode-block" id="Workflow.load_model"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.load_model">[docs]</a>    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Override method in sub-class to load model(s).</span>
@@ -167,8 +219,8 @@
             <span class="sa">f</span><span class="s2">&quot;Override method `load_model` in class </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="p">)</span></div>
 
-    <span class="c1"># == update ==</span>
-<div class="viewcode-block" id="Workflow.update"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nd">@debug_logs</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update input, output attributes.</span>
 
@@ -188,12 +240,31 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">processor_type</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">processor</span><span class="si">}</span><span class="s2"> is not a callable&quot;</span><span class="p">)</span>
 
             <span class="c1"># logs are available only when debug=True during class initialization</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s2">&quot;Before&quot;</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">,</span> <span class="n">processor</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">pformat</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;Before&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">processor_type</span><span class="p">,</span>
+                        <span class="s2">&quot;plugin&quot;</span><span class="p">:</span> <span class="n">processor</span><span class="p">,</span>
+                        <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span>
+                        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">processor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="c1"># logs are available only when debug=True during class initialization</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s2">&quot;After&quot;</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">,</span> <span class="n">processor</span><span class="p">)</span></div>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">pformat</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;After&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">processor_type</span><span class="p">,</span>
+                        <span class="s2">&quot;plugin&quot;</span><span class="p">:</span> <span class="n">processor</span><span class="p">,</span>
+                        <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span>
+                        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
-    <span class="c1"># == preprocess ==</span>
 <div class="viewcode-block" id="Workflow.preprocess"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convenience over `update` method.</span>
@@ -202,7 +273,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">PREPROCESSORS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__preprocessors</span><span class="p">)</span></div>
 
-    <span class="c1"># == postprocess ==</span>
 <div class="viewcode-block" id="Workflow.postprocess"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.postprocess">[docs]</a>    <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convenience over `update` method.</span>
@@ -211,7 +281,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">POSTPROCESSORS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__postprocessors</span><span class="p">)</span></div>
 
-    <span class="c1"># == inference ==</span>
 <div class="viewcode-block" id="Workflow.inference"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get model predictions.</span>
@@ -227,7 +296,6 @@
                 <span class="sa">f</span><span class="s2">&quot;Override method `inference` in class </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span></div>
 
-    <span class="c1"># == run ==</span>
 <div class="viewcode-block" id="Workflow.run"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get final results from the workflow.</span>
@@ -248,66 +316,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span></div>
 
-    <span class="c1"># == flush ==</span>
 <div class="viewcode-block" id="Workflow.flush"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset workflow state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">None</span></div>
-
-    <span class="c1"># == __log ==</span>
-    <span class="k">def</span> <span class="nf">__log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">processor</span><span class="p">:</span> <span class="n">PluginFn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Log the changes in the input/output as pre/post processing functions execute.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            message (`str`): One of [&quot;Before&quot;, &quot;After&quot;].</span>
-<span class="sd">            processor_type (`str`): One of [&quot;__preprocessor&quot;, &quot;__postprocessor&quot;].</span>
-<span class="sd">            processor (`str`): A callable within __preprocessor or __postprocessor.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">processor_type</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">processor</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">))</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">None</span></div></div>
 </pre></div>
 
-            <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright .
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-
-    
-    <div class="footer" role="contentinfo">
-        &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.3.
+            </div>
+          </div>
+      </page>
     </div>
     
-
+    
   </body>
 </html>
