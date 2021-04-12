@@ -21,13 +21,12 @@ from pprint import pformat
 from typing import Any, Callable, List, Optional
 
 from dialogy import constants
-from dialogy.utils.logger import change_log_level, log
+from dialogy.utils.logger import debug_logs, log
 
 PluginFn = Callable[["Workflow"], None]
 
-# = Workflow =
-class Workflow:
 
+class Workflow:
     """
     This is a light but fairly flexible workflow for building a machine learning pipeline.
 
@@ -101,15 +100,8 @@ class Workflow:
             # Type check to ensure postprocessors are lists.
             raise TypeError(f"preprocessors={postprocessors} should be a list")
         self.__postprocessors = postprocessors
+        self.debug = debug
 
-        if debug:
-            # We have debug logs, which can be opted in but are off by default.
-            change_log_level("DEBUG")
-        else:
-            # Changing log-level to error would mean, logs from log.debug(...) would not appear.
-            change_log_level("ERROR")
-
-    # == load_model ==
     def load_model(self) -> None:
         """
         Override method in sub-class to load model(s).
@@ -122,7 +114,7 @@ class Workflow:
             f"Override method `load_model` in class {class_name}."
         )
 
-    # == update ==
+    @debug_logs
     def update(self, processor_type: str, processors: List[PluginFn]) -> None:
         """
         Update input, output attributes.
@@ -143,12 +135,31 @@ class Workflow:
                 raise TypeError(f"{processor_type}={processor} is not a callable")
 
             # logs are available only when debug=True during class initialization
-            self.__log("Before", processor_type, processor)
+            log.debug(
+                pformat(
+                    {
+                        "stage": "Before",
+                        "type": processor_type,
+                        "plugin": processor,
+                        "input": self.input,
+                        "output": self.output,
+                    }
+                )
+            )
             processor(self)
             # logs are available only when debug=True during class initialization
-            self.__log("After", processor_type, processor)
+            log.debug(
+                pformat(
+                    {
+                        "stage": "After",
+                        "type": processor_type,
+                        "plugin": processor,
+                        "input": self.input,
+                        "output": self.output,
+                    }
+                )
+            )
 
-    # == preprocess ==
     def preprocess(self) -> None:
         """
         Convenience over `update` method.
@@ -157,7 +168,6 @@ class Workflow:
         """
         self.update(constants.PREPROCESSORS, self.__preprocessors)
 
-    # == postprocess ==
     def postprocess(self) -> None:
         """
         Convenience over `update` method.
@@ -166,7 +176,6 @@ class Workflow:
         """
         self.update(constants.POSTPROCESSORS, self.__postprocessors)
 
-    # == inference ==
     def inference(self) -> None:
         """
         Get model predictions.
@@ -182,7 +191,6 @@ class Workflow:
                 f"Override method `inference` in class {class_name}."
             )
 
-    # == run ==
     def run(self, input_: Any) -> Any:
         """
         Get final results from the workflow.
@@ -203,27 +211,9 @@ class Workflow:
         self.postprocess()
         return self.output
 
-    # == flush ==
     def flush(self) -> None:
         """
         Reset workflow state.
         """
         self.input = None
         self.output = None
-
-    # == __log ==
-    def __log(self, message: str, processor_type: str, processor: PluginFn) -> None:
-        """
-        Log the changes in the input/output as pre/post processing functions execute.
-
-        Args:
-            message (`str`): One of ["Before", "After"].
-            processor_type (`str`): One of ["__preprocessor", "__postprocessor"].
-            processor (`str`): A callable within __preprocessor or __postprocessor.
-        """
-        log.debug("%s %s %s:", message, processor_type[:-1], processor.__name__)
-        log.debug("input")
-        log.debug(pformat(self.input))
-        log.debug("output")
-        log.debug(pformat(self.output))
-        log.debug("-" * 30)

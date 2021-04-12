@@ -12,6 +12,7 @@ from typing import Any, Callable, Dict, List, Optional
 from dialogy.types.entity import BaseEntity
 from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule, Slot
+from dialogy.utils.logger import log
 
 
 class Intent:
@@ -93,15 +94,25 @@ class Intent:
         Args:
             entity (BaseEntity): [entities](../../docs/entity/__init__.html)
         """
+        log.debug("Looping through slot_names for each entity.")
         for slot_name in entity.slot_names:
+            log.debug("slot_name: %s", slot_name)
+            log.debug("intent slots: %s", self.slots)
             if slot_name in self.slots:
                 if fill_multiple:
                     self.slots[slot_name].add(entity)
                     return self
 
                 if not self.slots[slot_name].values:
+                    log.debug("filling %s into %s", entity, self.name)
                     self.slots[slot_name].add(entity)
                 else:
+                    log.debug(
+                        "removing %s from %s, because the slot was filled previously. "
+                        "Use fill_multiple=True if this is not required.",
+                        entity,
+                        self.name,
+                    )
                     self.slots[slot_name].clear()
         return self
 

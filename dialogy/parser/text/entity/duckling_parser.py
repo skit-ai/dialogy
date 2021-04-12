@@ -47,6 +47,7 @@ means to connect from the implementation here.
 
 """
 import json
+from pprint import pformat
 from typing import Any, Callable, Dict, List, Optional
 
 import pytz
@@ -56,6 +57,7 @@ from pytz.tzinfo import BaseTzInfo  # type: ignore
 from dialogy.constants import EntityKeys
 from dialogy.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
+from dialogy.utils.logger import debug_logs, log
 from dialogy.workflow import Workflow
 
 
@@ -148,6 +150,7 @@ class DucklingParser(Plugin):
                 " check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
             ) from unknown_timezone_error
 
+    @debug_logs
     def __create_req_body(
         self, text: str, reference_time: Optional[int]
     ) -> Dict[str, Any]:
@@ -177,6 +180,8 @@ class DucklingParser(Plugin):
             "dims": json.dumps(dimensions),
             "reftime": reference_time,
         }
+        log.debug("Duckling API payload:")
+        log.debug(pformat(payload))
 
         return payload
 

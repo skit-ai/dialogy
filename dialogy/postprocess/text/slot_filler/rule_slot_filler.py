@@ -10,6 +10,7 @@ from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule
+from dialogy.utils.logger import debug_logs, log
 from dialogy.workflow import Workflow
 
 
@@ -82,6 +83,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
+    @debug_logs
     def filler(self, workflow: Workflow) -> None:
         """
         Update an intent slot with compatible entity.
@@ -102,12 +104,15 @@ class RuleBasedSlotFillerPlugin(Plugin):
                     workflow
                 )
                 intent, entities = intent_and_entities
+                log.debug("intent: %s, entities: %s", intent, entities)
                 intent.apply(self.rules)
+                log.debug("intent after rule application: %s", intent)
 
                 for entity in entities:
                     intent.fill_slot(entity, fill_multiple=self.fill_multiple)
 
                 intent.cleanup()
+                log.debug("intent after slot-filling: %s", intent)
             except TypeError as type_error:
                 raise TypeError(
                     f"`access` passed to {self.__class__.__name__}"
