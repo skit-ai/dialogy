@@ -12,7 +12,7 @@ from dialogy.plugin import Plugin
 from dialogy.types import Signal
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
-from dialogy.utils.logger import change_log_level, log
+from dialogy.utils.logger import change_log_level, debug_logs, log
 from dialogy.workflow import Workflow
 
 
@@ -150,8 +150,8 @@ class VotePlugin(Plugin):
         self.representation: float = representation
         self.fallback_intent: str = fallback_intent
         self.aggregate_fn: Any = aggregate_fn
-        self.debug: bool = debug
 
+    @debug_logs
     def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
         """
         Reduce a list of intents.
@@ -161,16 +161,13 @@ class VotePlugin(Plugin):
         goes beyond the expected constituency, then the intent is elected else
         a fallback intent is emitted.
 
-        Args:
-            intents (List[Intent]): A list of predictions over ASR output. (size ~ 1-10)
-            constituency (float, optional): Threshold for proportion of votes,
-                proportion over this qualifies an intent for victory. Defaults to 0.5.
-
-        Returns:
-            Intent: Voted signal or fallback in case of no consensus.
+        :param intents: A list of predictions over ASR output. (size ~ 1-10)
+        :type intents: List[Intent]
+        :param trials: Number of observations over which the set of intents is obtained.
+        :type trials: int
+        :return: Voted signal or fallback in case of no consensus.
+        :rtype: Intent
         """
-        if self.debug:
-            change_log_level("DEBUG")
         fallback = Intent(name=self.fallback_intent, score=1)
         if not intents:
             return fallback
@@ -201,8 +198,6 @@ class VotePlugin(Plugin):
                 name=main_intent[const.SIGNAL.NAME],  # type: ignore
                 score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
             )
-        if self.debug:
-            change_log_level("INFO")
         return Intent(name=self.fallback_intent, score=1)
 
     def plugin(self, workflow: Workflow) -> None:
