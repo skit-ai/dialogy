@@ -16,9 +16,10 @@ examples:
 - RuleSlotFilerPlugin
 - VotePlugin
 """
-from typing import Optional
+from typing import Any, Callable, Optional
 
 from dialogy.types.plugin import PluginFn
+from dialogy.utils.logger import change_log_level
 
 
 class Plugin:
@@ -74,12 +75,15 @@ class Plugin:
     4. :ref:`VotePlugin <vote_plugin>` (post-processing)
     """
 
-    def __init__(self, access: Optional[PluginFn], mutate: Optional[PluginFn]) -> None:
-        # An `access` function is defined to safely extract data from a workflow.
+    def __init__(
+        self,
+        access: Optional[PluginFn],
+        mutate: Optional[PluginFn],
+        debug: bool = False,
+    ) -> None:
         self.access = access
-
-        # A `mutate` function allows inserting/overwriting data into a workflow.
         self.mutate = mutate
+        self.debug = debug
 
     def __call__(self) -> PluginFn:
         """
