@@ -19,6 +19,7 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+
 Dialogy
 ========
 
@@ -44,50 +45,6 @@ Test
 
    make test
 
-Examples
---------
-
-Using :code:`dialogy` to run a classifier on a new input.
-
-.. ipython:: python
-
-   import pickle
-   from dialogy.workflow import Workflow
-   from dialogy.preprocessing import merge_asr_output
-
-
-   def access(workflow):
-       return workflow.input
-
-
-   def mutate(workflow, value):
-       workflow.input = value
-
-
-   def vectorizer(workflow):
-       vectorizer = TfidfVectorizer()
-       workflow.input = vectorizer.transform(workflow.input)
-
-
-   class TfidfMLPClfWorkflow(Workflow):
-       def __init__(self):
-           super(TfidfMLPClfWorkflow).__init__()
-           self.model = None
-
-       def load_model(self, model_path):
-           with open(model_path, "rb") as binary:
-               self.model = binary.load()
-
-       def inference(self):
-           self.output = self.model.predict(self.input)
-
-
-   preprocessors = [merge_asr_output(access=access, mutate=mutate), vectorizer]
-   workflow = TfidfMLPClfWorkflow(preprocessors=preprocessors, postprocessors=[])
-   output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # output -> _greeting_
-
-.. note:: Popular workflow sub-classes will be accepted after code-review.
-
 FAQs
 -----
 
@@ -105,6 +62,8 @@ like:
 Any rigidity here would lead to distractions both to maintainers and users of this project.
 :ref:`Plugins<plugin>` and custom :ref:`Workflow<workflow>` are certainly welcome and can take care of recipe-based needs.
 We already have a `dialogy-template-simple-transformers <https://github.com/Vernacular-ai/dialogy-template-simple-transformers>`_.
+
+.. note:: Popular workflow sub-classes will be accepted after code-review.
 
 Common Evaluation Plans
 **************************

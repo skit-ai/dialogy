@@ -142,6 +142,84 @@
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </section>
+<section id="dialogy">
+<h1>Dialogy<a class="headerlink" href="#dialogy" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="https://travis-ci.com/Vernacular-ai/dialogy"><img alt="https://travis-ci.com/Vernacular-ai/dialogy.svg?branch=master" src="https://travis-ci.com/Vernacular-ai/dialogy.svg?branch=master" /></a>
+<img alt="https://coveralls.io/repos/github/Vernacular-ai/dialogy/badge.svg?branch=master" src="https://coveralls.io/repos/github/Vernacular-ai/dialogy/badge.svg?branch=master" />
+<dl class="field-list simple">
+<dt class="field-odd">target</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://coveralls.io/github/Vernacular-ai/dialogy?branch=master">https://coveralls.io/github/Vernacular-ai/dialogy?branch=master</a></p>
+</dd>
+</dl>
+<img alt="https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c:target:https://www.codacy.com/gh/Vernacular-ai/dialogy/dashboard?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=Vernacular-ai/dialogy&amp;amp;utm_campaign=Badge_Grade" src="https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c:target:https://www.codacy.com/gh/Vernacular-ai/dialogy/dashboard?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=Vernacular-ai/dialogy&amp;amp;utm_campaign=Badge_Grade" />
+<a class="reference external image-reference" href="https://badge.fury.io/py/dialogy"><img alt="https://badge.fury.io/py/dialogy.svg" src="https://badge.fury.io/py/dialogy.svg" /></a>
+<p>Dialogy is a battries-included 🔋 opinionated framework to build machine-learning solutions for speech applications.</p>
+<ul class="simple">
+<li><p>Plugin-based: Makes it easy to import/export components to other projects. 🔌</p></li>
+<li><p>Stack-agnostic: No assumptions made on ML stack; your choice of machine learning library will not be affected by using Dialogy. 👍</p></li>
+<li><p>Progressive: Minimal boilerplate writing to let you focus on your machine learning problems. 🤏</p></li>
+</ul>
+<p>[Documentation](<a class="reference external" href="https://vernacular-ai.github.io/dialogy/">https://vernacular-ai.github.io/dialogy/</a>)</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install dialogy
+</pre></div>
+</div>
+</section>
+<section id="test">
+<h2>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make <span class="nb">test</span>
+</pre></div>
+</div>
+</section>
+<section id="faqs">
+<h2>FAQs<a class="headerlink" href="#faqs" title="Permalink to this headline">¶</a></h2>
+<section id="training-boilerplate">
+<h3>Training boilerplate<a class="headerlink" href="#training-boilerplate" title="Permalink to this headline">¶</a></h3>
+<p>❌. This is not an end-to-end automated model training framework. That said, no one wants to write boilerplate code,
+unfortunately, it doesn’t align with the objectives of this project. Also, it is hard to accomodate for different needs
+like:</p>
+<ul class="simple">
+<li><p>library dependencies</p></li>
+<li><p>hardware support</p></li>
+<li><p>Need for visualizations/reports during/after training.</p></li>
+</ul>
+<p>Any rigidity here would lead to distractions both to maintainers and users of this project.
+<a class="reference internal" href="source/dialogy.plugin.html#plugin"><span class="std std-ref">Plugins</span></a> and custom <a class="reference internal" href="source/dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> are certainly welcome and can take care of recipe-based needs.
+We already have a <a class="reference external" href="https://github.com/Vernacular-ai/dialogy-template-simple-transformers">dialogy-template-simple-transformers</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Popular workflow sub-classes will be accepted after code-review.</p>
+</div>
+</section>
+<section id="common-evaluation-plans">
+<h3>Common Evaluation Plans<a class="headerlink" href="#common-evaluation-plans" title="Permalink to this headline">¶</a></h3>
+<p>❌. Evaluation of models is hard to standardize. if you have a fairly common need, feel free to contribute your <cite>workflow</cite>, <cite>plugins</cite>.</p>
+</section>
+<section id="benefits">
+<h3>Benefits<a class="headerlink" href="#benefits" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>✅. This project offers a conduit for an untrained model. This means once a [Workflow](<a class="reference external" href="https://vernacular-ai.github.io/dialogy/dialogy/workflow/workflow.html">https://vernacular-ai.github.io/dialogy/dialogy/workflow/workflow.html</a>) is ready you can use it anywhere:
+evaluation scripts, serving your models via an API, custom training/evaluation scripts, combining another workflow, etc.</p></li>
+<li><p>✅. If your application needs spoken language understanding, you should find little need to write data processing functions.</p></li>
+<li><p>✅. Little to no learning curve, if you know python you know how to use this project.</p></li>
+</ul>
+</section>
+</section>
+<section id="contributions">
+<h2>Contributions<a class="headerlink" href="#contributions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Go through the docs.</p></li>
+<li><p>Name your branch as “purpose/short-description”. examples:
+-   “feature/hippos_can_fly”
+-   “fix/breathing_water_instead_of_fire”
+-   “docs/chapter_on_mighty_sphinx”
+-   “refactor/limbs_of_mummified_pharao”
+-   “test/my_patience”</p></li>
+<li><p>Make sure tests are added are passing. Run <cite>make test lint</cite> at project root. Coverage is important aim for 100% unless reviewer agrees.</p></li>
+</ul>
+</section>
+</section>
 
 
           </div>
