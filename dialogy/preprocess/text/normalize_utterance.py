@@ -12,12 +12,14 @@ def dict_get(prop: str, obj: Dict[str, Any]) -> Any:
     """
     Get value of prop within obj.
 
-    Args:
-        prop (str): A key within a dict.
-        obj (Dict[str, Any]): Any dict.
+    This simple function exists to facilitate a partial function defined :ref:`here<is_utterance>`.
 
-    Returns:
-        Any
+    :param prop: A property within a :code:`dict`.
+    :type prop: str
+    :param obj: A :code:`dict`.
+    :type obj: Dict[str, Any]
+    :return: Value of a property within a :code:`dict`.
+    :rtype: Any
     """
     return obj[prop]
 
@@ -26,11 +28,10 @@ def is_list(input_: Any) -> bool:
     """
     Check type of `input_`
 
-    Args:
-        input_ (Any): Any arbitrary input.
-
-    Returns:
-        bool: True if input_ is list.
+    :param input_: Any arbitrary input
+    :type input_: Any
+    :return: True if input_ is a :code:`list` else False
+    :rtype: True
     """
     return isinstance(input_, list)
 
@@ -41,39 +42,59 @@ def is_each_element(
     """
     Check if each element in a list is of a given type.
 
-    Args:
-        type_ (type): Expected type for each element.
-        input_ (List[Any]): Arbitrary list.
-        transform (Callable[[Any], Any], optional): We may apply some transforms to
-            each element before making these checks. This is to check if a certain key
-            in a Dict matches the expected type. In case this is not needed,
-            leave the argument unset and an identity transform is applied. Defaults to lambdax:x.
+    .. ipython:: python
 
-    Returns:
-        bool: True if each element in input matches the type.
+        from dialogy.preprocess.text.normalize_utterance import is_each_element
+
+        is_each_element(str, ["this", "returns", "False", "cuz:", False])
+        is_each_element(str, ["this", "returns", "True", "cuz:", "all", "str"])
+
+    :param type_: Expected :code:`Type` of each element in the :code:`input_` which is a :code:`list`.
+    :type type_: Type
+    :param input_: A :code:`list`.
+    :type input_: List[Any]
+    :param transform: We may apply some transforms to
+        each element before making these checks. This is to check if a certain key
+        in a Dict matches the expected type. In case this is not needed,
+        leave the argument unset and an identity transform is applied. Defaults to lambda x:x.
+    :type transform: Callable[[Any], Any]
+    :return: Checks each element in a list to match :code:`type_`, if any element fails the check,
+        this returns False, else True.
+    :rtype: bool
     """
     return all(isinstance(transform(item), type_) for item in input_)
 
 
 def is_utterance(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> bool:
     """
+    .. _is_utterance:
     Check input to be of `List[List[Dict]]`.
 
     ```json
     [[{"transcript": "hi"}]]
     ```
 
-    Args:
-        maybe_utterance (Any): Arbitrary type input.
-        key (str, optional): The key within which transcription string resides.
-            Defaults to const.TRANSCRIPT.
+    .. ipython:: python
 
-    Returns:
-        bool
+        from dialogy.preprocess.text.normalize_utterance import is_utterance
 
-    Raises:
-        KeyError
-        TypeError
+        # 1. :code:`List[List[Dict[str, str]]]`
+        is_utterance([[{"transcript": "this"}, {"transcript": "works"}]])
+
+        # 2. key is configurable
+        is_utterance([[{"text": "this"}, {"text": "works"}]], key="text")
+
+        # 3. Hope for everything else... you have a mastercard.
+        # Or use this lib, works just fine 🍷.
+        is_utterance([{"transcript": "this"}, {"transcript": "doesn't"}, {"transcript": "work"}])
+
+    :param maybe_utterance: Arbitrary input.
+    :type maybe_utterance: Any
+    :param key: The key within which transcription string resides.
+            Defaults to :code:`const.TRANSCRIPT`.
+    :type key: str
+    :return: True if the inputs is :code:`List[List[Dict[str, str]]]`, else False.
+    :rtype: bool
     """
     dict_get_key = partial(dict_get, key)
     try:
@@ -91,17 +112,22 @@ def is_unsqueezed_utterance(maybe_utterance: Any, key: str = const.TRANSCRIPT) -
     """
     Check input to be of `List[Dict]`.
 
-    Args:
-        maybe_utterance (Any): Arbitrary type input.
-        key (str, optional): The key within which transcription string resides.
-            Defaults to const.TRANSCRIPT.
+    .. ipython:: python
 
-    Returns:
-        bool
+        from dialogy.preprocess.text.normalize_utterance import is_unsqueezed_utterance
 
-    Raises:
-        KeyError
-        TypeError
+        # 1. This fails
+        is_unsqueezed_utterance([[{"transcript": "this"}, {"transcript": "works"}]])
+
+        # 2. key is configurable
+        is_unsqueezed_utterance([{"text": "this"}, {"text": "works"}], key="text")
+
+    :param maybe_utterance: Arbitrary type input.
+    :type maybe_utterance: Any
+    :param key: The key within which transcription string resides.
+    :type key: str, Defaults to const.TRANSCRIPT.
+    :return: True, if the input is of type :code:`List[Dict[str, Any]]` else False.
+    :rtype: bool
     """
     dict_get_key = partial(dict_get, key)
     try:
@@ -116,15 +142,15 @@ def is_list_of_string(maybe_utterance: Any) -> bool:
     """
     Check input to be of `List[str]`.
 
-    Args:
-        maybe_utterance (Any): Arbitrary type input.
+    .. ipython:: python
 
-    Returns:
-        bool
+        from dialogy.preprocess.text.normalize_utterance import is_list_of_string
+        is_list_of_string(["this", "works"])
 
-    Raises:
-        KeyError
-        TypeError
+    :param maybe_utterance: Arbitrary input.
+    :type maybe_utterance: Any
+    :return: True if :code:`maybe_utterance` is a :code:`str`.
+    :rtype: bool
     """
     try:
         return is_each_element(str, maybe_utterance)
@@ -134,13 +160,12 @@ def is_list_of_string(maybe_utterance: Any) -> bool:
 
 def is_string(maybe_utterance: Any) -> bool:
     """
-    Check input to be of `str`.
+    Check input's type is `str`.
 
-    Args:
-        maybe_utterance (Any): Arbitrary type input.
-
-    Returns:
-        bool
+    :param maybe_utterance: Arbitrary type input.
+    :type maybe_utterance: Any
+    :return: True if :code:`maybe_utterance` is a :code:`str`, else False.
+    :rtype: bool
     """
     return isinstance(maybe_utterance, str)
 
@@ -151,31 +176,26 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
 
     The output will be a list of strings since models will expect that.
 
-    expected inputs:
-    ```json
-    [[{"transcript": "hi"}]]
-    ```
 
-    ```json
-    [{"transcript": "I wanted to know umm hello?"}]
-    ```
+    .. ipython:: python
 
-    ```json
-    ["I wanted to know umm hello?"]
-    ```
+        from dialogy.preprocess import normalize
 
-    ```json
-    "I wanted to know umm hello?"
-    ```
+        normalize([[{"transcript": "hi"}]])
+        normalize([[{"transcript": "hello"}], [{"transcript": "world"}]])
+        normalize([{"transcript": "I wanted to know umm hello?"}])
+        normalize(["I wanted to know umm hello?"])
+        normalize("I wanted to know umm hello?")
 
-    Args:
-        maybe_utterance (Any): Non-standard input types.
 
-    Returns:
-        List[str]
-
-    Raises:
-        TypeError
+    :param maybe_utterance: Arbitrary input.
+    :type maybe_utterance: Any
+    :param key: A string to be looked into :code:`List[List[Dict[str, str]]]`, :code:`List[Dict[str, str]]` type inputs.
+    :type key: str
+    :return: A flattened list of strings parsed from various formats.
+    :rtype: List[str]
+    :raises:
+        TypeError: If :code:`maybe_utterance` is none of the expected types.
     """
     if is_utterance(maybe_utterance):
         return [

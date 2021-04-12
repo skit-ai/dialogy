@@ -10,22 +10,43 @@ from typing import Any, Dict, List, Tuple, Union
 
 
 def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:
-    """Traverse a dictionary for a given list of properties.
+    """
+    Traverse a dictionary for a given list of properties.
 
     This is useful for traversing a deeply nested dictionary.
     Instead of recursion, we are using reduce to update the `dict`.
     Missing properties will lead to KeyErrors.
 
-    Args:
-        obj (Dict[Any, Any]): The `dict` to traverse.
-        properties (List[int]): List of properties expected in the `dict`.
+    .. ipython:: python
+        :okexcept:
 
-    Raises:
-        KeyError: There is a chance of the property list containing elements not present in the `dict`.
-        TypeError: There is a chance of the property being accessed over values that are not compatible.
+        from dialogy.types.entity.utils import traverse_dict
 
-    Returns:
-        Any: The value within the `dict` described by the properties list.
+        input_ = {
+            "planets": {
+                "mars": [{
+                    "name": "",
+                    "languages": [{
+                        "beep": {"speakers": 11},
+                    }, {
+                        "bop": {"speakers": 30},
+                    }]
+                }]
+            }
+        }
+        traverse_dict(input_, ["planets", "mars", 0 , "languages", 1, "bop"])
+
+        # element with index 3 doesn't exist!
+        traverse_dict(input_, ["planets", "mars", 0 , "languages", 3, "bop"])
+
+    :param obj: The `dict` to traverse.
+    :type obj: Dict[Any, Any]
+    :param properties: List of properties to be parsed as a path to be navigated in the `dict`.
+    :type properties: List[int]
+    :return: A value within a deeply nested dict.
+    :rtype: Any
+    :raises KeyError: Missing property in the dictionary.
+    :raises TypeError: Properties don't describe a path due to possible type error.
     """
     try:
         return reduce(lambda o, k: o[k], properties, obj)
@@ -40,18 +61,25 @@ def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:
 
 
 def validate_type(obj: Any, obj_type: Union[type, Tuple[type]]) -> None:
-    """Raise TypeError on object type mismatch.
+    """
+    Raise TypeError on object type mismatch.
 
-    This is syntatic sugar for instance type checks.
+        This is syntatic sugar for instance type checks.
 
-    The check is by exclusion of types. Wraps exception raising logic.
+        The check is by exclusion of types. Wraps exception raising logic.
 
-    Args:
-        obj (Any): The object available for type assertion.
-        obj_type (Union[type, Tuple[type]]): This must match the type of the object.
+        Args:
+            obj (Any): The object available for type assertion.
+            obj_type (Union[type, Tuple[type]]): This must match the type of the object.
 
-    Raises:
-        TypeError: If the type `obj_type` doesn't match the type of `obj`.
+        Raises:
+            TypeError: If the type `obj_type` doesn't match the type of `obj`.
+        :param obj:
+        :type obj:
+        :param obj_type:
+        :type obj_type:
+        :return:
+        :rtype:
     """
     if not isinstance(obj, obj_type):
         raise TypeError(f"{obj} should be a {obj_type}")

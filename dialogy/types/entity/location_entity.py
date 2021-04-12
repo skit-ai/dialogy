@@ -14,8 +14,7 @@ from dialogy.types.entity import BaseEntity
 
 @attr.s
 class LocationEntity(BaseEntity):
-    """Location Entity Type
-
+    """
     Use this type for handling locations available with reference-ids.
     This is not meant for (latitude, longitude) values, those will be covered in GeoPointEntity.
     """

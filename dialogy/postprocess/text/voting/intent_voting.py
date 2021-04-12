@@ -31,17 +31,16 @@ def adjust_signal_strength(
     - Worst case could be, each attempt yields a unique signal. In this case the signal strength is dampened.
     - Best case, each attempt yields a single signal. In this case the signal strength is boosted.
 
-    Returns:
-        List[Signal]: A list of strength adjusted signals. May not be as long as the input.
-
     :param signals: A signal is a tuple of name and strength.
     :type signals: List[Signal]
     :param trials: Total attempts made to generate signals.
     :type trials: int
     :param aggregate_fn: A function to normalize a list of floating point values, defaults to np.mean
     :type aggregate_fn: Any, optional
+    :param debug: Log if True.
+    :type debug: bool
     :raises TypeError: :code:`aggregate_fn` if passed should be a :code:`callable`.
-    :return: A list of normalized signale.
+    :return: A list of normalized signal.
     :rtype: List[Signal]
     """
     # Group intents by name.
@@ -51,28 +50,35 @@ def adjust_signal_strength(
             f" operates on a list of floats. Found {type(aggregate_fn)} instead."
         )
     signal_groups = py_.group_by(signals, lambda signal: signal[0])
-    signals_ = [
-        (
-            signal_name,
-            float(
-                # Averaging (or some other aggregate fn) signal strength values.
-                aggregate_fn([signal[const.SIGNAL.STRENGTH] for signal in signals])
-            ),
-            float(len(signals) / trials),
-        )
-        for signal_name, signals in signal_groups.items()
-    ]
-    return sorted(
-        signals_, key=lambda signal: signal[const.SIGNAL.STRENGTH], reverse=True
+    log.debug("signal groups:")
+    log.debug(signal_groups)
+
+    signals_ = sorted(
+        [
+            (
+                signal_name,
+                float(
+                    # Averaging (or some other aggregate fn) signal strength values.
+                    aggregate_fn([signal[const.SIGNAL.STRENGTH] for signal in signals])
+                ),
+                float(len(signals) / trials),
+            )
+            for signal_name, signals in signal_groups.items()
+        ],
+        key=lambda signal: signal[const.SIGNAL.STRENGTH],
+        reverse=True,
     )
+
+    log.debug("sorted and ranked signals:")
+    log.debug(signals_)
+    return signals_
 
 
 class VotePlugin(Plugin):
     """
+    .. _vote_plugin:
     An instance of VoteIntentPlugin helps in voting for a strong
     evidence over other candidates.
-
-    **threshold**: Signal strength should atleast match this value, or else it will be dropped.
 
     This plugin takes into consideration a list of predictions (signals)
     some of which can be strong, (decided by their confidence score for now)
@@ -88,6 +94,40 @@ class VotePlugin(Plugin):
     Ideal design should provide the signals, their strengths (confidence) and
     signal boosters, any contextual information that implies a weak signal has
     more weight than its counterparts.
+
+    :param access: A function that expects workflow as an argument and returns a Tuple.
+        The Tuple contains: :code:`intents`, :code:`trials`. Here,
+
+        1. :code:`intents` is a :code:`List[T]` where :code:`T` is an :ref:`Intent<intent>`.
+        2. :code:`trials` is an :code:`int` that tells us the number of observations that produced the :code:`intents`.
+
+    :type access: Optional[PluginFn]
+
+    :param mutate: A function that places the safest value from the list of :code:`intents` or :code:`fallback_intent`
+        in case nothing in the list is safe.
+    :type mutate: Optional[PluginFn]
+
+    :param threshold: A threshold for confidence scores for each :ref:`Intent<intent>`.
+    :type threshold: float
+
+    :param consensus: We rank each :ref:`Intent<intent>` by confidence score, if the top two have similar and high
+        confidence scores, then it is a case of no-consensus. If the top two intents have considerable gap then there
+        is consensus. The *considerable gap* is defined by :code:`consensus`.
+    :type consensus: float
+
+    :param representation: A percentage that depicts how many votes did an :ref:`Intent<intent>` receive. It is unsafe
+        if the confidence threshold is met but representation is poor.
+    :type representation: float
+
+    :param fallback_intent: In case we fail to find a strong candidate, we resort to a :code:`fallback_intent`.
+    :type fallback_intent: str
+
+    :param aggregate_fn: A function that allows us to aggregate over confidence scores of each :ref:`Intent<intent>`.
+    :type aggregate_fn: Any
+
+    :param debug: log intermediates if True.
+    :type debug: bool
+
     """
 
     def __init__(
@@ -101,6 +141,9 @@ class VotePlugin(Plugin):
         aggregate_fn: Any = np.mean,
         debug: bool = False,
     ):
+        """
+        constructor
+        """
         super().__init__(access, mutate)
         self.threshold: float = threshold
         self.consensus: float = consensus
@@ -126,6 +169,8 @@ class VotePlugin(Plugin):
         Returns:
             Intent: Voted signal or fallback in case of no consensus.
         """
+        if self.debug:
+            change_log_level("DEBUG")
         fallback = Intent(name=self.fallback_intent, score=1)
         if not intents:
             return fallback
@@ -139,11 +184,8 @@ class VotePlugin(Plugin):
             intent_signals[1] if len(intent_signals) > 1 else ("_", 0, 0)
         )
 
-        if self.debug:
-            change_log_level("DEBUG")
-            log.debug("Intents with adjusted signal strength: ")
-            log.debug(intent_signals)
-            change_log_level("INFO")
+        log.debug("Intents with adjusted signal strength: ")
+        log.debug(intent_signals)
 
         if self.representation > main_intent[const.SIGNAL.REPRESENTATION]:  # type: ignore
             return Intent(name=self.fallback_intent, score=1)
@@ -159,6 +201,8 @@ class VotePlugin(Plugin):
                 name=main_intent[const.SIGNAL.NAME],  # type: ignore
                 score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
             )
+        if self.debug:
+            change_log_level("INFO")
         return Intent(name=self.fallback_intent, score=1)
 
     def plugin(self, workflow: Workflow) -> None:

@@ -101,19 +101,19 @@ class BaseEntity:
 
     __properties_map = const.BASE_ENTITY_PROPS
 
-    # == validate ==
     @classmethod
     def validate(cls, dict_: Dict[str, Any]) -> None:
         """
         Check attributes of instance match expected types.
 
-        Args:
-            dict_ (Dict[str, Any]): A `Dict` where each key is an attribute of the instance and value is the expected type.
+        :param dict_: A `Dict` where each key is an attribute of the instance and value is the expected type.
+        :type dict_: Dict[str, Any]
+        :return: None
+        :rtype: None
         """
         for prop, prop_type in cls.__properties_map:
             validate_type(traverse_dict(dict_, prop), prop_type)
 
-    # == from_dict ==
     @classmethod
     def from_dict(cls, dict_: Dict[str, Any]) -> "BaseEntity":
         """
@@ -122,13 +122,14 @@ class BaseEntity:
         Compliance is verified using the `__validate` method. It is expected that each subclass
         will implement their own flavor of `__validate` to check their respective inputs.
 
-        Returns:
-            BaseEntity: Instance of class
+        :param dict_: A dict that provides all the attributes necessary for instantiating this class
+        :type dict_: Dict[str, Any]
+        :return: Instance of class
+        :rtype: BaseEntity
         """
         cls.validate(dict_)
         return cls(**dict_)
 
-    # == add_parser ==
     def add_parser(self, postprocessor: PluginFn) -> None:
         """
         Update parsers with the postprocessor function name
@@ -136,12 +137,13 @@ class BaseEntity:
         This helps us identify the progression in which the postprocessing functions
         were applied to an entity. This helps in debugging and has no production utility
 
-        Args:
-            postprocessor (PluginFn): Plugin function applied to an entity
+        :param postprocessor: Plugin function applied to an entity
+        :type postprocessor: PluginFn
+        :return: None
+        :rtype: None
         """
         self.parsers.append(postprocessor.__name__)
 
-    # == get_value ==
     def get_value(self) -> Any:
         """
         Get value of an entity.
@@ -149,12 +151,11 @@ class BaseEntity:
         The structure of an entity conceals the value in different data structures.
         This is sugar for access.
 
-        Raises:
+        :return: Arbitrary instance, subclasses should override and return specific types.
+        :rtype: BaseEntity
+        :raises:
             IndexError: If `values` is not a `list`.
             KeyError: If each element in `values` is not a `dict`.
-
-        Returns:
-            Any: Arbitrary return value, subclasses should override and return specific types.
         """
         try:
             return self.values[0]["value"]
@@ -167,16 +168,16 @@ class BaseEntity:
                 'entity value should be in values[0]["value"]'
             ) from key_error
 
-    # == copy ==
     def copy(self) -> "BaseEntity":
         """
         Create a deep copy of the instance and return.
 
         This is needed to prevent mutation of an original entity.
+        :return: A copy of BaseEntity that calls this method.
+        :rtype: BaseEntity
         """
         return copy.deepcopy(self)
 
-    # == json ==
     def json(
         self, skip: Optional[List[str]] = None, add: Optional[List[str]] = None
     ) -> Dict[str, Any]:
@@ -185,15 +186,14 @@ class BaseEntity:
 
         Applies some expected filters to prevent information bloat.
 
-        Args:
-            skip (Optional[List[str]], optional): Names of attributes that should not be included while converting to a dict.
+        :param skip: Names of attributes that should not be included while converting to a dict.
             Defaults to None.
-
-            add (Optional[List[str]], optional): Names of attributes that should be included while converting to a dict.
+        :type skip: Optional[List[str]]
+        :param add: Names of attributes that should be included while converting to a dict.
             Defaults to None.
-
-        Returns:
-            Dict[str, Any]: Dictionary representation of the object
+        :type add: Optional[List[str]]
+        :return: Dictionary representation of the object
+        :rtype: Dict[str, Any]
         """
         skip_ = skip or const.SKIP_ENTITY_ATTRS
         if add and isinstance(add, list):
@@ -204,11 +204,10 @@ class BaseEntity:
         """
         Set values and value attribute.
 
-        Args:
-            value (Any): The parsed value of an entity token.
-
-        Returns:
-            None
+        :param value: The parsed value of an entity token.
+        :type value: Any
+        :return: None
+        :rtype: None
         """
         if value is None and isinstance(self.values, list) and len(self.values) > 0:
             self.value = self.values[0][const.VALUE]
@@ -222,16 +221,17 @@ def entity_synthesis(entity: BaseEntity, property_: str, value: Any) -> BaseEnti
     """
     Update a property=`property_` of a BaseEntity, with a given value=`value`.
 
-    Args:
-        entity (BaseEntity): The BaseEntity instance to update.
-        property_ (str): The attribute of a given entity that should be updated.
-        value (Any): The value that should updated.
+    .. warning:: This is an unsafe method. Use with caution as it doesn't check the type of
+        the new value being type safe.
 
-    Raises:
-        TypeError: If `entity` is not a BaseEntity.
-
-    Returns:
-        BaseEntity: modified instance of BaseEntity.
+    :param entity: A BaseEntity instance.
+    :type entity: BaseEntity
+    :param property_: An attribute of BaseEntity that should be changed.
+    :type property_: str
+    :param value: The value to replace within a BaseEntity instance.
+    :type value: Any
+    :return: A copy of BaseEntity instance used in this function with modifications.
+    :rtype: BaseEntity
     """
     if not isinstance(entity, BaseEntity):
         raise TypeError(f"{entity} has type {type(entity)} expected BaseEntity")

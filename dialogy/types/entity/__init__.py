@@ -1,17 +1,8 @@
-"""Module provides access to entity types. 
+"""
+Module provides access to entity types.
 
-Import functions:
-
-- [entity_synthesis](./base_entity.html)
-
-Import classes:
-
-- [BaseEntity](./base_entity.html)
-- [NumericalEntity](./numerical_entity.html)
-- [PeopleEntity](./people_entity.html)
-- [TimeEntity](./time_entity.html)
-- [TimeIntervalEntity](./time_interval_entity.html)
-- [LocationEntity](./location_entity.html)
+We are explicitly supporting entities known for Duckling, any new entity support
+will be added depending on open issues.
 """
 
 from dialogy.types.entity.base_entity import BaseEntity, entity_synthesis
@@ -28,7 +19,3 @@ dimension_entity_map = {
     "time": {"value": TimeEntity, "interval": TimeIntervalEntity},
     "duration": {"value": DurationEntity},
 }
-
-"""
-[tutorial](../../../tests/types/entity/test_entities.html)
-"""

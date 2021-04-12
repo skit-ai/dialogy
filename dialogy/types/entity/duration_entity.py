@@ -14,10 +14,16 @@ from dialogy.types.entity import BaseEntity
 
 @attr.s
 class DurationEntity(BaseEntity):
-    """Location Entity Type
+    """
+    This entity type expects a normalized attribute. This provides the duration normalized to seconds.
 
-    Use this type for handling locations available with reference-ids.
-    This is not meant for (latitude, longitude) values, those will be covered in GeoPointEntity.
+    Helpful in cases where we wish to operate on time like:
+    "I want a booking in 2 days."
+
+    We can tell the time at which the sentence was said, but we need to make the booking after two days.
+
+    This entity parses this information and also provides us the number of seconds to add to the current timestamp
+    to get to a date that's 2 days ahead.
     """
 
     normalized = attr.ib(type=Dict[str, Any], default=attr.Factory(dict))

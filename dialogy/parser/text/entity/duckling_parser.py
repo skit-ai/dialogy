@@ -93,9 +93,11 @@ class DucklingParser(Plugin):
     <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>`_. Example: `"Asia/Kolkata"` :type timezone:
     Optional[str]
 
-    :param timeout: There are certain strings which tend to stall Duckling: `example
-    <https://github.com/facebook/duckling/issues/338>`_. In such cases, to prevent the overall experience to slow
-    down as well, provide a certain timeout value, defaults to 0.5. :type timeout: float
+    :param timeout: There are certain strings which tend to stall Duckling:
+    `example <https://github.com/facebook/duckling/issues/338>`_.
+    In such cases, to prevent the overall experience to slow
+    down as well, provide a certain timeout value, defaults to 0.5.
+    :type timeout: float
 
     :param url: The address where Duckling's entity parser can be reached, defaults to "http://0.0.0.0:8000/parse".
     :type url: Optional[str]

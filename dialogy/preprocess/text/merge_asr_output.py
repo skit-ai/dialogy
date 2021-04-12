@@ -1,13 +1,21 @@
 """
-Module provides access to a Plugin to combine ASR output.
+We expect ASR transcripts to be the most common inputs to the system. Since there is a chance that we can improve the
+performance by asking the ASR to provide more information in the form of multiple alternatives. The problem though, is
+they can't be used as it is. Models that can operate on text data, need them to be vectorized. These vectors have
+semantic significance, where different text inputs imply different vectors. If their semantic differences are modeled
+well, we can expect these vectors to be similar or dissimilar just like the text that was used to create them.
 
-## Tutorial
+The problem with transcripts is, there **will** be noise in the transcripts, since we asked for :code:`N` transcripts,
+by definition, an ASR will provide N unique transcripts. The noise may in fact be inconsequential for downstream NLP
+tasks, but we have noticed that there are certain inputs owing to audio artifacts or state of LMs tend to have a great
+impact on the transcription.
 
-- [merge_asr_output](../../../tests/preprocess/text/test_merge_asr_output.html)
+This module will ship a simple concatenation strategy to address this problem. The NLP model should be expected to
+handle documents (:code:`List[str]`) instead of single text. The plugin then will be able to produce a :code:`str` by
+simply concatenation of each transcript.
 
-Import functions:
-
-- merge_asr_output
+This may not be very helpful, there is a :ref:`VotePlugin <vote_plugin>` under development so use it with caution. It may
+help with precision at the cost of recall.
 """
 from typing import Any, List
 
@@ -23,42 +31,38 @@ from dialogy.workflow import Workflow
 # == merge_asr_output ==
 def merge_asr_output(utterances: Any) -> str:
     """
+    .. _merge_asr_output:
+
     Join ASR output to single string.
 
     This function provides a merging strategy for n-best ASR transcripts by
     joining each transcript, such that:
 
-    - each sentence end is marked by " &lt;/s&gt;" and,
-    - sentence start marked by " &lt;s&gt;".
-
+    - each sentence end is marked by " </s>" and,
+    - sentence start marked by " <s>".
 
     The key "transcript" is expected in the ASR output, the value of which would be operated on
     by this function.
 
-    Example:
-    ```python
+    .. ipython:: python
 
-    input = [
-        {"transcript": "This is a sentence"},
-        {"transcript": "That is a sentence"}
-    ]
+        from dialogy.preprocess import merge_asr_output
 
-    "<s> This is a sentence </s> <s> That is a sentence </s>"
-    ```
+        utterances = ["This is a sentence", "That is a sentence"]
+        merge_asr_output(utterances)
 
-    Args:
+    :param utterances: A structure representing ASR output. We support only:
 
-    - utterances (`List[Utterance]`): ASR transcriptions
+        1. :code:`List[str]`
+        2. :code:`List[List[str]]`
+        3. :code:`List[List[Dict[str, str]]]`
+        4. :code:`List[Dict[str, str]]`
 
-
-    Raises:
-
-    - KeyError: Missing key `"transcript"` within alternatives.
-
-
-    Returns:
-
-    - str: concatenated ASR transcripts into a string.
+    :type utterances: Any
+    :return: Concatenated string, separated by <s> and </s> at respective terminal positions of each sentence.
+    :rtype: List[str]
+    :raises: TypeError if transcript is missing in cases of :code:`List[List[Dict[str, str]]]` or
+        :code:`List[Dict[str, str]]`.
     """
     try:
         flat_representation: List[str] = normalize(utterances)
@@ -67,23 +71,20 @@ def merge_asr_output(utterances: Any) -> str:
         raise TypeError("`transcript` is expected in the ASR output.") from type_error
 
 
-# ---
-
-# == merge_asr_output_plugin ==
 def merge_asr_output_plugin(
     access: GetWorkflowUtteranceFn, mutate: UpdateWorkflowStringFn
 ) -> PluginFn:
     """
-    Create a closure for single text representation for ASR output.
+    .. _merge_asr_output_plugin:
 
-    This Plugin provides a merging strategy for n-best ASR transcripts.
+    Working details are covered in :ref:`merge_asr_output <merge_asr_output>`.
 
-    Args:
-        access (GetWorkflowUtteranceFn): Function to access workflow elements.
-        mutate (UpdateWorkflowStringFn): Function to modify workflow elements.
-
-    Returns:
-        PluginFn: Closure function returned
+    :param access: A function that provides a :ref:`workflow<workflow>` and returns the ASR Utterance.
+    :type access: GetWorkflowUtteranceFn
+    :param mutate: A function that places the concat'd string into the :ref:`workflow<workflow>` as required.
+    :type mutate: UpdateWorkflowStringFn
+    :return: The plugin function.
+    :rtype: Callable
     """
 
     def inner(workflow: Workflow) -> None:
