@@ -20,6 +20,7 @@ docs: test
 	@$(MAKE) html -C docs_src
 	@rm -rf docs/*
 	@cp docs_src/_build/html/.nojekyll .nojekyll
+	@cp docs_src/_build/html/.nojekyll docs/.nojekyll
 	@mv docs_src/_build/html/* docs
 
 all: docs
