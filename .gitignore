@@ -136,6 +136,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+docs_src/_build/
 
 # IDEs
 .vscode/
