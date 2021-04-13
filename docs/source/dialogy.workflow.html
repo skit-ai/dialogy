@@ -1,116 +1,171 @@
-<!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="dialogy.utils package" href="dialogy.utils.html" />
 
-      <title>dialogy.workflow package</title>
+    <meta name="generator" content="sphinx-3.5.3, furo 2021.04.11.beta34"/>
+        <title>dialogy.workflow package - dialogy 0.4.5 documentation</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
     
-      <link rel="stylesheet" href="../_static/pygments.css">
-      <link rel="stylesheet" href="../_static/theme.css">
-      <link rel="stylesheet" href="../_static/sphinx_press_theme.css">
-      
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
 
-      <!-- sphinx script_files -->
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
 
-      
-      <script src="../_static/theme-vendors.js"></script>
-      <script src="../_static/theme.js" defer></script>
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+  <body dir="">
     
-  <link rel="index" title="Index" href="../genindex.html" />
-  <link rel="search" title="Search" href="../search.html" />
-  <link rel="prev" title="dialogy.utils package" href="dialogy.utils.html" /> 
-  </head>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
 
-  <body>
-    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="../index.html" class="home-link">
-    
-      <span class="site-name">dialogy</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
 
 
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
-          
-          <navlinks>
-            
-
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="../search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
     </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="modules.html#dialogy">dialogy</a></span>
-      </p>
-      <ul class="">
-        
-          <li class="toctree-l1 "><a href="dialogy.html" class="reference internal ">dialogy package</a>
-
-            
-          </li>
-
-        
-      </ul>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">dialogy 0.4.5 documentation</div></a>
     </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-</div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
   
-  <ul class="breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-    
-      <li><a href="modules.html">dialogy</a> &raquo;</li>
-    
-      <li><a href="dialogy.html">dialogy package</a> &raquo;</li>
-    
-    <li>dialogy.workflow package</li>
-  </ul>
+  <span class="sidebar-brand-text">dialogy 0.4.5 documentation</span>
   
-
-  <ul class="page-nav">
-  <li class="prev">
-    <a href="dialogy.utils.html"
-       title="previous chapter">← dialogy.utils package</a>
-  </li>
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">dialogy</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.html">dialogy package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dialogy.cli.html">dialogy.cli package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.constants.html">dialogy.constants package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.errors.html">dialogy.errors package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.parser.html">dialogy.parser package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="dialogy.parser.text.html">dialogy.parser.text package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="dialogy.parser.text.entity.html">dialogy.parser.text.entity package</a></li>
 </ul>
-  
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.plugin.html">dialogy.plugin package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.postprocess.html">dialogy.postprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="dialogy.postprocess.text.slot_filler.html">dialogy.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="dialogy.postprocess.text.voting.html">dialogy.postprocess.text.voting package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.preprocess.html">dialogy.preprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.preprocess.text.html">dialogy.preprocess.text package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.types.html">dialogy.types package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.signal.html">dialogy.types.signal package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.slots.html">dialogy.types.slots package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.utils.html">dialogy.utils package</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">dialogy.workflow package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
 </div>
-<hr>
-          <div class="content" role="main">
-            
-  <section id="dialogy-workflow-package">
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <section id="dialogy-workflow-package">
 <h1>dialogy.workflow package<a class="headerlink" href="#dialogy-workflow-package" title="Permalink to this headline">¶</a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
@@ -136,7 +191,7 @@ targets performance in a production environment, where <cite>train</cite> and <c
 </dl>
 <dl class="py class">
 <dt id="dialogy.workflow.workflow.Workflow">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Workflow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.workflow.workflow.</span></code><code class="sig-name descname"><span class="pre">Workflow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This is a light but fairly flexible workflow for building a machine learning pipeline.</p>
 <p>Requirements
@@ -152,13 +207,12 @@ here could use more arguments, say, <cite>load_model()</cite> requires <cite>pat
 <p>All the attributes of the class that are meant for private use, have <cite>__</cite> preceeding their names.</p>
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.flush">
-<code class="sig-name descname"><span class="pre">flush</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.flush" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">flush</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset workflow state.</p>
 </dd></dl>
-
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.inference">
-<code class="sig-name descname"><span class="pre">inference</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.inference" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">inference</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.inference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get model predictions.</p>
 <p>Depending on the number of models in use. This place can be used to collate results, sort, filter, etc.</p>
 <dl class="simple">
@@ -166,34 +220,30 @@ here could use more arguments, say, <cite>load_model()</cite> requires <cite>pat
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.load_model">
-<code class="sig-name descname"><span class="pre">load_model</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.load_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">load_model</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.load_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override method in sub-class to load model(s).</p>
 <dl class="simple">
 <dt>Raises:</dt><dd><p>NotImplementedError: Safeguard against using this class directly.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.postprocess">
-<code class="sig-name descname"><span class="pre">postprocess</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.postprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.postprocess" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">postprocess</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.postprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.postprocess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience over <cite>update</cite> method.</p>
 <p>Uses postprocessors over the <cite>update</cite> method, expect output to change.</p>
 </dd></dl>
-
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.preprocess">
-<code class="sig-name descname"><span class="pre">preprocess</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.preprocess" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">preprocess</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.preprocess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience over <cite>update</cite> method.</p>
 <p>Uses preprocessors over the <cite>update</cite> method, expect input to change.</p>
 </dd></dl>
-
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.run">
-<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get final results from the workflow.</p>
 <p>The current workflow exhibits the following simple procedure:
 pre-processing -&gt; inference -&gt; post-processing.</p>
@@ -205,38 +255,84 @@ a stronger check.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
 </dd></dl>
-
 </section>
 <section id="module-dialogy.workflow">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.workflow" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="dialogy.utils.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">dialogy.utils package</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/source/dialogy.workflow.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">dialogy.workflow package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.workflow.workflow">dialogy.workflow.workflow module</a></li>
+<li><a class="reference internal" href="#module-dialogy.workflow">Module contents</a></li>
+</ul>
+</li>
+</ul>
 
           </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-  <li class="prev">
-    <a href="dialogy.utils.html"
-       title="previous chapter">← dialogy.utils package</a>
-  </li>
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright .
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
 </div>
-            </div>
-          </div>
-      </page>
-    </div>
-    
-    
-  </body>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>

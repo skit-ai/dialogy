@@ -1,121 +1,171 @@
-<!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.postprocess package" href="dialogy.postprocess.html" /><link rel="prev" title="dialogy.parser.text.entity package" href="dialogy.parser.text.entity.html" />
 
-      <title>dialogy.plugin package</title>
+    <meta name="generator" content="sphinx-3.5.3, furo 2021.04.11.beta34"/>
+        <title>dialogy.plugin package - dialogy 0.4.5 documentation</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
     
-      <link rel="stylesheet" href="../_static/pygments.css">
-      <link rel="stylesheet" href="../_static/theme.css">
-      <link rel="stylesheet" href="../_static/sphinx_press_theme.css">
-      
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
 
-      <!-- sphinx script_files -->
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
 
-      
-      <script src="../_static/theme-vendors.js"></script>
-      <script src="../_static/theme.js" defer></script>
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+  <body dir="">
     
-  <link rel="index" title="Index" href="../genindex.html" />
-  <link rel="search" title="Search" href="../search.html" />
-  <link rel="next" title="dialogy.postprocess package" href="dialogy.postprocess.html" />
-  <link rel="prev" title="dialogy.parser.text.entity package" href="dialogy.parser.text.entity.html" /> 
-  </head>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
 
-  <body>
-    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="../index.html" class="home-link">
-    
-      <span class="site-name">dialogy</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
 
 
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
-          
-          <navlinks>
-            
-
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="../search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
     </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="modules.html#dialogy">dialogy</a></span>
-      </p>
-      <ul class="">
-        
-          <li class="toctree-l1 "><a href="dialogy.html" class="reference internal ">dialogy package</a>
-
-            
-          </li>
-
-        
-      </ul>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">dialogy 0.4.5 documentation</div></a>
     </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-</div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
   
-  <ul class="breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-    
-      <li><a href="modules.html">dialogy</a> &raquo;</li>
-    
-      <li><a href="dialogy.html">dialogy package</a> &raquo;</li>
-    
-    <li>dialogy.plugin package</li>
-  </ul>
+  <span class="sidebar-brand-text">dialogy 0.4.5 documentation</span>
   
-
-  <ul class="page-nav">
-  <li class="prev">
-    <a href="dialogy.parser.text.entity.html"
-       title="previous chapter">← dialogy.parser.text.entity package</a>
-  </li>
-  <li class="next">
-    <a href="dialogy.postprocess.html"
-       title="next chapter">dialogy.postprocess package →</a>
-  </li>
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">dialogy</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.html">dialogy package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dialogy.cli.html">dialogy.cli package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.constants.html">dialogy.constants package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.errors.html">dialogy.errors package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.parser.html">dialogy.parser package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="dialogy.parser.text.html">dialogy.parser.text package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="dialogy.parser.text.entity.html">dialogy.parser.text.entity package</a></li>
 </ul>
-  
+</li>
+</ul>
+</li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">dialogy.plugin package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.postprocess.html">dialogy.postprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="dialogy.postprocess.text.html">dialogy.postprocess.text package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="dialogy.postprocess.text.slot_filler.html">dialogy.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="dialogy.postprocess.text.voting.html">dialogy.postprocess.text.voting package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.preprocess.html">dialogy.preprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.preprocess.text.html">dialogy.preprocess.text package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.types.html">dialogy.types package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.signal.html">dialogy.types.signal package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.slots.html">dialogy.types.slots package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.utils.html">dialogy.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.workflow.html">dialogy.workflow package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
 </div>
-<hr>
-          <div class="content" role="main">
-            
-  <section id="dialogy-plugin-package">
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <section id="dialogy-plugin-package">
 <h1>dialogy.plugin package<a class="headerlink" href="#dialogy-plugin-package" title="Permalink to this headline">¶</a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
@@ -137,7 +187,7 @@
 - VotePlugin</p>
 <dl class="py class">
 <dt id="dialogy.plugin.plugin.Plugin">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugin/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugin.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugin.plugin.</span></code><code class="sig-name descname"><span class="pre">Plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugin/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugin.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> instance interacts with a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>. A <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> expects
 a set of plugins to be inserted into different stages: pre and post processing.
@@ -151,7 +201,7 @@ expectations of the <a class="reference internal" href="dialogy.workflow.html#wo
 <p>In case there are static inputs that won’t change at runtime, these can be pre-loaded into the
 <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> by extending it.</p>
 <p>An example for this is:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -176,11 +226,11 @@ expectations of the <a class="reference internal" href="dialogy.workflow.html#wo
         <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
         <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">"""</span>
 <span class="sd">        The `.load_corpus()` method reads some corpus.</span>
 <span class="sd">        This is useful since we expect to read this</span>
 <span class="sd">        just once and use it throughout the runtime.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">access</span> <span class="o">=</span> <span class="n">access</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span> <span class="o">=</span> <span class="n">mutate</span>
 <span class="hll">        <span class="bp">self</span><span class="o">.</span><span class="n">corpus</span> <span class="o">=</span> <span class="kc">None</span>
@@ -188,10 +238,10 @@ expectations of the <a class="reference internal" href="dialogy.workflow.html#wo
 
     <span class="k">def</span> <span class="nf">load_corpus</span><span class="p">(</span><span class="n">corpus_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">corpus_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">corpus_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">corpus_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
 <span class="hll">            <span class="bp">self</span><span class="o">.</span><span class="n">corpus</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
 </span></pre></div>
-</td></tr></table></div>
+</td></tr></table></div></div>
 <p>We ship a few <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> with Dialogy, namely:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="dialogy.parser.text.entity.html#duckling-parser"><span class="std std-ref">DucklingParser</span></a> (pre-processing)</p></li>
@@ -200,7 +250,6 @@ expectations of the <a class="reference internal" href="dialogy.workflow.html#wo
 <li><p><a class="reference internal" href="dialogy.postprocess.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a> (post-processing)</p></li>
 </ol>
 </dd></dl>
-
 </section>
 <section id="module-dialogy.plugin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugin" title="Permalink to this headline">¶</a></h2>
@@ -218,28 +267,81 @@ abstractions to specify requirements and expect these to be met for safe usage.<
 </section>
 </section>
 
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="dialogy.postprocess.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">dialogy.postprocess package</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="dialogy.parser.text.entity.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">dialogy.parser.text.entity package</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/source/dialogy.plugin.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">dialogy.plugin package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugin.plugin">dialogy.plugin.plugin module</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugin">Module contents</a></li>
+</ul>
+</li>
+</ul>
 
           </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-  <li class="prev">
-    <a href="dialogy.parser.text.entity.html"
-       title="previous chapter">← dialogy.parser.text.entity package</a>
-  </li>
-  <li class="next">
-    <a href="dialogy.postprocess.html"
-       title="next chapter">dialogy.postprocess package →</a>
-  </li>
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright .
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
 </div>
-            </div>
-          </div>
-      </page>
-    </div>
-    
-    
-  </body>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>
