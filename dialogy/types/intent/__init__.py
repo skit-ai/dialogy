@@ -30,15 +30,15 @@ class Intent:
     ) -> None:
         """
 
-        :param name:
+        :param name: The name of the intent. A class label
         :type name: str
-        :param score:
+        :param score: The confidence score from a model.
         :type score: float
-        :param parsers:
+        :param parsers: Items that alter the attributes.
         :type parsers: Optional[List[str]]
-        :param alternative_index:
+        :param alternative_index: Out of a list of transcripts, this points at the index which lead to prediction.
         :type alternative_index: Optional[int]
-        :param slots:
+        :param slots: A map of slot names and :ref:`Slot<slot>`
         :type slots: Optional[Dict[str, Slot]]
         """
         # The name of the intent to be used.
