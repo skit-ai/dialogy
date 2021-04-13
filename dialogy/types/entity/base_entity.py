@@ -101,6 +101,9 @@ class BaseEntity:
 
     __properties_map = const.BASE_ENTITY_PROPS
 
+    def __attrs_post_init__(self) -> None:
+        self.entity_type = self.type
+
     @classmethod
     def validate(cls, dict_: Dict[str, Any]) -> None:
         """
