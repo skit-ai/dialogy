@@ -91,8 +91,10 @@ def merge_asr_output_plugin(
         """
         Uses the `merge_asr_output` to build the plugin.
 
-        Args:
-        - workflow (Workflow):
+        :param workflow: A workflow to apply this plugin
+        :type workflow: Workflow
+        :return: None
+        :rtype: None
         """
         merged_string = merge_asr_output(access(workflow))
         mutate(workflow, merged_string)

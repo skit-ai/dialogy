@@ -171,43 +171,71 @@
 </section>
 <section id="module-dialogy.workflow.workflow">
 <span id="dialogy-workflow-workflow-module"></span><h2>dialogy.workflow.workflow module<a class="headerlink" href="#module-dialogy.workflow.workflow" title="Permalink to this headline">¶</a></h2>
-<p id="workflow">A <cite>workflow</cite> is supposed to run tasks that can be anticipated well in advance. We are prioritizing tasks that can be performed in production
-so you may find it odd to miss <cite>train</cite> and <cite>test</cite> methods. This is a deliberate decision since that choice is upto the user and a <cite>workflow</cite>
-targets performance in a production environment, where <cite>train</cite> and <cite>test</cite> are not the expected set of tasks, rather <cite>inference</cite> is.</p>
-<ol class="arabic simple">
-<li><p>Eliminate low-confidence output.</p></li>
-<li><p>Slot-filling.</p></li>
-<li><p>Sorting items by order of confidence.</p></li>
-</ol>
-<p>_What’s slot filling?_
-&gt; The goal of Slot Filling is to identify from a running dialog, different slots, which correspond to different parameters of the user’s query. For instance, when a user queries for nearby restaurants, key slots for location and preferred food are required for a dialog system to retrieve the appropriate information. Thus, the main challenge in the slot-filling task is to extract the target entity.</p>
-<p>[Tutorial](../../tests/workflow/test_workflow.html)</p>
-<dl class="simple">
-<dt>Import Class:</dt><dd><ul class="simple">
-<li><p>Workflow</p></li>
+<p id="workflow">A <code class="code docutils literal notranslate"><span class="pre">workflow</span></code> is supposed to run tasks that can be anticipated well in advance.</p>
+<p>Here are few demo’s where you can see mock <code class="code docutils literal notranslate"><span class="pre">workflow</span></code> in action.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="dialogy.postprocess.text.slot_filler.html#rule-slot-filler"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a></p></li>
+<li><p><a class="reference internal" href="dialogy.postprocess.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a></p></li>
 </ul>
-</dd>
-</dl>
+<p>A workflow is a hollow conduit, think of a vertically hanging pipe without any medium. If you were to drop a block of …
+<cite>anything</cite>? through it, it would pass through with a thud on the ground <cite>(yes we assumed gravity)</cite>.</p>
+<section id="all-good-but-that-s-not-special-why-would-anyone-need-that">
+<h3>All good but that’s not special? Why would anyone need that?<a class="headerlink" href="#all-good-but-that-s-not-special-why-would-anyone-need-that" title="Permalink to this headline">¶</a></h3>
+<p>A workflow allows flexibility, that’s why. There is very little structure to it. We have:</p>
+<ul class="simple">
+<li><p>input</p></li>
+<li><p>output</p></li>
+<li><p>preprocessors</p></li>
+<li><p>postprocessors</p></li>
+</ul>
+<p>Apart from these, we expect at the core, an inference function with machine learning models. Which ones? A N Y ones.
+As long as you have the compute, there is no restriction. Use statistical models or DL or a bunch of conditions,
+your <a class="reference internal" href="#workflow"><span class="std std-ref">Workflow</span></a> won’t judge you.</p>
+</section>
+<section id="where-s-the-sauce">
+<h3>Where’s the sauce?<a class="headerlink" href="#where-s-the-sauce" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> concept takes care of the sauciness 🍅 of this project. Any functionality can be bundled into
+a <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> and they are portable over to foreign workflows. A <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> proxies inputs through
+an <code class="code docutils literal notranslate"><span class="pre">access</span></code> function (an argument to every <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a>) and relays output through a <code class="code docutils literal notranslate"><span class="pre">mutate</span></code>
+function (another argument for every <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a>). These two functions define interactions between many many
+(sic) <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">Plugins</span></a> without knowing the inner workings of a <a class="reference internal" href="#workflow"><span class="std std-ref">Workflow</span></a>.</p>
+<p>Take a look at <span class="xref std std-ref">DucklingParser</span>, this plugin handles inputs, manages the default <code class="code docutils literal notranslate"><span class="pre">json</span></code> output
+into neatly bundled <a class="reference internal" href="dialogy.types.entity.html#base-entity"><span class="std std-ref">BaseEntity</span></a> and other similar classes. Another plugin
+<a class="reference internal" href="dialogy.postprocess.text.slot_filler.html#rule-slot-filler"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a> takes care of slot names and the entity types that should be filled
+within.</p>
+<p>If your classifier predicts an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> with <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slots</span></a> supporting any of those entities, then
+slot-filling is not a worry.</p>
+<p>The aim of this project is to be largest supplier of plugins for SLU applications.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <a class="reference internal" href="#workflow"><span class="std std-ref">Workflow</span></a> class is not supposed to be used as it is. Ideally it should have been an
+abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden
+to offer flexibility of use.</p>
+</div>
 <dl class="py class">
 <dt id="dialogy.workflow.workflow.Workflow">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.workflow.workflow.</span></code><code class="sig-name descname"><span class="pre">Workflow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../source_bak/dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../source_bak/dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.workflow.workflow.</span></code><code class="sig-name descname"><span class="pre">Workflow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocessors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This is a light but fairly flexible workflow for building a machine learning pipeline.</p>
 <p>Requirements
 - A list of pre-processing functions.
 - A list of post-processing functions.</p>
-<p>_Why are some methods raising NotImplementedError?_
-&gt; This class is not supposed to be used as it is. Ideally this should have been an abstract class,
-there are some design considerations which make that a bad choice. We want methods to be overridden
-to offer flexibility of use.</p>
 <p>Abstract classes put constraints on method signatures which isn’t desired because a couple of methods
 here could use more arguments, say, <cite>load_model()</cite> requires <cite>path</cite> and <cite>version</cite> and in some other cases
 <cite>path</cite>, <cite>version</cite> and <cite>language</cite>.</p>
-<p>All the attributes of the class that are meant for private use, have <cite>__</cite> preceeding their names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>preprocessors</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>PluginFn</em><em>]</em><em>]</em>) – A list of functions to execute before inference.</p></li>
+<li><p><strong>postprocessors</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>PluginFn</em><em>]</em><em>]</em>) – A list of functions to execute after inference.</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – log level shifts to debug if True.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.flush">
 <code class="sig-name descname"><span class="pre">flush</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.flush" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset workflow state.</p>
+<dd><p>Reset <code class="code docutils literal notranslate"><span class="pre">workflow.input</span></code> and <code class="code docutils literal notranslate"><span class="pre">workflow.output</span></code>.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.inference">
@@ -256,7 +284,7 @@ a stronger check.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processor_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../source_bak/dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processor_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update input, output attributes.</p>
 <p>We iterate through pre/post processing functions and update the input and
 output attributes of the class. It is expected that pre-processing functions
@@ -270,6 +298,7 @@ processors (<cite>List</cite>): The list of preprocess or postprocess functions.
 </dl>
 </dd></dl>
 </dd></dl>
+</section>
 </section>
 <section id="module-dialogy.workflow">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.workflow" title="Permalink to this headline">¶</a></h2>
@@ -324,7 +353,11 @@ processors (<cite>List</cite>): The list of preprocess or postprocess functions.
             <ul>
 <li><a class="reference internal" href="#">dialogy.workflow package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dialogy.workflow.workflow">dialogy.workflow.workflow module</a></li>
+<li><a class="reference internal" href="#module-dialogy.workflow.workflow">dialogy.workflow.workflow module</a><ul>
+<li><a class="reference internal" href="#all-good-but-that-s-not-special-why-would-anyone-need-that">All good but that’s not special? Why would anyone need that?</a></li>
+<li><a class="reference internal" href="#where-s-the-sauce">Where’s the sauce?</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-dialogy.workflow">Module contents</a></li>
 </ul>
 </li>

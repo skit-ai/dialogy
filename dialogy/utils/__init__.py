@@ -68,18 +68,13 @@ def validate_type(obj: Any, obj_type: Union[type, Tuple[type]]) -> None:
 
         The check is by exclusion of types. Wraps exception raising logic.
 
-        Args:
-            obj (Any): The object available for type assertion.
-            obj_type (Union[type, Tuple[type]]): This must match the type of the object.
-
-        Raises:
-            TypeError: If the type `obj_type` doesn't match the type of `obj`.
-        :param obj:
-        :type obj:
-        :param obj_type:
-        :type obj_type:
+        :param obj: An object available for type assertion
+        :type obj: Any
+        :param obj_type: This must match the type of the object.
+        :type obj_type: (Union[type, Tuple[type]])
         :return:
         :rtype:
+        :raises TypeError: If the type `obj_type` doesn't match the type of `obj`.
     """
     if not isinstance(obj, obj_type):
         raise TypeError(f"{obj} should be a {obj_type}")

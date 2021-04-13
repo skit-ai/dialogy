@@ -114,7 +114,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../source/dialogy.html">dialogy package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../source/dialogy.cli.html">dialogy.cli package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../source/dialogy.constants.html">dialogy.constants package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../source/dialogy.errors.html">dialogy.errors package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../source/dialogy.parser.html">dialogy.parser package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../../../source/dialogy.parser.text.html">dialogy.parser.text package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../../../source/dialogy.parser.text.entity.html">dialogy.parser.text.entity package</a></li>
@@ -216,7 +215,7 @@
             <span class="s2">"Expected aggregate_fn to be a callable that"</span>
             <span class="sa">f</span><span class="s2">" operates on a list of floats. Found </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">aggregate_fn</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead."</span>
         <span class="p">)</span>
-    <span class="n">signal_groups</span> <span class="o">=</span> <span class="n">py_</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">signal</span><span class="p">:</span> <span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">signal_groups</span> <span class="o">=</span> <span class="n">py_</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">signal</span><span class="p">:</span> <span class="n">signal</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">NAME</span><span class="p">])</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"signal groups:"</span><span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">signal_groups</span><span class="p">)</span>
 
@@ -232,7 +231,7 @@
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">signal_name</span><span class="p">,</span> <span class="n">signals</span> <span class="ow">in</span> <span class="n">signal_groups</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">],</span>
-        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">signal</span><span class="p">:</span> <span class="n">signal</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span>
+        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">signal</span><span class="p">:</span> <span class="n">signal</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">],</span>
         <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -261,6 +260,44 @@
 <span class="sd">    Ideal design should provide the signals, their strengths (confidence) and</span>
 <span class="sd">    signal boosters, any contextual information that implies a weak signal has</span>
 <span class="sd">    more weight than its counterparts.</span>
+
+<span class="sd">    .. warning:: Use this with caution, this is not production ready yet.</span>
+
+<span class="sd">    .. ipython:: python</span>
+
+<span class="sd">        from dialogy.postprocess.text.voting.intent_voting import VotePlugin</span>
+<span class="sd">        from dialogy.workflow import Workflow</span>
+<span class="sd">        from dialogy.types import Intent</span>
+
+<span class="sd">        # Let's say we had a normalized set of alternatives that look like:</span>
+<span class="sd">        transcripts = [</span>
+<span class="sd">            "yes",</span>
+<span class="sd">            "yet",</span>
+<span class="sd">            "yep",</span>
+<span class="sd">            "ye",</span>
+<span class="sd">            "&lt;UNK&gt;", # ASR's way of being under-confident about the token</span>
+<span class="sd">            "no" # expected anomalies in SLU.</span>
+<span class="sd">        ]</span>
+
+<span class="sd">        # We have noticed that concatenation of all the transcripts leads to a situation</span>
+<span class="sd">        # where a model can't pick signals since there is only one, the one built by</span>
+<span class="sd">        # concatenation of transcripts. So let's mock the intents for this and continue.</span>
+
+<span class="sd">        intents = [Intent(name="affirmative", score=0.8), Intent(name="affirmative", score=0.8),</span>
+<span class="sd">                    Intent(name="affirmative", score=0.8), Intent(name="affirmative", score=0.8),</span>
+<span class="sd">                    Intent(name="_oos_", score=0.8), Intent(name="negative", score=0.9)]</span>
+<span class="sd">        # This situation simulates a single very confident prediction, while the overall group representation</span>
+<span class="sd">        # paints a different picture.</span>
+
+<span class="sd">        # We need to define a function to let the plugin modify the workflow state.</span>
+
+<span class="sd">        def update_intent(w, intent):</span>
+<span class="sd">            w.output[0] = intent</span>
+<span class="sd">        vote_plugin = VotePlugin(access=lambda w: (w.output, len(w.input[0])), mutate=update_intent, debug=True)()</span>
+<span class="sd">        workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])</span>
+<span class="sd">        workflow.output = intents</span>
+<span class="sd">        workflow.run(input_=(transcripts,))</span>
+
 
 <span class="sd">    :param access: A function that expects workflow as an argument and returns a Tuple.</span>
 <span class="sd">        The Tuple contains: :code:`intents`, :code:`trials`. Here,</span>
@@ -318,7 +355,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">fallback_intent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_fn</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">aggregate_fn</span>
 
-    <span class="nd">@debug_logs</span>
+<div class="viewcode-block" id="VotePlugin.vote_signal"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.voting.html#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal">[docs]</a>    <span class="nd">@debug_logs</span>
     <span class="k">def</span> <span class="nf">vote_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">],</span> <span class="n">trials</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intent</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Reduce a list of intents.</span>
@@ -351,21 +388,30 @@
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Intents with adjusted signal strength: "</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">intent_signals</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">representation</span> <span class="o">&gt;</span> <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">]:</span>  <span class="c1"># type: ignore</span>
-            <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">representative_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">representation</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">]</span> <span class="o">-</span> <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">])</span>  <span class="c1"># type: ignore</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"representative signal: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">representative_signal</span><span class="p">)</span>
 
         <span class="n">consensus_achieved</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">-</span> <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
             <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">consensus</span>
         <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">"consensus achieved: </span><span class="si">%s</span><span class="s2"> | (</span><span class="si">%s</span><span class="s2"> - </span><span class="si">%s</span><span class="s2">) &gt; </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">consensus_achieved</span><span class="p">,</span>
+            <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span>
+            <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">consensus</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="n">strong_signal</span> <span class="o">=</span> <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>  <span class="c1"># type: ignore</span>
-        <span class="k">if</span> <span class="n">consensus_achieved</span> <span class="ow">and</span> <span class="n">strong_signal</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"strong signal: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">strong_signal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">consensus_achieved</span> <span class="ow">or</span> <span class="n">representative_signal</span><span class="p">)</span> <span class="ow">and</span> <span class="n">strong_signal</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">NAME</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
                 <span class="n">score</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VotePlugin.plugin"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.voting.html#dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin">[docs]</a>    <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>

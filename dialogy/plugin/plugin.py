@@ -67,7 +67,7 @@ class Plugin:
                 with open(corpus_file, "r") as handle:
                     self.corpus = handle.read().splitlines()
 
-    We ship a few :ref:`Plugin <plugin>` with Dialogy, namely:
+    We ship a few :ref:`Plugins <plugin>` with Dialogy, namely:
 
     1. :ref:`DucklingParser <duckling_parser>` (pre-processing)
     2. :ref:`merge_asr_output_plugin <merge_asr_output_plugin>` (pre-processing)

@@ -181,10 +181,21 @@
 </dl>
 <dl class="py function">
 <dt id="dialogy.utils.logger.change_log_level">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.logger.</span></code><code class="sig-name descname"><span class="pre">change_log_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils/logger.html#change_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.logger.change_log_level" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.logger.</span></code><code class="sig-name descname"><span class="pre">change_log_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils/logger.html#change_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.logger.change_log_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change log level throughout the project.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>level (str): One of: DEBUG, INFO, WARNING, ERROR, CRITICAL</p>
+<dt>Args:</dt><dd><p>level (str):</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>level</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – One of: DEBUG, INFO, WARNING, ERROR, CRITICAL</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -307,26 +318,26 @@ Missing properties will lead to KeyErrors.</p>
 <blockquote>
 <div><p>This is syntatic sugar for instance type checks.</p>
 <p>The check is by exclusion of types. Wraps exception raising logic.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>obj (Any): The object available for type assertion.
-obj_type (Union[type, Tuple[type]]): This must match the type of the object.</p>
-</dd>
-<dt>Raises:</dt><dd><p>TypeError: If the type <cite>obj_type</cite> doesn’t match the type of <cite>obj</cite>.</p>
-</dd>
-</dl>
 <dl class="field-list simple">
 <dt class="field-odd">param obj</dt>
-<dd class="field-odd"><p></p></dd>
+<dd class="field-odd"><p>An object available for type assertion</p>
+</dd>
 <dt class="field-even">type obj</dt>
-<dd class="field-even"><p></p></dd>
+<dd class="field-even"><p>Any</p>
+</dd>
 <dt class="field-odd">param obj_type</dt>
-<dd class="field-odd"><p></p></dd>
+<dd class="field-odd"><p>This must match the type of the object.</p>
+</dd>
 <dt class="field-even">type obj_type</dt>
-<dd class="field-even"><p></p></dd>
+<dd class="field-even"><p>(Union[type, Tuple[type]])</p>
+</dd>
 <dt class="field-odd">return</dt>
 <dd class="field-odd"><p></p></dd>
 <dt class="field-even">rtype</dt>
 <dd class="field-even"><p></p></dd>
+<dt class="field-odd">raises TypeError</dt>
+<dd class="field-odd"><p>If the type <cite>obj_type</cite> doesn’t match the type of <cite>obj</cite>.</p>
+</dd>
 </dl>
 </div></blockquote>
 </dd></dl>

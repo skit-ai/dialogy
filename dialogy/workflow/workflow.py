@@ -1,21 +1,52 @@
 """
 .. _workflow:
 
-A `workflow` is supposed to run tasks that can be anticipated well in advance. We are prioritizing tasks that can be performed in production
-so you may find it odd to miss `train` and `test` methods. This is a deliberate decision since that choice is upto the user and a `workflow`
-targets performance in a production environment, where `train` and `test` are not the expected set of tasks, rather `inference` is.
+A :code:`workflow` is supposed to run tasks that can be anticipated well in advance.
 
-1. Eliminate low-confidence output.
-2. Slot-filling.
-3. Sorting items by order of confidence.
+Here are few demo's where you can see mock :code:`workflow` in action.
 
-_What's slot filling?_
-> The goal of Slot Filling is to identify from a running dialog, different slots, which correspond to different parameters of the user’s query. For instance, when a user queries for nearby restaurants, key slots for location and preferred food are required for a dialog system to retrieve the appropriate information. Thus, the main challenge in the slot-filling task is to extract the target entity.
+- :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>`
+- :ref:`VotePlugin<vote_plugin>`
 
-[Tutorial](../../tests/workflow/test_workflow.html)
+A workflow is a hollow conduit, think of a vertically hanging pipe without any medium. If you were to drop a block of ...
+`anything`? through it, it would pass through with a thud on the ground `(yes we assumed gravity)`.
 
-Import Class:
-    - Workflow
+All good but that's not special? Why would anyone need that?
+----
+
+A workflow allows flexibility, that's why. There is very little structure to it. We have:
+
+- input
+- output
+- preprocessors
+- postprocessors
+
+Apart from these, we expect at the core, an inference function with machine learning models. Which ones? A N Y ones.
+As long as you have the compute, there is no restriction. Use statistical models or DL or a bunch of conditions,
+your :ref:`Workflow <Workflow>` won't judge you.
+
+Where's the sauce?
+----
+
+The :ref:`Plugin<plugin>` concept takes care of the sauciness 🍅 of this project. Any functionality can be bundled into
+a :ref:`Plugin<plugin>` and they are portable over to foreign workflows. A :ref:`Plugin<plugin>` proxies inputs through
+an :code:`access` function (an argument to every :ref:`Plugin<plugin>`) and relays output through a :code:`mutate`
+function (another argument for every :ref:`Plugin<plugin>`). These two functions define interactions between many many
+(sic) :ref:`Plugins<plugin>` without knowing the inner workings of a :ref:`Workflow <workflow>`.
+
+Take a look at :ref:`DucklingParser <Duckling>`, this plugin handles inputs, manages the default :code:`json` output
+into neatly bundled :ref:`BaseEntity <base_entity>` and other similar classes. Another plugin
+:ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>` takes care of slot names and the entity types that should be filled
+within.
+
+If your classifier predicts an :ref:`Intent<intent>` with :ref:`Slots<slot>` supporting any of those entities, then
+slot-filling is not a worry.
+
+The aim of this project is to be largest supplier of plugins for SLU applications.
+
+.. warning:: The :ref:`Workflow<workflow>` class is not supposed to be used as it is. Ideally it should have been an
+    abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden
+    to offer flexibility of use.
 """
 from pprint import pformat
 from typing import Any, Callable, List, Optional
@@ -34,19 +65,18 @@ class Workflow:
     - A list of pre-processing functions.
     - A list of post-processing functions.
 
-    _Why are some methods raising NotImplementedError?_
-    > This class is not supposed to be used as it is. Ideally this should have been an abstract class,
-    there are some design considerations which make that a bad choice. We want methods to be overridden
-    to offer flexibility of use.
-
     Abstract classes put constraints on method signatures which isn't desired because a couple of methods
     here could use more arguments, say, `load_model()` requires `path` and `version` and in some other cases
     `path`, `version` and `language`.
 
-    All the attributes of the class that are meant for private use, have `__` preceeding their names.
+    :param preprocessors: A list of functions to execute before inference.
+    :type preprocessors: Optional[List[PluginFn]]
+    :param postprocessors: A list of functions to execute after inference.
+    :type postprocessors: Optional[List[PluginFn]]
+    :param debug: log level shifts to debug if True.
+    :type debug: bool
     """
 
-    # == __init__ ==
     def __init__(
         self,
         preprocessors: Optional[List[PluginFn]] = None,
@@ -54,41 +84,9 @@ class Workflow:
         debug: bool = False,
     ) -> None:
         """
-        Setup a Workflow.
-
-        Setup a list of functions to execute before and after `.inference(...)` call.
-
-        Attributes:
-
-        - input (`Any`): The input to a workflow. This is supposed to be flexible.
-        - output (`Any`): The outputs of a workflow. This is supposed to be flexible.
-        - __preprocessors (`List[PluginFn]`): A list of functions to execute before inference.
-        - __postprocessors (`List[PluginFn]`): A list of functions to execute after inference.
-
-        Methods:
-
-        - load_model: Load models
-        - update: Update input and output attributes. This is the effect of running either processors.
-        - preprocess: Update input attributes. This is the effect of running pre-processors.
-        - postprocess: Update output attributes. This is the effect of running post-processors.
-        - inference: Model related functionality.
-        - run: Wraps over pre/post processing and inference.
-        - __log: Log the changes in the input/output as pre/post processing functions execute. REQUIRES log-level set to `DEBUG`.
-
-        Args:
-
-        - preprocessors (`Optional[List[PluginFn]]`): A list of functions to execute before inference. Defaults to None.
-        - postprocessors (`Optional[List[PluginFn]]`): A list of functions to execute after inference. Defaults to None.
-        - debug (Optional[`bool`]): Changes to input/output are logged if log-level is set to `DEBUG`. Defaults to False.
+        constructor.
         """
-        # **input**
-        #
-        # Initially `None`, expects value from the `.run(...)` method.
         self.input: Any = None
-
-        # **output**
-        #
-        # Initially `None`. Final value depends on the plugins in the workflow.
         self.output: Any = None
 
         if not isinstance(preprocessors, list):
@@ -213,7 +211,7 @@ class Workflow:
 
     def flush(self) -> None:
         """
-        Reset workflow state.
+        Reset :code:`workflow.input` and :code:`workflow.output`.
         """
         self.input = None
         self.output = None

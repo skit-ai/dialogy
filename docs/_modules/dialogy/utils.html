@@ -175,7 +175,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 
-<div class="viewcode-block" id="traverse_dict"><a class="viewcode-back" href="../../source_bak/dialogy.utils.html#dialogy.utils.traverse_dict">[docs]</a><span class="k">def</span> <span class="nf">traverse_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">properties</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="traverse_dict"><a class="viewcode-back" href="../../source/dialogy.utils.html#dialogy.utils.traverse_dict">[docs]</a><span class="k">def</span> <span class="nf">traverse_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">properties</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">"""</span>
 <span class="sd">    Traverse a dictionary for a given list of properties.</span>
 
@@ -226,7 +226,7 @@
         <span class="p">)</span> <span class="kn">from</span> <span class="nn">type_error</span></div>
 
 
-<div class="viewcode-block" id="validate_type"><a class="viewcode-back" href="../../source_bak/dialogy.utils.html#dialogy.utils.validate_type">[docs]</a><span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="validate_type"><a class="viewcode-back" href="../../source/dialogy.utils.html#dialogy.utils.validate_type">[docs]</a><span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">"""</span>
 <span class="sd">    Raise TypeError on object type mismatch.</span>
 
@@ -234,18 +234,13 @@
 
 <span class="sd">        The check is by exclusion of types. Wraps exception raising logic.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            obj (Any): The object available for type assertion.</span>
-<span class="sd">            obj_type (Union[type, Tuple[type]]): This must match the type of the object.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If the type `obj_type` doesn't match the type of `obj`.</span>
-<span class="sd">        :param obj:</span>
-<span class="sd">        :type obj:</span>
-<span class="sd">        :param obj_type:</span>
-<span class="sd">        :type obj_type:</span>
+<span class="sd">        :param obj: An object available for type assertion</span>
+<span class="sd">        :type obj: Any</span>
+<span class="sd">        :param obj_type: This must match the type of the object.</span>
+<span class="sd">        :type obj_type: (Union[type, Tuple[type]])</span>
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:</span>
+<span class="sd">        :raises TypeError: If the type `obj_type` doesn't match the type of `obj`.</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> should be a </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>

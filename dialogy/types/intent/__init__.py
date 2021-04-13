@@ -59,9 +59,14 @@ class Intent:
 
     def apply(self, rules: Rule) -> "Intent":
         """
-        Create slots within the `slots` attribute.
+        Create slots using :ref:`rules`.
 
         An intent can hold different entities within associated slot-types.
+
+        :param rules: A configuration for slot names and entity types associated with this instance of Intent.
+        :type rules: Rule
+        :return: The calling Intent is modified to have :ref:`Slots <slot>`.
+        :rtype: Intent
         """
         rule = rules.get(self.name)
         if not rule:
@@ -93,22 +98,33 @@ class Intent:
 
         This helps us identify the progression in which the postprocessing functions
         were applied to an intent. This helps in debugging and has no production utility
+
+        :param postprocessor: The callable that modifies this instance. Preferably should be a plugin.
+        :type postprocessor: PluginFn
+        :return: Calling instance with modifications to :code:`parsers` attribute.
+        :rtype: Intent
         """
         self.parsers.append(postprocessor.__name__)
         return self
 
     def fill_slot(self, entity: BaseEntity, fill_multiple: bool = False) -> "Intent":
         """
-        Update `slots[slot_type].values` with a single entity.
+        Update :code:`slots[slot_type].values` with a single entity.
 
         We will explore the possibility of sharing/understanding the meaning of multiple entities
         in the same slot type.
 
         There maybe cases where we want to fill multiple entities of the same type within a slot.
-        In these cases fill_multiple should be set to True.
+        In these cases :code:`fill_multiple` should be set to True.
 
-        Args:
-            entity (BaseEntity): [entities](../../docs/entity/__init__.html)
+        The :ref:`RuleBasedSlotFillerPlugin <rule_slot_filler>` has a detailed demo for this.
+
+        :param entity: The entity to be checked for support in the calling intent's slots.
+        :type entity: BaseEntity
+        :param fill_multiple:
+        :type fill_multiple: bool
+        :return: The calling Intent with modifications to its slots.
+        :rtype: Intent
         """
         log.debug("Looping through slot_names for each entity.")
         log.debug("intent slots: %s", self.slots)
@@ -146,6 +162,13 @@ class Intent:
     def json(self) -> Dict[str, Any]:
         """
         Convert the object to a dictionary.
+
+        .. ipython:: python
+
+            from dialogy.types.intent import Intent
+
+            intent = Intent(name="special", score=0.8)
+            intent.json()
         """
         return {
             "name": self.name,

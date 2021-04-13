@@ -188,17 +188,17 @@
 <dt id="dialogy.plugin.plugin.Plugin">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugin.plugin.</span></code><code class="sig-name descname"><span class="pre">Plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugin/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugin.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A <a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> instance interacts with a <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>. A <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> expects
+<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> instance interacts with a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>. A <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> expects
 a set of plugins to be inserted into different stages: pre and post processing.
-A plugin can be conveniently written being unaware of the structure of any <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>
+A plugin can be conveniently written being unaware of the structure of any <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>
 by expecting <cite>access</cite> and <cite>mutate</cite> functions.</p>
 <p><strong>Dynamic Inputs</strong></p>
-<p>An <code class="code docutils literal notranslate"><span class="pre">access</span></code> method helps a <a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> to require dynamic inputs from the <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>
-while a <code class="code docutils literal notranslate"><span class="pre">mutate</span></code> method offers a <a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> to update the processed output and place them as per
-expectations of the <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> implementer’s design.</p>
+<p>An <code class="code docutils literal notranslate"><span class="pre">access</span></code> method helps a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> to require dynamic inputs from the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>
+while a <code class="code docutils literal notranslate"><span class="pre">mutate</span></code> method offers a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> to update the processed output and place them as per
+expectations of the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> implementer’s design.</p>
 <p><strong>Static Inputs</strong></p>
 <p>In case there are static inputs that won’t change at runtime, these can be pre-loaded into the
-<a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> by extending it.</p>
+<a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> by extending it.</p>
 <p>An example for this is:</p>
 <div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -241,27 +241,27 @@ expectations of the <a class="reference internal" href="../source_bak/dialogy.wo
 <span class="hll">            <span class="bp">self</span><span class="o">.</span><span class="n">corpus</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
 </span></pre></div>
 </td></tr></table></div></div>
-<p>We ship a few <a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> with Dialogy, namely:</p>
+<p>We ship a few <a class="reference internal" href="#plugin"><span class="std std-ref">Plugins</span></a> with Dialogy, namely:</p>
 <ol class="arabic simple">
-<li><p><a class="reference internal" href="../source_bak/dialogy.parser.text.entity.html#duckling-parser"><span class="std std-ref">DucklingParser</span></a> (pre-processing)</p></li>
-<li><p><a class="reference internal" href="../source_bak/dialogy.preprocess.text.html#merge-asr-output-plugin"><span class="std std-ref">merge_asr_output_plugin</span></a> (pre-processing)</p></li>
-<li><p><a class="reference internal" href="../source_bak/dialogy.postprocess.text.slot_filler.html#rule-slot-filler"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a> (post-processing)</p></li>
-<li><p><a class="reference internal" href="../source_bak/dialogy.postprocess.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a> (post-processing)</p></li>
+<li><p><a class="reference internal" href="dialogy.parser.text.entity.html#duckling-parser"><span class="std std-ref">DucklingParser</span></a> (pre-processing)</p></li>
+<li><p><a class="reference internal" href="dialogy.preprocess.text.html#merge-asr-output-plugin"><span class="std std-ref">merge_asr_output_plugin</span></a> (pre-processing)</p></li>
+<li><p><a class="reference internal" href="dialogy.postprocess.text.slot_filler.html#rule-slot-filler"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a> (post-processing)</p></li>
+<li><p><a class="reference internal" href="dialogy.postprocess.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a> (post-processing)</p></li>
 </ol>
 </dd></dl>
 </section>
 <section id="module-dialogy.plugin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugin" title="Permalink to this headline">¶</a></h2>
-<p>A <a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> is an abstraction to handle third-party features with custom <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> pipelines.</p>
-<p>We offer a <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> that provides a simple API exposed via its <code class="code docutils literal notranslate"><span class="pre">run(input_=X)</span></code> method.
-The input has no restrictions, the <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> will apply a set of pre-processing functions and
+<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is an abstraction to handle third-party features with custom <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> pipelines.</p>
+<p>We offer a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> that provides a simple API exposed via its <code class="code docutils literal notranslate"><span class="pre">run(input_=X)</span></code> method.
+The input has no restrictions, the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> will apply a set of pre-processing functions and
 post-processing functions.</p>
-<p>The challenge is <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> and <a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> are not built usually by the same people.
-A tailor-made solution for a <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> hampers the portability of the solution. These can be inserted
+<p>The challenge is <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> and <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> are not built usually by the same people.
+A tailor-made solution for a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> hampers the portability of the solution. These can be inserted
 in various ways, like methods, or external functions even. The hope here is to encourage better abstraction while
 writing plugins. This will help improvement, addition of existing features by keeping them in their separate, isolated,
 context-free boxes.</p>
-<p>An ideal <a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a>  must therefore not assume a <a class="reference internal" href="../source_bak/dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> structure. It must use
+<p>An ideal <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a>  must therefore not assume a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> structure. It must use
 abstractions to specify requirements and expect these to be met for safe usage.</p>
 </section>
 </section>

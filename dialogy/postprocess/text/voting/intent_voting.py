@@ -49,7 +49,7 @@ def adjust_signal_strength(
             "Expected aggregate_fn to be a callable that"
             f" operates on a list of floats. Found {type(aggregate_fn)} instead."
         )
-    signal_groups = py_.group_by(signals, lambda signal: signal[0])
+    signal_groups = py_.group_by(signals, lambda signal: signal[const.SIGNAL.NAME])
     log.debug("signal groups:")
     log.debug(signal_groups)
 
@@ -65,7 +65,7 @@ def adjust_signal_strength(
             )
             for signal_name, signals in signal_groups.items()
         ],
-        key=lambda signal: signal[const.SIGNAL.STRENGTH],
+        key=lambda signal: signal[const.SIGNAL.REPRESENTATION],
         reverse=True,
     )
 
@@ -94,6 +94,44 @@ class VotePlugin(Plugin):
     Ideal design should provide the signals, their strengths (confidence) and
     signal boosters, any contextual information that implies a weak signal has
     more weight than its counterparts.
+
+    .. warning:: Use this with caution, this is not production ready yet.
+
+    .. ipython:: python
+
+        from dialogy.postprocess.text.voting.intent_voting import VotePlugin
+        from dialogy.workflow import Workflow
+        from dialogy.types import Intent
+
+        # Let's say we had a normalized set of alternatives that look like:
+        transcripts = [
+            "yes",
+            "yet",
+            "yep",
+            "ye",
+            "<UNK>", # ASR's way of being under-confident about the token
+            "no" # expected anomalies in SLU.
+        ]
+
+        # We have noticed that concatenation of all the transcripts leads to a situation
+        # where a model can't pick signals since there is only one, the one built by
+        # concatenation of transcripts. So let's mock the intents for this and continue.
+
+        intents = [Intent(name="affirmative", score=0.8), Intent(name="affirmative", score=0.8),
+                    Intent(name="affirmative", score=0.8), Intent(name="affirmative", score=0.8),
+                    Intent(name="_oos_", score=0.8), Intent(name="negative", score=0.9)]
+        # This situation simulates a single very confident prediction, while the overall group representation
+        # paints a different picture.
+
+        # We need to define a function to let the plugin modify the workflow state.
+
+        def update_intent(w, intent):
+            w.output[0] = intent
+        vote_plugin = VotePlugin(access=lambda w: (w.output, len(w.input[0])), mutate=update_intent, debug=True)()
+        workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+        workflow.output = intents
+        workflow.run(input_=(transcripts,))
+
 
     :param access: A function that expects workflow as an argument and returns a Tuple.
         The Tuple contains: :code:`intents`, :code:`trials`. Here,
@@ -184,16 +222,25 @@ class VotePlugin(Plugin):
         log.debug("Intents with adjusted signal strength: ")
         log.debug(intent_signals)
 
-        if self.representation > main_intent[const.SIGNAL.REPRESENTATION]:  # type: ignore
-            return Intent(name=self.fallback_intent, score=1)
+        representative_signal = self.representation <= (main_intent[const.SIGNAL.REPRESENTATION] - conflict_intent[const.SIGNAL.REPRESENTATION])  # type: ignore
+        log.debug("representative signal: %s", representative_signal)
 
         consensus_achieved = (
             main_intent[const.SIGNAL.STRENGTH] - conflict_intent[const.SIGNAL.STRENGTH]  # type: ignore
             > self.consensus
         )
+        log.debug(
+            "consensus achieved: %s | (%s - %s) > %s",
+            consensus_achieved,
+            main_intent[const.SIGNAL.STRENGTH],
+            conflict_intent[const.SIGNAL.STRENGTH],
+            self.consensus,
+        )
 
         strong_signal = main_intent[const.SIGNAL.STRENGTH] > self.threshold  # type: ignore
-        if consensus_achieved and strong_signal:
+        log.debug("strong signal: %s", strong_signal)
+
+        if (consensus_achieved or representative_signal) and strong_signal:
             return Intent(
                 name=main_intent[const.SIGNAL.NAME],  # type: ignore
                 score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore

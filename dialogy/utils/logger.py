@@ -8,7 +8,7 @@ Import functions:
 """
 import logging
 from functools import wraps
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 import coloredlogs
 
@@ -17,12 +17,17 @@ fmt = "%(asctime)s:%(msecs)03d %(name)s [%(filename)s:%(lineno)s] %(levelname)s 
 coloredlogs.install(level=logging.ERROR, logger=log, fmt=fmt)
 
 
-def change_log_level(level: str) -> None:
+def change_log_level(level: Union[str, int]) -> None:
     """
     Change log level throughout the project.
 
     Args:
-        level (str): One of: DEBUG, INFO, WARNING, ERROR, CRITICAL
+        level (str):
+
+    :param level: One of: DEBUG, INFO, WARNING, ERROR, CRITICAL
+    :type level: Union[str, int]
+    :return: None
+    :rtype: None
     """
     log.setLevel(level)
     for handler in log.handlers:

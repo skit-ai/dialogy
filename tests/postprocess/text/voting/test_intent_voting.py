@@ -120,7 +120,8 @@ def test_representation_oos():
     intents = [
         Intent(name="a", score=0.99),
         Intent(name="b", score=0.1),
-        Intent(name="c", score=0.31),
+        Intent(name="b", score=0.4),
+        Intent(name="b", score=0.31),
         Intent(name="d", score=0.44),
     ]
 
