@@ -115,6 +115,7 @@ class Intent:
         for slot_name, slot in self.slots.items():
             log.debug("slot_name: %s", slot_name)
             log.debug("slot type: %s", slot.types)
+            log.debug("entity type: %s", entity.type)
             if entity.type in slot.types:
                 if fill_multiple:
                     self.slots[slot_name].add(entity)
@@ -155,4 +156,4 @@ class Intent:
         }
 
     def __repr__(self) -> str:
-        return f"Intent(name={self.name}, score={self.score}, slots={self.slots}"
+        return f"Intent(name={self.name}, score={self.score}, slots={self.slots})"
