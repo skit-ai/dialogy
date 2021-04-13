@@ -30,7 +30,8 @@ pycco = "^0.6.0"
 watchdog = "^1.0.2"
 isort = "^5.7.0"
 sphinx = "^3.5.3"
-sphinx-press-theme = "^0.5.1"
+furo = "^2021.4.11-beta.34"
+sphinx-copybutton = "^0.3.1"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
