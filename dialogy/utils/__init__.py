@@ -52,11 +52,11 @@ def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:
         return reduce(lambda o, k: o[k], properties, obj)
     except KeyError as key_error:
         raise KeyError(
-            f"Missing property {key_error} in {obj}. Check the types."
+            f"Missing property {key_error} in {obj}. Check the types. Failed for path {properties}"
         ) from key_error
     except TypeError as type_error:
         raise TypeError(
-            f"The properties aren't describing path within a dictionary. | {type_error}"
+            f"The properties aren't describing path within a dictionary. | {type_error}. Failed for path {properties}"
         ) from type_error
 
 
