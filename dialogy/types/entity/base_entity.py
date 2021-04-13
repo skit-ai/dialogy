@@ -16,8 +16,8 @@ from typing import Any, Dict, List, Optional
 import attr
 
 from dialogy import constants as const
-from dialogy.types.entity.utils import traverse_dict, validate_type
 from dialogy.types.plugin import PluginFn
+from dialogy.utils import traverse_dict, validate_type
 
 
 # = BaseEntity =
