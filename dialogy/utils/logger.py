@@ -7,6 +7,7 @@ Import functions:
     - change_log_level
 """
 import logging
+from functools import wraps
 from typing import Any, Callable
 
 import coloredlogs
@@ -53,6 +54,7 @@ def debug_logs(func: Callable[..., Any], arg_name="debug", attr_name="debug"):
     :rtype: Callable[..., Any]
     """
 
+    @wraps(func)
     def restrict_log_level(*args, **kwargs) -> Any:
         debug_arg = kwargs.get(arg_name, False)
         is_object = args and isinstance(args[0], object)
