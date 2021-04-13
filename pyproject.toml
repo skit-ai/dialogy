@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dialogy"
-version = "0.4.5"
+version = "0.5.0"
 description = "Language understanding for human dialog."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 
@@ -38,5 +38,3 @@ dialogy = "dialogy.cli:main"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
-
-
