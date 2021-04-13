@@ -318,3 +318,15 @@ def test_entity_grain_to_type() -> None:
     )
     assert entity.entity_type == "hour"
     assert entity.type == "hour"
+
+
+def test_both_entity_type_attributes_match() -> None:
+    body = "4 things"
+    value = {"value": 4}
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="base",
+        values=[value],
+    )
+    assert entity.type == entity.entity_type
