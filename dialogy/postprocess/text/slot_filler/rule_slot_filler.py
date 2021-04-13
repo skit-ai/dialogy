@@ -62,6 +62,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         fill_multiple: bool = False,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
+        debug: bool = False,
     ) -> None:
         """
         constructor
@@ -75,7 +76,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # ```
         # rules = {"intent": {"slot_name": "entity_type"}}
         # ```
-        super().__init__(access=access, mutate=mutate)
+        super().__init__(access=access, mutate=mutate, debug=debug)
         self.rules: Rule = rules or {}
 
         # fill_multiple

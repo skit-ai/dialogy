@@ -144,7 +144,7 @@ class VotePlugin(Plugin):
         """
         constructor
         """
-        super().__init__(access, mutate)
+        super().__init__(access=access, mutate=mutate, debug=debug)
         self.threshold: float = threshold
         self.consensus: float = consensus
         self.representation: float = representation

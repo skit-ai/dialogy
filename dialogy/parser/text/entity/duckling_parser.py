@@ -114,11 +114,12 @@ class DucklingParser(Plugin):
         url: str = "http://0.0.0.0:8000/parse",
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
+        debug: bool = False,
     ) -> None:
         """
         constructor
         """
-        super().__init__(access=access, mutate=mutate)
+        super().__init__(access=access, mutate=mutate, debug=debug)
         self.dimensions = dimensions
         self.locale = locale
         self.timezone = timezone
