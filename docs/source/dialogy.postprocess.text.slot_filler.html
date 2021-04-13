@@ -115,7 +115,6 @@
 <li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.html">dialogy package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dialogy.cli.html">dialogy.cli package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.constants.html">dialogy.constants package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.errors.html">dialogy.errors package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.parser.html">dialogy.parser package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4 has-children"><a class="reference internal" href="dialogy.parser.text.html">dialogy.parser.text package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="dialogy.parser.text.entity.html">dialogy.parser.text.entity package</a></li>
@@ -172,14 +171,14 @@
 </section>
 <section id="module-dialogy.postprocess.text.slot_filler.rule_slot_filler">
 <span id="dialogy-postprocess-text-slot-filler-rule-slot-filler-module"></span><h2>dialogy.postprocess.text.slot_filler.rule_slot_filler module<a class="headerlink" href="#module-dialogy.postprocess.text.slot_filler.rule_slot_filler" title="Permalink to this headline">¶</a></h2>
-<p id="rule-slot-filler">Module provides access to a rule-based <a class="reference internal" href="#slot-filler"><span class="std std-ref">slot filler</span></a>.</p>
+<p id="rule-slot-filler">Module provides access to a rule-based <a class="reference internal" href="../source_bak/dialogy.postprocess.text.slot_filler.html#slot-filler"><span class="std std-ref">slot filler</span></a>.</p>
 <dl class="py class">
 <dt id="dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.postprocess.text.slot_filler.rule_slot_filler.</span></code><code class="sig-name descname"><span class="pre">RuleBasedSlotFillerPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_multiple</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
-<p>A utility <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">plugin</span></a> for
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.postprocess.text.slot_filler.rule_slot_filler.</span></code><code class="sig-name descname"><span class="pre">RuleBasedSlotFillerPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_multiple</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../source_bak/dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
+<p>A utility <a class="reference internal" href="../source_bak/dialogy.plugin.html#plugin"><span class="std std-ref">plugin</span></a> for
 <cite>slot filling &lt;https://nlpprogress.com/english/intent_detection_slot_filling.html&gt;</cite>._
-An <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> may have a few slots that need to be filled.</p>
+An <a class="reference internal" href="../source_bak/dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> may have a few slots that need to be filled.</p>
 <p>This plugin can assist filling pertaining to certain intent:entity:slot-name association rules.</p>
 <p>Schema for rules looks like:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -193,9 +192,72 @@ An <a class="reference internal" href="dialogy.types.intent.html#intent"><span c
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">slots</span><span class="p">:</span>
     <span class="nt">faqs</span><span class="p">:</span>
         <span class="nt">action_slot</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions</span>
-        <span class="nt">item_slot</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">item</span>
     <span class="nt">report</span><span class="p">:</span>
-        <span class="nt">action_slot</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions</span>
+        <span class="nt">time_slot</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">time</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">number</span>
+</pre></div>
+</div>
+<p>Let’s run through a practical example. We will create a workflow and preset the output to have expected intent and
+entities.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="gp">In [3]: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+
+<span class="gp">In [4]: </span><span class="kn">from</span> <span class="nn">dialogy.postprocess.text.slot_filler.rule_slot_filler</span> <span class="kn">import</span> <span class="n">RuleBasedSlotFillerPlugin</span>
+
+<span class="gp">In [5]: </span><span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
+
+<span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">PeopleEntity</span><span class="p">,</span> <span class="n">NumericalEntity</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># Create rules</span>
+<span class="gp">In [7]: </span><span class="n">rule_string</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="gp">   ...: </span><span class="s2">faqs:</span>
+<span class="gp">   ...: </span><span class="s2">    number_slot: number</span>
+<span class="gp">   ...: </span><span class="s2">count_people:</span>
+<span class="gp">   ...: </span><span class="s2">    number_slot:</span>
+<span class="gp">   ...: </span><span class="s2">    - people</span>
+<span class="gp">   ...: </span><span class="s2">    - number</span>
+<span class="gp">   ...: </span><span class="s2">"""</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [8]: </span><span class="n">slot_rules</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">rule_string</span><span class="p">)</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># Setting up the plugin</span>
+<span class="gp">In [9]: </span><span class="n">slot_filler</span> <span class="o">=</span> <span class="n">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">rules</span><span class="o">=</span><span class="n">slot_rules</span><span class="p">,</span> <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">w</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)()</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># Creating synthetic values.</span>
+<span class="go"># normally you'd get these by running the workflow with models.</span>
+<span class="gp">In [10]: </span><span class="n">intent</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"count_people"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="gp">In [11]: </span><span class="n">number_entity</span> <span class="o">=</span> <span class="n">NumericalEntity</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"number"</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">"start"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">body</span><span class="o">=</span><span class="s1">'2 people'</span><span class="p">,</span> <span class="n">latent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[{</span><span class="s2">"values"</span><span class="p">:</span><span class="mi">2</span><span class="p">}],</span> <span class="n">dim</span><span class="o">=</span><span class="s2">"number"</span><span class="p">)</span>
+
+<span class="gp">In [12]: </span><span class="n">people_entity</span> <span class="o">=</span> <span class="n">PeopleEntity</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"people"</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">"start"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">body</span><span class="o">=</span><span class="s1">'2 people'</span><span class="p">,</span> <span class="n">latent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[{</span><span class="s2">"values"</span><span class="p">:</span><span class="mi">2</span><span class="p">}],</span> <span class="n">dim</span><span class="o">=</span><span class="s2">"people"</span><span class="p">)</span>
+
+<span class="gp">In [13]: </span><span class="n">entities</span> <span class="o">=</span> <span class="p">[</span><span class="n">people_entity</span><span class="p">,</span> <span class="n">number_entity</span><span class="p">]</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># setting up the workflow to use slot_filler</span>
+<span class="gp">In [14]: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">slot_filler</span><span class="p">],</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># If you notice the instantiation of RuleBasedSlotFillerPlugin,</span>
+<span class="go"># you will notice the `access` method expects a Tuple of two elements.</span>
+<span class="gp">In [15]: </span><span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span>
+
+<span class="gp">In [16]: </span><span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="s2">"2 am"</span><span class="p">)</span>
+<span class="gh">Out[16]: </span><span class="go"></span>
+<span class="go">(Intent(name=count_people, score=1, slots={}),</span>
+<span class="go"> [PeopleEntity(type='people', body='2 people', parsers=[], score=None, alternative_index=None, latent=False, value=None, origin='value', unit=''),</span>
+<span class="go">  NumericalEntity(type='number', body='2 people', parsers=[], score=None, alternative_index=None, latent=False, value=None, origin='value')])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -210,9 +272,28 @@ An <a class="reference internal" href="dialogy.types.intent.html#intent"><span c
 </dl>
 <p>Irrespective of the entities that are found, only the listed type in the slot shall be present in <cite>values</cite>.</p>
 <dl class="py method">
-<dt id="dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.filler">
-<code class="sig-name descname"><span class="pre">filler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.filler" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.plugin">
+<code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="../source_bak/dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.plugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update an intent slot with compatible entity.</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">access(workflow)</span></code> should return a Tuple. <code class="code docutils literal notranslate"><span class="pre">Tuple[Intent,BaseEntity]</span></code>.</p></li>
+<li><p>Only 1 entity fills a slot type. To fill more, set <code class="code docutils literal notranslate"><span class="pre">fill_multiple=True</span></code></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>workflow</strong> (<a class="reference internal" href="../source_bak/dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><em>Workflow</em></a>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if access isn’t a Callable.</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 </section>
 <section id="module-dialogy.postprocess.text.slot_filler">
@@ -223,14 +304,14 @@ An <a class="reference internal" href="dialogy.types.intent.html#intent"><span c
 <li><p>Extract tokens of additional significance.</p></li>
 <li><p>Check for associations between the two.</p></li>
 </ol>
-<p>A slot-filler does the third bit. Once an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> and a set of
-<a class="reference internal" href="dialogy.types.entity.html#base-entity"><span class="std std-ref">Entity</span></a> are identified, there needs to be an arrangement that
+<p>A slot-filler does the third bit. Once an <a class="reference internal" href="../source_bak/dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> and a set of
+<a class="reference internal" href="../source_bak/dialogy.types.entity.html#base-entity"><span class="std std-ref">Entity</span></a> are identified, there needs to be an arrangement that
 tells us if any of these are related to each other.</p>
-<p>As per the current design, an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> can contain a number of <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a>. A <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a>
+<p>As per the current design, an <a class="reference internal" href="../source_bak/dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> can contain a number of <a class="reference internal" href="../source_bak/dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a>. A <a class="reference internal" href="../source_bak/dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a>
 fills an entity of a pre-defined type.</p>
 <ul class="simple">
-<li><p>A <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a> configured to fill a <a class="reference internal" href="dialogy.types.entity.html#time-entity"><span class="std std-ref">TimeEntity</span></a> will not fill a <a class="reference internal" href="dialogy.types.entity.html#location-entity"><span class="std std-ref">LocationEntity</span></a>.</p></li>
-<li><p>A <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a> will not fill more than one entity even if the type matches, unless <code class="code docutils literal notranslate"><span class="pre">fill_multiple</span></code> is provided.</p></li>
+<li><p>A <a class="reference internal" href="../source_bak/dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a> configured to fill a <a class="reference internal" href="../source_bak/dialogy.types.entity.html#time-entity"><span class="std std-ref">TimeEntity</span></a> will not fill a <a class="reference internal" href="../source_bak/dialogy.types.entity.html#location-entity"><span class="std std-ref">LocationEntity</span></a>.</p></li>
+<li><p>A <a class="reference internal" href="../source_bak/dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a> will not fill more than one entity even if the type matches, unless <code class="code docutils literal notranslate"><span class="pre">fill_multiple</span></code> is provided.</p></li>
 </ul>
 </section>
 </section>

@@ -9,7 +9,6 @@ Subpackages
 
    dialogy.cli
    dialogy.constants
-   dialogy.errors
    dialogy.parser
    dialogy.plugin
    dialogy.postprocess

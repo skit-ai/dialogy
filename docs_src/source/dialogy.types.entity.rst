@@ -60,14 +60,6 @@ dialogy.types.entity.time\_interval\_entity module
    :undoc-members:
    :show-inheritance:
 
-dialogy.types.entity.utils module
----------------------------------
-
-.. automodule:: dialogy.types.entity.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

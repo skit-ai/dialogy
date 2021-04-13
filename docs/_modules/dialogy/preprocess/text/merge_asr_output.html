@@ -114,7 +114,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../source/dialogy.html">dialogy package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.cli.html">dialogy.cli package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.constants.html">dialogy.constants package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.errors.html">dialogy.errors package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/dialogy.parser.html">dialogy.parser package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../../source/dialogy.parser.text.html">dialogy.parser.text package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../../source/dialogy.parser.text.entity.html">dialogy.parser.text.entity package</a></li>
@@ -196,7 +195,7 @@
 
 
 <span class="c1"># == merge_asr_output ==</span>
-<div class="viewcode-block" id="merge_asr_output"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.merge_asr_output.merge_asr_output">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="merge_asr_output"><a class="viewcode-back" href="../../../../source_bak/dialogy.preprocess.text.html#dialogy.preprocess.text.merge_asr_output.merge_asr_output">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">"""</span>
 <span class="sd">    .. _merge_asr_output:</span>
 
@@ -238,7 +237,7 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"`transcript` is expected in the ASR output."</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">type_error</span></div>
 
 
-<div class="viewcode-block" id="merge_asr_output_plugin"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.merge_asr_output.merge_asr_output_plugin">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output_plugin</span><span class="p">(</span>
+<div class="viewcode-block" id="merge_asr_output_plugin"><a class="viewcode-back" href="../../../../source_bak/dialogy.preprocess.text.html#dialogy.preprocess.text.merge_asr_output.merge_asr_output_plugin">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output_plugin</span><span class="p">(</span>
     <span class="n">access</span><span class="p">:</span> <span class="n">GetWorkflowUtteranceFn</span><span class="p">,</span> <span class="n">mutate</span><span class="p">:</span> <span class="n">UpdateWorkflowStringFn</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span>
     <span class="sd">"""</span>

@@ -115,7 +115,6 @@
 <li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.html">dialogy package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dialogy.cli.html">dialogy.cli package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.constants.html">dialogy.constants package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.errors.html">dialogy.errors package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.parser.html">dialogy.parser package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4 has-children"><a class="reference internal" href="dialogy.parser.text.html">dialogy.parser.text package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="dialogy.parser.text.entity.html">dialogy.parser.text.entity package</a></li>
@@ -225,6 +224,112 @@ This decorator checks if it is being applied on a method or a function.</p>
 </section>
 <section id="module-dialogy.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.utils" title="Permalink to this headline">¶</a></h2>
+<p>Module provides utility functions for entities.</p>
+<dl class="simple">
+<dt>Import functions:</dt><dd><ul class="simple">
+<li><p>dict_traversal</p></li>
+<li><p>validate_type</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="dialogy.utils.traverse_dict">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.</span></code><code class="sig-name descname"><span class="pre">traverse_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils.html#traverse_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.traverse_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverse a dictionary for a given list of properties.</p>
+<p>This is useful for traversing a deeply nested dictionary.
+Instead of recursion, we are using reduce to update the <cite>dict</cite>.
+Missing properties will lead to KeyErrors.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.types.entity.utils</span> <span class="kn">import</span> <span class="n">traverse_dict</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">f939dd0ee470</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">dialogy.types.entity.utils</span> <span class="kn">import</span> <span class="n">traverse_dict</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named 'dialogy.types.entity.utils'
+
+<span class="gp">In [2]: </span><span class="n">input_</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">   ...: </span>    <span class="s2">"planets"</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">   ...: </span>        <span class="s2">"mars"</span><span class="p">:</span> <span class="p">[{</span>
+<span class="gp">   ...: </span>            <span class="s2">"name"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+<span class="gp">   ...: </span>            <span class="s2">"languages"</span><span class="p">:</span> <span class="p">[{</span>
+<span class="gp">   ...: </span>                <span class="s2">"beep"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"speakers"</span><span class="p">:</span> <span class="mi">11</span><span class="p">},</span>
+<span class="gp">   ...: </span>            <span class="p">},</span> <span class="p">{</span>
+<span class="gp">   ...: </span>                <span class="s2">"bop"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"speakers"</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+<span class="gp">   ...: </span>            <span class="p">}]</span>
+<span class="gp">   ...: </span>        <span class="p">}]</span>
+<span class="gp">   ...: </span>    <span class="p">}</span>
+<span class="gp">   ...: </span><span class="p">}</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="mi">421130333</span><span class="n">ea3</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
+
+<span class="ne">NameError</span>: name 'traverse_dict' is not defined
+
+<span class="c1"># element with index 3 doesn't exist!</span>
+<span class="gp">In [4]: </span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">556</span><span class="n">a11057179</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
+
+<span class="ne">NameError</span>: name 'traverse_dict' is not defined
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>Dict</em><em>[</em><em>Any</em><em>, </em><em>Any</em><em>]</em>) – The <cite>dict</cite> to traverse.</p></li>
+<li><p><strong>properties</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – List of properties to be parsed as a path to be navigated in the <cite>dict</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A value within a deeply nested dict.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – Missing property in the dictionary.</p></li>
+<li><p><strong>TypeError</strong> – Properties don’t describe a path due to possible type error.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.validate_type">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.</span></code><code class="sig-name descname"><span class="pre">validate_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils.html#validate_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.validate_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise TypeError on object type mismatch.</p>
+<blockquote>
+<div><p>This is syntatic sugar for instance type checks.</p>
+<p>The check is by exclusion of types. Wraps exception raising logic.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>obj (Any): The object available for type assertion.
+obj_type (Union[type, Tuple[type]]): This must match the type of the object.</p>
+</dd>
+<dt>Raises:</dt><dd><p>TypeError: If the type <cite>obj_type</cite> doesn’t match the type of <cite>obj</cite>.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">param obj</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">type obj</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">param obj_type</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">type obj_type</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">rtype</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</div></blockquote>
+</dd></dl>
 </section>
 </section>
 

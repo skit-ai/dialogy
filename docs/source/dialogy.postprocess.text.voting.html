@@ -115,7 +115,6 @@
 <li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.html">dialogy package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dialogy.cli.html">dialogy.cli package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.constants.html">dialogy.constants package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.errors.html">dialogy.errors package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="dialogy.parser.html">dialogy.parser package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4 has-children"><a class="reference internal" href="dialogy.parser.text.html">dialogy.parser.text package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="dialogy.parser.text.entity.html">dialogy.parser.text.entity package</a></li>
@@ -177,7 +176,7 @@ alternative from the ASR.</p>
 <dl class="py class">
 <dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.postprocess.text.voting.intent_voting.</span></code><code class="sig-name descname"><span class="pre">VotePlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">access:</span> <span class="pre">Optional[Callable[[...],</span> <span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">mutate:</span> <span class="pre">Optional[Callable[[...],</span> <span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">threshold:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.6,</span> <span class="pre">consensus:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.2,</span> <span class="pre">representation:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.3,</span> <span class="pre">fallback_intent:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'_oos_',</span> <span class="pre">aggregate_fn:</span> <span class="pre">Any</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">debug:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="../source_bak/dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
 <p>An instance of VoteIntentPlugin helps in voting for a strong
 evidence over other candidates.</p>
 <p>This plugin takes into consideration a list of predictions (signals)
@@ -197,33 +196,52 @@ more weight than its counterparts.</p>
 <li><p><strong>access</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – <p>A function that expects workflow as an argument and returns a Tuple.
 The Tuple contains: <code class="code docutils literal notranslate"><span class="pre">intents</span></code>, <code class="code docutils literal notranslate"><span class="pre">trials</span></code>. Here,</p>
 <ol class="arabic simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">intents</span></code> is a <code class="code docutils literal notranslate"><span class="pre">List[T]</span></code> where <code class="code docutils literal notranslate"><span class="pre">T</span></code> is an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">intents</span></code> is a <code class="code docutils literal notranslate"><span class="pre">List[T]</span></code> where <code class="code docutils literal notranslate"><span class="pre">T</span></code> is an <a class="reference internal" href="../source_bak/dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">trials</span></code> is an <code class="code docutils literal notranslate"><span class="pre">int</span></code> that tells us the number of observations that produced the <code class="code docutils literal notranslate"><span class="pre">intents</span></code>.</p></li>
 </ol>
 </p></li>
 <li><p><strong>mutate</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – A function that places the safest value from the list of <code class="code docutils literal notranslate"><span class="pre">intents</span></code> or <code class="code docutils literal notranslate"><span class="pre">fallback_intent</span></code>
 in case nothing in the list is safe.</p></li>
-<li><p><strong>threshold</strong> (<em>float</em>) – A threshold for confidence scores for each <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
-<li><p><strong>consensus</strong> (<em>float</em>) – We rank each <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> by confidence score, if the top two have similar and high
+<li><p><strong>threshold</strong> (<em>float</em>) – A threshold for confidence scores for each <a class="reference internal" href="../source_bak/dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
+<li><p><strong>consensus</strong> (<em>float</em>) – We rank each <a class="reference internal" href="../source_bak/dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> by confidence score, if the top two have similar and high
 confidence scores, then it is a case of no-consensus. If the top two intents have considerable gap then there
 is consensus. The <em>considerable gap</em> is defined by <code class="code docutils literal notranslate"><span class="pre">consensus</span></code>.</p></li>
-<li><p><strong>representation</strong> (<em>float</em>) – A percentage that depicts how many votes did an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> receive. It is unsafe
+<li><p><strong>representation</strong> (<em>float</em>) – A percentage that depicts how many votes did an <a class="reference internal" href="../source_bak/dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> receive. It is unsafe
 if the confidence threshold is met but representation is poor.</p></li>
 <li><p><strong>fallback_intent</strong> (<em>str</em>) – In case we fail to find a strong candidate, we resort to a <code class="code docutils literal notranslate"><span class="pre">fallback_intent</span></code>.</p></li>
-<li><p><strong>aggregate_fn</strong> (<em>Any</em>) – A function that allows us to aggregate over confidence scores of each <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
+<li><p><strong>aggregate_fn</strong> (<em>Any</em>) – A function that allows us to aggregate over confidence scores of each <a class="reference internal" href="../source_bak/dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p></li>
 <li><p><strong>debug</strong> (<em>bool</em>) – log intermediates if True.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin">
-<code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="../source_bak/dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plugin to ease workflow io.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal">
-<code class="sig-name descname"><span class="pre">vote_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">vote_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../source_bak/dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trials</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="../source_bak/dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.vote_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce a list of intents.</p>
+<p>This is a naive voting algorithm. We filter intents with high confidence.
+Count the frequency of the remaining intents. If the proportion of votes
+goes beyond the expected constituency, then the intent is elected else
+a fallback intent is emitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>intents</strong> (<em>List</em><em>[</em><a class="reference internal" href="../source_bak/dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><em>Intent</em></a><em>]</em>) – A list of predictions over ASR output. (size ~ 1-10)</p></li>
+<li><p><strong>trials</strong> (<em>int</em>) – Number of observations over which the set of intents is obtained.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Voted signal or fallback in case of no consensus.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../source_bak/dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent">Intent</a></p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 <dl class="py function">
 <dt id="dialogy.postprocess.text.voting.intent_voting.adjust_signal_strength">
