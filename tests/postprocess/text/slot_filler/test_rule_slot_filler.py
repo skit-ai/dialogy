@@ -37,7 +37,7 @@ def test_slot_filling() -> None:
     intent_name = "intent_1"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access, debug=True)()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
 
     # Create a mock `workflow`
     workflow = Workflow(preprocessors=[], postprocessors=[slot_filler])
