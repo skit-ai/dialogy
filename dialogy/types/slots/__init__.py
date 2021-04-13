@@ -57,5 +57,8 @@ class Slot:
         }
         return slot_json
 
+    def __repr__(self) -> str:
+        return f"Slot(name={self.name}, types={self.types}, values={self.values})"
+
 
 Rule = Dict[str, Dict[str, Any]]

@@ -154,7 +154,5 @@ class Intent:
             "parsers": self.parsers,
         }
 
-
-"""
-[Tutorial](../../../tests/types/intents/test_intents.html)
-"""
+    def __repr__(self) -> str:
+        return f"Intent(name={self.name}, score={self.score}, slots={self.slots}"

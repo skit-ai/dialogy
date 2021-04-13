@@ -33,7 +33,7 @@ class BaseEntity:
     # **range**
     #
     # is the character range in the alternative where the entity is parsed.
-    range = attr.ib(type=Dict[str, int])
+    range = attr.ib(type=Dict[str, int], repr=False)
 
     # **type**
     #
@@ -48,7 +48,7 @@ class BaseEntity:
     # **dim**
     #
     # is influenced from Duckling's convention of categorization.
-    dim = attr.ib(type=Optional[str], default=None)
+    dim = attr.ib(type=Optional[str], default=None, repr=False)
 
     # **parsers**
     #
@@ -67,7 +67,7 @@ class BaseEntity:
     # **slot_names**
     #
     # Entities have awareness of the slots they should fill.
-    slot_names = attr.ib(type=List[str], default=attr.Factory(list))
+    slot_names = attr.ib(type=List[str], default=attr.Factory(list), repr=False)
 
     # **alternative_index**
     #
@@ -87,6 +87,7 @@ class BaseEntity:
         type=List[Dict[str, Any]],
         default=attr.Factory(list),
         validator=attr.validators.instance_of(List),
+        repr=False,
     )
 
     # **values**
@@ -97,7 +98,7 @@ class BaseEntity:
     # **entity_type**
     #
     # Mirrors type, to be deprecated.
-    entity_type: Optional[str] = attr.ib(default=None)
+    entity_type: Optional[str] = attr.ib(default=None, repr=False)
 
     __properties_map = const.BASE_ENTITY_PROPS
 
@@ -188,6 +189,8 @@ class BaseEntity:
         Convert the object to a dictionary.
 
         Applies some expected filters to prevent information bloat.
+
+        Add section for skipping more properties using const.SKIP_ENTITY_ATTRS + [""]
 
         :param skip: Names of attributes that should not be included while converting to a dict.
             Defaults to None.
