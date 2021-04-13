@@ -53,7 +53,6 @@ def test_slot_filling() -> None:
         dim="default",
         type="entity_1",
         values=[{"key": "value"}],
-        slot_names=["entity_1_slot"],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
@@ -93,7 +92,6 @@ def test_slot_no_fill() -> None:
         dim="default",
         type="entity_2",
         values=[{"key": "value"}],
-        slot_names=["entity_2_slot"],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
@@ -133,7 +131,6 @@ def test_slot_dual_fill() -> None:
         dim="default",
         type="entity_1",
         values=[{"key": "value"}],
-        slot_names=["entity_1_slot"],
     )
 
     entity_2 = BaseEntity(
@@ -142,7 +139,6 @@ def test_slot_dual_fill() -> None:
         dim="default",
         type="entity_2",
         values=[{"key": "value"}],
-        slot_names=["entity_2_slot"],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
@@ -185,7 +181,6 @@ def test_slot_filling_multiple() -> None:
         dim="default",
         type="entity_1",
         values=[{"key": "value"}],
-        slot_names=["entity_1_slot"],
     )
 
     entity_2 = BaseEntity(
@@ -194,7 +189,6 @@ def test_slot_filling_multiple() -> None:
         dim="default",
         type="entity_2",
         values=[{"key": "value"}],
-        slot_names=["entity_2_slot"],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
@@ -234,7 +228,6 @@ def test_slot_competition() -> None:
         dim="default",
         type="entity_1",
         values=[{"key": "value_1"}],
-        slot_names=["entity_1_slot"],
     )
 
     entity_2 = BaseEntity(
@@ -243,7 +236,6 @@ def test_slot_competition() -> None:
         dim="default",
         type="entity_1",
         values=[{"key": "value_2"}],
-        slot_names=["entity_1_slot"],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
@@ -274,7 +266,6 @@ def test_incorrect_access_fn() -> None:
         dim="default",
         type="basic",
         values=[{"key": "value"}],
-        slot_names=["basic_slot"],
     )
 
     workflow.output = (intent, [entity])
@@ -298,7 +289,6 @@ def test_missing_access_fn() -> None:
         dim="default",
         type="basic",
         values=[{"key": "value"}],
-        slot_names=["basic_slot"],
     )
 
     workflow.output = (intent, [entity])
