@@ -23,9 +23,9 @@ class Slot:
     - `values` list of entities extracted
     """
 
-    def __init__(self, name: str, type_: List[str], values: List[BaseEntity]) -> None:
+    def __init__(self, name: str, types: List[str], values: List[BaseEntity]) -> None:
         self.name = name
-        self.type = type_
+        self.types = types
         self.values = values
 
     def add(self, entity: BaseEntity) -> "Slot":
@@ -52,10 +52,10 @@ class Slot:
         entities_json = [entity.json() for entity in self.values]
         slot_json = {
             "name": self.name,
-            "type": self.type,
+            "type": self.types,
             const.EntityKeys.VALUES: entities_json,
         }
         return slot_json
 
 
-Rule = Dict[str, Dict[str, str]]
+Rule = Dict[str, Dict[str, Any]]

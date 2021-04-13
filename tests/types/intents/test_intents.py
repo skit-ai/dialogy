@@ -1,6 +1,7 @@
 """
 Tests for intents
 """
+import pytest
 
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
@@ -43,8 +44,8 @@ def test_rule_application() -> None:
     assert "date_slot" in intent.slots, "date_slot should be present."
     assert "number_slot" in intent.slots, "number_slot should be present."
 
-    assert intent.slots["date_slot"].type == ["date"]
-    assert intent.slots["number_slot"].type == ["number"]
+    assert intent.slots["date_slot"].types == ["date"]
+    assert intent.slots["number_slot"].types == ["number"]
 
 
 def test_missing_rule() -> None:
@@ -114,3 +115,38 @@ def test_slot_filling() -> None:
 
     intent_json = intent.json()
     assert "dim" not in intent_json["slots"]["basic_slot"]["values"][0]
+
+
+def test_rule_with_multiple_types() -> None:
+    ordinal_entity = BaseEntity(
+        range={"from": 0, "to": 15},
+        body="12th december",
+        dim="default",
+        type="ordinal",
+        values=[{"key": "12th"}],
+        slot_names=["basic_slot"],
+    )
+    number_entity = BaseEntity(
+        range={"from": 0, "to": 15},
+        body="12 december",
+        dim="default",
+        type="number",
+        values=[{"key": "12"}],
+        slot_names=["basic_slot"],
+    )
+    rules = {"intent": {"basic_slot": ["ordinal", "number"]}}
+    intent = Intent(name="intent", score=0.8)
+    intent.apply(rules)
+    intent.fill_slot(number_entity, fill_multiple=True)
+    intent.fill_slot(ordinal_entity, fill_multiple=True)
+
+    assert intent.slots["basic_slot"].values[0] == number_entity
+    assert intent.slots["basic_slot"].values[1] == ordinal_entity
+
+
+def test_invalid_rule() -> None:
+    rules = {"intent": {"basic_slot": [12]}}
+    intent = Intent(name="intent", score=0.8)
+
+    with pytest.raises(TypeError):
+        intent.apply(rules)

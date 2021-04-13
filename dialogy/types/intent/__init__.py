@@ -67,8 +67,24 @@ class Intent:
         if not rule:
             return self
 
-        for slot_name, entity_type in rule.items():
-            self.slots[slot_name] = Slot(name=slot_name, type_=[entity_type], values=[])
+        for slot_name, entity_types in rule.items():
+            if isinstance(entity_types, str):
+                entity_type = entity_types
+                self.slots[slot_name] = Slot(
+                    name=slot_name, types=[entity_type], values=[]
+                )
+            elif isinstance(entity_types, list) and all(
+                isinstance(type_, str) for type_ in entity_types
+            ):
+                self.slots[slot_name] = Slot(
+                    name=slot_name, types=entity_types, values=[]
+                )
+            else:
+                raise TypeError(
+                    f"Expected entity_types={entity_types} in the rule"
+                    f" {rule} to be a List[str] but {type(entity_types)} was found."
+                )
+
         return self
 
     def add_parser(self, postprocessor: PluginFn) -> "Intent":
@@ -95,16 +111,17 @@ class Intent:
             entity (BaseEntity): [entities](../../docs/entity/__init__.html)
         """
         log.debug("Looping through slot_names for each entity.")
-        for slot_name in entity.slot_names:
+        log.debug("intent slots: %s", self.slots)
+        for slot_name, slot in self.slots.items():
             log.debug("slot_name: %s", slot_name)
-            log.debug("intent slots: %s", self.slots)
-            if slot_name in self.slots:
+            log.debug("slot type: %s", slot.types)
+            if entity.type in slot.types:
                 if fill_multiple:
                     self.slots[slot_name].add(entity)
                     return self
 
                 if not self.slots[slot_name].values:
-                    log.debug("filling %s into %s", entity, self.name)
+                    log.debug("filling %s into %s.", entity, self.name)
                     self.slots[slot_name].add(entity)
                 else:
                     log.debug(
