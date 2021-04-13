@@ -39,9 +39,61 @@ class RuleBasedSlotFillerPlugin(Plugin):
         slots:
             faqs:
                 action_slot: actions
-                item_slot: item
             report:
-                action_slot: actions
+                time_slot:
+                - time
+                - number
+
+    Let's run through a practical example. We will create a workflow and preset the output to have expected intent and
+    entities.
+
+    .. ipython:: python
+
+        import yaml
+        from pprint import pprint
+        from dialogy.workflow import Workflow
+        from dialogy.postprocess.text.slot_filler.rule_slot_filler import RuleBasedSlotFillerPlugin
+        from dialogy.types.intent import Intent
+        from dialogy.types.entity import PeopleEntity, NumericalEntity
+
+        # ---------------------------------------------------------------------------------------------------
+        # Create rules
+        rule_string = \"""
+        faqs:
+            number_slot: number
+        count_people:
+            number_slot:
+            - people
+            - number
+        \"""
+        slot_rules = yaml.safe_load(rule_string)
+        # ---------------------------------------------------------------------------------------------------
+
+        # ---------------------------------------------------------------------------------------------------
+        # Setting up the plugin
+        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=True)()
+        # ---------------------------------------------------------------------------------------------------
+
+        # ---------------------------------------------------------------------------------------------------
+        # Creating synthetic values.
+        # normally you'd get these by running the workflow with models.
+        intent = Intent(name="count_people", score=1)
+        number_entity = NumericalEntity(type="number", range={"start": 0, "end": 7}, body='2 people', latent=False, values=[{"values":2}], dim="number")
+        people_entity = PeopleEntity(type="people", range={"start": 0, "end": 7}, body='2 people', latent=False, values=[{"values":2}], dim="people")
+        entities = [people_entity, number_entity]
+        # ---------------------------------------------------------------------------------------------------
+
+        # ---------------------------------------------------------------------------------------------------
+        # setting up the workflow to use slot_filler
+        workflow = Workflow(preprocessors=[], postprocessors=[slot_filler], debug=True)
+        # ---------------------------------------------------------------------------------------------------
+
+        # If you notice the instantiation of RuleBasedSlotFillerPlugin,
+        # you will notice the `access` method expects a Tuple of two elements.
+        workflow.output = (intent, entities)
+
+        workflow.run(input_="2 am")
+
 
 
     :param rules: A mapping that defines relationship between an intent, its slots and the entities that fill them.
@@ -85,18 +137,18 @@ class RuleBasedSlotFillerPlugin(Plugin):
         self.fill_multiple = fill_multiple
 
     @debug_logs
-    def filler(self, workflow: Workflow) -> None:
+    def plugin(self, workflow: Workflow) -> None:
         """
         Update an intent slot with compatible entity.
 
-        - `access(workflow)` should return a tuple. `Intent`, `List[BaseEntity]`.
-        - Only 1 entity fills the slot type.
+        - :code:`access(workflow)` should return a Tuple. :code:`Tuple[Intent,BaseEntity]`.
+        - Only 1 entity fills a slot type. To fill more, set :code:`fill_multiple=True`
 
-        Args:
-            workflow (Workflow)
-
-        Raises:
-            TypeError: self.access should be a Callable.
+        :param workflow:
+        :type workflow: Workflow
+        :return: None
+        :rtype: None
+        :raises TypeError: if access isn't a Callable.
         """
         if self.access is not None:
 
@@ -129,4 +181,4 @@ class RuleBasedSlotFillerPlugin(Plugin):
         """
         syntactic sugar
         """
-        return self.filler
+        return self.plugin
