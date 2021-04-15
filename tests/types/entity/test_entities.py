@@ -330,3 +330,36 @@ def test_both_entity_type_attributes_match() -> None:
         values=[value],
     )
     assert entity.type == entity.entity_type
+
+
+def test_interval_entity_only_from() -> None:
+    body = "from 2 am"
+    value = {
+        "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
+    }
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+    )
+    entity.set_value(value=value)
+    print(entity)
+    assert entity.value == value
+
+
+def test_interval_entity_only_to() -> None:
+    body = "to 4 am"
+    value = {
+        "to": {"value": "2021-01-22T04:00:00.000+05:30", "grain": "hour"},
+    }
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+    )
+    entity.set_value(value=value)
+    assert entity.value == value
