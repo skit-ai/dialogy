@@ -141,3 +141,5 @@ docs_src/_build/
 # IDEs
 .vscode/
 .idea/
+
+.DS_Store
