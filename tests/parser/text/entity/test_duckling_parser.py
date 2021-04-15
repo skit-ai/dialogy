@@ -239,6 +239,57 @@ def test_entity_json_to_object_time_interval_entity():
     assert isinstance(entities[0], TimeIntervalEntity)
 
 
+# == Test transformation of entity-json with only `from` key in dictionary to TimeIntervalEntity ==
+def test_entity_json_to_object_time_interval_entity_with_only_from_key():
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for TimeIntervalEntity here.
+    """
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["time"], timezone="Asia/Kolkata"
+    )
+    entities_json = [config.mock_interval_entity_from]
+
+    entities = parser._reshape(entities_json)
+    assert isinstance(entities[0], TimeIntervalEntity)
+
+
+# == Test transformation of entity-json with only `to` key in dictionary to TimeIntervalEntity ==
+def test_entity_json_to_object_time_interval_entity_with_only_to_key():
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for TimeIntervalEntity here.
+    """
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["time"], timezone="Asia/Kolkata"
+    )
+    entities_json = [config.mock_interval_entity_to]
+
+    entities = parser._reshape(entities_json)
+    assert isinstance(entities[0], TimeIntervalEntity)
+
+
+# == Test transformation of entity-json with neither `from` nor `to` in dictionary to TimeIntervalEntity ==
+def test_bad_interval_entity():
+    """
+    Reshape converts json response from Duckling APIs
+    to dialogy's BaseEntity.
+
+    We are checking for TimeIntervalEntity here.
+    """
+    parser = DucklingParser(
+        locale="en_IN", dimensions=["time"], timezone="Asia/Kolkata"
+    )
+    entities_json = config.mock_bad_interval_entity
+
+    with pytest.raises(TypeError):
+        parser._mutate_entity(entities_json)
+
+
 # == Test transformation of entity-json to NumericalEntity ==
 def test_entity_json_to_object_numerical_entity() -> None:
     """

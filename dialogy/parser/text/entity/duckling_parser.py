@@ -226,9 +226,12 @@ class DucklingParser(Plugin):
         if EntityKeys.GRAIN in entity[EntityKeys.VALUE]:
             entity[EntityKeys.GRAIN] = entity[EntityKeys.VALUE][EntityKeys.GRAIN]
         elif entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.INTERVAL:
-            entity[EntityKeys.GRAIN] = entity[EntityKeys.VALUE][EntityKeys.TO][
-                EntityKeys.GRAIN
-            ]
+            date_range = entity[EntityKeys.VALUE].get(EntityKeys.FROM) or entity[
+                EntityKeys.VALUE
+            ].get(EntityKeys.TO)
+            if not date_range:
+                raise TypeError(f"{entity} does not match TimeIntervalEntity format")
+            entity[EntityKeys.GRAIN] = date_range[EntityKeys.GRAIN]
 
         del entity[EntityKeys.START]
         del entity[EntityKeys.END]

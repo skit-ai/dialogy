@@ -105,6 +105,106 @@ mock_interval_entity = {
     "latent": False,
 }
 
+mock_interval_entity_from = {
+    "body": "from 2 am",
+    "start": 0,
+    "value": {
+        "values": [
+            {
+                "from": {
+                    "value": "2021-01-22T02:00:00.000+05:30",
+                    "grain": "hour",
+                },
+                "type": "interval",
+            },
+            {
+                "from": {
+                    "value": "2021-01-23T02:00:00.000+05:30",
+                    "grain": "hour",
+                },
+                "type": "interval",
+            },
+            {
+                "from": {
+                    "value": "2021-01-24T02:00:00.000+05:30",
+                    "grain": "hour",
+                },
+                "type": "interval",
+            },
+        ],
+        "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
+        "type": "interval",
+    },
+    "end": 9,
+    "dim": "time",
+    "latent": False,
+    "range": {"start": 0, "end": 9},
+    "type": "time",
+    "values": [
+        {
+            "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        }
+    ],
+}
+
+mock_interval_entity_to = {
+    "body": "to 4 am",
+    "start": 0,
+    "value": {
+        "values": [
+            {
+                "to": {
+                    "value": "2021-01-22T05:00:00.000+05:30",
+                    "grain": "hour",
+                },
+                "type": "interval",
+            },
+            {
+                "to": {
+                    "value": "2021-01-23T05:00:00.000+05:30",
+                    "grain": "hour",
+                },
+                "type": "interval",
+            },
+            {
+                "to": {
+                    "value": "2021-01-24T05:00:00.000+05:30",
+                    "grain": "hour",
+                },
+                "type": "interval",
+            },
+        ],
+        "to": {"value": "2021-01-22T05:00:00.000+05:30", "grain": "hour"},
+        "type": "interval",
+    },
+    "end": 7,
+    "dim": "time",
+    "latent": False,
+}
+
+mock_bad_interval_entity = {
+    "body": "between 2 am to 4 am",
+    "start": 0,
+    "value": {
+        "values": [
+            {
+                "type": "interval",
+            },
+            {
+                "type": "interval",
+            },
+            {
+                "type": "interval",
+            },
+        ],
+        "type": "interval",
+    },
+    "end": 17,
+    "dim": "time",
+    "latent": False,
+}
+
 mock_people_entity = {
     "body": "3 people",
     "start": 67,
