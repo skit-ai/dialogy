@@ -119,6 +119,35 @@ class BaseEntity:
             validate_type(traverse_dict(dict_, prop), prop_type)
 
     @classmethod
+    def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        :type dict_: Dict[str, Any]
+        """
+        match_start = dict_[const.EntityKeys.START]
+        match_end = dict_[const.EntityKeys.END]
+
+        dict_[const.EntityKeys.RANGE] = {
+            const.EntityKeys.START: match_start,
+            const.EntityKeys.END: match_end,
+        }
+        # ['body', 'start', 'value', 'end', 'dim', 'latent']
+
+        # **type** of an entity is same as its **dimension**.
+        dict_[const.EntityKeys.TYPE] = dict_[const.EntityKeys.DIM]
+
+        # This piece is a preparation for multiple entity values.
+        # So, even though we are confident of the value found, we are still keeping the
+        # structure.
+        if const.EntityKeys.VALUES in dict_[const.EntityKeys.VALUE]:
+            del dict_[const.EntityKeys.VALUE][const.EntityKeys.VALUES]
+        dict_[const.EntityKeys.VALUES] = [dict_[const.EntityKeys.VALUE]]
+
+        del dict_[const.EntityKeys.START]
+        del dict_[const.EntityKeys.END]
+        del dict_[const.EntityKeys.VALUE]
+        return dict_
+
+    @classmethod
     def from_dict(cls, dict_: Dict[str, Any]) -> "BaseEntity":
         """
         Create an instance of a given class `cls` from a `dict` that complies
@@ -131,6 +160,7 @@ class BaseEntity:
         :return: Instance of class
         :rtype: BaseEntity
         """
+        dict_ = cls.reshape(dict_)
         cls.validate(dict_)
         return cls(**dict_)
 

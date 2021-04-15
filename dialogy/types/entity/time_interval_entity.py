@@ -30,6 +30,21 @@ class TimeIntervalEntity(TimeEntity):
     dim = "time"
     __properties_map = const.TIME_ENTITY_PROPS
 
+    @classmethod
+    def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
+        dict_ = super(TimeIntervalEntity, cls).reshape(dict_)
+        if all(
+            value[const.EntityKeys.TYPE] == const.EntityKeys.INTERVAL
+            for value in dict_[const.EntityKeys.VALUES]
+        ):
+            date_range = dict_[const.EntityKeys.VALUES][0].get(
+                const.EntityKeys.FROM
+            ) or dict_[const.EntityKeys.VALUES][0].get(const.EntityKeys.TO)
+            if not date_range:
+                raise TypeError(f"{dict_} does not match TimeIntervalEntity format")
+            dict_[const.EntityKeys.GRAIN] = date_range[const.EntityKeys.GRAIN]
+        return dict_
+
     def set_value(self, value: Optional[Dict[str, Any]] = None) -> None:
         """
         Set values and value attribute.
