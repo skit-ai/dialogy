@@ -20,7 +20,7 @@ def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:
     .. ipython:: python
         :okexcept:
 
-        from dialogy.types.entity.utils import traverse_dict
+        from dialogy.utils import traverse_dict
 
         input_ = {
             "planets": {
