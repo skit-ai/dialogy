@@ -44,10 +44,8 @@ class TimeIntervalEntity(TimeEntity):
             self.value = self.values[0]
         else:
             if value:
-                if (
-                    isinstance(value, dict)
-                    and const.TO in value
-                    and const.FROM in value
+                if isinstance(value, dict) and (
+                    const.FROM in value or const.TO in value
                 ):
                     self.values = [value]
                     self.value = value
