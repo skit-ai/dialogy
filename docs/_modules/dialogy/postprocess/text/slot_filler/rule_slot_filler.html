@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.3, furo 2021.04.11.beta34"/>
-        <title>dialogy.postprocess.text.slot_filler.rule_slot_filler - dialogy 0.4.5 documentation</title>
+        <title>dialogy.postprocess.text.slot_filler.rule_slot_filler - dialogy 0.5.0 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../../../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">dialogy 0.4.5 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.4.5 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -180,7 +180,7 @@
 <span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
 
 
-<div class="viewcode-block" id="RuleBasedSlotFillerPlugin"><a class="viewcode-back" href="../../../../../source_bak/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin">[docs]</a><span class="k">class</span> <span class="nc">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<div class="viewcode-block" id="RuleBasedSlotFillerPlugin"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin">[docs]</a><span class="k">class</span> <span class="nc">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">    A utility :ref:`plugin &lt;plugin&gt;` for</span>
 <span class="sd">    `slot filling &lt;https://nlpprogress.com/english/intent_detection_slot_filling.html&gt;`._</span>
@@ -302,7 +302,7 @@
         <span class="c1"># same entity type within a slot.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fill_multiple</span> <span class="o">=</span> <span class="n">fill_multiple</span>
 
-<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.plugin"><a class="viewcode-back" href="../../../../../source_bak/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.plugin">[docs]</a>    <span class="nd">@debug_logs</span>
+<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.plugin"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.plugin">[docs]</a>    <span class="nd">@debug_logs</span>
     <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Update an intent slot with compatible entity.</span>
