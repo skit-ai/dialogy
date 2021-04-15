@@ -32,6 +32,7 @@ isort = "^5.7.0"
 sphinx = "^3.5.3"
 furo = "^2021.4.11-beta.34"
 sphinx-copybutton = "^0.3.1"
+ipython = "^7.22.0"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
