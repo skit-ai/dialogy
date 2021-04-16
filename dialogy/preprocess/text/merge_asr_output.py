@@ -44,6 +44,8 @@ def merge_asr_output(utterances: Any) -> str:
     The key "transcript" is expected in the ASR output, the value of which would be operated on
     by this function.
 
+    The normalization is done by :ref:`normalize<normalize>`
+
     .. ipython:: python
 
         from dialogy.preprocess import merge_asr_output

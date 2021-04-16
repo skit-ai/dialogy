@@ -10,14 +10,27 @@ Welcome to dialogy's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   ../source/modules
+Sections 📄
+------------
+1. :ref:`Index<genindex>`
+2. :ref:`All modules<modindex>`
+3. :ref:`Search Page<search>`
+4. Popular sections
 
-Indices and tables
-==================
+   1. :ref:`Workflow<workflow>`
+   2. :ref:`Plugin<Plugin>`
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+      1. Preprocessors
+
+         1. :ref:`DucklingPlugin<duckling_plugin>`
+         2. :ref:`merge_asr_output<merge_asr_output>`
+
+      2. Postprocessors
+
+         1. :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>`
+         2. :ref:`VotePlugin<vote_plugin>`
+
+
 
 
 Dialogy
