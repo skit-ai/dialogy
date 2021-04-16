@@ -24,13 +24,13 @@ Sections 📄
          1. :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>`
          2. :ref:`VotePlugin<vote_plugin>`
 
-   3. All Modules
+3. All Modules
 
-      .. toctree::
-         :maxdepth: 1
-         :glob:
+   .. toctree::
+      :maxdepth: 1
+      :glob:
 
-         ../source/dialogy.*
+      ../source/dialogy.*
 
 Dialogy
 ========
