@@ -27,10 +27,10 @@ Sections 📄
    3. All Modules
 
       .. toctree::
-         :maxdepth: 4
+         :maxdepth: 1
+         :glob:
 
-         ../source/modules
-
+         ../source/dialogy.*
 
 Dialogy
 ========
