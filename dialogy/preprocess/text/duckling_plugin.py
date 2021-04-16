@@ -1,5 +1,5 @@
 """
-.. _duckling_parser:
+.. _duckling_plugin:
 
 This module exposes a parser for `Duckling <https://github.com/facebook/duckling>`_.
 

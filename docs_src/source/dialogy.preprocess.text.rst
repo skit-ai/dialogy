@@ -4,6 +4,14 @@ dialogy.preprocess.text package
 Submodules
 ----------
 
+dialogy.preprocess.text.duckling\_plugin module
+-----------------------------------------------
+
+.. automodule:: dialogy.preprocess.text.duckling_plugin
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.preprocess.text.merge\_asr\_output module
 -------------------------------------------------
 
