@@ -64,10 +64,7 @@ class TimeIntervalEntity(TimeEntity):
         :return: :code:`date["value"]`
         :rtype: Optional[str]
         """
-        date_dict = date[const.EntityKeys.VALUES].get(const.EntityKeys.FROM) or date[
-            const.EntityKeys.VALUES
-        ].get(const.EntityKeys.TO)
-        print("Hello")
+        date_dict = date.get(const.EntityKeys.FROM) or date.get(const.EntityKeys.TO)
         if date_dict:
             print("Date Dict: ", date_dict)
             return date_dict.get(const.EntityKeys.VALUE)
