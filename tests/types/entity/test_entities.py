@@ -388,8 +388,7 @@ def test_time_interval_entity_no_value() -> None:
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_entity_type(payload) -> None:
     """
-    TODO: change docstring
-    An end-to-end example showing how to use `DucklingPlugin` with a `Worflow`.
+    Evaluate a set of cases from a file.
     """
     body = payload["input"]
     mock_entity_json = payload["mock_entity_json"]
