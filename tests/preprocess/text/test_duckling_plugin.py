@@ -11,31 +11,8 @@ import yaml
 
 from dialogy.preprocess.text.duckling_plugin import DucklingPlugin
 from dialogy.workflow import Workflow
+from tests import load_tests, request_builder
 from tests.preprocess.text import config
-
-
-def load_tests(test_type):
-    test_dir = pathlib.Path(__file__).parent
-    test_cases_path = os.path.join(test_dir, f"test_{test_type}.yaml")
-    with open(test_cases_path, "r") as handle:
-        test_cases = yaml.load(handle, Loader=yaml.FullLoader)
-        # make any suitable modifications here
-    return test_cases
-
-
-def request_builder(
-    expected_response, response_code=200
-) -> Callable[[Any, Any, Any], List[Any]]:
-    header = "application/x-www-form-urlencoded; charset=UTF-8"
-
-    def request_callback(request, _, response_headers) -> List[Any]:
-        content_type = request.headers.get("Content-Type")
-        assert (
-            content_type == header
-        ), f"expected {header} but received Content-Type: {content_type}"
-        return [response_code, response_headers, json.dumps(expected_response)]
-
-    return request_callback
 
 
 # == Test duckling api returning 500 ==
@@ -212,7 +189,7 @@ def test_plugin_value_errors() -> None:
 
 
 @httpretty.activate
-@pytest.mark.parametrize("payload", load_tests("asserts"))
+@pytest.mark.parametrize("payload", load_tests("asserts", __file__))
 def test_plugin_working_cases(payload) -> None:
     """
     An end-to-end example showing how to use `DucklingPlugin` with a `Worflow`.
@@ -248,12 +225,12 @@ def test_plugin_working_cases(payload) -> None:
         assert workflow.output["entities"] == []
 
     for i, entity in enumerate(workflow.output["entities"]):
-        class_name = expected_types[i]["type"]
+        class_name = expected_types[i]["entity"]
         assert isinstance(entity, getattr(module, class_name))
 
 
 @httpretty.activate
-@pytest.mark.parametrize("payload", load_tests("exceptions"))
+@pytest.mark.parametrize("payload", load_tests("exceptions", __file__))
 def test_plugin_expected_failures(payload) -> None:
     """
     An end-to-end example showing how to use `DucklingPlugin` with a `Worflow`.
