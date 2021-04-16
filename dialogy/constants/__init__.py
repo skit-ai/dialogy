@@ -68,6 +68,15 @@ BASE_ENTITY_PROPS = [
 TIME_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.GRAIN], str)]
 PEOPLE_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.UNIT], str)]
 
+# Time related constants
+DATE_UNITS = ["day", "week", "month", "quarter", "year"]
+TIME_UNITS = ["hour", "minute", "second"]
+
+# Time Entity types
+DATE = "date"
+TIME = "time"
+DATETIME = "datetime"
+
 # This section covers signals tuple indices
 class SIGNAL:
     NAME = 0

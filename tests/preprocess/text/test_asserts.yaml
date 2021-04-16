@@ -34,7 +34,7 @@
       'end': 57,
       'dim': 'time',
       'latent': False}]
-  expected: [{"type": "PeopleEntity"}, {"type": "TimeEntity"}, {"type": "TimeEntity"}]
+  expected: [{"entity": "PeopleEntity"}, {"entity": "TimeEntity"}, {"entity": "TimeEntity"}]
 
 - description: "numerical entity test"
   input: "4 items"
@@ -44,7 +44,7 @@
   'end': 4,
   'dim': 'number',
   'latent': False}]
-  expected: [{"type": "NumericalEntity"}]
+  expected: [{"entity": "NumericalEntity"}]
 
 - description: "numerical entity test with a list of strings"
   input: ["4 items", "four items"]
@@ -54,7 +54,7 @@
   'end': 4,
   'dim': 'number',
   'latent': False}]
-  expected: [{"type": "NumericalEntity"}, {"type": "NumericalEntity"}]
+  expected: [{"entity": "NumericalEntity"}, {"entity": "NumericalEntity"}]
 
 - description: "test time entity."
   input: "27th next month"
@@ -69,7 +69,7 @@
   'end': 15,
   'dim': 'time',
   'latent': False}]
-  expected: [{"type": "TimeEntity"}]
+  expected: [{"entity": "TimeEntity"}]
 
 - description: "test time interval."
   input: "between 2 to 4 am"
@@ -91,7 +91,7 @@
   'end': 17,
   'dim': 'time',
   'latent': False}]
-  expected: [{"type": "TimeIntervalEntity"}]
+  expected: [{"entity": "TimeIntervalEntity"}]
 
 - description: "time interval entity with only from value."
   input: "from 4 am"
@@ -109,7 +109,7 @@
   'end': 9,
   'dim': 'time',
   'latent': False}]
-  expected: [{"type": "TimeIntervalEntity"}]
+  expected: [{"entity": "TimeIntervalEntity"}]
 
 - description: "time interval entity with only to value"
   input: "till 2 pm"
@@ -127,7 +127,7 @@
   'end': 9,
   'dim': 'time',
   'latent': False}]
-  expected: [{"type":"TimeIntervalEntity"}]
+  expected: [{"entity":"TimeIntervalEntity"}]
 
 - description: "duration entity"
   input: "2 hours"
@@ -141,7 +141,7 @@
   'end': 7,
   'dim': 'duration',
   'latent': False}]
-  expected: [{"type": "DurationEntity"}]
+  expected: [{"entity": "DurationEntity"}]
 
 - description: "no entity found."
   input: "there is no spoon"

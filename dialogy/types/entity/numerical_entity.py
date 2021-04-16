@@ -7,7 +7,7 @@ Import classes:
 """
 import attr
 
-from dialogy import constants
+from dialogy import constants as const
 from dialogy.types.entity import BaseEntity
 
 
@@ -30,4 +30,4 @@ class NumericalEntity(BaseEntity):
     origin = attr.ib(
         type=str, default="value", validator=attr.validators.instance_of(str)
     )
-    __properties_map = constants.BASE_ENTITY_PROPS
+    __properties_map = const.BASE_ENTITY_PROPS
