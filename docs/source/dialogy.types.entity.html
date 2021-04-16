@@ -526,6 +526,45 @@ This is not meant for (latitude, longitude) values, those will be covered in Geo
 <dd><p>Check a list has a unique day</p>
 <p>Where day is the date number for a month.
 Ex: for “2021-04-17T16:00:00.000+05:30”, the day is 17</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">TimeEntity</span>
+
+<span class="gp">In [2]: </span><span class="n">duckling_time_entity</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">   ...: </span>    <span class="s2">"body"</span><span class="p">:</span> <span class="s2">"july 19"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"start"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"value"</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">   ...: </span>    <span class="s2">"values"</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">   ...: </span>        <span class="p">{</span>
+<span class="gp">   ...: </span>        <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2021-07-19T00:00:00.000+05:30"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">"grain"</span><span class="p">:</span> <span class="s2">"day"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"value"</span>
+<span class="gp">   ...: </span>        <span class="p">},</span>
+<span class="gp">   ...: </span>        <span class="p">{</span>
+<span class="gp">   ...: </span>        <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2022-07-19T00:00:00.000+05:30"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">"grain"</span><span class="p">:</span> <span class="s2">"day"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"value"</span>
+<span class="gp">   ...: </span>        <span class="p">},</span>
+<span class="gp">   ...: </span>        <span class="p">{</span>
+<span class="gp">   ...: </span>        <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2023-07-19T00:00:00.000+05:30"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">"grain"</span><span class="p">:</span> <span class="s2">"day"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"value"</span>
+<span class="gp">   ...: </span>        <span class="p">}</span>
+<span class="gp">   ...: </span>    <span class="p">],</span>
+<span class="gp">   ...: </span>    <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2021-07-19T00:00:00.000+05:30"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"grain"</span><span class="p">:</span> <span class="s2">"day"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"value"</span>
+<span class="gp">   ...: </span>    <span class="p">},</span>
+<span class="gp">   ...: </span>    <span class="s2">"end"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"dim"</span><span class="p">:</span> <span class="s2">"time"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"latent"</span><span class="p">:</span> <span class="kc">False</span>
+<span class="gp">   ...: </span><span class="p">}</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">time_entity</span> <span class="o">=</span> <span class="n">TimeEntity</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">duckling_time_entity</span><span class="p">)</span>
+
+<span class="gp">In [4]: </span><span class="n">time_entity</span><span class="o">.</span><span class="n">is_uniq_date_from_values</span><span class="p">()</span>
+<span class="gh">Out[4]: </span><span class="go">True</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>True if there is a unique day in all datetime values</p>

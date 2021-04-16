@@ -254,7 +254,41 @@
 <span class="sd">        Where day is the date number for a month.</span>
 <span class="sd">        Ex: for "2021-04-17T16:00:00.000+05:30", the day is 17</span>
 
-<span class="sd">        .. info :: Example WIP</span>
+<span class="sd">        .. ipython :: python</span>
+
+<span class="sd">            from dialogy.types import TimeEntity</span>
+<span class="sd">            duckling_time_entity = {</span>
+<span class="sd">                "body": "july 19",</span>
+<span class="sd">                "start": 0,</span>
+<span class="sd">                "value": {</span>
+<span class="sd">                "values": [</span>
+<span class="sd">                    {</span>
+<span class="sd">                    "value": "2021-07-19T00:00:00.000+05:30",</span>
+<span class="sd">                    "grain": "day",</span>
+<span class="sd">                    "type": "value"</span>
+<span class="sd">                    },</span>
+<span class="sd">                    {</span>
+<span class="sd">                    "value": "2022-07-19T00:00:00.000+05:30",</span>
+<span class="sd">                    "grain": "day",</span>
+<span class="sd">                    "type": "value"</span>
+<span class="sd">                    },</span>
+<span class="sd">                    {</span>
+<span class="sd">                    "value": "2023-07-19T00:00:00.000+05:30",</span>
+<span class="sd">                    "grain": "day",</span>
+<span class="sd">                    "type": "value"</span>
+<span class="sd">                    }</span>
+<span class="sd">                ],</span>
+<span class="sd">                "value": "2021-07-19T00:00:00.000+05:30",</span>
+<span class="sd">                "grain": "day",</span>
+<span class="sd">                "type": "value"</span>
+<span class="sd">                },</span>
+<span class="sd">                "end": 7,</span>
+<span class="sd">                "dim": "time",</span>
+<span class="sd">                "latent": False</span>
+<span class="sd">            }</span>
+<span class="sd">            time_entity = TimeEntity.from_dict(duckling_time_entity)</span>
+<span class="sd">            time_entity.is_uniq_date_from_values()</span>
+
 
 <span class="sd">        :return: True if there is a unique day in all datetime values</span>
 <span class="sd">        :rtype: bool</span>
@@ -267,7 +301,8 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">py_</span><span class="o">.</span><span class="n">uniq</span><span class="p">(</span><span class="n">dates</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="TimeEntity.is_uniq_day_from_values"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.is_uniq_day_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">is_uniq_day_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">"""Check a list has a unique weekday</span>
+        <span class="sd">"""</span>
+<span class="sd">        Check a list has a unique weekday</span>
 
 <span class="sd">        Where weekday ranges from 0 for Monday till 6 for Sunday</span>
 <span class="sd">        Ex: for "2021-04-17T16:00:00.000+05:30", the weekday is 5 (Saturday)</span>
