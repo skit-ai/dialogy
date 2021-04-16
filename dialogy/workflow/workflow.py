@@ -34,7 +34,7 @@ an :code:`access` function (an argument to every :ref:`Plugin<plugin>`) and rela
 function (another argument for every :ref:`Plugin<plugin>`). These two functions define interactions between many many
 (sic) :ref:`Plugins<plugin>` without knowing the inner workings of a :ref:`Workflow <workflow>`.
 
-Take a look at :ref:`DucklingParser <Duckling>`, this plugin handles inputs, manages the default :code:`json` output
+Take a look at :ref:`DucklingPlugin <duckling_plugin>`, this plugin handles inputs, manages the default :code:`json` output
 into neatly bundled :ref:`BaseEntity <base_entity>` and other similar classes. Another plugin
 :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>` takes care of slot names and the entity types that should be filled
 within.
