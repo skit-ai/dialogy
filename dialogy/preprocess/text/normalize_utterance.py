@@ -26,11 +26,11 @@ def dict_get(prop: str, obj: Dict[str, Any]) -> Any:
 
 def is_list(input_: Any) -> bool:
     """
-    Check type of `input_`
+    Check type of :code:`input`
 
     :param input_: Any arbitrary input
     :type input_: Any
-    :return: True if input_ is a :code:`list` else False
+    :return: True if :code:`input` is a :code:`list` else False
     :rtype: True
     """
     return isinstance(input_, list)
@@ -68,11 +68,14 @@ def is_each_element(
 def is_utterance(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> bool:
     """
     .. _is_utterance:
+
     Check input to be of `List[List[Dict]]`.
 
-    ```json
-    [[{"transcript": "hi"}]]
-    ```
+
+    .. code-blocks: json
+
+        [[{"transcript": "hi"}]]
+
 
     .. ipython:: python
 

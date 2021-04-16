@@ -1,0 +1,149 @@
+- description: "test people, date and time entities."
+  input: "I need 4 people on 27th next month. Can I have it at 5 am"
+  mock_entity_json: [{'body': '4 people',
+    'start': 7,
+    'value': {'value': 4, 'type': 'value', 'unit': 'person'},
+    'end': 15,
+    'dim': 'people',
+    'latent': False},
+     {'body': 'on 27th next month',
+      'start': 16,
+      'value': {'values': [{'value': '2021-05-27T00:00:00.000+05:30',
+         'grain': 'day',
+         'type': 'value'}],
+       'value': '2021-05-27T00:00:00.000+05:30',
+       'grain': 'day',
+       'type': 'value'},
+      'end': 34,
+      'dim': 'time',
+      'latent': False},
+     {'body': 'at 5 am',
+      'start': 50,
+      'value': {'values': [{'value': '2021-04-16T05:00:00.000+05:30',
+         'grain': 'hour',
+         'type': 'value'},
+        {'value': '2021-04-17T05:00:00.000+05:30',
+         'grain': 'hour',
+         'type': 'value'},
+        {'value': '2021-04-18T05:00:00.000+05:30',
+         'grain': 'hour',
+         'type': 'value'}],
+       'value': '2021-04-16T05:00:00.000+05:30',
+       'grain': 'hour',
+       'type': 'value'},
+      'end': 57,
+      'dim': 'time',
+      'latent': False}]
+  expected: [{"type": "PeopleEntity"}, {"type": "TimeEntity"}, {"type": "TimeEntity"}]
+
+- description: "numerical entity test"
+  input: "4 items"
+  mock_entity_json: [{'body': 'four',
+  'start': 0,
+  'value': {'value': 4, 'type': 'value'},
+  'end': 4,
+  'dim': 'number',
+  'latent': False}]
+  expected: [{"type": "NumericalEntity"}]
+
+- description: "numerical entity test with a list of strings"
+  input: ["4 items", "four items"]
+  mock_entity_json: [{'body': 'four',
+  'start': 0,
+  'value': {'value': 4, 'type': 'value'},
+  'end': 4,
+  'dim': 'number',
+  'latent': False}]
+  expected: [{"type": "NumericalEntity"}, {"type": "NumericalEntity"}]
+
+- description: "test time entity."
+  input: "27th next month"
+  mock_entity_json: [{'body': '27th next month',
+  'start': 0,
+  'value': {'values': [{'value': '2021-05-27T00:00:00.000+05:30',
+     'grain': 'day',
+     'type': 'value'}],
+   'value': '2021-05-27T00:00:00.000+05:30',
+   'grain': 'day',
+   'type': 'value'},
+  'end': 15,
+  'dim': 'time',
+  'latent': False}]
+  expected: [{"type": "TimeEntity"}]
+
+- description: "test time interval."
+  input: "between 2 to 4 am"
+  mock_entity_json: [{'body': 'between 2 to 4 am',
+  'start': 0,
+  'value': {'values': [{'to': {'value': '2021-04-16T05:00:00.000+05:30',
+      'grain': 'hour'},
+     'from': {'value': '2021-04-16T02:00:00.000+05:30', 'grain': 'hour'},
+     'type': 'interval'},
+    {'to': {'value': '2021-04-17T05:00:00.000+05:30', 'grain': 'hour'},
+     'from': {'value': '2021-04-17T02:00:00.000+05:30', 'grain': 'hour'},
+     'type': 'interval'},
+    {'to': {'value': '2021-04-18T05:00:00.000+05:30', 'grain': 'hour'},
+     'from': {'value': '2021-04-18T02:00:00.000+05:30', 'grain': 'hour'},
+     'type': 'interval'}],
+   'to': {'value': '2021-04-16T05:00:00.000+05:30', 'grain': 'hour'},
+   'from': {'value': '2021-04-16T02:00:00.000+05:30', 'grain': 'hour'},
+   'type': 'interval'},
+  'end': 17,
+  'dim': 'time',
+  'latent': False}]
+  expected: [{"type": "TimeIntervalEntity"}]
+
+- description: "time interval entity with only from value."
+  input: "from 4 am"
+  mock_entity_json: [{'body': 'from 4 am',
+  'start': 0,
+  'value': {'values': [{'from': {'value': '2021-04-16T04:00:00.000+05:30',
+      'grain': 'hour'},
+     'type': 'interval'},
+    {'from': {'value': '2021-04-17T04:00:00.000+05:30', 'grain': 'hour'},
+     'type': 'interval'},
+    {'from': {'value': '2021-04-18T04:00:00.000+05:30', 'grain': 'hour'},
+     'type': 'interval'}],
+   'from': {'value': '2021-04-16T04:00:00.000+05:30', 'grain': 'hour'},
+   'type': 'interval'},
+  'end': 9,
+  'dim': 'time',
+  'latent': False}]
+  expected: [{"type": "TimeIntervalEntity"}]
+
+- description: "time interval entity with only to value"
+  input: "till 2 pm"
+  mock_entity_json: [{'body': 'till 2 am',
+  'start': 0,
+  'value': {'values': [{'to': {'value': '2021-04-17T02:00:00.000+05:30',
+      'grain': 'hour'},
+     'type': 'interval'},
+    {'to': {'value': '2021-04-18T02:00:00.000+05:30', 'grain': 'hour'},
+     'type': 'interval'},
+    {'to': {'value': '2021-04-19T02:00:00.000+05:30', 'grain': 'hour'},
+     'type': 'interval'}],
+   'to': {'value': '2021-04-17T02:00:00.000+05:30', 'grain': 'hour'},
+   'type': 'interval'},
+  'end': 9,
+  'dim': 'time',
+  'latent': False}]
+  expected: [{"type":"TimeIntervalEntity"}]
+
+- description: "duration entity"
+  input: "2 hours"
+  mock_entity_json: [{'body': '2 hours',
+  'start': 0,
+  'value': {'value': 2,
+   'hour': 2,
+   'type': 'value',
+   'unit': 'hour',
+   'normalized': {'value': 7200, 'unit': 'second'}},
+  'end': 7,
+  'dim': 'duration',
+  'latent': False}]
+  expected: [{"type": "DurationEntity"}]
+
+- description: "no entity found."
+  input: "there is no spoon"
+  mock_entity_json: []
+  expected: []

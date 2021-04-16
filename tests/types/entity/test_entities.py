@@ -131,12 +131,6 @@ def test_entity_values_key_error():
 
 def test_entity_parser_from_dict():
     mock_entity = make_mock_entity()
-    mock_entity["range"] = {"start": mock_entity["start"], "end": mock_entity["end"]}
-    mock_entity["type"] = "basic"
-    del mock_entity["start"]
-    del mock_entity["end"]
-    mock_entity["values"] = mock_entity["value"]["values"]
-    del mock_entity["value"]
     BaseEntity.from_dict(mock_entity)
 
 
@@ -345,7 +339,6 @@ def test_interval_entity_only_from() -> None:
         values=[value],
     )
     entity.set_value(value=value)
-    print(entity)
     assert entity.value == value
 
 

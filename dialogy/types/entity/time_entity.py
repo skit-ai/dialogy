@@ -5,11 +5,11 @@ Module provides access to entity types that can be parsed to obtain datetime val
 Import classes:
     - TimeEntity
 """
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import attr
 
-from dialogy import constants
+from dialogy import constants as const
 from dialogy.types.entity.numerical_entity import NumericalEntity
 
 
@@ -29,7 +29,21 @@ class TimeEntity(NumericalEntity):
 
     dim = "time"
     grain = attr.ib(type=str, default=None, validator=attr.validators.instance_of(str))
-    __properties_map = constants.TIME_ENTITY_PROPS
+    __properties_map = const.TIME_ENTITY_PROPS
+
+    @classmethod
+    def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
+        dict_ = super(TimeEntity, cls).reshape(dict_)
+        # Pulling out the value of entity's **grain**. The value of **grain** helps
+        # us understand the precision of the entity. Usually present for `Time` dimension
+        # expect "year", "month", "day", etc.
+        if all(
+            const.EntityKeys.GRAIN in value for value in dict_[const.EntityKeys.VALUES]
+        ):
+            dict_[const.EntityKeys.GRAIN] = dict_[const.EntityKeys.VALUES][0][
+                const.EntityKeys.GRAIN
+            ]
+        return dict_
 
     def __attrs_post_init__(self) -> None:
         grain_: Optional[str] = None

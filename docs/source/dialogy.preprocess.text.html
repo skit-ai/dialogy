@@ -308,13 +308,13 @@ this returns False, else True.</p>
 <dl class="py function">
 <dt id="dialogy.preprocess.text.normalize_utterance.is_list">
 <code class="sig-prename descclassname"><span class="pre">dialogy.preprocess.text.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#is_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.is_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check type of <cite>input_</cite></p>
+<dd><p>Check type of <code class="code docutils literal notranslate"><span class="pre">input</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>input</strong> (<em>Any</em>) – Any arbitrary input</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if <a href="#id1"><span class="problematic" id="id2">input_</span></a> is a <code class="code docutils literal notranslate"><span class="pre">list</span></code> else False</p>
+<dd class="field-even"><p>True if <code class="code docutils literal notranslate"><span class="pre">input</span></code> is a <code class="code docutils literal notranslate"><span class="pre">list</span></code> else False</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>True</p>
@@ -392,10 +392,7 @@ this returns False, else True.</p>
 <dl class="py function">
 <dt id="dialogy.preprocess.text.normalize_utterance.is_utterance">
 <code class="sig-prename descclassname"><span class="pre">dialogy.preprocess.text.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_utterance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/normalize_utterance.html#is_utterance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.normalize_utterance.is_utterance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check input to be of <cite>List[List[Dict]]</cite>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">`json</span>
-<span class="pre">[[{"transcript":</span> <span class="pre">"hi"}]]</span>
-<span class="pre">`</span></code></p>
+<dd><p id="is-utterance">Check input to be of <cite>List[List[Dict]]</cite>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.preprocess.text.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_utterance</span>
 
 <span class="go"># 1. :code:`List[List[Dict[str, str]]]`</span>

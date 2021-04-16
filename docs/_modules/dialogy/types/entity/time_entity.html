@@ -171,11 +171,11 @@
 <span class="sd">Import classes:</span>
 <span class="sd">    - TimeEntity</span>
 <span class="sd">"""</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
-<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity.numerical_entity</span> <span class="kn">import</span> <span class="n">NumericalEntity</span>
 
 
@@ -195,7 +195,21 @@
 
     <span class="n">dim</span> <span class="o">=</span> <span class="s2">"time"</span>
     <span class="n">grain</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
-    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span>
+
+<div class="viewcode-block" id="TimeEntity.reshape"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.reshape">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">dict_</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TimeEntity</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
+        <span class="c1"># Pulling out the value of entity's **grain**. The value of **grain** helps</span>
+        <span class="c1"># us understand the precision of the entity. Usually present for `Time` dimension</span>
+        <span class="c1"># expect "year", "month", "day", etc.</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span>
+            <span class="p">]</span>
+        <span class="k">return</span> <span class="n">dict_</span></div>
 
     <span class="k">def</span> <span class="nf">__attrs_post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">grain_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>

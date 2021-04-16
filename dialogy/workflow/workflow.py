@@ -12,7 +12,7 @@ A workflow is a hollow conduit, think of a vertically hanging pipe without any m
 `anything`? through it, it would pass through with a thud on the ground `(yes we assumed gravity)`.
 
 All good but that's not special? Why would anyone need that?
-----
+-------------------------------------------------------------
 
 A workflow allows flexibility, that's why. There is very little structure to it. We have:
 
@@ -26,7 +26,7 @@ As long as you have the compute, there is no restriction. Use statistical models
 your :ref:`Workflow <Workflow>` won't judge you.
 
 Where's the sauce?
-----
+-------------------
 
 The :ref:`Plugin<plugin>` concept takes care of the sauciness 🍅 of this project. Any functionality can be bundled into
 a :ref:`Plugin<plugin>` and they are portable over to foreign workflows. A :ref:`Plugin<plugin>` proxies inputs through
@@ -34,7 +34,7 @@ an :code:`access` function (an argument to every :ref:`Plugin<plugin>`) and rela
 function (another argument for every :ref:`Plugin<plugin>`). These two functions define interactions between many many
 (sic) :ref:`Plugins<plugin>` without knowing the inner workings of a :ref:`Workflow <workflow>`.
 
-Take a look at :ref:`DucklingParser <Duckling>`, this plugin handles inputs, manages the default :code:`json` output
+Take a look at :ref:`DucklingPlugin <duckling_plugin>`, this plugin handles inputs, manages the default :code:`json` output
 into neatly bundled :ref:`BaseEntity <base_entity>` and other similar classes. Another plugin
 :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>` takes care of slot names and the entity types that should be filled
 within.

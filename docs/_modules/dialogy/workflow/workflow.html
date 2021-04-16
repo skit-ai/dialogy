@@ -178,7 +178,7 @@
 <span class="sd">`anything`? through it, it would pass through with a thud on the ground `(yes we assumed gravity)`.</span>
 
 <span class="sd">All good but that's not special? Why would anyone need that?</span>
-<span class="sd">----</span>
+<span class="sd">-------------------------------------------------------------</span>
 
 <span class="sd">A workflow allows flexibility, that's why. There is very little structure to it. We have:</span>
 
@@ -192,7 +192,7 @@
 <span class="sd">your :ref:`Workflow &lt;Workflow&gt;` won't judge you.</span>
 
 <span class="sd">Where's the sauce?</span>
-<span class="sd">----</span>
+<span class="sd">-------------------</span>
 
 <span class="sd">The :ref:`Plugin&lt;plugin&gt;` concept takes care of the sauciness 🍅 of this project. Any functionality can be bundled into</span>
 <span class="sd">a :ref:`Plugin&lt;plugin&gt;` and they are portable over to foreign workflows. A :ref:`Plugin&lt;plugin&gt;` proxies inputs through</span>
@@ -200,7 +200,7 @@
 <span class="sd">function (another argument for every :ref:`Plugin&lt;plugin&gt;`). These two functions define interactions between many many</span>
 <span class="sd">(sic) :ref:`Plugins&lt;plugin&gt;` without knowing the inner workings of a :ref:`Workflow &lt;workflow&gt;`.</span>
 
-<span class="sd">Take a look at :ref:`DucklingParser &lt;Duckling&gt;`, this plugin handles inputs, manages the default :code:`json` output</span>
+<span class="sd">Take a look at :ref:`DucklingPlugin &lt;duckling_plugin&gt;`, this plugin handles inputs, manages the default :code:`json` output</span>
 <span class="sd">into neatly bundled :ref:`BaseEntity &lt;base_entity&gt;` and other similar classes. Another plugin</span>
 <span class="sd">:ref:`RuleBasedSlotFillerPlugin&lt;rule_slot_filler&gt;` takes care of slot names and the entity types that should be filled</span>
 <span class="sd">within.</span>

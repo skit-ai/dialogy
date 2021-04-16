@@ -69,7 +69,7 @@ class Plugin:
 
     We ship a few :ref:`Plugins <plugin>` with Dialogy, namely:
 
-    1. :ref:`DucklingParser <duckling_parser>` (pre-processing)
+    1. :ref:`DucklingPlugin <duckling_plugin>` (pre-processing)
     2. :ref:`merge_asr_output_plugin <merge_asr_output_plugin>` (pre-processing)
     3. :ref:`RuleBasedSlotFillerPlugin <rule_slot_filler>` (post-processing)
     4. :ref:`VotePlugin <vote_plugin>` (post-processing)
