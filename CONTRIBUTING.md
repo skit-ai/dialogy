@@ -108,6 +108,8 @@ We respect high-quality well-documented and tested code. To that effect we:
     - [Telling your git client about the key](https://docs.github.com/en/github/authenticating-to-github/telling-git-about-your-signing-key)
     - [Signed commits](https://docs.github.com/en/github/authenticating-to-github/signing-commits)
 
+- Creating a branch also comes with a convention label/#issue.n/title. As an example, if you are working on a bug your branch could be named bug/#45/plugin_crash_on_
+
 ## License
 By contributing, you agree that your contributions will be licensed under its MIT License.
 

@@ -20,3 +20,8 @@ exclude_paths:
   - "LICENSE.md"
   - "tests/**"
   - "docs/**"
+  - "docs_src/**"
+  - ".github/**"
+  - CODE_OF_CONDUCT.md
+  - CONTRIBUTING.md
+
