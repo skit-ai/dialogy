@@ -66,9 +66,11 @@ class TimeIntervalEntity(TimeEntity):
         """
         date_dict = date.get(const.EntityKeys.FROM) or date.get(const.EntityKeys.TO)
         if date_dict:
-            print("Date Dict: ", date_dict)
             return date_dict.get(const.EntityKeys.VALUE)
-        return None
+        else:
+            raise KeyError(
+                f"Expected at least 1 of `from` or `to` in {self.values} for {self}"
+            )
 
     def set_value(self, value: Optional[Dict[str, Any]] = None) -> None:
         """
