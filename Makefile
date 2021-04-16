@@ -7,6 +7,8 @@ lint:
 	@isort tests
 	@black dialogy
 	@black tests
+	@echo -e "remove unused imports"
+	@pycln dialogy
 	@echo -e "Running type checker"
 	@mypy dialogy
 
