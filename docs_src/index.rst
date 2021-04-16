@@ -6,16 +6,10 @@
 Welcome to dialogy's documentation!
 ===================================
 
-.. toctree::
-   :maxdepth: 4
-   :caption: Contents:
-
 Sections 📄
 ------------
 1. :ref:`Index<genindex>`
-2. :ref:`All modules<modindex>`
-3. :ref:`Search Page<search>`
-4. Popular sections
+2. Popular Sections
 
    1. :ref:`Workflow<workflow>`
    2. :ref:`Plugin<Plugin>`
@@ -30,7 +24,12 @@ Sections 📄
          1. :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>`
          2. :ref:`VotePlugin<vote_plugin>`
 
+   3. All Modules
 
+      .. toctree::
+         :maxdepth: 4
+
+         ../source/modules
 
 
 Dialogy
