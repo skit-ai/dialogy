@@ -94,21 +94,23 @@ This is the same code, but it speaks so much more. Things can easily be correcte
 as a reviewer one quickly understands the intention and suggestions/feedback are far 
 more efficient.
 
-## Use a Consistent Coding Style
+## Work style
 We use Makefiles to ensure necessary things are not left out but no active involvement should be required.
 We respect high-quality well-documented and tested code. To that effect we:
 
 - Lint using `isort`, `pycln` and `black`.
 - Test using `pytest`. Expect differing test inputs via parameterized sources.
 - Automatic documentation using `sphinx`, so please produce docstrings accordingly it will greatly help the documentation quality.
+- Commits must be [readable and helpful](https://www.conventionalcommits.org/en/v1.0.0/).
 - Sign your commits.
     - [Why you should sign your commits](https://softwareengineering.stackexchange.com/questions/212192/what-are-the-advantages-and-disadvantages-of-cryptographically-signing-commits-a)
     - [Generating a GPG Key](https://docs.github.com/en/github/authenticating-to-github/generating-a-new-gpg-key)
     - [Adding a key to your account](https://docs.github.com/en/github/authenticating-to-github/adding-a-new-gpg-key-to-your-github-account)
     - [Telling your git client about the key](https://docs.github.com/en/github/authenticating-to-github/telling-git-about-your-signing-key)
     - [Signed commits](https://docs.github.com/en/github/authenticating-to-github/signing-commits)
-
+    - Verify using `git log --show-signature`
 - Creating a branch also comes with a convention label/#issue.n/title. As an example, if you are working on a bug your branch could be named bug/#45/plugin_crash_on_
+- All PRs must accompany tests. Healthy coverage is necessary, healthy is 100%.
 
 ## License
 By contributing, you agree that your contributions will be licensed under its MIT License.
