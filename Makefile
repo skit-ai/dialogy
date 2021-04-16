@@ -16,6 +16,8 @@ test: lint ## Run the tests.
 
 docs: test
 	@echo -e "🦆🦕🐬🐶"
+	@rm -rf docs_src/source/
+	@sphinx-apidoc -o docs_src/source dialogy
 	@$(MAKE) html -C docs_src
 	@cp -r docs_src/_build/html/. ./docs
 
