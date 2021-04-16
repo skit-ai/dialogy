@@ -1,8 +1,12 @@
 """
 Tests for entities
 """
+import importlib
+
+import httpretty
 import pytest
 
+from dialogy.preprocess.text.duckling_plugin import DucklingPlugin
 from dialogy.types.entity import (
     BaseEntity,
     LocationEntity,
@@ -13,6 +17,7 @@ from dialogy.types.entity import (
     entity_synthesis,
 )
 from dialogy.workflow import Workflow
+from tests import EXCEPTIONS, load_tests, request_builder
 
 
 def mock_plugin(_: Workflow) -> None:
@@ -208,46 +213,6 @@ def test_interval_entity_set_value_values_missing() -> None:
     assert entity.value == value
 
 
-def test_interval_entity_set_value_values_present() -> None:
-    body = "between 2 to 4 am"
-    value = {
-        "to": {"value": "2021-01-22T05:00:00.000+05:30", "grain": "hour"},
-        "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
-    }
-    entity = TimeIntervalEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        type="time",
-        grain="hour",
-    )
-    entity.set_value(value)
-    assert entity.value == value
-
-
-def test_interval_entity_value_not_dict() -> None:
-    body = "between 2 to 4 am"
-    entity = TimeIntervalEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        type="time",
-        grain="hour",
-    )
-    with pytest.raises(TypeError):
-        entity.set_value(4)
-
-
-def test_interval_entity_value_none() -> None:
-    body = "between 2 to 4 am"
-    entity = TimeIntervalEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        type="time",
-        grain="hour",
-    )
-    with pytest.raises(TypeError):
-        entity.set_value()
-
-
 def test_entity_jsonify() -> None:
     body = "12th december"
     value = "value"
@@ -297,23 +262,6 @@ def test_entity_jsonify_skip() -> None:
     assert "values" not in entity_json
 
 
-def test_entity_grain_to_type() -> None:
-    body = "between 2 to 4 am"
-    value = {
-        "to": {"value": "2021-01-22T05:00:00.000+05:30", "grain": "hour"},
-        "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
-    }
-    entity = TimeIntervalEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        type="time",
-        grain="hour",
-        values=[value],
-    )
-    assert entity.entity_type == "hour"
-    assert entity.type == "hour"
-
-
 def test_both_entity_type_attributes_match() -> None:
     body = "4 things"
     value = {"value": 4}
@@ -356,3 +304,128 @@ def test_interval_entity_only_to() -> None:
     )
     entity.set_value(value=value)
     assert entity.value == value
+
+
+def test_bad_interval_entity_neither_from_nor_to() -> None:
+    body = "to 4 am"
+    value = {"type": "interval"}
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+    )
+    with pytest.raises(KeyError):
+        entity.get_date_value(value)
+
+
+def test_bad_time_entity_invalid_value() -> None:
+    body = "4 am"
+    value = {"grain": "hour"}
+    entity = TimeEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+    )
+    with pytest.raises(KeyError):
+        entity.get_date_value(value)
+
+
+def test_bad_time_entity_no_value() -> None:
+    body = "4 am"
+    with pytest.raises(ValueError):
+        entity = TimeEntity(
+            range={"from": 0, "to": len(body)},
+            body=body,
+            type="time",
+            grain="hour",
+            values=[],
+        )
+
+
+def test_time_interval_entity_value_neither_from_nor_to() -> None:
+    body = "to 4 am"
+    value = {
+        "to": {"value": "2021-04-17T04:00:00.000+05:30", "grain": "hour"},
+        "type": "interval",
+    }
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+        value=value,
+    )
+    del entity.value["to"]
+    with pytest.raises(TypeError):
+        entity.set_value(value)
+
+
+def test_time_interval_entity_no_value() -> None:
+    body = "to 4 am"
+    value = {
+        "to": {"value": "2021-04-17T04:00:00.000+05:30", "grain": "hour"},
+        "type": "interval",
+    }
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+        value=value,
+    )
+    entity.values = entity.value
+    with pytest.raises(TypeError):
+        entity.set_value()
+
+
+@httpretty.activate
+@pytest.mark.parametrize("payload", load_tests("cases", __file__))
+def test_entity_type(payload) -> None:
+    """
+    TODO: change docstring
+    An end-to-end example showing how to use `DucklingPlugin` with a `Worflow`.
+    """
+    body = payload["input"]
+    mock_entity_json = payload["mock_entity_json"]
+    expected = payload.get("expected")
+    exception = payload.get("exception")
+
+    def access(workflow):
+        return workflow.input, None
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+
+    parser = DucklingPlugin(
+        access=access,
+        mutate=mutate,
+        dimensions=["people", "time", "date", "duration"],
+        locale="en_IN",
+        timezone="Asia/Kolkata",
+    )
+
+    request_callback = request_builder(mock_entity_json)
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
+    )
+
+    workflow = Workflow(preprocessors=[parser()], postprocessors=[])
+
+    if expected:
+        workflow.run(body)
+        module = importlib.import_module("dialogy.types.entity")
+
+        for i, entity in enumerate(workflow.output["entities"]):
+            class_name = expected[i]["entity"]
+            assert entity.type == expected[i]["type"]
+            assert entity.entity_type == expected[i]["type"]
+            assert isinstance(entity, getattr(module, class_name))
+    elif exception:
+        with pytest.raises(EXCEPTIONS[exception]):
+            workflow.run(body)

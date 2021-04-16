@@ -1,0 +1,155 @@
+- description: "date entity type test"
+  input: "Monday"
+  mock_entity_json: [
+    {
+      "body": "monday",
+      "start": 0,
+      "value": {
+        "values": [
+          {
+            "value": "2021-04-19T00:00:00.000+05:30",
+            "grain": "day",
+            "type": "value"
+          },
+          {
+            "value": "2021-04-26T00:00:00.000+05:30",
+            "grain": "day",
+            "type": "value"
+          },
+          {
+            "value": "2021-05-03T00:00:00.000+05:30",
+            "grain": "day",
+            "type": "value"
+          }
+        ],
+        "value": "2021-04-19T00:00:00.000+05:30",
+        "grain": "day",
+        "type": "value"
+      },
+      "end": 6,
+      "dim": "time",
+      "latent": false
+    }
+  ]
+  expected: [{"type": "date", "entity": "TimeEntity"}]
+
+- description: "time interval time type test"
+  input: "between 2 to 4 am"
+  mock_entity_json: [
+    {
+        "body": "between 2 to 4 am",
+        "start": 0,
+        "value": {
+          "values": [
+            {
+              "to": {
+                "value": "2021-04-17T05:00:00.000+05:30",
+                "grain": "hour"
+              },
+              "from": {
+                "value": "2021-04-17T02:00:00.000+05:30",
+                "grain": "hour"
+              },
+              "type": "interval"
+            },
+            {
+              "to": {
+                "value": "2021-04-18T05:00:00.000+05:30",
+                "grain": "hour"
+              },
+              "from": {
+                "value": "2021-04-18T02:00:00.000+05:30",
+                "grain": "hour"
+              },
+              "type": "interval"
+            },
+            {
+              "to": {
+                "value": "2021-04-19T05:00:00.000+05:30",
+                "grain": "hour"
+              },
+              "from": {
+                "value": "2021-04-19T02:00:00.000+05:30",
+                "grain": "hour"
+              },
+              "type": "interval"
+            }
+          ],
+          "to": {
+            "value": "2021-04-17T05:00:00.000+05:30",
+            "grain": "hour"
+          },
+          "from": {
+            "value": "2021-04-17T02:00:00.000+05:30",
+            "grain": "hour"
+          },
+          "type": "interval"
+        },
+        "end": 17,
+        "dim": "time",
+        "latent": false
+      }
+  ]
+  expected: [{"type": "time", "entity": "TimeIntervalEntity"}]
+
+- description: "datetime time type test"
+  input: "Monday 9 pm"
+  mock_entity_json: [
+    {
+      "body": "monday 9 pm",
+      "start": 0,
+      "value": {
+        "values": [
+          {
+            "value": "2021-04-19T21:00:00.000+05:30",
+            "grain": "hour",
+            "type": "value"
+          },
+          {
+            "value": "2021-04-26T21:00:00.000+05:30",
+            "grain": "hour",
+            "type": "value"
+          },
+          {
+            "value": "2021-05-03T21:00:00.000+05:30",
+            "grain": "hour",
+            "type": "value"
+          }
+        ],
+        "value": "2021-04-19T21:00:00.000+05:30",
+        "grain": "hour",
+        "type": "value"
+      },
+      "end": 11,
+      "dim": "time",
+      "latent": false
+    }
+  ]
+  expected: [{"type": "datetime", "entity": "TimeEntity"}]
+
+- description: "time interval with neither `from` nor `to` keys"
+  input: "between 2 to 4 am"
+  mock_entity_json: [
+    {
+        "body": "between 2 to 4 am",
+        "start": 0,
+        "value": {
+          "values": [
+            {
+              "type": "interval"
+            },
+            {
+              "type": "interval"
+            },
+            {
+              "type": "interval"
+            }
+          ],
+          "type": "interval"
+        },
+        "end": 17,
+        "dim": "time",
+        "latent": false
+      }
+  ]
+  exception: "TypeError"
