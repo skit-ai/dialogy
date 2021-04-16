@@ -1,0 +1,24 @@
+- description: "test time interval."
+  input: "between 2 to 4 am"
+  mock_entity_json: [{'body': 'between 2 to 4 am',
+  'start': 0,
+  'value': {'values': [{'type': 'interval'},
+    {'type': 'interval'},
+    {'type': 'interval'}],
+   'type': 'interval'},
+  'end': 17,
+  'dim': 'time',
+  'latent': False}]
+  expected: "TypeError"
+
+- description: "people entity with a missing value."
+  input: "3 people"
+  mock_entity_json: [{
+    "body": "3 people",
+    "start": 67,
+    "end": 75,
+    "dim": "people",
+    "latent": False
+  }]
+  expected: "KeyError"
+
