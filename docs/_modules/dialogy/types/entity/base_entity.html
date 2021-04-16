@@ -284,6 +284,35 @@
         <span class="k">for</span> <span class="n">prop</span><span class="p">,</span> <span class="n">prop_type</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__properties_map</span><span class="p">:</span>
             <span class="n">validate_type</span><span class="p">(</span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">prop</span><span class="p">),</span> <span class="n">prop_type</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="BaseEntity.reshape"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.reshape">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        :type dict_: Dict[str, Any]</span>
+<span class="sd">        """</span>
+        <span class="n">match_start</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
+        <span class="n">match_end</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>
+
+        <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">:</span> <span class="n">match_start</span><span class="p">,</span>
+            <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">:</span> <span class="n">match_end</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="c1"># ['body', 'start', 'value', 'end', 'dim', 'latent']</span>
+
+        <span class="c1"># **type** of an entity is same as its **dimension**.</span>
+        <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]</span>
+
+        <span class="c1"># This piece is a preparation for multiple entity values.</span>
+        <span class="c1"># So, even though we are confident of the value found, we are still keeping the</span>
+        <span class="c1"># structure.</span>
+        <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span> <span class="ow">in</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]:</span>
+            <span class="k">del</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span>
+        <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]]</span>
+
+        <span class="k">del</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dict_</span></div>
+
 <div class="viewcode-block" id="BaseEntity.from_dict"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"BaseEntity"</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -297,6 +326,7 @@
 <span class="sd">        :return: Instance of class</span>
 <span class="sd">        :rtype: BaseEntity</span>
 <span class="sd">        """</span>
+        <span class="n">dict_</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">dict_</span><span class="p">)</span></div>
 

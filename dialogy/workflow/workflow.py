@@ -12,7 +12,7 @@ A workflow is a hollow conduit, think of a vertically hanging pipe without any m
 `anything`? through it, it would pass through with a thud on the ground `(yes we assumed gravity)`.
 
 All good but that's not special? Why would anyone need that?
-----
+-------------------------------------------------------------
 
 A workflow allows flexibility, that's why. There is very little structure to it. We have:
 
@@ -26,7 +26,7 @@ As long as you have the compute, there is no restriction. Use statistical models
 your :ref:`Workflow <Workflow>` won't judge you.
 
 Where's the sauce?
-----
+-------------------
 
 The :ref:`Plugin<plugin>` concept takes care of the sauciness 🍅 of this project. Any functionality can be bundled into
 a :ref:`Plugin<plugin>` and they are portable over to foreign workflows. A :ref:`Plugin<plugin>` proxies inputs through
