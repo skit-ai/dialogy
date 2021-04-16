@@ -3,8 +3,27 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to dialogy's documentation!
-===================================
+Dialogy
+========
+
+.. image:: https://travis-ci.com/Vernacular-ai/dialogy.svg?branch=master
+    :target: https://travis-ci.com/Vernacular-ai/dialogy
+
+.. image:: https://coveralls.io/repos/github/Vernacular-ai/dialogy/badge.svg?branch=master
+   :target: https://coveralls.io/github/Vernacular-ai/dialogy?branch=master
+
+.. image:: https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c
+   :target: https://www.codacy.com/gh/Vernacular-ai/dialogy/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Vernacular-ai/dialogy&amp;utm_campaign=Badge_Grade
+
+.. image:: https://badge.fury.io/py/dialogy.svg
+    :target: https://badge.fury.io/py/dialogy
+
+Dialogy is a battries-included opinionated framework to build machine-learning solutions for speech applications.
+
+-   Plugin-based: Makes it easy to import/export components to other projects.
+-   Stack-agnostic: No assumptions made on ML stack; your choice of machine learning library will not be affected by using Dialogy.
+-   Progressive: Minimal boilerplate writing to let you focus on your machine learning problems.
+
 
 Sections 📄
 ------------
@@ -31,28 +50,6 @@ Sections 📄
       :glob:
 
       ../source/dialogy.*
-
-Dialogy
-========
-
-.. image:: https://travis-ci.com/Vernacular-ai/dialogy.svg?branch=master
-    :target: https://travis-ci.com/Vernacular-ai/dialogy
-
-.. image:: https://coveralls.io/repos/github/Vernacular-ai/dialogy/badge.svg?branch=master
-   :target: https://coveralls.io/github/Vernacular-ai/dialogy?branch=master
-
-.. image:: https://badge.fury.io/py/dialogy.svg
-    :target: https://badge.fury.io/py/dialogy
-
-.. image:: https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c
-   :target: https://www.codacy.com/gh/Vernacular-ai/dialogy/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Vernacular-ai/dialogy&amp;utm_campaign=Badge_Grade
-
-
-Dialogy is a battries-included 🔋 opinionated framework to build machine-learning solutions for speech applications.
-
--   Plugin-based: Makes it easy to import/export components to other projects. 🔌
--   Stack-agnostic: No assumptions made on ML stack; your choice of machine learning library will not be affected by using Dialogy. 👍
--   Progressive: Minimal boilerplate writing to let you focus on your machine learning problems. 🤏
 
 
 Installation
