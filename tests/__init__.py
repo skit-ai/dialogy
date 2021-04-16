@@ -3,9 +3,16 @@ import os
 import pathlib
 from typing import Any, Callable, List
 
+import pytz
 import yaml
 
-EXCEPTIONS = {"TypeError": TypeError, "KeyError": KeyError, "ValueError": ValueError}
+EXCEPTIONS = {
+    "TypeError": TypeError,
+    "KeyError": KeyError,
+    "ValueError": ValueError,
+    "NotImplementedError": NotImplementedError,
+    "UnknownTimeZoneError": pytz.UnknownTimeZoneError,
+}
 
 
 def load_tests(test_type, current_path):

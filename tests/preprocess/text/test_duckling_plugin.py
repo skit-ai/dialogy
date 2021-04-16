@@ -1,79 +1,11 @@
 import importlib
-import json
-import os
-import pathlib
-from typing import Any, Callable, List
 
 import httpretty
 import pytest
-import pytz
-import yaml
 
 from dialogy.preprocess.text.duckling_plugin import DucklingPlugin
 from dialogy.workflow import Workflow
-from tests import load_tests, request_builder
-from tests.preprocess.text import config
-
-
-# == Test duckling api returning 500 ==
-@httpretty.activate
-def test_duckling_api_failure() -> None:
-    """
-    Simulate Duckling returning 500.
-    """
-    body = "27th next month"
-    expected_response = [config.mock_date_entity]
-
-    request_callback = request_builder(expected_response, response_code=500)
-
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
-
-    parser = DucklingPlugin(
-        dimensions=["time"], locale="en_IN", timezone="Asia/Kolkata"
-    )
-
-    with pytest.raises(ValueError):
-        parser._get_entities(body)
-
-
-# == Test duckling with incorrect timezone ==
-def test_duckling_wrong_tz() -> None:
-    """
-    In case the timezone is incorrect or exceptions need to be handled.
-    """
-    body = "i need it at 5 am"
-
-    request_callback = request_builder({})
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
-
-    parser = DucklingPlugin(
-        locale="en_IN", timezone="Earth/Someplace", dimensions=["time"]
-    )
-
-    with pytest.raises(pytz.UnknownTimeZoneError):
-        _ = parser._get_entities(body)
-
-
-# == Test transformation of unknown entity type ==
-def test_entity_object_not_implemented() -> None:
-    """
-    Reshape converts json response from Duckling APIs
-    to dialogy's BaseEntity.
-
-    We are checking for an unknown entity type here.
-    This would lead to a `NotImplementedError`.
-    """
-    entities_json = [config.mock_unknown_entity]
-    parser = DucklingPlugin(
-        locale="en_IN", dimensions=["unknown"], timezone="Asia/Kolkata"
-    )
-
-    with pytest.raises(NotImplementedError):
-        parser._reshape(entities_json)
+from tests import EXCEPTIONS, load_tests, request_builder
 
 
 # == Test missing i/o ==
@@ -122,81 +54,18 @@ def test_plugin_io_type_mismatch(access, mutate) -> None:
         workflow.run("")
 
 
-@pytest.mark.parametrize(
-    "body",
-    [42, None, {"key", 42}, [12]],
-)
 @httpretty.activate
-def test_plugin_type_errors(body) -> None:
-    """
-    An end-to-end example showing how `DucklingPlugin` works in case
-    the input is invalid.
-    """
-
-    def access(workflow):
-        return workflow.input, None
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
-    parser = DucklingPlugin(
-        access=access,
-        mutate=mutate,
-        dimensions=["people"],
-        locale="en_IN",
-        timezone="Asia/Kolkata",
-    )
-
-    request_callback = request_builder([])
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
-
-    with pytest.raises(TypeError):
-        workflow = Workflow(preprocessors=[parser()], postprocessors=[])
-        workflow.run(body)
-
-
-@httpretty.activate
-def test_plugin_value_errors() -> None:
-    """
-    An end-to-end example showing how `DucklingParser` works in case
-    the input is invalid.
-    """
-
-    def access(workflow):
-        return workflow.input, None
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
-    parser = DucklingPlugin(
-        access=access,
-        mutate=mutate,
-        dimensions=["people"],
-        locale="en_IN",
-        timezone="Asia/Kolkata",
-    )
-
-    request_callback = request_builder([], response_code=500)
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
-
-    with pytest.raises(ValueError):
-        workflow = Workflow(preprocessors=[parser()], postprocessors=[])
-        workflow.run("")
-
-
-@httpretty.activate
-@pytest.mark.parametrize("payload", load_tests("asserts", __file__))
+@pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_plugin_working_cases(payload) -> None:
     """
     An end-to-end example showing how to use `DucklingPlugin` with a `Worflow`.
     """
     body = payload["input"]
     mock_entity_json = payload["mock_entity_json"]
-    expected_types = payload["expected"]
+    expected_types = payload.get("expected")
+    exception = payload.get("exception")
+    duckling_args = payload.get("duckling")
+    response_code = payload.get("response_code", 200)
 
     def access(workflow):
         return workflow.input, None
@@ -204,61 +73,25 @@ def test_plugin_working_cases(payload) -> None:
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
 
-    parser = DucklingPlugin(
-        access=access,
-        mutate=mutate,
-        dimensions=["people", "time", "date", "duration"],
-        locale="en_IN",
-        timezone="Asia/Kolkata",
-    )
+    parser = DucklingPlugin(access=access, mutate=mutate, **duckling_args)
 
-    request_callback = request_builder(mock_entity_json)
+    request_callback = request_builder(mock_entity_json, response_code=response_code)
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
     workflow = Workflow(preprocessors=[parser()], postprocessors=[])
-    workflow.run(body)
-    module = importlib.import_module("dialogy.types.entity")
 
-    if not workflow.output["entities"]:
-        assert workflow.output["entities"] == []
-
-    for i, entity in enumerate(workflow.output["entities"]):
-        class_name = expected_types[i]["entity"]
-        assert isinstance(entity, getattr(module, class_name))
-
-
-@httpretty.activate
-@pytest.mark.parametrize("payload", load_tests("exceptions", __file__))
-def test_plugin_expected_failures(payload) -> None:
-    """
-    An end-to-end example showing how to use `DucklingPlugin` with a `Worflow`.
-    """
-    body = payload["input"]
-    mock_entity_json = payload["mock_entity_json"]
-    expected_types = payload["expected"]
-    exceptions = {"TypeError": TypeError, "KeyError": KeyError}
-
-    def access(workflow):
-        return workflow.input, None
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
-    parser = DucklingPlugin(
-        access=access,
-        mutate=mutate,
-        dimensions=["people", "time", "date", "duration"],
-        locale="en_IN",
-        timezone="Asia/Kolkata",
-    )
-
-    request_callback = request_builder(mock_entity_json)
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
-
-    workflow = Workflow(preprocessors=[parser()], postprocessors=[])
-    with pytest.raises(exceptions[expected_types]):
+    if expected_types is not None:
         workflow.run(body)
+        module = importlib.import_module("dialogy.types.entity")
+
+        if not workflow.output["entities"]:
+            assert workflow.output["entities"] == []
+
+        for i, entity in enumerate(workflow.output["entities"]):
+            class_name = expected_types[i]["entity"]
+            assert isinstance(entity, getattr(module, class_name))
+    else:
+        with pytest.raises(EXCEPTIONS[exception]):
+            workflow.run(body)
