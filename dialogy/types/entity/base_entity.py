@@ -139,8 +139,11 @@ class BaseEntity:
         # So, even though we are confident of the value found, we are still keeping the
         # structure.
         if const.EntityKeys.VALUES in dict_[const.EntityKeys.VALUE]:
-            del dict_[const.EntityKeys.VALUE][const.EntityKeys.VALUES]
-        dict_[const.EntityKeys.VALUES] = [dict_[const.EntityKeys.VALUE]]
+            dict_[const.EntityKeys.VALUES] = dict_[const.EntityKeys.VALUE][
+                const.EntityKeys.VALUES
+            ]
+        else:
+            dict_[const.EntityKeys.VALUES] = [dict_[const.EntityKeys.VALUE]]
 
         del dict_[const.EntityKeys.START]
         del dict_[const.EntityKeys.END]
