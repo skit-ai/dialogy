@@ -7,7 +7,7 @@ Import classes:
     - Intent
 """
 
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from dialogy.types.entity import BaseEntity
 from dialogy.types.plugin import PluginFn
