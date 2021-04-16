@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional
 import attr
 
 from dialogy import constants as const
-from dialogy.types.entity.time_entity import TimeEntity
+from dialogy.types.entity import TimeEntity
 
 
 @attr.s
@@ -45,6 +45,34 @@ class TimeIntervalEntity(TimeEntity):
             dict_[const.EntityKeys.GRAIN] = date_range[const.EntityKeys.GRAIN]
         return dict_
 
+    def get_date_value(self, date: Dict[str, Any]) -> Optional[str]:
+        """
+        Return the date string in ISO format from the dictionary passed
+
+        .. code-blocks :: python
+
+            date = {
+                "from": {
+                    "value": "2021-04-16T16:00:00.000+05:30",
+                    "grain": "hour"
+                },
+                "type": "interval"
+            }
+
+        :param date: Dictionary which stores the datetime in ISO format, grain and type
+        :type date: Dict[str, str]
+        :return: :code:`date["value"]`
+        :rtype: Optional[str]
+        """
+        date_dict = date[const.EntityKeys.VALUES].get(const.EntityKeys.FROM) or date[
+            const.EntityKeys.VALUES
+        ].get(const.EntityKeys.TO)
+        print("Hello")
+        if date_dict:
+            print("Date Dict: ", date_dict)
+            return date_dict.get(const.EntityKeys.VALUE)
+        return None
+
     def set_value(self, value: Optional[Dict[str, Any]] = None) -> None:
         """
         Set values and value attribute.
@@ -75,3 +103,6 @@ class TimeIntervalEntity(TimeEntity):
                     " or value should look like: {'to': ...,  'from': ...}"
                     f" but {type(value)} found."
                 )
+
+    def __attrs_post_init__(self) -> None:
+        self.post_init()
