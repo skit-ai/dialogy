@@ -6,7 +6,7 @@ Import classes:
     - TimeEntity
 """
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import attr
 import pydash as py_  # type: ignore
@@ -64,7 +64,10 @@ class TimeEntity(NumericalEntity):
         :return: :code:`date["value"]`
         :rtype: Optional[str]
         """
-        return date.get("value")
+        if date.get("value"):
+            return date["value"]
+        else:
+            raise KeyError(f"Expected key `value` in {date} for {self}")
 
     def is_uniq_date_from_values(self) -> bool:
         """
@@ -107,6 +110,8 @@ class TimeEntity(NumericalEntity):
         # then we generate pairs as (21-04-2021, 28-04-2021) and (28-04-2021, 05-05-2021).
         # If the difference between these dates is divisible by seven,
         # then we are clear that the input was a weekday.
+        if not dates:
+            return False
         return all(
             abs((next - prev).days) % 7 == 0
             for (prev, next) in zip(dates[:-1], dates[1:])
@@ -143,16 +148,13 @@ class TimeEntity(NumericalEntity):
         if self.grain in const.DATE_UNITS:
             return const.DATE
         elif self.grain in const.TIME_UNITS and len(self.values) == 1:
-            print("Case 1")
-            print(self.grain, self.values)
             return const.DATETIME
         elif self.is_uniq_date_from_values() or self.is_uniq_day_from_values():
-            print("Case 2")
-            print(self.values)
-            print(self.is_uniq_date_from_values(), self.is_uniq_day_from_values())
             return const.DATETIME
-        else:
+        elif len(self.values) > 0:
             return const.TIME
+        else:
+            raise ValueError(f"Expected at least 1 value in {self.values} for {self}")
 
     def __attrs_post_init__(self) -> None:
         self.post_init()
