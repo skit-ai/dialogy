@@ -123,7 +123,8 @@ class TimeEntity(NumericalEntity):
         return len(py_.uniq(dates)) == 1
 
     def is_uniq_day_from_values(self) -> bool:
-        """Check a list has a unique weekday
+        """
+        Check a list has a unique weekday
 
         Where weekday ranges from 0 for Monday till 6 for Sunday
         Ex: for "2021-04-17T16:00:00.000+05:30", the weekday is 5 (Saturday)
