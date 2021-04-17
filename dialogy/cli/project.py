@@ -9,7 +9,7 @@ from dialogy.utils.logger import log
 
 
 def new_project(
-    destination_path: str, template: str, namespace: str = "vernacular-ai"
+    destination_path: str, template: str = "dialogy-template-simple-transformers", namespace: str = "vernacular-ai"
 ) -> None:
     """
     Create a new project using scaffolding from an existing template.
