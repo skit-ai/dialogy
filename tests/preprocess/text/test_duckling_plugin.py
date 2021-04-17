@@ -4,11 +4,26 @@ import httpretty
 import pytest
 
 from dialogy.preprocess.text.duckling_plugin import DucklingPlugin
+from dialogy.types import BaseEntity
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
 
-# == Test missing i/o ==
+def test_plugin_with_custom_entity_map() -> None:
+    """
+    Here we are checking if the plugin has access to workflow.
+    Since we haven't provided `access`, `mutate` to `DucklingPlugin`
+    we will receive a `TypeError`.
+    """
+    parser = DucklingPlugin(
+        locale="en_IN",
+        timezone="Asia/Kolkata",
+        dimensions=["time"],
+        custom_entity_map={"number": {"value": BaseEntity}},
+    )
+    assert parser.dimension_entity_map["number"]["value"] == BaseEntity
+
+
 def test_plugin_io_missing() -> None:
     """
     Here we are checking if the plugin has access to workflow.

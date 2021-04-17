@@ -114,6 +114,7 @@ class DucklingPlugin(Plugin):
         url: str = "http://0.0.0.0:8000/parse",
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
+        custom_entity_map: Optional[Dict[str, Any]] = None,
         debug: bool = False,
     ) -> None:
         """
@@ -128,6 +129,11 @@ class DucklingPlugin(Plugin):
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
+
+        if isinstance(custom_entity_map, dict):
+            self.dimension_entity_map = {**dimension_entity_map, **custom_entity_map}
+        else:
+            self.dimension_entity_map = dimension_entity_map
 
     def __set_timezone(self) -> Optional[BaseTzInfo]:
         """
@@ -214,9 +220,9 @@ class DucklingPlugin(Plugin):
                     if entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.INTERVAL:
                         # Duckling entities with interval type have a different structure for value(s).
                         # They have a need to express units in "from", "to" format.
-                        cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.INTERVAL]  # type: ignore
+                        cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.INTERVAL]  # type: ignore
                     else:
-                        cls = dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
+                        cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
                     # The most appropriate class is picked for making an object from the dict.
                     duckling_entity = cls.from_dict(entity)
                     # Depending on the type of entity, the value is searched and filled.
