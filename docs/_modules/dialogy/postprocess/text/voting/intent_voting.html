@@ -190,7 +190,7 @@
 <span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Signal</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">change_log_level</span><span class="p">,</span> <span class="n">debug_logs</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">change_log_level</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">log</span>
 <span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
 
 
@@ -367,7 +367,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">fallback_intent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_fn</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">aggregate_fn</span>
 
-<div class="viewcode-block" id="VotePlugin.vote_signal"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.voting.html#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal">[docs]</a>    <span class="nd">@debug_logs</span>
+<div class="viewcode-block" id="VotePlugin.vote_signal"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.voting.html#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal">[docs]</a>    <span class="nd">@debug</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">vote_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">],</span> <span class="n">trials</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intent</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Reduce a list of intents.</span>

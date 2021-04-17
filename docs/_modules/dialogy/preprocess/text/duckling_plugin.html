@@ -235,7 +235,7 @@
 <span class="kn">from</span> <span class="nn">dialogy.constants</span> <span class="kn">import</span> <span class="n">EntityKeys</span>
 <span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">dimension_entity_map</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">debug_logs</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">debug</span><span class="p">,</span> <span class="n">log</span>
 <span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
 
 
@@ -329,7 +329,7 @@
                 <span class="s2">" check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"</span>
             <span class="p">)</span> <span class="kn">from</span> <span class="nn">unknown_timezone_error</span>
 
-    <span class="nd">@debug_logs</span>
+    <span class="nd">@debug</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__create_req_body</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>

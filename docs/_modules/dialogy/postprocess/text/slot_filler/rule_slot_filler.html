@@ -188,7 +188,7 @@
 <span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.slots</span> <span class="kn">import</span> <span class="n">Rule</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">debug_logs</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">debug</span><span class="p">,</span> <span class="n">log</span>
 <span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
 
 
@@ -314,7 +314,7 @@
         <span class="c1"># same entity type within a slot.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fill_multiple</span> <span class="o">=</span> <span class="n">fill_multiple</span>
 
-<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.plugin"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.plugin">[docs]</a>    <span class="nd">@debug_logs</span>
+<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.plugin"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.plugin">[docs]</a>    <span class="nd">@debug</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Update an intent slot with compatible entity.</span>

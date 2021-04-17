@@ -508,6 +508,13 @@ This is not meant for (latitude, longitude) values, those will be covered in Geo
 <dt id="dialogy.types.entity.time_entity.TimeEntity.get_date_value">
 <code class="sig-name descname"><span class="pre">get_date_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/types/entity/time_entity.html#TimeEntity.get_date_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_entity.TimeEntity.get_date_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the date string in ISO format from the dictionary passed</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">date</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2021-04-17T16:00:00.000+05:30"</span><span class="p">,</span>
+    <span class="s2">"grain"</span><span class="p">:</span> <span class="s2">"hour"</span><span class="p">,</span>
+    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"value"</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>date</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary which stores the datetime in ISO format, grain and type</p>
@@ -686,6 +693,15 @@ else the entity type is TIME.</p>
 <dt id="dialogy.types.entity.time_interval_entity.TimeIntervalEntity.get_date_value">
 <code class="sig-name descname"><span class="pre">get_date_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/types/entity/time_interval_entity.html#TimeIntervalEntity.get_date_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_interval_entity.TimeIntervalEntity.get_date_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the date string in ISO format from the dictionary passed</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">date</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"from"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2021-04-16T16:00:00.000+05:30"</span><span class="p">,</span>
+        <span class="s2">"grain"</span><span class="p">:</span> <span class="s2">"hour"</span>
+    <span class="p">},</span>
+    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"interval"</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>date</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary which stores the datetime in ISO format, grain and type</p>

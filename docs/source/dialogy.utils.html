@@ -193,7 +193,7 @@
 </dl>
 <dl class="py function">
 <dt id="dialogy.utils.logger.change_log_level">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.logger.</span></code><code class="sig-name descname"><span class="pre">change_log_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils/logger.html#change_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.logger.change_log_level" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.logger.</span></code><code class="sig-name descname"><span class="pre">change_log_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils/logger.html#change_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.logger.change_log_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change log level throughout the project.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>level (str):</p>
@@ -201,7 +201,10 @@
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>level</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – One of: DEBUG, INFO, WARNING, ERROR, CRITICAL</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger that needs to undergo logging changes.</p></li>
+<li><p><strong>level</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – One of: DEBUG, INFO, WARNING, ERROR, CRITICAL</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>None</p>
@@ -212,8 +215,8 @@
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.logger.debug_logs">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.logger.</span></code><code class="sig-name descname"><span class="pre">debug_logs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/logger.html#debug_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.logger.debug_logs" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.utils.logger.debug">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.logger.</span></code><code class="sig-name descname"><span class="pre">debug</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">logging.Logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/logger.html#debug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.logger.debug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change debug level briefly.</p>
 <p>There are methods that need debug logs but not all of them, not all the time.
 This decorator checks if it is being applied on a method or a function.</p>
@@ -230,17 +233,13 @@ This decorator checks if it is being applied on a method or a function.</p>
 <p>This way, we restrict debug logs to only those classes, methods and functions that need it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>Callable</em><em>[</em><em>..</em><em>, </em><em>Any</em><em>]</em>) – A function or a method</p></li>
-<li><p><strong>arg_name</strong> (<em>str</em>) – The name in kwargs that implies a debug flag.</p></li>
-<li><p><strong>attr_name</strong> (<em>str</em>) – The attribute in an instance that implies a debug flag.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger that needs to undergo logging changes.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Wrapper function</p>
+<dd class="field-even"><p></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Callable[.., Any]</p>
+<dd class="field-odd"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -288,14 +287,14 @@ Missing properties will lead to KeyErrors.</p>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">556</span><span class="n">a11057179</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
 
-<span class="nn">~/Development/vernacular/ai/dialogy/dialogy/utils/__init__.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
+<span class="nn">~/python/dialogy/dialogy/utils/__init__.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
 <span class="g g-Whitespace">     </span><span class="mi">50</span>     <span class="sd">"""</span>
 <span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd">     try:</span>
 <span class="ne">---&gt; </span><span class="mi">52</span><span class="sd">         return reduce(lambda o, k: o[k], properties, obj)</span>
 <span class="g g-Whitespace">     </span><span class="mi">53</span><span class="sd">     except KeyError as key_error:</span>
 <span class="g g-Whitespace">     </span><span class="mi">54</span><span class="sd">         raise KeyError(</span>
 
-<span class="nn">~/Development/vernacular/ai/dialogy/dialogy/utils/__init__.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
+<span class="nn">~/python/dialogy/dialogy/utils/__init__.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
 <span class="g g-Whitespace">     </span><span class="mi">50</span><span class="sd">     """</span>
 <span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="k">try</span><span class="p">:</span>
 <span class="ne">---&gt; </span><span class="mi">52</span>         <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
