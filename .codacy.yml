@@ -16,12 +16,9 @@ exclude_paths:
   - "dialogy/workflow/__init__.py"
   - "dialogy/types/__init__.py"
   - "dialogy/utils/__init__.py"
-  - "README.md"
-  - "LICENSE.md"
   - "tests/**"
   - "docs/**"
   - "docs_src/**"
   - ".github/**"
-  - CODE_OF_CONDUCT.md
-  - CONTRIBUTING.md
+  - "*.md"
 
