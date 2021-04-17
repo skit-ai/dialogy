@@ -17,24 +17,26 @@ fmt = "%(asctime)s:%(msecs)03d %(name)s [%(filename)s:%(lineno)s] %(levelname)s 
 coloredlogs.install(level=logging.ERROR, logger=log, fmt=fmt)
 
 
-def change_log_level(level: Union[str, int]) -> None:
+def change_log_level(logger: logging.Logger, level: Union[str, int]) -> None:
     """
     Change log level throughout the project.
 
     Args:
         level (str):
 
+    :param logger: The logger that needs to undergo logging changes.
+    :type logger: logging.Logger
     :param level: One of: DEBUG, INFO, WARNING, ERROR, CRITICAL
     :type level: Union[str, int]
     :return: None
     :rtype: None
     """
-    log.setLevel(level)
-    for handler in log.handlers:
+    logger.setLevel(level)
+    for handler in logger.handlers:
         handler.setLevel(level)
 
 
-def debug_logs(func: Callable[..., Any], arg_name="debug", attr_name="debug"):
+def debug(logger: logging.Logger):
     """
     Change debug level briefly.
 
@@ -49,34 +51,44 @@ def debug_logs(func: Callable[..., Any], arg_name="debug", attr_name="debug"):
 
     This way, we restrict debug logs to only those classes, methods and functions that need it.
 
-    :param func: A function or a method
-    :type func: Callable[..., Any]
-    :param arg_name: The name in kwargs that implies a debug flag.
-    :type arg_name: str
-    :param attr_name: The attribute in an instance that implies a debug flag.
-    :type attr_name: str
-    :return: Wrapper function
-    :rtype: Callable[..., Any]
+    :param logger: The logger that needs to undergo logging changes.
+    :type logger: logging.Logger
+    :return:
+    :rtype:
     """
 
-    @wraps(func)
-    def restrict_log_level(*args, **kwargs) -> Any:
-        debug_arg = kwargs.get(arg_name, False)
-        is_object = args and isinstance(args[0], object)
-        debug_attr = False
+    def wrapper(func: Callable[..., Any], arg_name="debug", attr_name="debug"):
+        """
+        :param func: A function or a method
+        :type func: Callable[..., Any]
+        :param arg_name: The name in kwargs that implies a debug flag.
+        :type arg_name: str
+        :param attr_name: The attribute in an instance that implies a debug flag.
+        :type attr_name: str
+        :return: Wrapper function
+        :rtype: Callable[..., Any]
+        """
 
-        try:
-            if is_object:
-                debug_attr = getattr(args[0], attr_name)
-        except AttributeError:
+        @wraps(func)
+        def restrict_log_level(*args, **kwargs) -> Any:
+            debug_arg = kwargs.get(arg_name, False)
+            is_object = args and isinstance(args[0], object)
             debug_attr = False
 
-        if debug_arg or debug_attr:
-            change_log_level(logging.DEBUG)
-            output = func(*args, **kwargs)
-            change_log_level(logging.ERROR)
-        else:
-            output = func(*args, **kwargs)
-        return output
+            try:
+                if is_object:
+                    debug_attr = getattr(args[0], attr_name)
+            except AttributeError:
+                debug_attr = False
 
-    return restrict_log_level
+            if debug_arg or debug_attr:
+                change_log_level(logger, logging.DEBUG)
+                output = func(*args, **kwargs)
+                change_log_level(logger, logging.ERROR)
+            else:
+                output = func(*args, **kwargs)
+            return output
+
+        return restrict_log_level
+
+    return wrapper
