@@ -57,7 +57,7 @@ from pytz.tzinfo import BaseTzInfo  # type: ignore
 from dialogy.constants import EntityKeys
 from dialogy.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
-from dialogy.utils.logger import debug_logs, log
+from dialogy.utils.logger import debug, log
 from dialogy.workflow import Workflow
 
 
@@ -151,7 +151,7 @@ class DucklingPlugin(Plugin):
                 " check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
             ) from unknown_timezone_error
 
-    @debug_logs
+    @debug(log)
     def __create_req_body(
         self, text: str, reference_time: Optional[int]
     ) -> Dict[str, Any]:

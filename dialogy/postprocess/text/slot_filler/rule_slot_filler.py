@@ -10,7 +10,7 @@ from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule
-from dialogy.utils.logger import debug_logs, log
+from dialogy.utils.logger import debug, log
 from dialogy.workflow import Workflow
 
 
@@ -136,7 +136,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
-    @debug_logs
+    @debug(log)
     def plugin(self, workflow: Workflow) -> None:
         """
         Update an intent slot with compatible entity.
