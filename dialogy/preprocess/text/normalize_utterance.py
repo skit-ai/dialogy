@@ -72,7 +72,7 @@ def is_utterance(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> bool:
     Check input to be of `List[List[Dict]]`.
 
 
-    .. code-blocks: json
+    .. code-block: json
 
         [[{"transcript": "hi"}]]
 

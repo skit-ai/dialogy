@@ -51,7 +51,7 @@ class TimeEntity(NumericalEntity):
         """
         Return the date string in ISO format from the dictionary passed
 
-        .. code-blocks :: python
+        .. code-block:: python
 
             date = {
                 "value": "2021-04-17T16:00:00.000+05:30",

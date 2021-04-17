@@ -49,7 +49,7 @@ class TimeIntervalEntity(TimeEntity):
         """
         Return the date string in ISO format from the dictionary passed
 
-        .. code-blocks :: python
+        .. code-block:: python
 
             date = {
                 "from": {
