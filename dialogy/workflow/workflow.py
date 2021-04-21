@@ -53,7 +53,7 @@ from pprint import pformat
 from typing import Any, Callable, List, Optional
 
 from dialogy import constants
-from dialogy.utils.logger import debug, log
+from dialogy.utils.logger import dbg, log
 
 PluginFn = Callable[["Workflow"], None]
 
@@ -113,7 +113,7 @@ class Workflow:
             f"Override method `load_model` in class {class_name}."
         )
 
-    @debug(log)
+    @dbg(log)
     def update(self, processor_type: str, processors: List[PluginFn]) -> None:
         """
         Update input, output attributes.

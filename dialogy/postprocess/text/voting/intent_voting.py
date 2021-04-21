@@ -12,7 +12,7 @@ from dialogy.plugin import Plugin
 from dialogy.types import Signal
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
-from dialogy.utils.logger import change_log_level, debug, log
+from dialogy.utils.logger import dbg, log
 from dialogy.workflow import Workflow
 
 
@@ -189,7 +189,7 @@ class VotePlugin(Plugin):
         self.fallback_intent: str = fallback_intent
         self.aggregate_fn: Any = aggregate_fn
 
-    @debug(log)
+    @dbg(log)
     def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
         """
         Reduce a list of intents.

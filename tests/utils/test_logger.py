@@ -1,11 +1,11 @@
-from dialogy.utils.logger import debug, log
+from dialogy.utils.logger import dbg, log
 
 
 def test_debug_logs_on_function():
     def func(debug=True):
         return 4
 
-    restrict_log_level = debug(log)(func)
+    restrict_log_level = dbg(log)(func)
     assert restrict_log_level(debug=True) == 4
 
 
@@ -14,7 +14,7 @@ def test_debug_logs_on_method():
         def __init__(self, debug=False):
             self.debug = debug
 
-        @debug(log)
+        @dbg(log)
         def func(self):
             return 4
 
@@ -24,7 +24,7 @@ def test_debug_logs_on_method():
 
 def test_debug_logs_on_method_missing_debug():
     class Mock:
-        @debug(log)
+        @dbg(log)
         def func(self):
             return 4
 
@@ -34,7 +34,7 @@ def test_debug_logs_on_method_missing_debug():
 
 def test_debug_logs_dont_eat_docstrings():
     class Mock:
-        @debug(log)
+        @dbg(log)
         def func(self):
             """lorem ipsum"""
             return 4

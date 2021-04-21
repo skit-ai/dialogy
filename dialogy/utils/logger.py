@@ -36,7 +36,7 @@ def change_log_level(logger: logging.Logger, level: Union[str, int]) -> None:
         handler.setLevel(level)
 
 
-def debug(logger: logging.Logger):
+def dbg(logger: logging.Logger):
     """
     Change debug level briefly.
 
