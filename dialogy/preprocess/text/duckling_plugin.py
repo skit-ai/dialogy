@@ -277,7 +277,7 @@ class DucklingPlugin(Plugin):
             f"Duckling API call failed | [{response.status_code}]: {response.text}"
         )
 
-    def utility(self, workflow: Workflow, *args: Any) -> List[BaseEntity]:
+    def utility(self, *args: Any) -> List[BaseEntity]:
         entities = []
         input_, reference_time = args
         try:

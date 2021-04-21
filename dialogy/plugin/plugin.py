@@ -85,18 +85,18 @@ class Plugin:
         self.mutate = mutate
         self.debug = debug
 
-    def utility(self, workflow: Workflow, *args: Any) -> Any:
+    def utility(self, *args: Any) -> Any:
         ...
 
     def plugin(self, workflow: Workflow) -> None:
-        if self.access and self.mutate:
+        if self.access:
             args = self.access(workflow)
-            value = self.utility(workflow, *args)
-            self.mutate(workflow, value)
+            value = self.utility(*args)
+            if value is not None and self.mutate:
+                self.mutate(workflow, value)
         else:
             raise TypeError(
-                "Expected access and mutate to be functions"
-                f" but {type(self.access)} and {type(self.mutate)} were found."
+                "Expected access to be functions" f" but {type(self.access)} was found."
             )
 
     def __call__(self) -> PluginFn:

@@ -3,7 +3,7 @@
 
 Module provides access to a rule-based :ref:`slot filler<slot_filler>`.
 """
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from dialogy.plugin import Plugin
 from dialogy.types.entity import BaseEntity
@@ -136,49 +136,15 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
+    def fill(self, intent: Intent, entities: List[BaseEntity]) -> None:
+        intent.apply(self.rules)
+
+        for entity in entities:
+            intent.fill_slot(entity, fill_multiple=self.fill_multiple)
+
+        intent.cleanup()
+        log.debug("intent after slot-filling: %s", intent)
+
     @dbg(log)
-    def plugin(self, workflow: Workflow) -> None:
-        """
-        Update an intent slot with compatible entity.
-
-        - :code:`access(workflow)` should return a Tuple. :code:`Tuple[Intent,BaseEntity]`.
-        - Only 1 entity fills a slot type. To fill more, set :code:`fill_multiple=True`
-
-        :param workflow:
-        :type workflow: Workflow
-        :return: None
-        :rtype: None
-        :raises TypeError: if access isn't a Callable.
-        """
-        if self.access is not None:
-
-            try:
-                intent_and_entities: Tuple[Intent, List[BaseEntity]] = self.access(
-                    workflow
-                )
-                intent, entities = intent_and_entities
-                log.debug("intent: %s, entities: %s", intent, entities)
-                intent.apply(self.rules)
-                log.debug("intent after rule application: %s", intent)
-
-                for entity in entities:
-                    intent.fill_slot(entity, fill_multiple=self.fill_multiple)
-
-                intent.cleanup()
-                log.debug("intent after slot-filling: %s", intent)
-            except TypeError as type_error:
-                raise TypeError(
-                    f"`access` passed to {self.__class__.__name__}"
-                    f" is not a Callable. Received {type(self.access)} instead."
-                ) from type_error
-        else:
-            raise TypeError(
-                f"`access` passed to {self.__class__.__name__}"
-                f" is not a Callable. Received {type(self.access)} instead."
-            )
-
-    def __call__(self) -> PluginFn:
-        """
-        syntactic sugar
-        """
-        return self.plugin
+    def utility(self, *args: Any) -> Any:
+        return self.fill(*args)

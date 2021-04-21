@@ -247,25 +247,5 @@ class VotePlugin(Plugin):
             )
         return Intent(name=self.fallback_intent, score=1)
 
-    def plugin(self, workflow: Workflow) -> None:
-        """
-        Plugin to ease workflow io.
-        """
-        access = self.access
-        mutate = self.mutate
-
-        if access and mutate:
-            intents, trials = access(workflow)
-            intent = self.vote_signal(intents, trials)
-            mutate(workflow, intent)
-        else:
-            raise TypeError(
-                "Expected `access` and `mutate` to be Callable,"
-                f" got access={type(access)} mutate={type(mutate)}"
-            )
-
-    def __call__(self) -> PluginFn:
-        """
-        Convenience.
-        """
-        return self.plugin
+    def utility(self, *args: Any) -> Any:
+        return self.vote_signal(*args)
