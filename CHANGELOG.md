@@ -1,3 +1,9 @@
+# 0.5.6
+
+- [ ] feat: Keyword, pattern entity parsing from list support.
+- [ ] refactor: Plugin class to prevent repeated code in subclasses.
+- [ ] refactor: @debug -> @dbg to prevent name collisions.
+
 # 0.5.5
 
 - [x] feat: `dialogy create <project-name>`, we can drop the template name!
