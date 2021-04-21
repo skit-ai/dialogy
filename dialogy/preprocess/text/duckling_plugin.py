@@ -114,7 +114,7 @@ class DucklingPlugin(Plugin):
         url: str = "http://0.0.0.0:8000/parse",
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
-        custom_entity_map: Optional[Dict[str, Any]] = None,
+        entity_map: Optional[Dict[str, Any]] = None,
         debug: bool = False,
     ) -> None:
         """
@@ -130,8 +130,8 @@ class DucklingPlugin(Plugin):
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
 
-        if isinstance(custom_entity_map, dict):
-            self.dimension_entity_map = {**dimension_entity_map, **custom_entity_map}
+        if isinstance(entity_map, dict):
+            self.dimension_entity_map = {**dimension_entity_map, **entity_map}
         else:
             self.dimension_entity_map = dimension_entity_map
 

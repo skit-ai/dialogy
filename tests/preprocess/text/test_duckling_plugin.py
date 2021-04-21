@@ -19,7 +19,7 @@ def test_plugin_with_custom_entity_map() -> None:
         locale="en_IN",
         timezone="Asia/Kolkata",
         dimensions=["time"],
-        custom_entity_map={"number": {"value": BaseEntity}},
+        entity_map={"number": {"value": BaseEntity}},
     )
     assert parser.dimension_entity_map["number"]["value"] == BaseEntity
 
