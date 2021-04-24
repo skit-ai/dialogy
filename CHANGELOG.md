@@ -1,8 +1,8 @@
-# 0.5.6
+# 0.5.6 (Unreleased)
 
-- [ ] feat: Keyword, pattern entity parsing from list support.
-- [ ] refactor: Plugin class to prevent repeated code in subclasses.
-- [ ] refactor: @debug -> @dbg to prevent name collisions.
+- [x] feat: spacy, pattern entity parsing from list support.
+- [x] refactor: Plugin class to prevent repeated code in subclasses.
+- [x] refactor: @debug -> @dbg to prevent name collisions.
 
 # 0.5.5
 
