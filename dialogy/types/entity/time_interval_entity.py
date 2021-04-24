@@ -72,7 +72,7 @@ class TimeIntervalEntity(TimeEntity):
                 f"Expected at least 1 of `from` or `to` in {self.values} for {self}"
             )
 
-    def set_value(self, value: Optional[Dict[str, Any]] = None) -> None:
+    def set_value(self, value: Optional[Dict[str, Any]] = None) -> "TimeIntervalEntity":
         """
         Set values and value attribute.
 
@@ -102,6 +102,7 @@ class TimeIntervalEntity(TimeEntity):
                     " or value should look like: {'to': ...,  'from': ...}"
                     f" but {type(value)} found."
                 )
+        return self
 
     def __attrs_post_init__(self) -> None:
         self.post_init()

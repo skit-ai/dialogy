@@ -239,7 +239,7 @@ class BaseEntity:
             skip_ = [name for name in const.SKIP_ENTITY_ATTRS if name not in add]
         return attr.asdict(self, filter=lambda attr, _: attr.name not in skip_)
 
-    def set_value(self, value: Any = None) -> None:
+    def set_value(self, value: Any = None) -> "BaseEntity":
         """
         Set values and value attribute.
 
@@ -253,6 +253,7 @@ class BaseEntity:
         else:
             self.values = [{const.VALUE: value}]
             self.value = value
+        return self
 
 
 # = entity_synthesis =
