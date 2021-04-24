@@ -4,8 +4,6 @@ This is a tutorial on creating and using Plugins with Workflows.
 import re
 from typing import Any, Optional
 
-import attr
-
 from dialogy.plugin import Plugin
 from dialogy.types.plugin import PluginFn
 from dialogy.workflow import Workflow

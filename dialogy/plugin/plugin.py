@@ -16,7 +16,7 @@ examples:
 - RuleSlotFilerPlugin
 - VotePlugin
 """
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 from dialogy.types.plugin import PluginFn
 from dialogy.workflow import Workflow

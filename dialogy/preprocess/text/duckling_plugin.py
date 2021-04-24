@@ -48,7 +48,7 @@ means to connect from the implementation here.
 """
 import json
 from pprint import pformat
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import pytz
 import requests
@@ -58,7 +58,6 @@ from dialogy.constants import EntityKeys
 from dialogy.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
 from dialogy.utils.logger import dbg, log
-from dialogy.workflow import Workflow
 
 
 class DucklingPlugin(Plugin):

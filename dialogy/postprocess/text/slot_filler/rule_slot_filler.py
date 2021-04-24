@@ -3,7 +3,7 @@
 
 Module provides access to a rule-based :ref:`slot filler<slot_filler>`.
 """
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional
 
 from dialogy.plugin import Plugin
 from dialogy.types.entity import BaseEntity
@@ -11,7 +11,6 @@ from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule
 from dialogy.utils.logger import dbg, log
-from dialogy.workflow import Workflow
 
 
 class RuleBasedSlotFillerPlugin(Plugin):

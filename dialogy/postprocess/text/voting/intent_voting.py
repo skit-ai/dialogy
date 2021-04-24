@@ -13,7 +13,6 @@ from dialogy.types import Signal
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
 from dialogy.utils.logger import dbg, log
-from dialogy.workflow import Workflow
 
 
 def adjust_signal_strength(
