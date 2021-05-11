@@ -1,4 +1,4 @@
-# 0.5.6 (Unreleased)
+# 0.5.6
 
 - [x] feat: spacy, pattern entity parsing from list support.
 - [x] refactor: Plugin class to prevent repeated code in subclasses.
