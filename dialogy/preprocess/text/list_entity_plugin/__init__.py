@@ -24,6 +24,11 @@ MatchType = List[Tuple[str, str, Tuple[int, int]]]
 
 class ListEntityPlugin(Plugin):
     """
+     A :ref:`Plugin<plugin>` for extracting entities using spacy or a list of regex patterns.
+
+     .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy
+        and regex based entity parsers.
+
 
     :param entity_map: A :code:`dict` with keys as entity type and value as EntityClass
     :type entity_map: Dict[str, BaseEntity]
@@ -47,6 +52,7 @@ class ListEntityPlugin(Plugin):
     :param debug: A flag to set debugging on the plugin methods
     :type debug: bool
     """
+
     def __init__(
         self,
         entity_map: Dict[str, BaseEntity],
@@ -74,12 +80,26 @@ class ListEntityPlugin(Plugin):
         if self.style == const.REGEX:
             self._parse(candidates)
 
-    @dbg
+    @dbg(log)
     def _parse(self, candidates: Optional[Dict[str, List[str]]]) -> None:
-        log.debug(pformat({
-            "style": self.style,
-            "candidates": candidates,
-        }))
+        """
+        Pre compile regex patterns to speed up runtime evaluation.
+
+        This method's search will still be slow depending on the list of patterns.
+
+        :param candidates: A map for entity types and their pattern list.
+        :type candidates: Optional[Dict[str, List[str]]]
+        :return: None
+        :rtype: NoneType
+        """
+        log.debug(
+            pformat(
+                {
+                    "style": self.style,
+                    "candidates": candidates,
+                }
+            )
+        )
         if not isinstance(candidates, dict):
             raise TypeError(
                 'Expected "candidates" to be a Dict[str, List[str]]'
@@ -106,8 +126,16 @@ class ListEntityPlugin(Plugin):
         log.debug("compiled patterns")
         log.debug(self.compiled_patterns)
 
-    @dbg
+    @dbg(log)
     def _search(self, transcripts: List[str]) -> List[MatchType]:
+        """
+        Search for tokens in a list of strings.
+
+        :param transcripts: A list of transcripts, :code:`List[str]`.
+        :type transcripts: List[str]
+        :return: Token matches with the transcript.
+        :rtype: List[MatchType]
+        """
         log.debug("style: %s", self.style)
         log.debug("transcripts")
         log.debug(transcripts)
@@ -120,8 +148,16 @@ class ListEntityPlugin(Plugin):
         token_list = [search_fn(transcript) for transcript in transcripts]
         return token_list
 
-    @dbg
+    @dbg(log)
     def get_entities(self, transcripts: List[str]) -> List[BaseEntity]:
+        """
+        Parse entities using regex and spacy ner.
+
+        :param transcripts: A list of strings within which to search for entities.
+        :type transcripts: List[str]
+        :return: List of entities from regex matches or spacy ner.
+        :rtype: List[BaseEntity]
+        """
         matches_on_transcripts = self._search(transcripts)
         entity_metadata = []
         entities = []
@@ -153,7 +189,7 @@ class ListEntityPlugin(Plugin):
             entity = sorted(grouped_entities, key=lambda e: e["alternative_index"])[0]
             del entity["__group"]
             entity["score"] = round(len(grouped_entities) / len(transcripts), 4)
-            entity_class = self.entity_map.get(entity["type"]) or BaseEntity  # type: ignore
+            entity_class = self.entity_map.get(entity["type"]) or BaseEntity
             entity = entity_class.from_dict(entity).set_value()  # type: ignore
             entities.append(entity)
         log.debug("Parsed entities")
@@ -164,6 +200,14 @@ class ListEntityPlugin(Plugin):
         return self.get_entities(*args)
 
     def ner_search(self, transcript: str) -> MatchType:
+        """
+        Wrapper over spacy's ner search.
+
+        :param transcript: A string to search entities within.
+        :type transcript: str
+        :return: NER parsing via spacy.
+        :rtype: MatchType
+        """
         if not self.spacy_nlp:
             raise ValueError(
                 "Expected spacy_nlp to be a spacy"
@@ -197,6 +241,14 @@ class ListEntityPlugin(Plugin):
             ]
 
     def regex_search(self, transcript: str) -> MatchType:
+        """
+        Wrapper over regex searches.
+
+        :param transcript: A string to search entities within.
+        :type transcript: str
+        :return: regex parsing via spacy.
+        :rtype: MatchType
+        """
         if not self.compiled_patterns:
             raise TypeError(
                 "Expected compiled_patterns to be "
