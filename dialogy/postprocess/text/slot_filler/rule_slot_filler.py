@@ -146,4 +146,4 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
     @dbg(log)
     def utility(self, *args: Any) -> Any:
-        return self.fill(*args)
+        return self.fill(*args) # pylint: disable=no-value-for-parameter

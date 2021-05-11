@@ -185,7 +185,7 @@ class ListEntityPlugin(Plugin):
         log.debug("entity groups:")
         log.debug(pformat(entity_groups))
 
-        for entity_group_name, grouped_entities in entity_groups.items():
+        for _, grouped_entities in entity_groups.items():
             entity = sorted(grouped_entities, key=lambda e: e["alternative_index"])[0]
             del entity["__group"]
             entity["score"] = round(len(grouped_entities) / len(transcripts), 4)
@@ -197,7 +197,7 @@ class ListEntityPlugin(Plugin):
         return entities  # type:ignore
 
     def utility(self, *args: Any) -> Any:
-        return self.get_entities(*args)
+        return self.get_entities(*args) # pylint: disable=no-value-for-parameter
 
     def ner_search(self, transcript: str) -> MatchType:
         """
