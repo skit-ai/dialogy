@@ -77,8 +77,14 @@ DATE = "date"
 TIME = "time"
 DATETIME = "datetime"
 
+
 # This section covers signals tuple indices
 class SIGNAL:
     NAME = 0
     STRENGTH = 1
     REPRESENTATION = 2
+
+
+KEYWORD = "keyword"
+REGEX = "regex"
+SPACY = "spacy"

@@ -3,15 +3,14 @@
 
 Module provides access to a rule-based :ref:`slot filler<slot_filler>`.
 """
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional
 
 from dialogy.plugin import Plugin
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule
-from dialogy.utils.logger import debug, log
-from dialogy.workflow import Workflow
+from dialogy.utils.logger import dbg, log
 
 
 class RuleBasedSlotFillerPlugin(Plugin):
@@ -136,49 +135,15 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
-    @debug(log)
-    def plugin(self, workflow: Workflow) -> None:
-        """
-        Update an intent slot with compatible entity.
+    def fill(self, intent: Intent, entities: List[BaseEntity]) -> None:
+        intent.apply(self.rules)
 
-        - :code:`access(workflow)` should return a Tuple. :code:`Tuple[Intent,BaseEntity]`.
-        - Only 1 entity fills a slot type. To fill more, set :code:`fill_multiple=True`
+        for entity in entities:
+            intent.fill_slot(entity, fill_multiple=self.fill_multiple)
 
-        :param workflow:
-        :type workflow: Workflow
-        :return: None
-        :rtype: None
-        :raises TypeError: if access isn't a Callable.
-        """
-        if self.access is not None:
+        intent.cleanup()
+        log.debug("intent after slot-filling: %s", intent)
 
-            try:
-                intent_and_entities: Tuple[Intent, List[BaseEntity]] = self.access(
-                    workflow
-                )
-                intent, entities = intent_and_entities
-                log.debug("intent: %s, entities: %s", intent, entities)
-                intent.apply(self.rules)
-                log.debug("intent after rule application: %s", intent)
-
-                for entity in entities:
-                    intent.fill_slot(entity, fill_multiple=self.fill_multiple)
-
-                intent.cleanup()
-                log.debug("intent after slot-filling: %s", intent)
-            except TypeError as type_error:
-                raise TypeError(
-                    f"`access` passed to {self.__class__.__name__}"
-                    f" is not a Callable. Received {type(self.access)} instead."
-                ) from type_error
-        else:
-            raise TypeError(
-                f"`access` passed to {self.__class__.__name__}"
-                f" is not a Callable. Received {type(self.access)} instead."
-            )
-
-    def __call__(self) -> PluginFn:
-        """
-        syntactic sugar
-        """
-        return self.plugin
+    @dbg(log)
+    def utility(self, *args: Any) -> Any:
+        return self.fill(*args) # pylint: disable=no-value-for-parameter

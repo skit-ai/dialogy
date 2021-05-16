@@ -1,3 +1,9 @@
+# 0.5.6
+
+- [x] feat: spacy, pattern entity parsing from list support.
+- [x] refactor: Plugin class to prevent repeated code in subclasses.
+- [x] refactor: @debug -> @dbg to prevent name collisions.
+
 # 0.5.5
 
 - [x] feat: `dialogy create <project-name>`, we can drop the template name!

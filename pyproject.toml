@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "dialogy"
-version = "0.5.5"
+version = "0.5.6"
 description = "Language understanding for human dialog."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.10"
+python = "^3.7"
 coloredlogs = "^15.0"
 attrs = "^20.3.0"
 requests = "^2.25.1"
@@ -33,7 +33,6 @@ sphinx = "^3.5.3"
 furo = "^2021.4.11-beta.34"
 sphinx-copybutton = "^0.3.1"
 ipython = "^7.22.0"
-pycln = "^0.0.1"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"

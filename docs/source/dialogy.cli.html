@@ -141,11 +141,18 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.postprocess.text.slot_filler.html">dialogy.postprocess.text.slot_filler package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.postprocess.text.voting.html">dialogy.postprocess.text.voting package</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.preprocess.html">dialogy.preprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.preprocess.text.html">dialogy.preprocess.text package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="dialogy.preprocess.text.html">dialogy.preprocess.text package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.preprocess.text.list_entity_plugin.html">dialogy.preprocess.text.list_entity_plugin package</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.preprocess.text.html">dialogy.preprocess.text package</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.types.html">dialogy.types package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.preprocess.text.html">dialogy.preprocess.text package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label for="toctree-checkbox-9"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.preprocess.text.list_entity_plugin.html">dialogy.preprocess.text.list_entity_plugin package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.preprocess.text.list_entity_plugin.html">dialogy.preprocess.text.list_entity_plugin package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.types.html">dialogy.types package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label for="toctree-checkbox-10"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
@@ -183,17 +190,12 @@
 </section>
 <section id="module-dialogy.cli.project">
 <span id="dialogy-cli-project-module"></span><h2>dialogy.cli.project module<a class="headerlink" href="#module-dialogy.cli.project" title="Permalink to this headline">¶</a></h2>
-<p>This module offers utilities to create a new project from a given template.</p>
 <dl class="py function">
-<dt id="dialogy.cli.project.new_project">
-<code class="sig-prename descclassname"><span class="pre">dialogy.cli.project.</span></code><code class="sig-name descname"><span class="pre">new_project</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'vernacular-ai'</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli/project.html#new_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.project.new_project" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new project using scaffolding from an existing template.</p>
-<p>This function uses <a class="reference external" href="https://copier.readthedocs.io/en/stable/">copier’s</a> <a class="reference external" href="https://copier.readthedocs.io/en/stable/#quick-usage">copy</a> to use an existing template.</p>
-<p>An example template is <a class="reference external" href="https://github.com/Vernacular-ai/dialogy-template-simple-transformers">here:</a>.</p>
-<dl class="field-list simple">
+<dt id="dialogy.cli.project.canonicalize_project_name">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.project.</span></code><code class="sig-name descname"><span class="pre">canonicalize_project_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/cli/project.html#canonicalize_project_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.project.canonicalize_project_name" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>destination_path</strong> (<em>str</em>) – The directory where the scaffolding must be generated, creates a dir if missing but aborts if there are files already in the specified location.</p></li>
 <li><p><strong>template</strong> (<em>str</em>) – Scaffolding will be generated using a copier template project. This is the link to the project.</p></li>
 <li><p><strong>namespace</strong> (<em>str</em><em>, </em><em>optional</em>) – The user or the organization that supports the template, defaults to “vernacular-ai”</p></li>
 </ul>
@@ -213,14 +215,15 @@
 <div class="highlight-bash notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll">dialogy create hello-world dialogy-template-simple-transformers
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll">dialogy create hello-world
 </span><span class="nb">cd</span> hello-world
 poetry install
 make lint
 </pre></div>
 </td></tr></table></div></div>
 <dl class="simple">
-<dt>Usage:</dt><dd><p>__init__.py create &lt;project&gt; &lt;template&gt; [–namespace=&lt;namespace&gt;]</p>
+<dt>Usage:</dt><dd><p>__init__.py create &lt;project&gt; &lt;template&gt; [–namespace=&lt;namespace&gt;]
+__init__.py create &lt;project&gt;</p>
 </dd>
 </dl>
 <p>Options:</p>
@@ -246,6 +249,28 @@ Show current project version.</p>
 <dt id="dialogy.cli.main">
 <code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create project scaffolding cli.</p>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.cli.new_project">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">new_project</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dialogy-template-simple-transformers'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'vernacular-ai'</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli.html#new_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.new_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new project using scaffolding from an existing template.</p>
+<p>This function uses <a class="reference external" href="https://copier.readthedocs.io/en/stable/">copier’s</a> <a class="reference external" href="https://copier.readthedocs.io/en/stable/#quick-usage">copy</a> to use an existing template.</p>
+<p>An example template is <a class="reference external" href="https://github.com/Vernacular-ai/dialogy-template-simple-transformers">here:</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>destination_path</strong> (<em>str</em>) – The directory where the scaffolding must be generated, creates a dir if missing but aborts if there are files already in the specified location.</p></li>
+<li><p><strong>template</strong> (<em>str</em>) – Scaffolding will be generated using a copier template project. This is the link to the project.</p></li>
+<li><p><strong>namespace</strong> (<em>str</em><em>, </em><em>optional</em>) – The user or the organization that supports the template, defaults to “vernacular-ai”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NoneType</p>
+</dd>
+</dl>
 </dd></dl>
 </section>
 </section>

@@ -19,7 +19,7 @@ def test_plugin_with_custom_entity_map() -> None:
         locale="en_IN",
         timezone="Asia/Kolkata",
         dimensions=["time"],
-        custom_entity_map={"number": {"value": BaseEntity}},
+        entity_map={"number": {"value": BaseEntity}},
     )
     assert parser.dimension_entity_map["number"]["value"] == BaseEntity
 
@@ -73,7 +73,7 @@ def test_plugin_io_type_mismatch(access, mutate) -> None:
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_plugin_working_cases(payload) -> None:
     """
-    An end-to-end example showing how to use `DucklingPlugin` with a `Worflow`.
+    An end-to-end example showing how to use `DucklingPlugin` with a `Workflow`.
     """
     body = payload["input"]
     mock_entity_json = payload["mock_entity_json"]

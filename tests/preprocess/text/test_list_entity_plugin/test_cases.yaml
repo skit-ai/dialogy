@@ -1,0 +1,94 @@
+- description: "Test GPE entities mocked via spacy"
+  input:
+    - text: "i want it in New Delhi"
+      entities:
+      - type: "GPE"
+        value: "New Delhi"
+    - text: "i want in Panipat"
+      entities:
+      - type: "GPE"
+        value: "Panipat"
+    - text: "I want in Delhi"
+      entities:
+      - type: "GPE"
+        value: "Delhi"
+  expected:
+    - type: "GPE"
+      value: "New Delhi"
+    - type: "GPE"
+      value: "Panipat"
+    - type: "GPE"
+      value: "Delhi"
+  config:
+    style: spacy
+    entity_map: {}
+
+- description: "Test location entities using regex"
+  input:
+    - text: "i want it in New Delhi"
+      entities:
+      - type: "location"
+        value: "New Delhi"
+  expected:
+    - type: "location"
+      value: "New Delhi"
+  config:
+    style: regex
+    entity_map: {}
+    candidates:
+      location:
+        - "New Delhi"
+
+- description: "Test spacy restricted on labels"
+  input:
+    - text: "That's a Google product"
+      entities:
+      - type: "ORG"
+        value: "Google"
+    - text: "That place is in Delhi"
+      entities:
+      - type: "GPE"
+        value: "Delhi"
+  expected:
+    - type: "ORG"
+      value: "Google"
+  config:
+    style: spacy
+    entity_map: {}
+    labels: "ORG"
+
+- description: "Test regex style fails if candidates are not dict"
+  input:
+    - text: "i want it in New Delhi"
+      entities:
+      - type: "location"
+        value: "New Delhi"
+  exception: "TypeError"
+  config:
+    style: regex
+    entity_map: {}
+    candidates: []
+
+- description: "Test regex style fails if candidates are empty"
+  input:
+    - text: "i want it in New Delhi"
+      entities:
+      - type: "location"
+        value: "New Delhi"
+  exception: "ValueError"
+  config:
+    style: regex
+    entity_map: {}
+    candidates: {}
+
+
+- description: "Test invalid style"
+  input:
+    - text: "i want it in New Delhi"
+      entities:
+      - type: "location"
+        value: "New Delhi"
+  exception: "ValueError"
+  config:
+    entity_map: {}
+    style: "unknown"

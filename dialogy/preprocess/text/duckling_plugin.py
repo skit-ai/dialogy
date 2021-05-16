@@ -48,7 +48,7 @@ means to connect from the implementation here.
 """
 import json
 from pprint import pformat
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import pytz
 import requests
@@ -57,8 +57,7 @@ from pytz.tzinfo import BaseTzInfo  # type: ignore
 from dialogy.constants import EntityKeys
 from dialogy.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
-from dialogy.utils.logger import debug, log
-from dialogy.workflow import Workflow
+from dialogy.utils.logger import dbg, log
 
 
 class DucklingPlugin(Plugin):
@@ -114,7 +113,7 @@ class DucklingPlugin(Plugin):
         url: str = "http://0.0.0.0:8000/parse",
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
-        custom_entity_map: Optional[Dict[str, Any]] = None,
+        entity_map: Optional[Dict[str, Any]] = None,
         debug: bool = False,
     ) -> None:
         """
@@ -130,8 +129,8 @@ class DucklingPlugin(Plugin):
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
 
-        if isinstance(custom_entity_map, dict):
-            self.dimension_entity_map = {**dimension_entity_map, **custom_entity_map}
+        if isinstance(entity_map, dict):
+            self.dimension_entity_map = {**dimension_entity_map, **entity_map}
         else:
             self.dimension_entity_map = dimension_entity_map
 
@@ -157,7 +156,7 @@ class DucklingPlugin(Plugin):
                 " check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
             ) from unknown_timezone_error
 
-    @debug(log)
+    @dbg(log)
     def __create_req_body(
         self, text: str, reference_time: Optional[int]
     ) -> Dict[str, Any]:
@@ -192,9 +191,7 @@ class DucklingPlugin(Plugin):
 
         return payload
 
-    def _reshape(
-        self, entities_json: List[Dict[str, Any]]
-    ) -> Optional[List[BaseEntity]]:
+    def _reshape(self, entities_json: List[Dict[str, Any]]) -> List[BaseEntity]:
         """
         Create a list of :ref:`BaseEntity <base_entity>` objects from a list of entity dicts.
 
@@ -279,61 +276,28 @@ class DucklingPlugin(Plugin):
             f"Duckling API call failed | [{response.status_code}]: {response.text}"
         )
 
-    def plugin(self, workflow: Workflow) -> None:
-        """
-        Insert a list of :ref:`BaseEntity <base_entity>` objects into the Workflow.
-
-        This function is also available through the __call__ method as syntactic sugar.
-
-        :param workflow: A :ref:`Workflow <workflow>` on which the plugin should operate.
-        :return:
-        """
-        access = self.access
-        mutate = self.mutate
-        if not isinstance(access, Callable):  # type: ignore
-            raise TypeError(
-                "Expected `access` to be Callable,"
-                f" got access={type(access)} mutate={type(mutate)}"
-            )
-        if not isinstance(mutate, Callable):  # type: ignore
-            raise TypeError(
-                "Expected `mutate` to be Callable,"
-                f" got access={type(access)} mutate={type(mutate)}"
-            )
-
+    def utility(self, *args: Any) -> List[BaseEntity]:
         entities = []
-        if access and mutate:
-            input_, reference_time = access(workflow)
-            try:
-                if isinstance(input_, str):
+        input_, reference_time = args
+        try:
+            if isinstance(input_, str):
+                entities.append(
+                    self._get_entities(input_, reference_time=reference_time)
+                )
+            elif isinstance(input_, list) and all(
+                isinstance(text, str) for text in input_
+            ):
+                for text in input_:
                     entities.append(
-                        self._get_entities(input_, reference_time=reference_time)
+                        self._get_entities(text, reference_time=reference_time)
                     )
-                elif isinstance(input_, list) and all(
-                    isinstance(text, str) for text in input_
-                ):
-                    for text in input_:
-                        entities.append(
-                            self._get_entities(text, reference_time=reference_time)
-                        )
-                else:
-                    raise TypeError(f"Expected {input_} to be a List[str] or str.")
+            else:
+                raise TypeError(f"Expected {input_} to be a List[str] or str.")
 
-                entities_flattened = [
-                    entity for entity_list in entities for entity in entity_list
-                ]
-
-                if entities_flattened:
-                    shaped_entities = self._reshape(entities_flattened)
-                    mutate(workflow, shaped_entities)
-                else:
-                    mutate(workflow, [])
-            except ValueError as value_error:
-                raise ValueError(str(value_error)) from value_error
-
-    # == __call__ ==
-    def __call__(self) -> PluginFn:
-        """
-        Syntactical sugar.
-        """
-        return self.plugin
+            entities_flattened = [
+                entity for entity_list in entities for entity in entity_list
+            ]
+            shaped_entities = self._reshape(entities_flattened)
+            return shaped_entities
+        except ValueError as value_error:
+            raise ValueError(str(value_error)) from value_error

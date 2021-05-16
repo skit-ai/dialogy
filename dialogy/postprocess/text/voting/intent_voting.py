@@ -12,8 +12,7 @@ from dialogy.plugin import Plugin
 from dialogy.types import Signal
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
-from dialogy.utils.logger import change_log_level, debug, log
-from dialogy.workflow import Workflow
+from dialogy.utils.logger import dbg, log
 
 
 def adjust_signal_strength(
@@ -189,7 +188,7 @@ class VotePlugin(Plugin):
         self.fallback_intent: str = fallback_intent
         self.aggregate_fn: Any = aggregate_fn
 
-    @debug(log)
+    @dbg(log)
     def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
         """
         Reduce a list of intents.
@@ -247,25 +246,5 @@ class VotePlugin(Plugin):
             )
         return Intent(name=self.fallback_intent, score=1)
 
-    def plugin(self, workflow: Workflow) -> None:
-        """
-        Plugin to ease workflow io.
-        """
-        access = self.access
-        mutate = self.mutate
-
-        if access and mutate:
-            intents, trials = access(workflow)
-            intent = self.vote_signal(intents, trials)
-            mutate(workflow, intent)
-        else:
-            raise TypeError(
-                "Expected `access` and `mutate` to be Callable,"
-                f" got access={type(access)} mutate={type(mutate)}"
-            )
-
-    def __call__(self) -> PluginFn:
-        """
-        Convenience.
-        """
-        return self.plugin
+    def utility(self, *args: Any) -> Any:
+        return self.vote_signal(*args) # pylint: disable=no-value-for-parameter

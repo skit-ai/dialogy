@@ -1,6 +1,14 @@
 dialogy.preprocess.text package
 ===============================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   dialogy.preprocess.text.list_entity_plugin
+
 Submodules
 ----------
 

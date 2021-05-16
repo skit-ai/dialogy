@@ -16,10 +16,10 @@ examples:
 - RuleSlotFilerPlugin
 - VotePlugin
 """
-from typing import Optional
+from typing import Any, Optional
 
 from dialogy.types.plugin import PluginFn
-from dialogy.utils.logger import change_log_level
+from dialogy.workflow import Workflow
 
 
 class Plugin:
@@ -85,6 +85,20 @@ class Plugin:
         self.mutate = mutate
         self.debug = debug
 
+    def utility(self, *args: Any) -> Any:
+        ...
+
+    def plugin(self, workflow: Workflow) -> None:
+        if self.access:
+            args = self.access(workflow)
+            value = self.utility(*args)
+            if value is not None and self.mutate:
+                self.mutate(workflow, value)
+        else:
+            raise TypeError(
+                "Expected access to be functions" f" but {type(self.access)} was found."
+            )
+
     def __call__(self) -> PluginFn:
         """
         Build a plugin.
@@ -96,4 +110,4 @@ class Plugin:
         A plugin can be designed to do anything, while the `workflow` will expect all plugins
         to have a `__call__()` method.
         """
-        ...
+        return self.plugin

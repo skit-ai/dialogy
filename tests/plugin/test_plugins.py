@@ -4,8 +4,6 @@ This is a tutorial on creating and using Plugins with Workflows.
 import re
 from typing import Any, Optional
 
-import attr
-
 from dialogy.plugin import Plugin
 from dialogy.types.plugin import PluginFn
 from dialogy.workflow import Workflow
@@ -91,7 +89,6 @@ def test_tokenizer_plugin() -> None:
 
 
 # == ArbitraryPlugin ==
-@attr.s
 class ArbitraryPlugin(Plugin):
     """
     A Plugin class example.
@@ -108,11 +105,15 @@ class ArbitraryPlugin(Plugin):
     can be avoided by expecting either of the functions to be of type `NoneType` or `PluginFn`.
     """
 
-    access: Optional[PluginFn] = attr.ib(default=None)
-    mutate: Optional[PluginFn] = attr.ib(default=None)
+    def __init__(
+        self,
+        access: Optional[PluginFn] = None,
+        mutate: Optional[PluginFn] = None,
+        debug=False,
+    ):
+        super().__init__(access=access, mutate=mutate, debug=debug)
 
-    # === plugin ===
-    def plugin(self, workflow: Workflow) -> None:
+    def utility(self, numbers, words) -> Any:
         """
         Expects a tuple from `access(workflow)` that contains numbers and words.
 
@@ -137,29 +138,9 @@ class ArbitraryPlugin(Plugin):
 
         - workflow (Workflow): The workflow we possibly want to modify.
         """
-        if self.access and self.mutate:
-            # We are expecting numbers and words from the workflow.
-            # The owner of the workflow defines the access and mutate methods, so
-            # as a plugin author, you can document the input and output types and
-            # expect things to work.
-            numbers, words = self.access(workflow)
-
-            # Trivial data manipulation. A serious example would have been canonicalization
-            # of sentences to replace tokens with classes they represent for improving
-            # performance in a classification task.
-            numbers = [number + 2 for number in numbers]
-            words = [word + " world" for word in words]
-            self.mutate(workflow, (numbers, words))
-        else:
-            raise TypeError("access and mutate should be of type PluginFn.")
-
-    # === __call__ ===
-    def __call__(self) -> PluginFn:
-        # this is required only for code-coverage.
-        super().__call__()
-
-        # return the plugin method.
-        return self.plugin
+        numbers = [number + 2 for number in numbers]
+        words = [word + " world" for word in words]
+        return numbers, words
 
 
 # == Plugin as a class with workflow ==
@@ -183,3 +164,8 @@ def test_arbitrary_plugin() -> None:
     # This test would pass only if our plugin works correctly!
     assert numbers == [4, 7]
     assert words == ["hello world", "hi world"]
+
+
+def test_raw_plugin() -> None:
+    plugin = Plugin(access=access, mutate=mutate)
+    assert plugin.utility() is None
