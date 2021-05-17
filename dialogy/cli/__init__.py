@@ -101,5 +101,5 @@ def main() -> None:
             f'--vcs expects either "HEAD" or "TAG" but was passed {vcs_ref}, \
             see more in --help')
 
-    template_name, namespace = canonicalize_project_name(template_name, namespace, vcs_ref) # ignore: too-many-function-args
+    template_name, namespace = canonicalize_project_name(template_name, namespace, vcs_ref) # pylint: disable = too-many-function-args
     new_project(project_name, template_name, namespace)
