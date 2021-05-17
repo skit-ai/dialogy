@@ -11,7 +11,7 @@ This module exposes a command line utility to create project scaffolding. This c
     make lint
 
 Usage:
-  __init__.py create <project> <template> [--namespace=<namespace>]
+  __init__.py create <project> <template> [--namespace=<namespace>] [--vcs=<vcs>]
   __init__.py create <project>
 
 Options:
@@ -25,6 +25,10 @@ Options:
     --namespace=<namespace>
         The version of the dataset, model, metrics to use.
 
+    --vcs=<vcs>
+        accepts either "HEAD" or "TAG", "HEAD" refers to the latest git commit in the <template>
+        "TAG" refers to the latest git release tag in <template>
+
     -h --help
         Show this screen.
 
@@ -32,6 +36,7 @@ Options:
         Show current project version.
 """
 import os
+from typing import Optional
 
 from copier import copy  # type: ignore
 from docopt import docopt  # type: ignore
@@ -44,6 +49,7 @@ def new_project(
     destination_path: str,
     template: str = "dialogy-template-simple-transformers",
     namespace: str = "vernacular-ai",
+    vcs_ref: Optional[str] = None
 ) -> None:
     """
     Create a new project using scaffolding from an existing template.
@@ -58,6 +64,8 @@ def new_project(
     :type template: str
     :param namespace: The user or the organization that supports the template, defaults to "vernacular-ai"
     :type namespace: str, optional
+    :param vcs_ref: support for building from local git templates optionally, `--vcs` takes `"TAG"` or `"HEAD"`. defaults to `None`.
+    :type vcs_ref: str, optional
     :return: None
     :rtype: NoneType
     """
@@ -68,7 +76,13 @@ def new_project(
         log.error("There are files on the destination path. Aborting !")
         return None
 
-    copy(f"gh:{namespace}/{template}.git", destination_path)
+    # to handle copier vcs associated git template building.
+    if vcs_ref is not None:
+        if vcs_ref == "TAG": vcs_ref = None
+        copy(template, destination_path, vcs_ref=vcs_ref)
+    else:
+        copy(f"gh:{namespace}/{template}.git", destination_path)
+
     return None
 
 
@@ -80,6 +94,12 @@ def main() -> None:
     project_name = args["<project>"]
     template_name = args["<template>"]
     namespace = args["--namespace"]
+    vcs_ref = args["--vcs"]
 
-    template_name, namespace = canonicalize_project_name(template_name, namespace)
+    if vcs_ref not in [None, "TAG", "HEAD"]:
+        raise ValueError(
+            f'--vcs expects either "HEAD" or "TAG" but was passed {vcs_ref}, \
+            see more in --help')
+
+    template_name, namespace = canonicalize_project_name(template_name, namespace, vcs_ref)
     new_project(project_name, template_name, namespace)
