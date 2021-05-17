@@ -3,6 +3,8 @@
 - [x] feat: spacy, pattern entity parsing from list support.
 - [x] refactor: Plugin class to prevent repeated code in subclasses.
 - [x] refactor: @debug -> @dbg to prevent name collisions.
+- [x] feat: support for building from local git templates optionally, `--vcs` takes `"TAG"` or `"HEAD"`. if the user provides `--vcs` as
+`"TAG"`, then `dialogy` takes the template's latest released tag commit. if the user provides `--vcs` as `"HEAD"`, then `dialogy` takes the template's present git branch's recent commit.
 
 # 0.5.5
 
