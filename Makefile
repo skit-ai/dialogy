@@ -10,9 +10,8 @@ lint:
 	@echo -e "Running type checker"
 	@mypy dialogy
 
-test: lint ## Run the tests.
+test: lint ## Run the tests.conf
 	@pytest --cov=dialogy --cov-report html --cov-report term:skip-covered tests/
-	@echo -e "The tests pass!" 
 
 docs: test
 	@echo -e "🦆🦕🐬🐶"
