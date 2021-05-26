@@ -278,8 +278,8 @@ class DucklingPlugin(Plugin):
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         entities = []
-        input_, locale = args
-        reference_time = None
+        input_, reference_time, locale = args
+
         try:
             if isinstance(input_, str):
                 entities.append(
