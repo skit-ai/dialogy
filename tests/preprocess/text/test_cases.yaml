@@ -79,7 +79,7 @@
   duckling:
     dimensions: ["people", "time", "date", "duration"]
     timezone: "Asia/Kolkata"
-  mock_entity_json: [{'body': '27th next month',
+  mock_entity_json: [{'body': '5 नवंबर',
   'start': 0,
   'value': {'values': [{'value': '2021-11-05T00:00:00.000+05:30',
      'grain': 'day',
@@ -87,7 +87,7 @@
    'value': '2021-11-05T00:00:00.000+05:30',
    'grain': 'day',
    'type': 'value'},
-  'end': 15,
+  'end': 7,
   'dim': 'time',
   'latent': False}]
  expected: [{"entity": "TimeEntity"}]
