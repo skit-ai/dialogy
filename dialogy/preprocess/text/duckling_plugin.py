@@ -158,8 +158,8 @@ class DucklingPlugin(Plugin):
 
     @dbg(log)
     def __create_req_body(
-        self, text: str, reference_time: Optional[int],
-        locale: str = None) -> Dict[str, Any]:
+        self, text: str, reference_time: Optional[int], locale: str = "en_IN"
+    ) -> Dict[str, Any]:
         """
         create request body for entity parsing
 

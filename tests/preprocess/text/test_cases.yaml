@@ -72,6 +72,27 @@
   }]
   exception: "KeyError"
 
+
+- description: "hindi date"
+  input: "5 नवंबर"
+  locale: "hi_IN"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': '27th next month',
+  'start': 0,
+  'value': {'values': [{'value': '2021-11-05T00:00:00.000+05:30',
+     'grain': 'day',
+     'type': 'value'}],
+   'value': '2021-11-05T00:00:00.000+05:30',
+   'grain': 'day',
+   'type': 'value'},
+  'end': 15,
+  'dim': 'time',
+  'latent': False}]
+ expected: [{"entity": "TimeEntity"}]
+
+
 - description: "numerical entity test"
   input: "4 items"
   duckling:

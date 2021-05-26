@@ -49,7 +49,7 @@ def new_project(
     destination_path: str,
     template: str = "dialogy-template-simple-transformers",
     namespace: str = "vernacular-ai",
-    vcs_ref: Optional[str] = None
+    vcs_ref: Optional[str] = None,
 ) -> None:
     """
     Create a new project using scaffolding from an existing template.
@@ -78,7 +78,8 @@ def new_project(
 
     # to handle copier vcs associated git template building.
     if vcs_ref is not None:
-        if vcs_ref == "TAG": vcs_ref = None
+        if vcs_ref == "TAG":
+            vcs_ref = None
         copy(template, destination_path, vcs_ref=vcs_ref)
     else:
         copy(f"gh:{namespace}/{template}.git", destination_path)
@@ -99,7 +100,10 @@ def main() -> None:
     if vcs_ref not in [None, "TAG", "HEAD"]:
         raise ValueError(
             f'--vcs expects either "HEAD" or "TAG" but was passed {vcs_ref}, \
-            see more in --help')
+            see more in --help'
+        )
 
-    template_name, namespace = canonicalize_project_name(template_name, namespace, vcs_ref) # pylint: disable = too-many-function-args
+    template_name, namespace = canonicalize_project_name(
+        template_name, namespace, vcs_ref
+    )  # pylint: disable = too-many-function-args
     new_project(project_name, template_name, namespace)

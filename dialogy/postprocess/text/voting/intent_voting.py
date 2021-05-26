@@ -247,4 +247,4 @@ class VotePlugin(Plugin):
         return Intent(name=self.fallback_intent, score=1)
 
     def utility(self, *args: Any) -> Any:
-        return self.vote_signal(*args) # pylint: disable=no-value-for-parameter
+        return self.vote_signal(*args)  # pylint: disable=no-value-for-parameter
