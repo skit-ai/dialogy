@@ -2,11 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.postprocess.text.voting package" href="dialogy.postprocess.text.voting.html" /><link rel="prev" title="dialogy.postprocess.text package" href="dialogy.postprocess.text.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.postprocess.text.voting package" href="dialogy.postprocess.text.voting.html" /><link rel="prev" title="dialogy.postprocess.text package" href="dialogy.postprocess.text.html" />
 
-    <meta name="generator" content="sphinx-3.5.3, furo 2021.04.11.beta34"/>
-        <title>dialogy.postprocess.text.slot_filler package - dialogy 0.5.0 documentation</title>
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
+        <title>dialogy.postprocess.text.slot_filler package - dialogy 0.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -88,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.5.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.6.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -102,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.5.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.6.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -183,12 +182,12 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <section id="dialogy-postprocess-text-slot-filler-package">
+        <div class="section" id="dialogy-postprocess-text-slot-filler-package">
 <h1>dialogy.postprocess.text.slot_filler package<a class="headerlink" href="#dialogy-postprocess-text-slot-filler-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
+<div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="module-dialogy.postprocess.text.slot_filler.rule_slot_filler">
+</div>
+<div class="section" id="module-dialogy.postprocess.text.slot_filler.rule_slot_filler">
 <span id="dialogy-postprocess-text-slot-filler-rule-slot-filler-module"></span><h2>dialogy.postprocess.text.slot_filler.rule_slot_filler module<a class="headerlink" href="#module-dialogy.postprocess.text.slot_filler.rule_slot_filler" title="Permalink to this headline">¶</a></h2>
 <p id="rule-slot-filler">Module provides access to a rule-based <a class="reference internal" href="#slot-filler"><span class="std std-ref">slot filler</span></a>.</p>
 <dl class="py class">
@@ -291,31 +290,16 @@ entities.</p>
 </dl>
 <p>Irrespective of the entities that are found, only the listed type in the slot shall be present in <cite>values</cite>.</p>
 <dl class="py method">
-<dt id="dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.plugin">
-<code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.plugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update an intent slot with compatible entity.</p>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">access(workflow)</span></code> should return a Tuple. <code class="code docutils literal notranslate"><span class="pre">Tuple[Intent,BaseEntity]</span></code>.</p></li>
-<li><p>Only 1 entity fills a slot type. To fill more, set <code class="code docutils literal notranslate"><span class="pre">fill_multiple=True</span></code></p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>workflow</strong> (<a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><em>Workflow</em></a>) – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>TypeError</strong> – if access isn’t a Callable.</p>
-</dd>
-</dl>
+<dt id="dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill">
+<code class="sig-name descname"><span class="pre">fill</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility">
+<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 </dd></dl>
-</dd></dl>
-</section>
-<section id="module-dialogy.postprocess.text.slot_filler">
+</div>
+<div class="section" id="module-dialogy.postprocess.text.slot_filler">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.postprocess.text.slot_filler" title="Permalink to this headline">¶</a></h2>
 <p id="slot-filler">To handle a single dialog we need a system that can:</p>
 <ol class="arabic simple">
@@ -332,8 +316,8 @@ fills an entity of a pre-defined type.</p>
 <li><p>A <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a> configured to fill a <a class="reference internal" href="dialogy.types.entity.html#time-entity"><span class="std std-ref">TimeEntity</span></a> will not fill a <a class="reference internal" href="dialogy.types.entity.html#location-entity"><span class="std std-ref">LocationEntity</span></a>.</p></li>
 <li><p>A <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a> will not fill more than one entity even if the type matches, unless <code class="code docutils literal notranslate"><span class="pre">fill_multiple</span></code> is provided.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
       </article>
       <footer>

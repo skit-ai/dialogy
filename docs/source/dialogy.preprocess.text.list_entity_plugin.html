@@ -2,11 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types package" href="dialogy.types.html" /><link rel="prev" title="dialogy.preprocess.text package" href="dialogy.preprocess.text.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types package" href="dialogy.types.html" /><link rel="prev" title="dialogy.preprocess.text package" href="dialogy.preprocess.text.html" />
 
-    <meta name="generator" content="sphinx-3.5.3, furo 2021.04.11.beta34"/>
-        <title>dialogy.preprocess.text.list_entity_plugin package - dialogy 0.5.0 documentation</title>
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
+        <title>dialogy.preprocess.text.list_entity_plugin package - dialogy 0.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -88,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.5.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.6.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -102,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.5.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.6.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -183,12 +182,96 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <section id="dialogy-preprocess-text-list-entity-plugin-package">
+        <div class="section" id="dialogy-preprocess-text-list-entity-plugin-package">
 <h1>dialogy.preprocess.text.list_entity_plugin package<a class="headerlink" href="#dialogy-preprocess-text-list-entity-plugin-package" title="Permalink to this headline">¶</a></h1>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
-</section>
-</section>
+<div class="section" id="module-dialogy.preprocess.text.list_entity_plugin">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.preprocess.text.list_entity_plugin" title="Permalink to this headline">¶</a></h2>
+<p id="list-entity-plugin">Module needs refactor. We are currently keeping all strategies bundled as methods as opposed to SearchStrategyClasses.</p>
+<p>Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We can ship individual plugins but at the
+same time, the difference is just configuration of each of these tools/services. There is another difference of
+intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting
+all other entities. So that their <code class="code docutils literal notranslate"><span class="pre">from_dict(...)</span></code> methods are pristine and involve no shape hacking.</p>
+<dl class="py class">
+<dt id="dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.preprocess.text.list_entity_plugin.</span></code><code class="sig-name descname"><span class="pre">ListEntityPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_map</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacy_nlp</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/list_entity_plugin.html#ListEntityPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.plugin.html#dialogy.plugin.plugin.Plugin" title="dialogy.plugin.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.plugin.plugin.Plugin</span></code></a></p>
+<blockquote>
+<div><p>A <a class="reference internal" href="dialogy.plugin.html#plugin"><span class="std std-ref">Plugin</span></a> for extracting entities using spacy or a list of regex patterns.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity_map</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><em>BaseEntity</em></a><em>]</em>) – A <code class="code docutils literal notranslate"><span class="pre">dict</span></code> with keys as entity type and value as EntityClass</p></li>
+<li><p><strong>style</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – One of [“regex”, “spacy”]</p></li>
+<li><p><strong>candidates</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>]</em>) – Required if style is “regex”, this is a <code class="code docutils literal notranslate"><span class="pre">dict</span></code> that shows a mapping of entity
+values and their patterns.</p></li>
+<li><p><strong>spacy_nlp</strong> (<em>Any</em>) – Required if style is “spacy”, this is a
+<a class="reference external" href="https://spacy.io/usage/spacy-101#annotations-ner">spacy model</a>.</p></li>
+<li><p><strong>labels</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Required if style is “spacy”. If there is a need to extract only a few labels from all the other
+<a class="reference external" href="https://github.com/explosion/spaCy/issues/441#issuecomment-311804705">available labels</a>.</p></li>
+<li><p><strong>access</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – A plugin io utility that allows access to transcripts
+<code class="code docutils literal notranslate"><span class="pre">List[str]</span></code> within a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>.</p></li>
+<li><p><strong>mutate</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – A plugin io utility that allows insertion of <code class="code docutils literal notranslate"><span class="pre">List[BaseEntity]</span></code> within a
+<a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>.</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – A flag to set debugging on the plugin methods</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin.get_entities">
+<code class="sig-name descname"><span class="pre">get_entities</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcripts</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/preprocess/text/list_entity_plugin.html#ListEntityPlugin.get_entities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin.get_entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse entities using regex and spacy ner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transcripts</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – A list of strings within which to search for entities.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of entities from regex matches or spacy ner.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin.ner_search">
+<code class="sig-name descname"><span class="pre">ner_search</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcript</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/preprocess/text/list_entity_plugin.html#ListEntityPlugin.ner_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin.ner_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper over spacy’s ner search.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transcript</strong> (<em>str</em>) – A string to search entities within.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>NER parsing via spacy.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>MatchType</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin.regex_search">
+<code class="sig-name descname"><span class="pre">regex_search</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcript</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/preprocess/text/list_entity_plugin.html#ListEntityPlugin.regex_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin.regex_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper over regex searches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transcript</strong> (<em>str</em>) – A string to search entities within.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>regex parsing via spacy.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>MatchType</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin.utility">
+<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/preprocess/text/list_entity_plugin.html#ListEntityPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.preprocess.text.list_entity_plugin.ListEntityPlugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+</div>
+</div>
 
       </article>
       <footer>
@@ -245,7 +328,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.preprocess.text.list_entity_plugin package</a><ul>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.preprocess.text.list_entity_plugin">Module contents</a></li>
 </ul>
 </li>
 </ul>

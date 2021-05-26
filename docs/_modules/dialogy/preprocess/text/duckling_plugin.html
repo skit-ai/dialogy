@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
-    <meta name="generator" content="sphinx-3.5.3, furo 2021.04.11.beta34"/>
-        <title>dialogy.preprocess.text.duckling_plugin - dialogy 0.5.0 documentation</title>
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
+        <title>dialogy.preprocess.text.duckling_plugin - dialogy 0.6.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.5.0 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.6.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.5.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.6.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -233,7 +233,7 @@
 <span class="sd">"""</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">pytz</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -242,8 +242,7 @@
 <span class="kn">from</span> <span class="nn">dialogy.constants</span> <span class="kn">import</span> <span class="n">EntityKeys</span>
 <span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">dimension_entity_map</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">debug</span><span class="p">,</span> <span class="n">log</span>
-<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">dbg</span><span class="p">,</span> <span class="n">log</span>
 
 
 <div class="viewcode-block" id="DucklingPlugin"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.duckling_plugin.DucklingPlugin">[docs]</a><span class="k">class</span> <span class="nc">DucklingPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
@@ -299,7 +298,7 @@
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"http://0.0.0.0:8000/parse"</span><span class="p">,</span>
         <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">custom_entity_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">entity_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -315,8 +314,8 @@
             <span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded; charset=UTF-8"</span>
         <span class="p">}</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">custom_entity_map</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">dimension_entity_map</span><span class="p">,</span> <span class="o">**</span><span class="n">custom_entity_map</span><span class="p">}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity_map</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">dimension_entity_map</span><span class="p">,</span> <span class="o">**</span><span class="n">entity_map</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span> <span class="o">=</span> <span class="n">dimension_entity_map</span>
 
@@ -342,9 +341,9 @@
                 <span class="s2">" check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"</span>
             <span class="p">)</span> <span class="kn">from</span> <span class="nn">unknown_timezone_error</span>
 
-    <span class="nd">@debug</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="nd">@dbg</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__create_req_body</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"en_IN"</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        create request body for entity parsing</span>
@@ -367,7 +366,7 @@
 
         <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">"text"</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
-            <span class="s2">"locale"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">locale</span><span class="p">,</span>
+            <span class="s2">"locale"</span><span class="p">:</span> <span class="n">locale</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">locale</span><span class="p">,</span>
             <span class="s2">"tz"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_timezone</span><span class="p">(),</span>
             <span class="s2">"dims"</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),</span>
             <span class="s2">"reftime"</span><span class="p">:</span> <span class="n">reference_time</span><span class="p">,</span>
@@ -377,9 +376,7 @@
 
         <span class="k">return</span> <span class="n">payload</span>
 
-    <span class="k">def</span> <span class="nf">_reshape</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">entities_json</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">_reshape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities_json</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Create a list of :ref:`BaseEntity &lt;base_entity&gt;` objects from a list of entity dicts.</span>
 
@@ -430,7 +427,7 @@
         <span class="k">return</span> <span class="n">entity_object_list</span>
 
     <span class="k">def</span> <span class="nf">_get_entities</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Get entities from duckling-server.</span>
@@ -448,7 +445,7 @@
 <span class="sd">        :return: Duckling entities as python :code:`dicts`.</span>
 <span class="sd">        :rtype: List[Dict[str, Any]]</span>
 <span class="sd">        """</span>
-        <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_req_body</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">)</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_req_body</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">,</span> <span class="n">locale</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span>
         <span class="p">)</span>
@@ -464,64 +461,31 @@
             <span class="sa">f</span><span class="s2">"Duckling API call failed | [</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">]: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="DucklingPlugin.plugin"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.duckling_plugin.DucklingPlugin.plugin">[docs]</a>    <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Insert a list of :ref:`BaseEntity &lt;base_entity&gt;` objects into the Workflow.</span>
-
-<span class="sd">        This function is also available through the __call__ method as syntactic sugar.</span>
-
-<span class="sd">        :param workflow: A :ref:`Workflow &lt;workflow&gt;` on which the plugin should operate.</span>
-<span class="sd">        :return:</span>
-<span class="sd">        """</span>
-        <span class="n">access</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span>
-        <span class="n">mutate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">access</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">"Expected `access` to be Callable,"</span>
-                <span class="sa">f</span><span class="s2">" got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mutate</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">"Expected `mutate` to be Callable,"</span>
-                <span class="sa">f</span><span class="s2">" got access=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> mutate=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mutate</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
-            <span class="p">)</span>
-
+<div class="viewcode-block" id="DucklingPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.preprocess.text.html#dialogy.preprocess.text.duckling_plugin.DucklingPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="n">entities</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">access</span> <span class="ow">and</span> <span class="n">mutate</span><span class="p">:</span>
-            <span class="n">input_</span><span class="p">,</span> <span class="n">reference_time</span> <span class="o">=</span> <span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">input_</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">,</span> <span class="n">locale</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="n">locale</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span>
+            <span class="p">):</span>
+                <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span><span class="p">:</span>
                     <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">locale</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
                     <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span>
-                <span class="p">):</span>
-                    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span><span class="p">:</span>
-                        <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
-                        <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected </span><span class="si">{</span><span class="n">input_</span><span class="si">}</span><span class="s2"> to be a List[str] or str."</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected </span><span class="si">{</span><span class="n">input_</span><span class="si">}</span><span class="s2"> to be a List[str] or str."</span><span class="p">)</span>
 
-                <span class="n">entities_flattened</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">entity</span> <span class="k">for</span> <span class="n">entity_list</span> <span class="ow">in</span> <span class="n">entities</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entity_list</span>
-                <span class="p">]</span>
-
-                <span class="k">if</span> <span class="n">entities_flattened</span><span class="p">:</span>
-                    <span class="n">shaped_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">entities_flattened</span><span class="p">)</span>
-                    <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">shaped_entities</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">value_error</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value_error</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">value_error</span></div>
-
-    <span class="c1"># == __call__ ==</span>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Syntactical sugar.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span></div>
+            <span class="n">entities_flattened</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">entity</span> <span class="k">for</span> <span class="n">entity_list</span> <span class="ow">in</span> <span class="n">entities</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entity_list</span>
+            <span class="p">]</span>
+            <span class="n">shaped_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">entities_flattened</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">shaped_entities</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">value_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value_error</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">value_error</span></div></div>
 </pre></div>
       </article>
       <footer>
