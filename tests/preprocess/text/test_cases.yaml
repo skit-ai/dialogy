@@ -316,8 +316,9 @@
   exception: "ValueError"
 
 - description: "hindi date"
-  input: ["5 नवंबर", "hi_IN"]
+  input: "5 नवंबर"
   duckling:
+    locale: "hi_IN"
     dimensions: ["people", "time", "date", "duration"]
     timezone: "Asia/Kolkata"
   mock_entity_json: [{'body': '5 नवंबर',

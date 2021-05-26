@@ -81,9 +81,10 @@ def test_plugin_working_cases(payload) -> None:
     exception = payload.get("exception")
     duckling_args = payload.get("duckling")
     response_code = payload.get("response_code", 200)
+    locale = payload.get("locale")
 
     def access(workflow):
-        return workflow.input, None
+        return workflow.input, None, locale
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
