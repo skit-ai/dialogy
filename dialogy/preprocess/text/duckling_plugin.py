@@ -107,10 +107,10 @@ class DucklingPlugin(Plugin):
     def __init__(
         self,
         dimensions: List[str],
-        locale: str,
         timezone: str,
         timeout: float = 0.5,
         url: str = "http://0.0.0.0:8000/parse",
+        locale: str = "en_IN",
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
         entity_map: Optional[Dict[str, Any]] = None,
@@ -242,7 +242,7 @@ class DucklingPlugin(Plugin):
         return entity_object_list
 
     def _get_entities(
-        self, text: str, locale: str, reference_time: Optional[int] = None
+        self, text: str, locale: str = "en_IN", reference_time: Optional[int] = None
     ) -> List[Dict[str, Any]]:
         """
         Get entities from duckling-server.
@@ -278,7 +278,8 @@ class DucklingPlugin(Plugin):
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         entities = []
-        input_, reference_time, locale = args
+        input_, locale = args
+        reference_time = None
         try:
             if isinstance(input_, str):
                 entities.append(
