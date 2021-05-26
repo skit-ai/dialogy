@@ -107,7 +107,6 @@ class DucklingPlugin(Plugin):
     def __init__(
         self,
         dimensions: List[str],
-        locale: str,
         timezone: str,
         timeout: float = 0.5,
         url: str = "http://0.0.0.0:8000/parse",
@@ -121,7 +120,6 @@ class DucklingPlugin(Plugin):
         """
         super().__init__(access=access, mutate=mutate, debug=debug)
         self.dimensions = dimensions
-        self.locale = locale
         self.timezone = timezone
         self.timeout = timeout
         self.url = url
@@ -158,7 +156,7 @@ class DucklingPlugin(Plugin):
 
     @dbg(log)
     def __create_req_body(
-        self, text: str, reference_time: Optional[int]
+        self, text: str, locale: str, reference_time: Optional[int]
     ) -> Dict[str, Any]:
         """
         create request body for entity parsing
@@ -181,7 +179,7 @@ class DucklingPlugin(Plugin):
 
         payload = {
             "text": text,
-            "locale": self.locale,
+            "locale": locale,
             "tz": self.__set_timezone(),
             "dims": json.dumps(dimensions),
             "reftime": reference_time,
@@ -242,7 +240,7 @@ class DucklingPlugin(Plugin):
         return entity_object_list
 
     def _get_entities(
-        self, text: str, reference_time: Optional[int] = None
+        self, text: str, locale: str, reference_time: Optional[int] = None
     ) -> List[Dict[str, Any]]:
         """
         Get entities from duckling-server.
@@ -260,7 +258,7 @@ class DucklingPlugin(Plugin):
         :return: Duckling entities as python :code:`dicts`.
         :rtype: List[Dict[str, Any]]
         """
-        body = self.__create_req_body(text, reference_time)
+        body = self.__create_req_body(text, locale, reference_time)
         response = requests.post(
             self.url, data=body, headers=self.headers, timeout=self.timeout
         )
@@ -278,18 +276,18 @@ class DucklingPlugin(Plugin):
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         entities = []
-        input_, reference_time = args
+        input_, reference_time, locale = args
         try:
             if isinstance(input_, str):
                 entities.append(
-                    self._get_entities(input_, reference_time=reference_time)
+                    self._get_entities(input_, locale, reference_time=reference_time)
                 )
             elif isinstance(input_, list) and all(
                 isinstance(text, str) for text in input_
             ):
                 for text in input_:
                     entities.append(
-                        self._get_entities(text, reference_time=reference_time)
+                        self._get_entities(text, locale, reference_time=reference_time)
                     )
             else:
                 raise TypeError(f"Expected {input_} to be a List[str] or str.")
