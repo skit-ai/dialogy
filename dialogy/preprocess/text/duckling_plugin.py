@@ -17,7 +17,7 @@ means to connect from the implementation here.
         workflow.input["duckling_entities"] = entities
 
     duckling_plugin = DucklingPlugin(
-        access=lambda workflow: workflow.input["sentence"],
+        access=lambda workflow: (workflow.input["sentence"], workflow.input["reftime"], workflow.input["locale"])
         # the access method guides the plugin to data within a workflow.
         # in this case, the `input` property of a workflow is expected
         # to be a `dict` with a key named "sentence". Check line 30.
