@@ -202,7 +202,7 @@
 <span class="sd">        workflow.input["duckling_entities"] = entities</span>
 
 <span class="sd">    duckling_plugin = DucklingPlugin(</span>
-<span class="sd">        access=lambda workflow: workflow.input["sentence"],</span>
+<span class="sd">        access=lambda workflow: (workflow.input["sentence"], workflow.input["reftime"], workflow.input["locale"])</span>
 <span class="sd">        # the access method guides the plugin to data within a workflow.</span>
 <span class="sd">        # in this case, the `input` property of a workflow is expected</span>
 <span class="sd">        # to be a `dict` with a key named "sentence". Check line 30.</span>

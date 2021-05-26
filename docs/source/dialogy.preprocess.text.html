@@ -242,7 +242,7 @@ means to connect from the implementation here.</p>
 <span class="hll">    <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"duckling_entities"</span><span class="p">]</span> <span class="o">=</span> <span class="n">entities</span>
 </span>
 <span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
-    <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"sentence"</span><span class="p">],</span>
+    <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">workflow</span><span class="p">:</span> <span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"sentence"</span><span class="p">],</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"reftime"</span><span class="p">],</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"locale"</span><span class="p">])</span>
     <span class="c1"># the access method guides the plugin to data within a workflow.</span>
     <span class="c1"># in this case, the `input` property of a workflow is expected</span>
     <span class="c1"># to be a `dict` with a key named "sentence". Check line 30.</span>

@@ -212,6 +212,50 @@ more weight than its counterparts.</p>
 <p class="admonition-title">Warning</p>
 <p>Use this with caution, this is not production ready yet.</p>
 </div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.postprocess.text.voting.intent_voting</span> <span class="kn">import</span> <span class="n">VotePlugin</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+
+<span class="gp">In [3]: </span><span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Intent</span>
+
+<span class="go"># Let's say we had a normalized set of alternatives that look like:</span>
+<span class="gp">In [4]: </span><span class="n">transcripts</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">   ...: </span>    <span class="s2">"yes"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"yet"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"yep"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"ye"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="s2">"&lt;UNK&gt;"</span><span class="p">,</span> <span class="c1"># ASR's way of being under-confident about the token</span>
+<span class="gp">   ...: </span>    <span class="s2">"no"</span> <span class="c1"># expected anomalies in SLU.</span>
+<span class="gp">   ...: </span><span class="p">]</span>
+<span class="gp">   ...: </span>
+
+<span class="go"># We have noticed that concatenation of all the transcripts leads to a situation</span>
+<span class="go"># where a model can't pick signals since there is only one, the one built by</span>
+<span class="go"># concatenation of transcripts. So let's mock the intents for this and continue.</span>
+<span class="gp">In [5]: </span><span class="n">intents</span> <span class="o">=</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"affirmative"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"affirmative"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span>
+<span class="gp">   ...: </span>            <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"affirmative"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"affirmative"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span>
+<span class="gp">   ...: </span>            <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"_oos_"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"negative"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)]</span>
+<span class="gp">   ...: </span>
+
+<span class="go"># This situation simulates a single very confident prediction, while the overall group representation</span>
+<span class="go"># paints a different picture.</span>
+<span class="go"># We need to define a function to let the plugin modify the workflow state.</span>
+<span class="gp">In [6]: </span><span class="k">def</span> <span class="nf">update_intent</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">intent</span><span class="p">):</span>
+<span class="gp">   ...: </span>    <span class="n">w</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">intent</span>
+<span class="gp">   ...: </span><span class="n">vote_plugin</span> <span class="o">=</span> <span class="n">VotePlugin</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">mutate</span><span class="o">=</span><span class="n">update_intent</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)()</span>
+<span class="gp">   ...: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">vote_plugin</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">intents</span>
+<span class="gp">   ...: </span><span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="p">(</span><span class="n">transcripts</span><span class="p">,))</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">[Intent(name=affirmative, score=0.8, slots={}),</span>
+<span class="go"> Intent(name=affirmative, score=0.8, slots={}),</span>
+<span class="go"> Intent(name=affirmative, score=0.8, slots={}),</span>
+<span class="go"> Intent(name=affirmative, score=0.8, slots={}),</span>
+<span class="go"> Intent(name=_oos_, score=0.8, slots={}),</span>
+<span class="go"> Intent(name=negative, score=0.9, slots={})]</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -279,6 +323,7 @@ normalized by trials.</p>
 <li><p><strong>signals</strong> (<em>List</em><em>[</em><em>Signal</em><em>]</em>) – A signal is a tuple of name and strength.</p></li>
 <li><p><strong>trials</strong> (<em>int</em>) – Total attempts made to generate signals.</p></li>
 <li><p><strong>aggregate_fn</strong> (<em>Any</em><em>, </em><em>optional</em>) – A function to normalize a list of floating point values, defaults to np.mean</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – Log if True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>

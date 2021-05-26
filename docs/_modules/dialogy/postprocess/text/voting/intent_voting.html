@@ -221,6 +221,8 @@
 <span class="sd">    :type trials: int</span>
 <span class="sd">    :param aggregate_fn: A function to normalize a list of floating point values, defaults to np.mean</span>
 <span class="sd">    :type aggregate_fn: Any, optional</span>
+<span class="sd">    :param debug: Log if True.</span>
+<span class="sd">    :type debug: bool</span>
 <span class="sd">    :raises TypeError: :code:`aggregate_fn` if passed should be a :code:`callable`.</span>
 <span class="sd">    :return: A list of normalized signal.</span>
 <span class="sd">    :rtype: List[Signal]</span>
@@ -278,6 +280,42 @@
 <span class="sd">    more weight than its counterparts.</span>
 
 <span class="sd">    .. warning:: Use this with caution, this is not production ready yet.</span>
+
+<span class="sd">    .. ipython:: python</span>
+
+<span class="sd">        from dialogy.postprocess.text.voting.intent_voting import VotePlugin</span>
+<span class="sd">        from dialogy.workflow import Workflow</span>
+<span class="sd">        from dialogy.types import Intent</span>
+
+<span class="sd">        # Let's say we had a normalized set of alternatives that look like:</span>
+<span class="sd">        transcripts = [</span>
+<span class="sd">            "yes",</span>
+<span class="sd">            "yet",</span>
+<span class="sd">            "yep",</span>
+<span class="sd">            "ye",</span>
+<span class="sd">            "&lt;UNK&gt;", # ASR's way of being under-confident about the token</span>
+<span class="sd">            "no" # expected anomalies in SLU.</span>
+<span class="sd">        ]</span>
+
+<span class="sd">        # We have noticed that concatenation of all the transcripts leads to a situation</span>
+<span class="sd">        # where a model can't pick signals since there is only one, the one built by</span>
+<span class="sd">        # concatenation of transcripts. So let's mock the intents for this and continue.</span>
+
+<span class="sd">        intents = [Intent(name="affirmative", score=0.8), Intent(name="affirmative", score=0.8),</span>
+<span class="sd">                    Intent(name="affirmative", score=0.8), Intent(name="affirmative", score=0.8),</span>
+<span class="sd">                    Intent(name="_oos_", score=0.8), Intent(name="negative", score=0.9)]</span>
+<span class="sd">        # This situation simulates a single very confident prediction, while the overall group representation</span>
+<span class="sd">        # paints a different picture.</span>
+
+<span class="sd">        # We need to define a function to let the plugin modify the workflow state.</span>
+
+<span class="sd">        def update_intent(w, intent):</span>
+<span class="sd">            w.output[0] = intent</span>
+<span class="sd">        vote_plugin = VotePlugin(access=lambda w: (w.output, len(w.input[0])), mutate=update_intent, debug=True)()</span>
+<span class="sd">        workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])</span>
+<span class="sd">        workflow.output = intents</span>
+<span class="sd">        workflow.run(input_=(transcripts,))</span>
+
 
 <span class="sd">    :param access: A function that expects workflow as an argument and returns a Tuple.</span>
 <span class="sd">        The Tuple contains: :code:`intents`, :code:`trials`. Here,</span>
