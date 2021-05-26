@@ -107,6 +107,7 @@ class DucklingPlugin(Plugin):
     def __init__(
         self,
         dimensions: List[str],
+        locale: str,
         timezone: str,
         timeout: float = 0.5,
         url: str = "http://0.0.0.0:8000/parse",
@@ -120,6 +121,7 @@ class DucklingPlugin(Plugin):
         """
         super().__init__(access=access, mutate=mutate, debug=debug)
         self.dimensions = dimensions
+        self.locale = locale
         self.timezone = timezone
         self.timeout = timeout
         self.url = url
@@ -156,8 +158,8 @@ class DucklingPlugin(Plugin):
 
     @dbg(log)
     def __create_req_body(
-        self, text: str, locale: str, reference_time: Optional[int]
-    ) -> Dict[str, Any]:
+        self, text: str, reference_time: Optional[int],
+        locale: str = None) -> Dict[str, Any]:
         """
         create request body for entity parsing
 
@@ -179,7 +181,7 @@ class DucklingPlugin(Plugin):
 
         payload = {
             "text": text,
-            "locale": locale,
+            "locale": locale or self.locale,
             "tz": self.__set_timezone(),
             "dims": json.dumps(dimensions),
             "reftime": reference_time,
@@ -258,7 +260,7 @@ class DucklingPlugin(Plugin):
         :return: Duckling entities as python :code:`dicts`.
         :rtype: List[Dict[str, Any]]
         """
-        body = self.__create_req_body(text, locale, reference_time)
+        body = self.__create_req_body(text, reference_time, locale)
         response = requests.post(
             self.url, data=body, headers=self.headers, timeout=self.timeout
         )
