@@ -2,11 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.postprocess package" href="dialogy.postprocess.html" /><link rel="prev" title="dialogy.parser.text.entity package" href="dialogy.parser.text.entity.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.postprocess package" href="dialogy.postprocess.html" /><link rel="prev" title="dialogy.parser.text.entity package" href="dialogy.parser.text.entity.html" />
 
-    <meta name="generator" content="sphinx-3.5.3, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugin package - dialogy 0.5.0 documentation</title>
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
+        <title>dialogy.plugin package - dialogy 0.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -88,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.5.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.6.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -102,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.5.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.6.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -183,12 +182,12 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <section id="dialogy-plugin-package">
+        <div class="section" id="dialogy-plugin-package">
 <h1>dialogy.plugin package<a class="headerlink" href="#dialogy-plugin-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
+<div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="module-dialogy.plugin.plugin">
+</div>
+<div class="section" id="module-dialogy.plugin.plugin">
 <span id="dialogy-plugin-plugin-module"></span><h2>dialogy.plugin.plugin module<a class="headerlink" href="#module-dialogy.plugin.plugin" title="Permalink to this headline">¶</a></h2>
 <p id="plugin">Module provides access to an abstract plugin class.</p>
 <p>We will summarize a few key points for creating plugins:</p>
@@ -219,26 +218,26 @@ expectations of the <a class="reference internal" href="dialogy.workflow.html#wo
 <p>In case there are static inputs that won’t change at runtime, these can be pre-loaded into the
 <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> by extending it.</p>
 <p>An example for this is:</p>
-<div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CustomPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CustomPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
@@ -267,9 +266,17 @@ expectations of the <a class="reference internal" href="dialogy.workflow.html#wo
 <li><p><a class="reference internal" href="dialogy.postprocess.text.slot_filler.html#rule-slot-filler"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a> (post-processing)</p></li>
 <li><p><a class="reference internal" href="dialogy.postprocess.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a> (post-processing)</p></li>
 </ol>
+<dl class="py method">
+<dt id="dialogy.plugin.plugin.Plugin.plugin">
+<code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/plugin/plugin.html#Plugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugin.plugin.Plugin.plugin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugin.plugin.Plugin.utility">
+<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/plugin/plugin.html#Plugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugin.plugin.Plugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 </dd></dl>
-</section>
-<section id="module-dialogy.plugin">
+</div>
+<div class="section" id="module-dialogy.plugin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugin" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is an abstraction to handle third-party features with custom <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> pipelines.</p>
 <p>We offer a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> that provides a simple API exposed via its <code class="code docutils literal notranslate"><span class="pre">run(input_=X)</span></code> method.
@@ -282,8 +289,8 @@ writing plugins. This will help improvement, addition of existing features by ke
 context-free boxes.</p>
 <p>An ideal <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a>  must therefore not assume a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> structure. It must use
 abstractions to specify requirements and expect these to be met for safe usage.</p>
-</section>
-</section>
+</div>
+</div>
 
       </article>
       <footer>

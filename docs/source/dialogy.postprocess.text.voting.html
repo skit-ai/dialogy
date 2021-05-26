@@ -2,11 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.preprocess package" href="dialogy.preprocess.html" /><link rel="prev" title="dialogy.postprocess.text.slot_filler package" href="dialogy.postprocess.text.slot_filler.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.preprocess package" href="dialogy.preprocess.html" /><link rel="prev" title="dialogy.postprocess.text.slot_filler package" href="dialogy.postprocess.text.slot_filler.html" />
 
-    <meta name="generator" content="sphinx-3.5.3, furo 2021.04.11.beta34"/>
-        <title>dialogy.postprocess.text.voting package - dialogy 0.5.0 documentation</title>
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
+        <title>dialogy.postprocess.text.voting package - dialogy 0.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -88,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.5.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.6.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -102,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.5.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.6.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -183,12 +182,12 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <section id="dialogy-postprocess-text-voting-package">
+        <div class="section" id="dialogy-postprocess-text-voting-package">
 <h1>dialogy.postprocess.text.voting package<a class="headerlink" href="#dialogy-postprocess-text-voting-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
+<div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="module-dialogy.postprocess.text.voting.intent_voting">
+</div>
+<div class="section" id="module-dialogy.postprocess.text.voting.intent_voting">
 <span id="dialogy-postprocess-text-voting-intent-voting-module"></span><h2>dialogy.postprocess.text.voting.intent_voting module<a class="headerlink" href="#module-dialogy.postprocess.text.voting.intent_voting" title="Permalink to this headline">¶</a></h2>
 <p>This module provides utilities to handle multiple intents from each
 alternative from the ASR.</p>
@@ -282,10 +281,9 @@ if the confidence threshold is met but representation is poor.</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin">
-<code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.plugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plugin to ease workflow io.</p>
-</dd></dl>
+<dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.utility">
+<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 <dl class="py method">
 <dt id="dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal">
 <code class="sig-name descname"><span class="pre">vote_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trials</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><a class="reference internal" href="../_modules/dialogy/postprocess/text/voting/intent_voting.html#VotePlugin.vote_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.postprocess.text.voting.intent_voting.VotePlugin.vote_signal" title="Permalink to this definition">¶</a></dt>
@@ -339,11 +337,11 @@ normalized by trials.</p>
 </dd>
 </dl>
 </dd></dl>
-</section>
-<section id="module-dialogy.postprocess.text.voting">
+</div>
+<div class="section" id="module-dialogy.postprocess.text.voting">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.postprocess.text.voting" title="Permalink to this headline">¶</a></h2>
-</section>
-</section>
+</div>
+</div>
 
       </article>
       <footer>

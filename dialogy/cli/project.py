@@ -5,8 +5,7 @@ DEFAULT_PROJECT_TEMPLATE = "dialogy-template-simple-transformers"
 
 
 def canonicalize_project_name(
-    template: Optional[str] = None,
-    namespace: Optional[str] = None,
+    template: Optional[str] = None, namespace: Optional[str] = None
 ) -> Tuple[str, str]:
     """
     :param template: Scaffolding will be generated using a copier template project. This is the link to the project.

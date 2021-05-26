@@ -197,7 +197,7 @@ class ListEntityPlugin(Plugin):
         return entities  # type:ignore
 
     def utility(self, *args: Any) -> Any:
-        return self.get_entities(*args) # pylint: disable=no-value-for-parameter
+        return self.get_entities(*args)  # pylint: disable=no-value-for-parameter
 
     def ner_search(self, transcript: str) -> MatchType:
         """
