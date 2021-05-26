@@ -103,7 +103,7 @@ def main() -> None:
             see more in --help'
         )
 
-    template_name, namespace = canonicalize_project_name(
-        template_name, namespace, vcs_ref
-    )  # pylint: disable = too-many-function-args
-    new_project(project_name, template_name, namespace)
+    template_name, namespace = canonicalize_project_name(template_name, namespace)
+    new_project(
+        project_name, template=template_name, namespace=namespace, vcs_ref=vcs_ref
+    )
