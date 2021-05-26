@@ -76,6 +76,9 @@ def test_plugin_working_cases(payload) -> None:
     An end-to-end example showing how to use `DucklingPlugin` with a `Workflow`.
     """
     body = payload["input"]
+    if "locale" in payload.keys():
+        locale = payload["locale"]
+
     mock_entity_json = payload["mock_entity_json"]
     expected_types = payload.get("expected")
     exception = payload.get("exception")
