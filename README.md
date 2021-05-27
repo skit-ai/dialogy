@@ -5,7 +5,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c)](https://www.codacy.com/gh/Vernacular-ai/dialogy/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Vernacular-ai/dialogy&utm_campaign=Badge_Grade)
 [![PyPI version](https://badge.fury.io/py/dialogy.svg)](https://badge.fury.io/py/dialogy)
 
-Dialogy is a battries-included 🔋 opinionated framework to build machine-learning solutions for speech applications. 
+Dialogy is a batteries-included 🔋 opinionated framework to build machine-learning solutions for speech applications. 
 
 -   Plugin-based: Makes it easy to import/export components to other projects. 🔌
 -   Stack-agnostic: No assumptions made on ML stack; your choice of machine learning library will not be affected by using Dialogy. 👍
