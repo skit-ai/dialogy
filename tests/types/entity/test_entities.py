@@ -2,6 +2,7 @@
 Tests for entities
 """
 import importlib
+from datetime import datetime
 
 import httpretty
 import pytest
@@ -363,6 +364,25 @@ def test_time_interval_entity_value_neither_from_nor_to() -> None:
     del entity.value["to"]
     with pytest.raises(TypeError):
         entity.set_value(value)
+
+
+def test_time_interval_entity_get_value() -> None:
+    body = "to 4 am"
+    value = {
+        "to": {"value": "2021-06-03T17:00:00.000+05:30", "grain": "hour"},
+        "from": {"value": "2021-06-03T15:00:00.000+05:30", "grain": "hour"},
+        "type": "interval",
+    }
+    entity = TimeIntervalEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="time",
+        grain="hour",
+        values=[value],
+        value=value,
+    )
+    value = "2021-06-03T15:00:00+05:30"
+    assert entity.get_value() == datetime.fromisoformat(value)
 
 
 def test_time_interval_entity_no_value() -> None:
