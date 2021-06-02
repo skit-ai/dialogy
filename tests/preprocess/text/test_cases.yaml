@@ -333,3 +333,135 @@
   'dim': 'time',
   'latent': False}]
   expected: [{"entity": "TimeEntity"}]
+
+- description: "Filter out future dates only."
+  input: ""
+  duckling:
+    locale: "hi_IN"
+    dimensions: ["time", "date"]
+    timezone: "Asia/Kolkata"
+    datetime_filters: "future"
+    debug: True
+  mock_entity_json: [{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-05-31T17:00:00.000+05:30'
+      }],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-05-31T17:00:00.000+05:30'
+    }
+  },{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-06-04T17:00:00.000+05:30'}
+      ],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-06-04T17:00:00.000+05:30'
+    }
+  }]
+  reference_time: '2021-06-02T18:51:11.000+05:30'
+  expected: [{"entity": "TimeEntity"}]
+
+- description: "Exceptions due to incorrect date filter name."
+  input: ""
+  duckling:
+    locale: "hi_IN"
+    dimensions: ["time", "date"]
+    timezone: "Asia/Kolkata"
+    datetime_filters: "latest"
+    debug: True
+  mock_entity_json: [{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-05-31T17:00:00.000+05:30'
+      }],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-05-31T17:00:00.000+05:30'
+    }
+  },{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-06-04T17:00:00.000+05:30'}
+      ],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-06-04T17:00:00.000+05:30'
+    }
+  }]
+  reference_time: '2021-06-02T18:51:11.000+05:30'
+  exception: "ValueError"
+
+- description: "Exceptions due to incorrect date filter type."
+  input: ""
+  duckling:
+    locale: "hi_IN"
+    dimensions: ["time", "date"]
+    timezone: "Asia/Kolkata"
+    datetime_filters: 12
+    debug: True
+  mock_entity_json: [{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-05-31T17:00:00.000+05:30'
+      }],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-05-31T17:00:00.000+05:30'
+    }
+  },{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-06-04T17:00:00.000+05:30'}
+      ],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-06-04T17:00:00.000+05:30'
+    }
+  }]
+  reference_time: '2021-06-02T18:51:11.000+05:30'
+  exception: "TypeError"
