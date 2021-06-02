@@ -47,7 +47,7 @@ class TimeEntity(NumericalEntity):
             ]
         return dict_
 
-    def get_value(self, date: Optional[Dict[str, str]] = None) -> Optional[datetime]:  # type: ignore
+    def get_value(self, date: Optional[Dict[str, str]] = None) -> Optional[datetime]:  # type: ignore # pylint: disable=arguments-differ
         """
         Return the date string in ISO format from the dictionary passed
 
