@@ -47,13 +47,17 @@ means to connect from the implementation here.
 
 """
 import json
+import operator
+import traceback
 from pprint import pformat
 from typing import Any, Dict, List, Optional
 
+import pydash as py_  # type: ignore
 import pytz
 import requests
 from pytz.tzinfo import BaseTzInfo  # type: ignore
 
+from dialogy import constants as const
 from dialogy.constants import EntityKeys
 from dialogy.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
@@ -104,6 +108,10 @@ class DucklingPlugin(Plugin):
     :type url: Optional[str]
     """
 
+    FUTURE = "future"
+    PAST = "past"
+    DATETIME_OPERATION_ALIAS = {FUTURE: operator.ge, PAST: operator.le}
+
     def __init__(
         self,
         dimensions: List[str],
@@ -111,6 +119,7 @@ class DucklingPlugin(Plugin):
         timeout: float = 0.5,
         url: str = "http://0.0.0.0:8000/parse",
         locale: str = "en_IN",
+        datetime_filters: Optional[str] = None,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
         entity_map: Optional[Dict[str, Any]] = None,
@@ -125,6 +134,8 @@ class DucklingPlugin(Plugin):
         self.timezone = timezone
         self.timeout = timeout
         self.url = url
+        self.reference_time = None
+        self.datetime_filters = datetime_filters
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
@@ -191,6 +202,7 @@ class DucklingPlugin(Plugin):
 
         return payload
 
+    @dbg(log)
     def _reshape(self, entities_json: List[Dict[str, Any]]) -> List[BaseEntity]:
         """
         Create a list of :ref:`BaseEntity <base_entity>` objects from a list of entity dicts.
@@ -236,6 +248,7 @@ class DucklingPlugin(Plugin):
         except KeyError as key_error:
             # Being vary of structural changes in the API or entity dicts.
             # Under normal circumstances this error shouldn't be raised.
+            log.debug(traceback.format_exc())
             raise KeyError(
                 f"Missing key {key_error} in entity {entity}."
             ) from key_error
@@ -276,10 +289,78 @@ class DucklingPlugin(Plugin):
             f"Duckling API call failed | [{response.status_code}]: {response.text}"
         )
 
+    @dbg(log)
+    def select_datetime(
+        self, entities: List[BaseEntity], filter_type: Any
+    ) -> List[BaseEntity]:
+        """
+        Select datetime entities as per the filters provided in the configuration.
+
+        :param entities: A list of entities.
+        :type entities: List[BaseEntity]
+        :param filter_type:
+        :type filter_type: str
+        :return: List of entities obtained after applying comparator functions.
+        :rtype: List[BaseEntity]
+        """
+        if not isinstance(filter_type, str):
+            raise TypeError(
+                f"Expected datetime_filters to be a str and one of {self.FUTURE}, {self.PAST} or"
+                " a valid comparison operator here: https://docs.python.org/3/library/operator.html"
+            )
+
+        if filter_type in self.DATETIME_OPERATION_ALIAS:
+            operation = self.DATETIME_OPERATION_ALIAS[filter_type]
+        else:
+            try:
+                operation = getattr(operator, filter_type)
+            except (AttributeError, TypeError):
+                log.debug(traceback.format_exc())
+                raise ValueError(
+                    f"Expected datetime_filters to be one of {self.FUTURE}, {self.PAST} "
+                    "or a valid comparison operator here: https://docs.python.org/3/library/operator.html"
+                )
+
+        return [
+            entity
+            for entity in entities
+            if entity.dim == const.TIME
+            and operation(entity.get_value(), self.reference_time)
+        ]
+
+    def apply_filters(self, entities: List[BaseEntity]) -> List[BaseEntity]:
+        """
+        Filter entities by configurable criteria.
+
+        The utility of this method is tracked here:
+        https://github.com/Vernacular-ai/dialogy/issues/42
+
+        We needed a way to express, not all datetime entities are needed. There are needs which can be
+        expressed as filters: want greater or lesser than the reference time, etc. There are more applications
+        where we expect sorting, filtering by other attributes as well. This method is an advent of such expressions.
+
+        :param entities: A list of entities.
+        :type entities: List[BaseEntity]
+        :return: A list of entities obtained after applying filters.
+        :rtype: List[BaseEntity]
+        """
+        if self.datetime_filters is None:
+            return entities
+
+        return self.select_datetime(entities, self.datetime_filters)
+
     def utility(self, *args: Any) -> List[BaseEntity]:
+        """
+        Produces Duckling entities, runs with a :ref:`Workflow's run<workflow_run>` method.
+
+        :param args: Expects a tuple of :code:`Tuple[natural language for parsing entities, reference time in seconds, locale]`
+        :type args: Tuple(str, int, str)
+        :return: A list of duckling entities.
+        :rtype: List[BaseEntity]
+        """
         entities = []
         input_, reference_time, locale = args
-
+        self.reference_time = reference_time
         try:
             if isinstance(input_, str):
                 entities.append(
@@ -299,6 +380,7 @@ class DucklingPlugin(Plugin):
                 entity for entity_list in entities for entity in entity_list
             ]
             shaped_entities = self._reshape(entities_flattened)
-            return shaped_entities
+            filtered_entities = self.apply_filters(shaped_entities)
+            return filtered_entities
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error
