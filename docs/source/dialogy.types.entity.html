@@ -255,7 +255,7 @@ will implement their own flavor of <cite>__validate</cite> to check their respec
 </dd></dl>
 <dl class="py method">
 <dt id="dialogy.types.entity.base_entity.BaseEntity.get_value">
-<code class="sig-name descname"><span class="pre">get_value</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/types/entity/base_entity.html#BaseEntity.get_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.get_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/types/entity/base_entity.html#BaseEntity.get_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get value of an entity.</p>
 <p>The structure of an entity conceals the value in different data structures.
 This is sugar for access.</p>
@@ -511,8 +511,8 @@ This is not meant for (latitude, longitude) values, those will be covered in Geo
 <code class="sig-name descname"><span class="pre">entity_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time_entity.TimeEntity.entity_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt id="dialogy.types.entity.time_entity.TimeEntity.get_date_value">
-<code class="sig-name descname"><span class="pre">get_date_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/types/entity/time_entity.html#TimeEntity.get_date_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_entity.TimeEntity.get_date_value" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.types.entity.time_entity.TimeEntity.get_value">
+<code class="sig-name descname"><span class="pre">get_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/types/entity/time_entity.html#TimeEntity.get_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_entity.TimeEntity.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the date string in ISO format from the dictionary passed</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">date</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2021-04-17T16:00:00.000+05:30"</span><span class="p">,</span>
@@ -529,7 +529,7 @@ This is not meant for (latitude, longitude) values, those will be covered in Geo
 <dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">date["value"]</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[str]</p>
+<dd class="field-odd"><p>Optional[datetime]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -696,8 +696,8 @@ else the entity type is TIME.</p>
 <code class="sig-name descname"><span class="pre">entity_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time_interval_entity.TimeIntervalEntity.entity_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt id="dialogy.types.entity.time_interval_entity.TimeIntervalEntity.get_date_value">
-<code class="sig-name descname"><span class="pre">get_date_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/types/entity/time_interval_entity.html#TimeIntervalEntity.get_date_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_interval_entity.TimeIntervalEntity.get_date_value" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.types.entity.time_interval_entity.TimeIntervalEntity.get_value">
+<code class="sig-name descname"><span class="pre">get_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/types/entity/time_interval_entity.html#TimeIntervalEntity.get_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_interval_entity.TimeIntervalEntity.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the date string in ISO format from the dictionary passed</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">date</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"from"</span><span class="p">:</span> <span class="p">{</span>
@@ -716,7 +716,7 @@ else the entity type is TIME.</p>
 <dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">date["value"]</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[str]</p>
+<dd class="field-odd"><p>Optional[datetime]</p>
 </dd>
 </dl>
 </dd></dl>
