@@ -5,6 +5,7 @@ Module provides access to entity types that can be parsed to obtain intervals of
 Import classes:
     - TimeIntervalEntity
 """
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 import attr
@@ -45,7 +46,7 @@ class TimeIntervalEntity(TimeEntity):
             dict_[const.EntityKeys.GRAIN] = date_range[const.EntityKeys.GRAIN]
         return dict_
 
-    def get_date_value(self, date: Dict[str, Any]) -> Optional[str]:
+    def get_value(self, date: Dict[str, Any]) -> Optional[datetime]:  # type: ignore
         """
         Return the date string in ISO format from the dictionary passed
 
@@ -62,11 +63,11 @@ class TimeIntervalEntity(TimeEntity):
         :param date: Dictionary which stores the datetime in ISO format, grain and type
         :type date: Dict[str, str]
         :return: :code:`date["value"]`
-        :rtype: Optional[str]
+        :rtype: Optional[datetime]
         """
         date_dict = date.get(const.EntityKeys.FROM) or date.get(const.EntityKeys.TO)
         if date_dict:
-            return date_dict.get(const.EntityKeys.VALUE)
+            return datetime.fromisoformat(date_dict.get(const.EntityKeys.VALUE))
         else:
             raise KeyError(
                 f"Expected at least 1 of `from` or `to` in {self.values} for {self}"

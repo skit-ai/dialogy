@@ -317,7 +317,7 @@ def test_bad_interval_entity_neither_from_nor_to() -> None:
         values=[value],
     )
     with pytest.raises(KeyError):
-        entity.get_date_value(value)
+        entity.get_value(value)
 
 
 def test_bad_time_entity_invalid_value() -> None:
@@ -331,7 +331,7 @@ def test_bad_time_entity_invalid_value() -> None:
         values=[value],
     )
     with pytest.raises(KeyError):
-        entity.get_date_value(value)
+        entity.get_value(value)
 
 
 def test_bad_time_entity_no_value() -> None:

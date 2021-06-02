@@ -47,7 +47,7 @@ class TimeEntity(NumericalEntity):
             ]
         return dict_
 
-    def get_date_value(self, date: Dict[str, str]) -> Optional[str]:
+    def get_value(self, date: Optional[Dict[str, str]] = None) -> Optional[datetime]:  # type: ignore
         """
         Return the date string in ISO format from the dictionary passed
 
@@ -62,10 +62,13 @@ class TimeEntity(NumericalEntity):
         :param date: Dictionary which stores the datetime in ISO format, grain and type
         :type date: Dict[str, str]
         :return: :code:`date["value"]`
-        :rtype: Optional[str]
+        :rtype: Optional[datetime]
         """
-        if date.get("value"):
-            return date["value"]
+        entity_date_value = (
+            super(TimeEntity, self).get_value() if not date else date.get("value")
+        )
+        if entity_date_value:
+            return datetime.fromisoformat(entity_date_value)
         else:
             raise KeyError(f"Expected key `value` in {date} for {self}")
 
@@ -117,9 +120,9 @@ class TimeEntity(NumericalEntity):
         """
         dates = []
         for date_value in self.values:
-            date_ = self.get_date_value(date_value)
+            date_ = self.get_value(date_value)
             if date_:
-                dates.append(datetime.fromisoformat(date_).day)
+                dates.append(date_.day)
         return len(py_.uniq(dates)) == 1
 
     def is_uniq_day_from_values(self) -> bool:
@@ -134,9 +137,9 @@ class TimeEntity(NumericalEntity):
         """
         dates = []
         for date_value in self.values:
-            date_ = self.get_date_value(date_value)
+            date_ = self.get_value(date_value)
             if date_:
-                dates.append(datetime.fromisoformat(date_))
+                dates.append(date_)
         # Duckling may return 3 datetime values in chronological order.
         # For cases where someone has said "Monday", we will get 3 values,
         # each value a week apart.
