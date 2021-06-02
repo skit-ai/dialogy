@@ -192,6 +192,8 @@ class Workflow:
 
     def run(self, input_: Any) -> Any:
         """
+        .. _workflow_run:
+
         Get final results from the workflow.
 
         The current workflow exhibits the following simple procedure:
