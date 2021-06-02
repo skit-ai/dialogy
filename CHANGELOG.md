@@ -1,3 +1,6 @@
+# Unreleased -- 0.6.1
+- [ ] feat: future or past datetime only support from `DucklingPlugin`.
+
 # 0.6.0
 
 - [x] feat: spacy, pattern entity parsing from list support.
