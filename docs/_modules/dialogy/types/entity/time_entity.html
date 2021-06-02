@@ -184,16 +184,19 @@
         </label>
         <h1>Source code for dialogy.types.entity.time_entity</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
+<span class="sd">.. _time_entity:</span>
 <span class="sd">Module provides access to entity types that can be parsed to obtain datetime values.</span>
 
 <span class="sd">Import classes:</span>
 <span class="sd">    - TimeEntity</span>
 <span class="sd">"""</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
+<span class="kn">import</span> <span class="nn">pydash</span> <span class="k">as</span> <span class="nn">py_</span>  <span class="c1"># type: ignore</span>
 
-<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity.numerical_entity</span> <span class="kn">import</span> <span class="n">NumericalEntity</span>
 
 
@@ -213,14 +216,178 @@
 
     <span class="n">dim</span> <span class="o">=</span> <span class="s2">"time"</span>
     <span class="n">grain</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
-    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span>
+
+<div class="viewcode-block" id="TimeEntity.reshape"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.reshape">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">dict_</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TimeEntity</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
+        <span class="c1"># Pulling out the value of entity's **grain**. The value of **grain** helps</span>
+        <span class="c1"># us understand the precision of the entity. Usually present for `Time` dimension</span>
+        <span class="c1"># expect "year", "month", "day", etc.</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span>
+            <span class="p">]</span>
+        <span class="k">return</span> <span class="n">dict_</span></div>
+
+<div class="viewcode-block" id="TimeEntity.get_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>  <span class="c1"># type: ignore # pylint: disable=arguments-differ</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the date string in ISO format from the dictionary passed</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            date = {</span>
+<span class="sd">                "value": "2021-04-17T16:00:00.000+05:30",</span>
+<span class="sd">                "grain": "hour",</span>
+<span class="sd">                "type": "value"</span>
+<span class="sd">            }</span>
+
+<span class="sd">        :param date: Dictionary which stores the datetime in ISO format, grain and type</span>
+<span class="sd">        :type date: Dict[str, str]</span>
+<span class="sd">        :return: :code:`date["value"]`</span>
+<span class="sd">        :rtype: Optional[datetime]</span>
+<span class="sd">        """</span>
+        <span class="n">entity_date_value</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">TimeEntity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">date</span> <span class="k">else</span> <span class="n">date</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">entity_date_value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">entity_date_value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected key `value` in </span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TimeEntity.is_uniq_date_from_values"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.is_uniq_date_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">is_uniq_date_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Check a list has a unique day</span>
+
+<span class="sd">        Where day is the date number for a month.</span>
+<span class="sd">        Ex: for "2021-04-17T16:00:00.000+05:30", the day is 17</span>
+
+<span class="sd">        .. ipython :: python</span>
+
+<span class="sd">            from dialogy.types import TimeEntity</span>
+<span class="sd">            duckling_time_entity = {</span>
+<span class="sd">                "body": "july 19",</span>
+<span class="sd">                "start": 0,</span>
+<span class="sd">                "value": {</span>
+<span class="sd">                "values": [</span>
+<span class="sd">                    {</span>
+<span class="sd">                    "value": "2021-07-19T00:00:00.000+05:30",</span>
+<span class="sd">                    "grain": "day",</span>
+<span class="sd">                    "type": "value"</span>
+<span class="sd">                    },</span>
+<span class="sd">                    {</span>
+<span class="sd">                    "value": "2022-07-19T00:00:00.000+05:30",</span>
+<span class="sd">                    "grain": "day",</span>
+<span class="sd">                    "type": "value"</span>
+<span class="sd">                    },</span>
+<span class="sd">                    {</span>
+<span class="sd">                    "value": "2023-07-19T00:00:00.000+05:30",</span>
+<span class="sd">                    "grain": "day",</span>
+<span class="sd">                    "type": "value"</span>
+<span class="sd">                    }</span>
+<span class="sd">                ],</span>
+<span class="sd">                "value": "2021-07-19T00:00:00.000+05:30",</span>
+<span class="sd">                "grain": "day",</span>
+<span class="sd">                "type": "value"</span>
+<span class="sd">                },</span>
+<span class="sd">                "end": 7,</span>
+<span class="sd">                "dim": "time",</span>
+<span class="sd">                "latent": False</span>
+<span class="sd">            }</span>
+<span class="sd">            time_entity = TimeEntity.from_dict(duckling_time_entity)</span>
+<span class="sd">            time_entity.is_uniq_date_from_values()</span>
+
+
+<span class="sd">        :return: True if there is a unique day in all datetime values</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        """</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">date_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">date_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">date_value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">date_</span><span class="p">:</span>
+                <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">date_</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">py_</span><span class="o">.</span><span class="n">uniq</span><span class="p">(</span><span class="n">dates</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="TimeEntity.is_uniq_day_from_values"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.is_uniq_day_from_values">[docs]</a>    <span class="k">def</span> <span class="nf">is_uniq_day_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Check a list has a unique weekday</span>
+
+<span class="sd">        Where weekday ranges from 0 for Monday till 6 for Sunday</span>
+<span class="sd">        Ex: for "2021-04-17T16:00:00.000+05:30", the weekday is 5 (Saturday)</span>
+
+<span class="sd">        :return: True if there is a unique weekday in all datetime values</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        """</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">date_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">date_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">date_value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">date_</span><span class="p">:</span>
+                <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">date_</span><span class="p">)</span>
+        <span class="c1"># Duckling may return 3 datetime values in chronological order.</span>
+        <span class="c1"># For cases where someone has said "Monday", we will get 3 values,</span>
+        <span class="c1"># each value a week apart.</span>
+        <span class="c1"># We are pairing these dates and checking whether the difference is a week (7 days).</span>
+        <span class="c1"># For example, if our dates are [21-04-2021, 28-04-2021, 05-05-2021],</span>
+        <span class="c1"># then we generate pairs as (21-04-2021, 28-04-2021) and (28-04-2021, 05-05-2021).</span>
+        <span class="c1"># If the difference between these dates is divisible by seven,</span>
+        <span class="c1"># then we are clear that the input was a weekday.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dates</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">abs</span><span class="p">((</span><span class="nb">next</span> <span class="o">-</span> <span class="n">prev</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span> <span class="o">%</span> <span class="mi">7</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="nb">next</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dates</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dates</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TimeEntity.set_entity_type"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.set_entity_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_entity_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the type for this entity</span>
+
+<span class="sd">        To pinpoint a time for any action, we need both DATE (either explicit or inferred) and TIME.</span>
+<span class="sd">        We can get these in 3 possible manners:</span>
+
+<span class="sd">        - both DATE and TIME, the entity type here will be DATETIME</span>
+<span class="sd">            - Positive examples: tonight, tomorrow 4pm, 7th april 2019 6pm, last 3 hours (Because it tells us about the date as well, that is today)</span>
+<span class="sd">            - Negative examples: Yesterday I went to park at 3pm (because the user did not say yesterday and 3pm together)</span>
+<span class="sd">        - only DATE, the entity type here will be DATE</span>
+<span class="sd">            - Positive examples: last month, last year, last 3 months, last 6 months, tomorrow, 27th oct 1996, 1st October 2019 till yesterday, yesterday, today, tomorrow, October, 2019, 27th October 1996 to 29th October 1996 etc</span>
+<span class="sd">            - Negative examples: month, year, 6 months, 3 months (Since these do not have a fixed start and end date, it could have been 6 months from today, 6 months from tomorrow, previous 6 months. Therefore it only tells us a duration.)</span>
+<span class="sd">        - only TIME, the entity type here will be TIME</span>
+<span class="sd">            - Positive examples: 3pm, 5pm, night, morning, etc</span>
+<span class="sd">            - Negative examples: tonight (because the date part today is in it), tomorrow night, 6th April 5pm, 7 hours (duration because they didn't mention a start/end time. It could be 7 hours from any time) etc</span>
+
+<span class="sd">        if we get the grain as one of ("day", "week", "month", "quarter", "year"),</span>
+<span class="sd">        then the entity type is DATE</span>
+<span class="sd">        if we get grain as one of ("hour", "second", "minute") and we only have 1 value in `self.values`,</span>
+<span class="sd">        then the entity type is DATETIME.</span>
+<span class="sd">        if we get grain as one of ("hour", "second", "minute") and we have either a unique date or a unique weekday,</span>
+<span class="sd">        then the entity type is DATETIME.</span>
+<span class="sd">        else the entity type is TIME.</span>
+
+<span class="sd">        :return: one of (date, time, datetime)</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grain</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">DATE_UNITS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">DATE</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">grain</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME_UNITS</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">DATETIME</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_uniq_date_from_values</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_uniq_day_from_values</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">DATETIME</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected at least 1 value in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__attrs_post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_init</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TimeEntity.post_init"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">grain_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-            <span class="n">grain_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"grain"</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">grain</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="n">grain_</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">grain_</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"grain"</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">grain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_entity_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span></div></div>
 </pre></div>
       </article>
       <footer>

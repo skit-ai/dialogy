@@ -184,111 +184,154 @@
         </label>
         <h1>Source code for dialogy.postprocess.text.slot_filler.rule_slot_filler</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">Module provides access to a rule-based [SlotFiller](../__init__.html).</span>
+<span class="sd">.. _rule_slot_filler:</span>
 
-<span class="sd">## Tutorials</span>
-<span class="sd">- [RuleSlotFiller](../../../../tests/postprocess/text/slot_filler/test_rule_slot_filler.html)</span>
-
-<span class="sd">Imports:</span>
-
-<span class="sd">- RuleBasedSlotFillerPlugin</span>
+<span class="sd">Module provides access to a rule-based :ref:`slot filler&lt;slot_filler&gt;`.</span>
 <span class="sd">"""</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
-
-<span class="kn">import</span> <span class="nn">attr</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.slots</span> <span class="kn">import</span> <span class="n">Rule</span>
-<span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">dbg</span><span class="p">,</span> <span class="n">log</span>
 
 
-<span class="c1"># == RuleBasedSlotFillerPlugin ==</span>
-<div class="viewcode-block" id="RuleBasedSlotFillerPlugin"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
-<span class="k">class</span> <span class="nc">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<div class="viewcode-block" id="RuleBasedSlotFillerPlugin"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin">[docs]</a><span class="k">class</span> <span class="nc">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
-<span class="sd">    An instance of this class is used for generating a slot-filler.</span>
+<span class="sd">    A utility :ref:`plugin &lt;plugin&gt;` for</span>
+<span class="sd">    `slot filling &lt;https://nlpprogress.com/english/intent_detection_slot_filling.html&gt;`._</span>
+<span class="sd">    An :ref:`Intent &lt;intent&gt;` may have a few slots that need to be filled.</span>
+
+<span class="sd">    This plugin can assist filling pertaining to certain intent:entity:slot-name association rules.</span>
 
 <span class="sd">    Schema for rules looks like:</span>
-<span class="sd">    ```python</span>
 
-<span class="sd">    {</span>
-<span class="sd">        "&lt;intent_name&gt;": {</span>
-<span class="sd">            "&lt;slot_name&gt;":"&lt;entity_name&gt;"</span>
+<span class="sd">    .. code-block:: json</span>
+
+<span class="sd">        {</span>
+<span class="sd">            "intent_name": {</span>
+<span class="sd">                "slot_name":"entity_type"</span>
+<span class="sd">            }</span>
 <span class="sd">        }</span>
-<span class="sd">    }</span>
-<span class="sd">    ```</span>
 
-<span class="sd">    Plugin signature:</span>
+<span class="sd">    This can be represented in a yaml format like so:</span>
 
-<span class="sd">    - `access(workflow) -&gt; (Intent, List[BaseEntity])`</span>
-<span class="sd">    - `mutate` not required since the mutation is implied through Intent structure change.</span>
+<span class="sd">    .. code-block:: yaml</span>
 
-<span class="sd">    Irrespective of the entities that are found, only the listed type in the slot shall be present in `values`.</span>
-<span class="sd">    """</span>
+<span class="sd">        slots:</span>
+<span class="sd">            faqs:</span>
+<span class="sd">                action_slot: actions</span>
+<span class="sd">            report:</span>
+<span class="sd">                time_slot:</span>
+<span class="sd">                - time</span>
+<span class="sd">                - number</span>
 
-    <span class="c1"># **rules**</span>
-    <span class="c1">#</span>
-    <span class="c1"># A `Dict` where each key is an intent name, and each value is another `Dict`,</span>
-    <span class="c1"># in which, each key is an entity and value contains the `slot_name` and `entity_type.`</span>
-    <span class="c1">#</span>
-    <span class="c1"># example:</span>
-    <span class="c1"># ```</span>
-    <span class="c1"># rules = {"intent": {"slot_name": "entity_type"}}</span>
-    <span class="c1"># ```</span>
-    <span class="n">rules</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Rule</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="n">Dict</span><span class="p">))</span>
+<span class="sd">    Let's run through a practical example. We will create a workflow and preset the output to have expected intent and</span>
+<span class="sd">    entities.</span>
 
-    <span class="c1"># **fill_multiple**</span>
-    <span class="c1"># A boolean value that commands the slot filler to add multiple values of the</span>
-    <span class="c1"># same entity type within a slot.</span>
-    <span class="n">fill_multiple</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="sd">    .. ipython:: python</span>
 
-    <span class="c1"># == filler ==</span>
-<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.filler"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.filler">[docs]</a>    <span class="k">def</span> <span class="nf">filler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="sd">        import yaml</span>
+<span class="sd">        from pprint import pprint</span>
+<span class="sd">        from dialogy.workflow import Workflow</span>
+<span class="sd">        from dialogy.postprocess.text.slot_filler.rule_slot_filler import RuleBasedSlotFillerPlugin</span>
+<span class="sd">        from dialogy.types.intent import Intent</span>
+<span class="sd">        from dialogy.types.entity import PeopleEntity, NumericalEntity</span>
+
+<span class="sd">        # ---------------------------------------------------------------------------------------------------</span>
+<span class="sd">        # Create rules</span>
+<span class="sd">        rule_string = \"""</span>
+        <span class="n">faqs</span><span class="p">:</span>
+            <span class="n">number_slot</span><span class="p">:</span> <span class="n">number</span>
+        <span class="n">count_people</span><span class="p">:</span>
+            <span class="n">number_slot</span><span class="p">:</span>
+            <span class="o">-</span> <span class="n">people</span>
+            <span class="o">-</span> <span class="n">number</span>
+        \<span class="s2">"""</span>
+<span class="s2">        slot_rules = yaml.safe_load(rule_string)</span>
+<span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
+
+<span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
+<span class="s2">        # Setting up the plugin</span>
+<span class="s2">        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=True)()</span>
+<span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
+
+<span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
+<span class="s2">        # Creating synthetic values.</span>
+<span class="s2">        # normally you'd get these by running the workflow with models.</span>
+<span class="s2">        intent = Intent(name="count_people", score=1)</span>
+<span class="s2">        number_entity = NumericalEntity(type="number", range={"start": 0, "end": 7}, body='2 people', latent=False, values=[{"values":2}], dim="number")</span>
+<span class="s2">        people_entity = PeopleEntity(type="people", range={"start": 0, "end": 7}, body='2 people', latent=False, values=[{"values":2}], dim="people")</span>
+<span class="s2">        entities = [people_entity, number_entity]</span>
+<span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
+
+<span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
+<span class="s2">        # setting up the workflow to use slot_filler</span>
+<span class="s2">        workflow = Workflow(preprocessors=[], postprocessors=[slot_filler], debug=True)</span>
+<span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
+
+<span class="s2">        # If you notice the instantiation of RuleBasedSlotFillerPlugin,</span>
+<span class="s2">        # you will notice the `access` method expects a Tuple of two elements.</span>
+<span class="s2">        workflow.output = (intent, entities)</span>
+
+<span class="s2">        workflow.run(input_="2 am")</span>
+
+
+
+<span class="s2">    :param rules: A mapping that defines relationship between an intent, its slots and the entities that fill them.</span>
+<span class="s2">    :type rules: Rule</span>
+<span class="s2">    :param fill_multiple: More than one item be allowed to fill a single slot.</span>
+<span class="s2">    :type fill_multiple: bool</span>
+<span class="s2">    :param access: Signature for workflow access is :code:`access(workflow) -&gt; (Intent, List[BaseEntity])`</span>
+<span class="s2">    :type access: Optional[PluginFn]</span>
+<span class="s2">    :param mutate: Not needed, pass :code:`None`.</span>
+<span class="s2">    :type mutate: Optional[PluginFn]</span>
+
+<span class="s2">    Irrespective of the entities that are found, only the listed type in the slot shall be present in `values`.</span>
+<span class="s2">    """</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rules</span><span class="p">:</span> <span class="n">Rule</span><span class="p">,</span>
+        <span class="n">fill_multiple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
-<span class="sd">        Update an intent slot with compatible entity.</span>
-
-<span class="sd">        - `access(workflow)` should return a tuple. `Intent`, `List[BaseEntity]`.</span>
-<span class="sd">        - Only 1 entity fills the slot type.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            workflow (Workflow)</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            TypeError: self.access should be a Callable.</span>
+<span class="sd">        constructor</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># rules</span>
+        <span class="c1">#</span>
+        <span class="c1"># A `Dict` where each key is an intent name, and each value is another `Dict`,</span>
+        <span class="c1"># in which, each key is an entity and value contains the `slot_name` and `entity_type.`</span>
+        <span class="c1">#</span>
+        <span class="c1"># example:</span>
+        <span class="c1"># ```</span>
+        <span class="c1"># rules = {"intent": {"slot_name": "entity_type"}}</span>
+        <span class="c1"># ```</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span> <span class="n">Rule</span> <span class="o">=</span> <span class="n">rules</span> <span class="ow">or</span> <span class="p">{}</span>
 
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">intent_and_entities</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">(</span>
-                    <span class="n">workflow</span>
-                <span class="p">)</span>
-                <span class="n">intent</span><span class="p">,</span> <span class="n">entities</span> <span class="o">=</span> <span class="n">intent_and_entities</span>
-                <span class="n">intent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">)</span>
+        <span class="c1"># fill_multiple</span>
+        <span class="c1"># A boolean value that commands the slot filler to add multiple values of the</span>
+        <span class="c1"># same entity type within a slot.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_multiple</span> <span class="o">=</span> <span class="n">fill_multiple</span>
 
-                <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
-                    <span class="n">intent</span><span class="o">.</span><span class="n">fill_slot</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">fill_multiple</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_multiple</span><span class="p">)</span>
+<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.fill"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Intent</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">intent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">)</span>
 
-                <span class="n">intent</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">type_error</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">"`access` passed to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="sa">f</span><span class="s2">" is not a Callable. Received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead."</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">type_error</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"`access` passed to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
-                <span class="sa">f</span><span class="s2">" is not a Callable. Received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead."</span>
-            <span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="n">intent</span><span class="o">.</span><span class="n">fill_slot</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">fill_multiple</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_multiple</span><span class="p">)</span>
 
-    <span class="c1"># == __call__ ==</span>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        [callable-plugin](../../../plugin/plugin.html#__call__)</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filler</span></div>
+        <span class="n">intent</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"intent after slot-filling: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">intent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.utility"><a class="viewcode-back" href="../../../../../source/dialogy.postprocess.text.slot_filler.html#dialogy.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility">[docs]</a>    <span class="nd">@dbg</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-value-for-parameter</span></div></div>
 </pre></div>
       </article>
       <footer>

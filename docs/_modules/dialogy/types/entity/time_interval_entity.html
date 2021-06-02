@@ -184,18 +184,19 @@
         </label>
         <h1>Source code for dialogy.types.entity.time_interval_entity</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
+<span class="sd">.. _time_interval_entity:</span>
 <span class="sd">Module provides access to entity types that can be parsed to obtain intervals of datetime.</span>
 
 <span class="sd">Import classes:</span>
 <span class="sd">    - TimeIntervalEntity</span>
 <span class="sd">"""</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
-<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span>
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity.time_entity</span> <span class="kn">import</span> <span class="n">TimeEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">TimeEntity</span>
 
 
 <div class="viewcode-block" id="TimeIntervalEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_interval_entity.TimeIntervalEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
@@ -213,9 +214,55 @@
 
     <span class="n">origin</span> <span class="o">=</span> <span class="s2">"interval"</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="s2">"time"</span>
-    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME_ENTITY_PROPS</span>
 
-<div class="viewcode-block" id="TimeIntervalEntity.set_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_interval_entity.TimeIntervalEntity.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="TimeIntervalEntity.reshape"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_interval_entity.TimeIntervalEntity.reshape">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">dict_</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TimeIntervalEntity</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dict_</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">value</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">date_range</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">FROM</span>
+            <span class="p">)</span> <span class="ow">or</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TO</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">date_range</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dict_</span><span class="si">}</span><span class="s2"> does not match TimeIntervalEntity format"</span><span class="p">)</span>
+            <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dict_</span></div>
+
+<div class="viewcode-block" id="TimeIntervalEntity.get_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_interval_entity.TimeIntervalEntity.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>  <span class="c1"># type: ignore # pylint: disable=arguments-differ</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the date string in ISO format from the dictionary passed</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            date = {</span>
+<span class="sd">                "from": {</span>
+<span class="sd">                    "value": "2021-04-16T16:00:00.000+05:30",</span>
+<span class="sd">                    "grain": "hour"</span>
+<span class="sd">                },</span>
+<span class="sd">                "type": "interval"</span>
+<span class="sd">            }</span>
+
+<span class="sd">        :param date: Dictionary which stores the datetime in ISO format, grain and type</span>
+<span class="sd">        :type date: Dict[str, str]</span>
+<span class="sd">        :return: :code:`date["value"]`</span>
+<span class="sd">        :rtype: Optional[datetime]</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">date</span><span class="p">:</span>
+            <span class="n">date_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">FROM</span> <span class="ow">or</span> <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TO</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">date_dict</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">FROM</span><span class="p">)</span> <span class="ow">or</span> <span class="n">date</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TO</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">date_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">date_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Expected at least 1 of `from` or `to` in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TimeIntervalEntity.set_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_interval_entity.TimeIntervalEntity.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"TimeIntervalEntity"</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Set values and value attribute.</span>
 
@@ -229,10 +276,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-                    <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">TO</span> <span class="ow">in</span> <span class="n">value</span>
-                    <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">FROM</span> <span class="ow">in</span> <span class="n">value</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">FROM</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">or</span> <span class="n">const</span><span class="o">.</span><span class="n">TO</span> <span class="ow">in</span> <span class="n">value</span>
                 <span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
@@ -246,7 +291,11 @@
                     <span class="s2">"Either values should be a non empty list"</span>
                     <span class="s2">" or value should look like: {'to': ...,  'from': ...}"</span>
                     <span class="sa">f</span><span class="s2">" but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> found."</span>
-                <span class="p">)</span></div></div>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">__attrs_post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_init</span><span class="p">()</span></div>
 </pre></div>
       </article>
       <footer>
