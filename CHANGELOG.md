@@ -1,5 +1,5 @@
-# Unreleased -- 0.6.1
-- [ ] feat: future or past datetime only support from `DucklingPlugin`.
+# 0.6.1
+- [x] feat: future or past datetime only support from `DucklingPlugin`.
 
 # 0.6.0
 
