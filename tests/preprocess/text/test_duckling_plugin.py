@@ -1,3 +1,4 @@
+import datetime
 import importlib
 
 import httpretty
@@ -82,9 +83,12 @@ def test_plugin_working_cases(payload) -> None:
     duckling_args = payload.get("duckling")
     response_code = payload.get("response_code", 200)
     locale = payload.get("locale")
+    reference_time = payload.get("reference_time")
+    if reference_time is not None:
+        reference_time = datetime.datetime.fromisoformat(reference_time)
 
     def access(workflow):
-        return workflow.input, None, locale
+        return workflow.input, reference_time, locale
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
