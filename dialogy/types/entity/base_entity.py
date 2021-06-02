@@ -194,7 +194,7 @@ class BaseEntity:
             IndexError: If `values` is not a `list`.
             KeyError: If each element in `values` is not a `dict`.
         """
-        key = args[0] if args else "value"
+        key = "value"
         error_message = f'entity value should be in values[0]["{key}"]'
         try:
             return self.values[0][key]

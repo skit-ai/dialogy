@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 import attr
 
 from dialogy import constants as const
-from dialogy.types.entity import TimeEntity
+from dialogy.types.entity import BaseEntity, TimeEntity
 
 
 @attr.s
@@ -66,9 +66,7 @@ class TimeIntervalEntity(TimeEntity):
         :rtype: Optional[datetime]
         """
         if not date:
-            date_dict = super(TimeEntity, self).get_value(
-                const.EntityKeys.FROM or const.EntityKeys.TO
-            )
+            date_dict = self.value[const.EntityKeys.FROM or const.EntityKeys.TO]
         else:
             date_dict = date.get(const.EntityKeys.FROM) or date.get(const.EntityKeys.TO)
 
