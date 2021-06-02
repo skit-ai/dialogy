@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 import attr
 
 from dialogy import constants as const
-from dialogy.types.entity import BaseEntity, TimeEntity
+from dialogy.types.entity import TimeEntity
 
 
 @attr.s
