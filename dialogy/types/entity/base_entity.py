@@ -194,16 +194,14 @@ class BaseEntity:
             IndexError: If `values` is not a `list`.
             KeyError: If each element in `values` is not a `dict`.
         """
+        key = args[0] if args else "value"
+        error_message = f'entity value should be in values[0]["{key}"]'
         try:
-            return self.values[0]["value"]
+            return self.values[0][key]
         except IndexError as index_error:
-            raise IndexError(
-                'entity value should be in values[0]["value"]'
-            ) from index_error
+            raise IndexError(error_message) from index_error
         except KeyError as key_error:
-            raise KeyError(
-                'entity value should be in values[0]["value"]'
-            ) from key_error
+            raise KeyError(error_message) from key_error
 
     def copy(self) -> "BaseEntity":
         """
