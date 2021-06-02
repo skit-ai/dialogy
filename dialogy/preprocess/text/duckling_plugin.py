@@ -52,7 +52,6 @@ import traceback
 from pprint import pformat
 from typing import Any, Dict, List, Optional
 
-import pydash as py_  # type: ignore
 import pytz
 import requests
 from pytz.tzinfo import BaseTzInfo  # type: ignore
