@@ -47,6 +47,28 @@
           - "new delhi"
           - "delhi"
 
+
+- description: "Test location entities using regex, for guarding against candidate re-write bugs"
+  input:
+    - text: "bhadrak"
+  expected:
+    - type: "constituency_name"
+      value: "bhadrak"
+  config:
+    debug: true
+    style: regex
+    entity_map: {
+      "location": "MockCustomEntity"
+    }
+    candidates:
+      constituency_name:
+        bhadrak: 
+        - bhadrak
+        bakshi_kaa_talab: 
+        - बक्शी का तालाब
+        lucknow_cantt: 
+        - 'लखनऊ कैंट'
+
 - description: "Test spacy restricted on labels"
   input:
     - text: "That's a Google product"

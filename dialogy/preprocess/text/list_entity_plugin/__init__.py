@@ -125,20 +125,13 @@ class ListEntityPlugin(Plugin):
         if self.style == const.REGEX:
             for entity_type, entity_value_dict in candidates.items():
                 for entity_value, entity_patterns in entity_value_dict.items():
+                    patterns = [re.compile(pattern) for pattern in entity_patterns]
                     if not self.compiled_patterns:
-                        self.compiled_patterns = {
-                            entity_type: {
-                                entity_value: [
-                                    re.compile(pattern) for pattern in entity_patterns
-                                ]
-                            }
-                        }
+                        self.compiled_patterns = {entity_type: {entity_value: patterns}}
+                    elif entity_type in self.compiled_patterns:
+                        self.compiled_patterns[entity_type][entity_value] = patterns
                     else:
-                        self.compiled_patterns[entity_type] = {
-                            entity_value: [
-                                re.compile(pattern) for pattern in entity_patterns
-                            ]
-                        }
+                        self.compiled_patterns[entity_type] = {entity_value: patterns}
 
         log.debug("compiled patterns")
         log.debug(self.compiled_patterns)
