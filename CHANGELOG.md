@@ -1,3 +1,7 @@
+# 0.6.3
+- [x] fix: #46 `ListEntityPlugin` overwrites if there are mutliple `entity_value` patterns for the same `entity_type`.
+- [x] fix: #47 `DucklingPlugin` compares int vs int for `Duckling.FUTURE` and `Duckling.PAST` feature comparison. 
+
 # 0.6.2
 - [x] fix: `ListEntityPlugin` 
   - Now supports a map for entity-type, entity-values for keyword based entities.
