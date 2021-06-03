@@ -1,3 +1,8 @@
+# 0.6.2
+- [x] fix: `ListEntityPlugin` 
+  - Now supports a map for entity-type, entity-values for keyword based entities.
+  - Fixed bug that returns `None` when custom entity classes are required.
+
 # 0.6.1
 - [x] feat: future or past datetime only support from `DucklingPlugin`.
 
