@@ -34,7 +34,6 @@ class MockCustomEntity(BaseEntity):
             self.values = [{"value": value}]
             self.value = value
         else:
-            print(self.values)
             self.value = self.values[0]["value"]
 
 
