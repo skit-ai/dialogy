@@ -60,6 +60,7 @@ from dialogy import constants as const
 from dialogy.constants import EntityKeys
 from dialogy.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
+from dialogy.utils import dt2timestamp
 from dialogy.utils.logger import dbg, log
 
 
@@ -324,7 +325,7 @@ class DucklingPlugin(Plugin):
             entity
             for entity in entities
             if entity.dim == const.TIME
-            and operation(entity.get_value(), self.reference_time)
+            and operation(dt2timestamp(entity.get_value()), self.reference_time)
         ]
 
     def apply_filters(self, entities: List[BaseEntity]) -> List[BaseEntity]:
