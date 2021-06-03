@@ -95,7 +95,7 @@ def test_type_error_if_compiled_patterns_missing():
 
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_get_entities(payload):
+def test_get_list_entities(payload):
     input_ = payload.get("input")
     expected = payload.get("expected")
     exception = payload.get("exception")
