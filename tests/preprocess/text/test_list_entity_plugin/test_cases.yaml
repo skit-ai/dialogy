@@ -25,19 +25,27 @@
 
 - description: "Test location entities using regex"
   input:
-    - text: "i want it in New Delhi"
-      entities:
-      - type: "location"
-        value: "New Delhi"
+    - text: "i want to parse a token in delhi"
   expected:
+    - type: "some_entity_type"
+      value: "entity_value"
     - type: "location"
-      value: "New Delhi"
+      value: "delhi"
   config:
+    debug: true
     style: regex
-    entity_map: {}
+    entity_map: {
+      "location": "MockCustomEntity"
+    }
     candidates:
+      some_entity_type:
+        entity_value:
+          - "token"
       location:
-        - "New Delhi"
+        delhi:
+          - "New Delhi"
+          - "new delhi"
+          - "delhi"
 
 - description: "Test spacy restricted on labels"
   input:

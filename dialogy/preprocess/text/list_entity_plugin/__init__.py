@@ -19,7 +19,11 @@ from dialogy.plugin import Plugin, PluginFn
 from dialogy.types import BaseEntity
 from dialogy.utils.logger import dbg, log
 
-MatchType = List[Tuple[str, str, Tuple[int, int]]]
+Text = str
+Label = str
+Span = Tuple[int, int]
+Value = str
+MatchType = List[Tuple[Text, Label, Value, Span]]
 
 
 class ListEntityPlugin(Plugin):
@@ -57,7 +61,7 @@ class ListEntityPlugin(Plugin):
         self,
         entity_map: Dict[str, BaseEntity],
         style: Optional[str] = None,
-        candidates: Optional[Dict[str, List[str]]] = None,
+        candidates: Optional[Dict[str, Dict[str, List[Any]]]] = None,
         spacy_nlp: Any = None,
         labels: Optional[List[str]] = None,
         access: Optional[PluginFn] = None,
@@ -71,17 +75,16 @@ class ListEntityPlugin(Plugin):
         }
 
         self.style = style or const.REGEX
-        self.entity_map = entity_map
+        self.entity_map: Dict[str, BaseEntity] = entity_map
         self.labels = labels
         self.keywords = None
         self.spacy_nlp = spacy_nlp
-        self.compiled_patterns: Optional[Dict[str, List[Any]]] = None
+        self.compiled_patterns: Dict[str, Dict[str, List[Any]]] = {}
 
         if self.style == const.REGEX:
             self._parse(candidates)
 
-    @dbg(log)
-    def _parse(self, candidates: Optional[Dict[str, List[str]]]) -> None:
+    def _parse(self, candidates: Optional[Dict[str, Dict[str, List[Any]]]]) -> None:
         """
         Pre compile regex patterns to speed up runtime evaluation.
 
@@ -117,16 +120,29 @@ class ListEntityPlugin(Plugin):
                 f"Expected style to be one of {list(self.__style_search_map.keys())}"
                 f' but "{self.style}" was found.'
             )
+        self.compiled_patterns = {}
 
         if self.style == const.REGEX:
-            self.compiled_patterns = {
-                label: [re.compile(pattern) for pattern in patterns]
-                for label, patterns in candidates.items()
-            }
+            for entity_type, entity_value_dict in candidates.items():
+                for entity_value, entity_patterns in entity_value_dict.items():
+                    if not self.compiled_patterns:
+                        self.compiled_patterns = {
+                            entity_type: {
+                                entity_value: [
+                                    re.compile(pattern) for pattern in entity_patterns
+                                ]
+                            }
+                        }
+                    else:
+                        self.compiled_patterns[entity_type] = {
+                            entity_value: [
+                                re.compile(pattern) for pattern in entity_patterns
+                            ]
+                        }
+
         log.debug("compiled patterns")
         log.debug(self.compiled_patterns)
 
-    @dbg(log)
     def _search(self, transcripts: List[str]) -> List[MatchType]:
         """
         Search for tokens in a list of strings.
@@ -148,7 +164,6 @@ class ListEntityPlugin(Plugin):
         token_list = [search_fn(transcript) for transcript in transcripts]
         return token_list
 
-    @dbg(log)
     def get_entities(self, transcripts: List[str]) -> List[BaseEntity]:
         """
         Parse entities using regex and spacy ner.
@@ -159,11 +174,12 @@ class ListEntityPlugin(Plugin):
         :rtype: List[BaseEntity]
         """
         matches_on_transcripts = self._search(transcripts)
+        log.debug(matches_on_transcripts)
         entity_metadata = []
         entities = []
 
         for i, matches_on_transcript in enumerate(matches_on_transcripts):
-            for text, label, span in matches_on_transcript:
+            for text, label, value, span in matches_on_transcript:
                 entity = {
                     "start": span[0],
                     "end": span[1],
@@ -177,7 +193,7 @@ class ListEntityPlugin(Plugin):
                     "type": label,
                     "entity_type": label,
                     "value": {
-                        "values": [{"value": text}],
+                        "values": [{"value": value}],
                     },
                 }
                 entity_metadata.append(entity)
@@ -189,13 +205,15 @@ class ListEntityPlugin(Plugin):
             entity = sorted(grouped_entities, key=lambda e: e["alternative_index"])[0]
             del entity["__group"]
             entity["score"] = round(len(grouped_entities) / len(transcripts), 4)
-            entity_class = self.entity_map.get(entity["type"]) or BaseEntity
-            entity = entity_class.from_dict(entity).set_value()  # type: ignore
-            entities.append(entity)
+            entity_class = self.entity_map.get(entity["type"]) or BaseEntity  # type: ignore
+            entity_ = entity_class.from_dict(entity)
+            entity_.set_value()
+            entities.append(entity_)
         log.debug("Parsed entities")
         log.debug(entities)
-        return entities  # type:ignore
+        return entities
 
+    @dbg(log)
     def utility(self, *args: Any) -> Any:
         return self.get_entities(*args)  # pylint: disable=no-value-for-parameter
 
@@ -214,11 +232,13 @@ class ListEntityPlugin(Plugin):
                 f" instance but {self.spacy_nlp} was found."
             )
         parsed_transcript = self.spacy_nlp(transcript)
+
         if self.labels:
             return [
                 (
                     token.text,
                     token.label_,
+                    token.text,
                     (
                         transcript.index(token.text),
                         transcript.index(token.text) + len(token.text),
@@ -232,6 +252,7 @@ class ListEntityPlugin(Plugin):
                 (
                     token.text,
                     token.label_,
+                    token.text,
                     (
                         transcript.index(token.text),
                         transcript.index(token.text) + len(token.text),
@@ -256,9 +277,13 @@ class ListEntityPlugin(Plugin):
             )
 
         entity_tokens = []
-        for label, patterns in self.compiled_patterns.items():
-            for pattern in patterns:
-                matches = pattern.search(transcript)
-                if matches:
-                    entity_tokens.append((matches.group(), label, matches.span()))
+        for entity_type, entity_value_dict in self.compiled_patterns.items():
+            for entity_value, entity_patterns in entity_value_dict.items():
+                for pattern in entity_patterns:
+                    matches = pattern.search(transcript)
+                    if matches:
+                        entity_tokens.append(
+                            (matches.group(), entity_type, entity_value, matches.span())
+                        )
+        log.debug(entity_tokens)
         return entity_tokens
