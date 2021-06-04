@@ -314,12 +314,12 @@ class DucklingPlugin(Plugin):
         else:
             try:
                 operation = getattr(operator, filter_type)
-            except (AttributeError, TypeError):
+            except (AttributeError, TypeError) as exception:
                 log.debug(traceback.format_exc())
                 raise ValueError(
                     f"Expected datetime_filters to be one of {self.FUTURE}, {self.PAST} "
                     "or a valid comparison operator here: https://docs.python.org/3/library/operator.html"
-                )
+                ) from exception
 
         return [
             entity
