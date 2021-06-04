@@ -49,8 +49,9 @@ means to connect from the implementation here.
 import json
 import operator
 import traceback
+from os import stat
 from pprint import pformat
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import pydash as py_  # type: ignore
 import pytz
@@ -388,8 +389,8 @@ class DucklingPlugin(Plugin):
     def entity_scoring(presence: int, input_size: int) -> float:
         return presence / input_size
 
+    @staticmethod
     def aggregate_entities(
-        self,
         entity_type_value_group: Dict[Tuple[str, Any], List[BaseEntity]],
         input_size: int,
     ) -> List[BaseEntity]:
@@ -434,7 +435,7 @@ class DucklingPlugin(Plugin):
         entity_type_value_group = py_.group_by(
             entities, lambda entity: (entity.type, entity.get_value())
         )
-        return self.aggregate_entities(entity_type_value_group, input_size)
+        return DucklingPlugin.aggregate_entities(entity_type_value_group, input_size)
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         """
