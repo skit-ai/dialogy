@@ -181,27 +181,31 @@ class BaseEntity:
         """
         self.parsers.append(postprocessor.__name__)
 
-    def get_value(self, *args: Any) -> Any:
+    def get_value(self, reference: Optional[Any] = None) -> Any:
         """
         Get value of an entity.
 
         The structure of an entity conceals the value in different data structures.
         This is sugar for access.
 
+        :param reference: Picking value/values from a reference object.
+        :type reference: Any
+        :raises IndexError: If `values` is not a `list`.
+        :raises KeyError: If each element in `values` is not a `dict`.
         :return: Arbitrary instance, subclasses should override and return specific types.
         :rtype: BaseEntity
-        :raises:
-            IndexError: If `values` is not a `list`.
-            KeyError: If each element in `values` is not a `dict`.
         """
         key = "value"
         error_message = f'entity value should be in values[0]["{key}"]'
-        try:
-            return self.values[0][key]
-        except IndexError as index_error:
-            raise IndexError(error_message) from index_error
-        except KeyError as key_error:
-            raise KeyError(error_message) from key_error
+        if not reference:
+            try:
+                return self.values[0][key]
+            except IndexError as index_error:
+                raise IndexError(error_message) from index_error
+            except KeyError as key_error:
+                raise KeyError(error_message) from key_error
+        else:
+            return reference.get(const.VALUE)
 
     def copy(self) -> "BaseEntity":
         """

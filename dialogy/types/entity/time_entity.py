@@ -47,7 +47,7 @@ class TimeEntity(NumericalEntity):
             ]
         return dict_
 
-    def get_value(self, date: Optional[Dict[str, str]] = None) -> Optional[datetime]:  # type: ignore # pylint: disable=arguments-differ
+    def get_value(self, reference: Optional[Any] = None) -> Any:
         """
         Return the date string in ISO format from the dictionary passed
 
@@ -65,12 +65,12 @@ class TimeEntity(NumericalEntity):
         :rtype: Optional[datetime]
         """
         entity_date_value = (
-            super(TimeEntity, self).get_value() if not date else date.get("value")
+            super().get_value() if not reference else reference.get("value")
         )
         if entity_date_value:
             return datetime.fromisoformat(entity_date_value)
         else:
-            raise KeyError(f"Expected key `value` in {date} for {self}")
+            raise KeyError(f"Expected key `value` in {reference} for {self}")
 
     def is_uniq_date_from_values(self) -> bool:
         """
