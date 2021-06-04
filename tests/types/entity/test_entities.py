@@ -102,6 +102,20 @@ def test_entity_deep_copy():
     assert entity_copy.body != entity.body, "Shouldn't be same"
 
 
+def test_base_entity_value_setter():
+    body = "12th december"
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="basic",
+        dim="default",
+        values=[],
+    )
+
+    # Had this not been a deep copy, it would have matched.
+    assert entity.get_value({"value": 5}) == 5, "Should be same"
+
+
 def test_entity_synthesis():
     body = "12th december"
     entity = BaseEntity(
