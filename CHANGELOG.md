@@ -1,5 +1,8 @@
 # 0.6.4
-- [x] `DucklingPlugin` comparison requires reference time to be unix timestamp.
+- [x] docs: Better error message for -- `DucklingPlugin` comparison requires reference time to be unix timestamp.
+- [x] fix: `DucklingPlugin` doesn't return duplicate entities when a list of strings is input.
+- [x] add: `DucklingPlugin` produces a score that can be compared against a threshold.
+- [x] fix: `DucklingPlugin` doesn't remove other entities if `datetime_filter` is used.
 
 # 0.6.3
 - [x] fix: #46 `ListEntityPlugin` overwrites if there are mutliple `entity_value` patterns for the same `entity_type`.
