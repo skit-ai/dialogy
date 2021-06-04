@@ -46,7 +46,7 @@ class TimeIntervalEntity(TimeEntity):
             dict_[const.EntityKeys.GRAIN] = date_range[const.EntityKeys.GRAIN]
         return dict_
 
-    def get_value(self, date: Optional[Dict[str, Any]] = None) -> Optional[datetime]:  # type: ignore # pylint: disable=arguments-differ
+    def get_value(self, reference: Optional[Any] = None) -> Any:
         """
         Return the date string in ISO format from the dictionary passed
 
@@ -65,10 +65,12 @@ class TimeIntervalEntity(TimeEntity):
         :return: :code:`date["value"]`
         :rtype: Optional[datetime]
         """
-        if not date:
+        if not reference:
             date_dict = self.value[const.EntityKeys.FROM or const.EntityKeys.TO]
         else:
-            date_dict = date.get(const.EntityKeys.FROM) or date.get(const.EntityKeys.TO)
+            date_dict = reference.get(const.EntityKeys.FROM) or reference.get(
+                const.EntityKeys.TO
+            )
 
         if date_dict:
             return datetime.fromisoformat(date_dict.get(const.EntityKeys.VALUE))
