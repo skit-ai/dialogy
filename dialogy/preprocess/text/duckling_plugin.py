@@ -49,7 +49,6 @@ means to connect from the implementation here.
 import json
 import operator
 import traceback
-from os import stat
 from pprint import pformat
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -416,8 +415,9 @@ class DucklingPlugin(Plugin):
             aggregated_entities.append(representative)
         return aggregated_entities
 
+    @staticmethod
     def entity_consensus(
-        self, entities: List[BaseEntity], input_size: int
+        entities: List[BaseEntity], input_size: int
     ) -> List[BaseEntity]:
         """
         Combine entities by type and value.
@@ -480,6 +480,6 @@ class DucklingPlugin(Plugin):
                 shaped_entities.append(self._reshape(entities, alternative_index))
 
             filtered_entities = self.apply_filters(py_.flatten(shaped_entities))
-            return self.entity_consensus(filtered_entities, input_size)
+            return DucklingPlugin.entity_consensus(filtered_entities, input_size)
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error
