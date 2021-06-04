@@ -378,7 +378,96 @@
   reference_time: 1622640071000
   expected: [{"entity": "TimeEntity"}]
 
-- description: "Exceptions due to incorrect date filter name."
+
+- description: "Exceptions due to incorrect datetime filter value."
+  input: ""
+  duckling:
+    locale: "hi_IN"
+    dimensions: ["time", "date"]
+    timezone: "Asia/Kolkata"
+    datetime_filters: "latest"
+    debug: True
+  mock_entity_json: [{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-05-31T17:00:00.000+05:30'
+      }],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-05-31T17:00:00.000+05:30'
+    }
+  },{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-06-04T17:00:00.000+05:30'}
+      ],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-06-04T17:00:00.000+05:30'
+    }
+  }]
+  reference_time: 1622640071000
+  exception: "ValueError"
+
+- description: "Exceptions due to incorrect datetime filter type."
+  input: ""
+  duckling:
+    locale: "hi_IN"
+    dimensions: ["time", "date"]
+    timezone: "Asia/Kolkata"
+    datetime_filters: 1425
+    debug: True
+  mock_entity_json: [{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-05-31T17:00:00.000+05:30'
+      }],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-05-31T17:00:00.000+05:30'
+    }
+  },{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-06-04T17:00:00.000+05:30'}
+      ],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-06-04T17:00:00.000+05:30'
+    }
+  }]
+  reference_time: 1622640071000
+  exception: "TypeError"
+
+- description: "Exceptions due to incorrect reftime."
   input: ""
   duckling:
     locale: "hi_IN"
@@ -420,7 +509,7 @@
     }
   }]
   reference_time: '2021-06-02T18:51:11.000+05:30'
-  exception: "ValueError"
+  exception: "TypeError"
 
 - description: "Exceptions due to incorrect date filter type."
   input: ""
