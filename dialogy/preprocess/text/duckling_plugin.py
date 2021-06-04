@@ -204,7 +204,9 @@ class DucklingPlugin(Plugin):
         return payload
 
     @dbg(log)
-    def _reshape(self, entities_json: List[Dict[str, Any]]) -> List[BaseEntity]:
+    def _reshape(
+        self, entities_json: List[Dict[str, Any]], pos: int = 0
+    ) -> List[BaseEntity]:
         """
         Create a list of :ref:`BaseEntity <base_entity>` objects from a list of entity dicts.
 
@@ -237,6 +239,7 @@ class DucklingPlugin(Plugin):
                     duckling_entity = cls.from_dict(entity)
                     # Depending on the type of entity, the value is searched and filled.
                     duckling_entity.set_value()
+                    duckling_entity.alternative_index = pos
                     # Collect the entity object in a list.
                     entity_object_list.append(duckling_entity)
                 else:
@@ -363,7 +366,9 @@ class DucklingPlugin(Plugin):
         :return: A list of duckling entities.
         :rtype: List[BaseEntity]
         """
-        entities = []
+        list_of_entities: List[List[Dict[str, Any]]] = []
+        shaped_entities: List[List[BaseEntity]] = []
+
         input_, reference_time, locale = args
         if not isinstance(reference_time, int) and self.datetime_filters:
             raise TypeError(
@@ -376,22 +381,22 @@ class DucklingPlugin(Plugin):
 
         try:
             if isinstance(input_, str):
-                entities.append(
+                list_of_entities.append(
                     self._get_entities(input_, locale, reference_time=reference_time)
                 )
             elif isinstance(input_, list) and all(
                 isinstance(text, str) for text in input_
             ):
                 for text in input_:
-                    entities.append(
+                    list_of_entities.append(
                         self._get_entities(text, locale, reference_time=reference_time)
                     )
             else:
                 raise TypeError(f"Expected {input_} to be a List[str] or str.")
 
-            entities_flattened = py_.flatten(entities)
-            shaped_entities = self._reshape(entities_flattened)
-            filtered_entities = self.apply_filters(shaped_entities)
-            return filtered_entities
+            for (pos, entities) in enumerate(list_of_entities):
+                shaped_entities.append(self._reshape(entities, pos))
+
+            return self.apply_filters(py_.flatten(shaped_entities))
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error
