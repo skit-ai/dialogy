@@ -36,6 +36,7 @@ class EntityKeys:
     VALUE = "value"
     VALUES = "values"
     ORIGIN = "origin"
+    NORMALIZED = "normalized"
     SLOT_NAMES = "slot_names"
 
 
