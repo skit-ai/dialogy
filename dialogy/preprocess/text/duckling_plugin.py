@@ -134,7 +134,7 @@ class DucklingPlugin(Plugin):
         self.timezone = timezone
         self.timeout = timeout
         self.url = url
-        self.reference_time = None
+        self.reference_time: Optional[int] = None
         self.datetime_filters = datetime_filters
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
@@ -360,7 +360,15 @@ class DucklingPlugin(Plugin):
         """
         entities = []
         input_, reference_time, locale = args
+        if not isinstance(reference_time, int) and self.datetime_filters:
+            raise TypeError(
+                "Duckling requires reference_time to be a unix timestamp (int) but"
+                f" {type(reference_time)} was found"
+                "https://stackoverflow.com/questions/20822821/what-is-a-unix-timestamp-and-why-use-it\n"
+            )
+
         self.reference_time = reference_time
+
         try:
             if isinstance(input_, str):
                 entities.append(
