@@ -66,7 +66,9 @@ class TimeIntervalEntity(TimeEntity):
         :rtype: Optional[datetime]
         """
         if not reference:
-            date_dict = self.value[const.EntityKeys.FROM or const.EntityKeys.TO]
+            date_dict = self.value.get(const.EntityKeys.FROM) or self.value.get(
+                const.EntityKeys.TO
+            )
         else:
             date_dict = reference.get(const.EntityKeys.FROM) or reference.get(
                 const.EntityKeys.TO
