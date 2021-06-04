@@ -50,7 +50,7 @@ import json
 import operator
 import traceback
 from pprint import pformat
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import pydash as py_  # type: ignore
 import pytz
@@ -121,6 +121,7 @@ class DucklingPlugin(Plugin):
         url: str = "http://0.0.0.0:8000/parse",
         locale: str = "en_IN",
         datetime_filters: Optional[str] = None,
+        threshold: Optional[float] = None,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
         entity_map: Optional[Dict[str, Any]] = None,
@@ -137,6 +138,7 @@ class DucklingPlugin(Plugin):
         self.url = url
         self.reference_time: Optional[int] = None
         self.datetime_filters = datetime_filters
+        self.threshold = threshold
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
@@ -205,7 +207,7 @@ class DucklingPlugin(Plugin):
 
     @dbg(log)
     def _reshape(
-        self, entities_json: List[Dict[str, Any]], pos: int = 0
+        self, entities_json: List[Dict[str, Any]], alternative_index: int = 0
     ) -> List[BaseEntity]:
         """
         Create a list of :ref:`BaseEntity <base_entity>` objects from a list of entity dicts.
@@ -239,7 +241,7 @@ class DucklingPlugin(Plugin):
                     duckling_entity = cls.from_dict(entity)
                     # Depending on the type of entity, the value is searched and filled.
                     duckling_entity.set_value()
-                    duckling_entity.alternative_index = pos
+                    duckling_entity.alternative_index = alternative_index
                     # Collect the entity object in a list.
                     entity_object_list.append(duckling_entity)
                 else:
@@ -352,10 +354,87 @@ class DucklingPlugin(Plugin):
         :return: A list of entities obtained after applying filters.
         :rtype: List[BaseEntity]
         """
-        if self.datetime_filters is None:
+        if self.datetime_filters:
+            entities = self.select_datetime(entities, self.datetime_filters)
+        if self.threshold is not None:
+            entities = self.remove_low_scoring_entities(entities)
+        return entities
+
+    def remove_low_scoring_entities(
+        self, entities: List[BaseEntity]
+    ) -> List[BaseEntity]:
+        """
+        Remove entities with a lower score than the threshold.
+
+        :param entities: A list of entities.
+        :type entities: List[BaseEntity]
+        :return: A list of entities with score higher than configured threshold.
+        :rtype: List[BaseEntity]
+        """
+        if self.threshold is None:
             return entities
 
-        return self.select_datetime(entities, self.datetime_filters)
+        high_scoring_entities = []
+        for entity in entities:
+            if entity.score is None:
+                high_scoring_entities.append(entity)
+
+            if entity.score is not None and self.threshold < entity.score:
+                high_scoring_entities.append(entity)
+
+        return high_scoring_entities
+
+    @staticmethod
+    def entity_scoring(presence: int, input_size: int) -> float:
+        return presence / input_size
+
+    def aggregate_entities(
+        self,
+        entity_type_value_group: Dict[Tuple[str, Any], List[BaseEntity]],
+        input_size: int,
+    ) -> List[BaseEntity]:
+        """
+        Reduce entities sharing same type and value.
+
+        Entities with same type and value are considered identical even if other metadata is same.
+
+        :param entity_type_val_group: A data-structure that groups entities by type and value.
+        :type entity_type_val_group: Dict[Tuple[str, Any], List[BaseEntity]]
+        :return: A list of de-duplicated entities.
+        :rtype: List[BaseEntity]
+        """
+        aggregated_entities = []
+        for entities in entity_type_value_group.values():
+            indices = [entity.alternative_index for entity in entities]
+            min_alternative_index = py_.min_(indices)
+            representative = entities[0]
+            representative.alternative_index = min_alternative_index
+            representative.score = DucklingPlugin.entity_scoring(
+                len(py_.uniq(indices)), input_size
+            )
+            aggregated_entities.append(representative)
+        return aggregated_entities
+
+    def entity_consensus(
+        self, entities: List[BaseEntity], input_size: int
+    ) -> List[BaseEntity]:
+        """
+        Combine entities by type and value.
+
+        This issue:
+        https://github.com/Vernacular-ai/dialogy/issues/52
+        Points at the problems where we can return multiple identical entities,
+        depending on the number of transcripts that contain same body.
+
+        :param entities: A list of entities which may have duplicates.
+        :type entities: List[BaseEntity]
+        :return: A list of entities scored and unique by type and value.
+        :rtype: List[BaseEntity]
+        """
+        entity_type_value_group = py_.group_by(
+            entities, lambda entity: (entity.type, entity.get_value())
+        )
+        return self.aggregate_entities(entity_type_value_group, input_size)
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         """
@@ -378,6 +457,7 @@ class DucklingPlugin(Plugin):
             )
 
         self.reference_time = reference_time
+        input_size = 1
 
         try:
             if isinstance(input_, str):
@@ -387,6 +467,7 @@ class DucklingPlugin(Plugin):
             elif isinstance(input_, list) and all(
                 isinstance(text, str) for text in input_
             ):
+                input_size = len(input_)
                 for text in input_:
                     list_of_entities.append(
                         self._get_entities(text, locale, reference_time=reference_time)
@@ -394,9 +475,10 @@ class DucklingPlugin(Plugin):
             else:
                 raise TypeError(f"Expected {input_} to be a List[str] or str.")
 
-            for (pos, entities) in enumerate(list_of_entities):
-                shaped_entities.append(self._reshape(entities, pos))
+            for (alternative_index, entities) in enumerate(list_of_entities):
+                shaped_entities.append(self._reshape(entities, alternative_index))
 
-            return self.apply_filters(py_.flatten(shaped_entities))
+            filtered_entities = self.apply_filters(py_.flatten(shaped_entities))
+            return self.entity_consensus(filtered_entities, input_size)
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error

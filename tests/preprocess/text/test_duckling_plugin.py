@@ -70,6 +70,56 @@ def test_plugin_io_type_mismatch(access, mutate) -> None:
         workflow.run("")
 
 
+def test_remove_low_scoring_entities_works_only_if_threshold_is_not_none():
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+    )
+
+    body = "12th december"
+
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="basic",
+        dim="default",
+        values=[],
+        score=0.2,
+    )
+
+    assert duckling_plugin.remove_low_scoring_entities([entity]) == [entity]
+
+
+def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN", dimensions=["time"], timezone="Asia/Kolkata", threshold=0.2
+    )
+
+    body = "12th december"
+
+    entity_A = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="basic",
+        dim="default",
+        values=[],
+    )
+    entity_B = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        type="basic",
+        dim="default",
+        values=[],
+        score=0.5,
+    )
+
+    assert duckling_plugin.remove_low_scoring_entities([entity_A, entity_B]) == [
+        entity_A,
+        entity_B,
+    ]
+
+
 @httpretty.activate
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_plugin_working_cases(payload) -> None:
