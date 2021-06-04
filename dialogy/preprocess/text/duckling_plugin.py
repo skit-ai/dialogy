@@ -52,6 +52,7 @@ import traceback
 from pprint import pformat
 from typing import Any, Dict, List, Optional
 
+import pydash as py_  # type: ignore
 import pytz
 import requests
 from pytz.tzinfo import BaseTzInfo  # type: ignore
@@ -321,12 +322,16 @@ class DucklingPlugin(Plugin):
                     "or a valid comparison operator here: https://docs.python.org/3/library/operator.html"
                 ) from exception
 
-        return [
+        time_entities, other_entities = py_.partition(
+            entities, lambda entity: entity.dim == const.TIME
+        )
+
+        filtered_time_entities = [
             entity
-            for entity in entities
-            if entity.dim == const.TIME
-            and operation(dt2timestamp(entity.get_value()), self.reference_time)
+            for entity in time_entities
+            if operation(dt2timestamp(entity.get_value()), self.reference_time)
         ]
+        return filtered_time_entities + other_entities
 
     def apply_filters(self, entities: List[BaseEntity]) -> List[BaseEntity]:
         """
@@ -384,9 +389,7 @@ class DucklingPlugin(Plugin):
             else:
                 raise TypeError(f"Expected {input_} to be a List[str] or str.")
 
-            entities_flattened = [
-                entity for entity_list in entities for entity in entity_list
-            ]
+            entities_flattened = py_.flatten(entities)
             shaped_entities = self._reshape(entities_flattened)
             filtered_entities = self.apply_filters(shaped_entities)
             return filtered_entities
