@@ -181,7 +181,7 @@ class BaseEntity:
         """
         self.parsers.append(postprocessor.__name__)
 
-    def get_value(self, reference: Optional[Any] = None) -> Any:
+    def get_value(self, reference: Any = None) -> Any:
         """
         Get value of an entity.
 
