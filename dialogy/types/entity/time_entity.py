@@ -47,7 +47,7 @@ class TimeEntity(NumericalEntity):
             ]
         return dict_
 
-    def get_value(self, reference: Optional[Any] = None) -> Any:
+    def get_value(self, reference: Any = None) -> Any:
         """
         Return the date string in ISO format from the dictionary passed
 
