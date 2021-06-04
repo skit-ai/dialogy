@@ -1,3 +1,6 @@
+# 0.6.4
+- [x] `DucklingPlugin` comparison requires reference time to be unix timestamp.
+
 # 0.6.3
 - [x] fix: #46 `ListEntityPlugin` overwrites if there are mutliple `entity_value` patterns for the same `entity_type`.
 - [x] fix: #47 `DucklingPlugin` compares int vs int for `Duckling.FUTURE` and `Duckling.PAST` feature comparison. 
