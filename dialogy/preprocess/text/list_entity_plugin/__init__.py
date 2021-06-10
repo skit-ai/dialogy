@@ -16,7 +16,7 @@ import pydash as py_  # type: ignore
 
 from dialogy import constants as const
 from dialogy.plugin import Plugin, PluginFn
-from dialogy.types import BaseEntity
+from dialogy.types import BaseEntity, KeywordEntity
 from dialogy.utils.logger import dbg, log
 
 Text = str
@@ -33,9 +33,6 @@ class ListEntityPlugin(Plugin):
      .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy
         and regex based entity parsers.
 
-
-    :param entity_map: A :code:`dict` with keys as entity type and value as EntityClass
-    :type entity_map: Dict[str, BaseEntity]
     :param style: One of ["regex", "spacy"]
     :type style: Optional[str]
     :param candidates: Required if style is "regex", this is a :code:`dict` that shows a mapping of entity
@@ -59,7 +56,6 @@ class ListEntityPlugin(Plugin):
 
     def __init__(
         self,
-        entity_map: Dict[str, BaseEntity],
         style: Optional[str] = None,
         candidates: Optional[Dict[str, Dict[str, List[Any]]]] = None,
         spacy_nlp: Any = None,
@@ -75,7 +71,6 @@ class ListEntityPlugin(Plugin):
         }
 
         self.style = style or const.REGEX
-        self.entity_map: Dict[str, BaseEntity] = entity_map
         self.labels = labels
         self.keywords = None
         self.spacy_nlp = spacy_nlp
@@ -164,12 +159,12 @@ class ListEntityPlugin(Plugin):
         :param transcripts: A list of strings within which to search for entities.
         :type transcripts: List[str]
         :return: List of entities from regex matches or spacy ner.
-        :rtype: List[BaseEntity]
+        :rtype: List[KeywordEntity]
         """
         matches_on_transcripts = self._search(transcripts)
         log.debug(matches_on_transcripts)
         entity_metadata = []
-        entities = []
+        entities: List[BaseEntity] = []
 
         for i, matches_on_transcript in enumerate(matches_on_transcripts):
             for text, label, value, span in matches_on_transcript:
@@ -198,8 +193,7 @@ class ListEntityPlugin(Plugin):
             entity = sorted(grouped_entities, key=lambda e: e["alternative_index"])[0]
             del entity["__group"]
             entity["score"] = round(len(grouped_entities) / len(transcripts), 4)
-            entity_class = self.entity_map.get(entity["type"]) or BaseEntity  # type: ignore
-            entity_ = entity_class.from_dict(entity)
+            entity_ = KeywordEntity.from_dict(entity)
             entity_.set_value()
             entities.append(entity_)
         log.debug("Parsed entities")
