@@ -20,8 +20,8 @@
     - type: "GPE"
       value: "Delhi"
   config:
+    debug: false
     style: spacy
-    entity_map: {}
 
 - description: "Test location entities using regex"
   input:
@@ -32,11 +32,8 @@
     - type: "location"
       value: "delhi"
   config:
-    debug: true
+    debug: false
     style: regex
-    entity_map: {
-      "location": "MockCustomEntity"
-    }
     candidates:
       some_entity_type:
         entity_value:
@@ -55,11 +52,8 @@
     - type: "constituency_name"
       value: "bhadrak"
   config:
-    debug: true
+    debug: false
     style: regex
-    entity_map: {
-      "location": "MockCustomEntity"
-    }
     candidates:
       constituency_name:
         bhadrak: 
@@ -84,7 +78,6 @@
       value: "Google"
   config:
     style: spacy
-    entity_map: {}
     labels: "ORG"
 
 - description: "Test regex style fails if candidates are not dict"
@@ -96,7 +89,6 @@
   exception: "TypeError"
   config:
     style: regex
-    entity_map: {}
     candidates: []
 
 - description: "Test regex style fails if candidates are empty"
@@ -108,7 +100,6 @@
   exception: "ValueError"
   config:
     style: regex
-    entity_map: {}
     candidates: {}
 
 
@@ -120,5 +111,4 @@
         value: "New Delhi"
   exception: "ValueError"
   config:
-    entity_map: {}
     style: "unknown"
