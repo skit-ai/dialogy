@@ -28,6 +28,7 @@ reservation :ref:`intents<intent>`.
 from dialogy.types.entity import (
     BaseEntity,
     DurationEntity,
+    KeywordEntity,
     LocationEntity,
     NumericalEntity,
     PeopleEntity,

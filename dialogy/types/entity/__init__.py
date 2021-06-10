@@ -7,6 +7,7 @@ will be added depending on open issues.
 
 from dialogy.types.entity.base_entity import BaseEntity, entity_synthesis
 from dialogy.types.entity.duration_entity import DurationEntity
+from dialogy.types.entity.keyword_entity import KeywordEntity
 from dialogy.types.entity.location_entity import LocationEntity
 from dialogy.types.entity.numerical_entity import NumericalEntity
 from dialogy.types.entity.people_entity import PeopleEntity
