@@ -118,9 +118,6 @@ def test_get_list_entities(payload):
         workflow.run(input_=transcripts)
         entities = workflow.output
 
-        print(entities)
-        print(expected)
-
         if not entities and expected:
             pytest.fail("No entities found!")
 
