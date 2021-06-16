@@ -1,10 +1,6 @@
-from typing import Dict, List, Optional
-
-import attr
 import pytest
 
-from dialogy.preprocess.text.list_entity_plugin import ListEntityPlugin
-from dialogy.types.entity import BaseEntity
+from dialogy.plugins import ListEntityPlugin
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 

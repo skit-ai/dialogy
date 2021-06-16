@@ -14,4 +14,3 @@ context-free boxes.
 An ideal :ref:`Plugin <plugin>`  must therefore not assume a :ref:`Workflow <workflow>` structure. It must use
 abstractions to specify requirements and expect these to be met for safe usage.
 """
-from dialogy.plugin.plugin import Plugin, PluginFn

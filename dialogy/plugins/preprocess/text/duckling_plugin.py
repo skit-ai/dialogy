@@ -50,7 +50,7 @@ import json
 import operator
 import traceback
 from pprint import pformat
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import pydash as py_  # type: ignore
 import pytz
@@ -58,14 +58,15 @@ import requests
 from pytz.tzinfo import BaseTzInfo  # type: ignore
 
 from dialogy import constants as const
+from dialogy.base.entity_extractor import EntityExtractor
+from dialogy.base.plugin import PluginFn
 from dialogy.constants import EntityKeys
-from dialogy.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
 from dialogy.utils import dt2timestamp
 from dialogy.utils.logger import dbg, log
 
 
-class DucklingPlugin(Plugin):
+class DucklingPlugin(EntityExtractor):
     """
     A :ref:`Plugin<plugin>` for extracting entities using `Duckling <https://github.com/facebook/duckling>`_. Once
     instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling
@@ -109,10 +110,6 @@ class DucklingPlugin(Plugin):
     :type url: Optional[str]
     """
 
-    FUTURE = "future"
-    PAST = "past"
-    DATETIME_OPERATION_ALIAS = {FUTURE: operator.ge, PAST: operator.le}
-
     def __init__(
         self,
         dimensions: List[str],
@@ -130,7 +127,7 @@ class DucklingPlugin(Plugin):
         """
         constructor
         """
-        super().__init__(access=access, mutate=mutate, debug=debug)
+        super().__init__(access=access, mutate=mutate, debug=debug, threshold=threshold)
         self.dimensions = dimensions
         self.locale = locale
         self.timezone = timezone
@@ -138,7 +135,6 @@ class DucklingPlugin(Plugin):
         self.url = url
         self.reference_time: Optional[int] = None
         self.datetime_filters = datetime_filters
-        self.threshold = threshold
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
@@ -204,6 +200,69 @@ class DucklingPlugin(Plugin):
         log.debug(pformat(payload))
 
         return payload
+
+    @dbg(log)
+    def select_datetime(
+        self, entities: List[BaseEntity], filter_type: Any
+    ) -> List[BaseEntity]:
+        """
+        Select datetime entities as per the filters provided in the configuration.
+
+        :param entities: A list of entities.
+        :type entities: List[BaseEntity]
+        :param filter_type:
+        :type filter_type: str
+        :return: List of entities obtained after applying comparator functions.
+        :rtype: List[BaseEntity]
+        """
+        if not isinstance(filter_type, str):
+            raise TypeError(
+                f"Expected datetime_filters to be a str and one of {self.FUTURE}, {self.PAST} or"
+                " a valid comparison operator here: https://docs.python.org/3/library/operator.html"
+            )
+
+        if filter_type in self.DATETIME_OPERATION_ALIAS:
+            operation = self.DATETIME_OPERATION_ALIAS[filter_type]
+        else:
+            try:
+                operation = getattr(operator, filter_type)
+            except (AttributeError, TypeError) as exception:
+                log.debug(traceback.format_exc())
+                raise ValueError(
+                    f"Expected datetime_filters to be one of {self.FUTURE}, {self.PAST} "
+                    "or a valid comparison operator here: https://docs.python.org/3/library/operator.html"
+                ) from exception
+
+        time_entities, other_entities = py_.partition(
+            entities, lambda entity: entity.dim == const.TIME
+        )
+
+        filtered_time_entities = [
+            entity
+            for entity in time_entities
+            if operation(dt2timestamp(entity.get_value()), self.reference_time)
+        ]
+        return filtered_time_entities + other_entities
+
+    def apply_filters(self, entities: List[BaseEntity]) -> List[BaseEntity]:
+        """
+        Filter entities by configurable criteria.
+
+        The utility of this method is tracked here:
+        https://github.com/Vernacular-ai/dialogy/issues/42
+
+        We needed a way to express, not all datetime entities are needed. There are needs which can be
+        expressed as filters: want greater or lesser than the reference time, etc. There are more applications
+        where we expect sorting, filtering by other attributes as well. This method is an advent of such expressions.
+
+        :param entities: A list of entities.
+        :type entities: List[BaseEntity]
+        :return: A list of entities obtained after applying filters.
+        :rtype: List[BaseEntity]
+        """
+        if self.datetime_filters:
+            entities = self.select_datetime(entities, self.datetime_filters)
+        return super().apply_filters(entities)
 
     @dbg(log)
     def _reshape(
@@ -295,148 +354,6 @@ class DucklingPlugin(Plugin):
             f"Duckling API call failed | [{response.status_code}]: {response.text}"
         )
 
-    @dbg(log)
-    def select_datetime(
-        self, entities: List[BaseEntity], filter_type: Any
-    ) -> List[BaseEntity]:
-        """
-        Select datetime entities as per the filters provided in the configuration.
-
-        :param entities: A list of entities.
-        :type entities: List[BaseEntity]
-        :param filter_type:
-        :type filter_type: str
-        :return: List of entities obtained after applying comparator functions.
-        :rtype: List[BaseEntity]
-        """
-        if not isinstance(filter_type, str):
-            raise TypeError(
-                f"Expected datetime_filters to be a str and one of {self.FUTURE}, {self.PAST} or"
-                " a valid comparison operator here: https://docs.python.org/3/library/operator.html"
-            )
-
-        if filter_type in self.DATETIME_OPERATION_ALIAS:
-            operation = self.DATETIME_OPERATION_ALIAS[filter_type]
-        else:
-            try:
-                operation = getattr(operator, filter_type)
-            except (AttributeError, TypeError) as exception:
-                log.debug(traceback.format_exc())
-                raise ValueError(
-                    f"Expected datetime_filters to be one of {self.FUTURE}, {self.PAST} "
-                    "or a valid comparison operator here: https://docs.python.org/3/library/operator.html"
-                ) from exception
-
-        time_entities, other_entities = py_.partition(
-            entities, lambda entity: entity.dim == const.TIME
-        )
-
-        filtered_time_entities = [
-            entity
-            for entity in time_entities
-            if operation(dt2timestamp(entity.get_value()), self.reference_time)
-        ]
-        return filtered_time_entities + other_entities
-
-    def apply_filters(self, entities: List[BaseEntity]) -> List[BaseEntity]:
-        """
-        Filter entities by configurable criteria.
-
-        The utility of this method is tracked here:
-        https://github.com/Vernacular-ai/dialogy/issues/42
-
-        We needed a way to express, not all datetime entities are needed. There are needs which can be
-        expressed as filters: want greater or lesser than the reference time, etc. There are more applications
-        where we expect sorting, filtering by other attributes as well. This method is an advent of such expressions.
-
-        :param entities: A list of entities.
-        :type entities: List[BaseEntity]
-        :return: A list of entities obtained after applying filters.
-        :rtype: List[BaseEntity]
-        """
-        if self.datetime_filters:
-            entities = self.select_datetime(entities, self.datetime_filters)
-        if self.threshold is not None:
-            entities = self.remove_low_scoring_entities(entities)
-        return entities
-
-    def remove_low_scoring_entities(
-        self, entities: List[BaseEntity]
-    ) -> List[BaseEntity]:
-        """
-        Remove entities with a lower score than the threshold.
-
-        :param entities: A list of entities.
-        :type entities: List[BaseEntity]
-        :return: A list of entities with score higher than configured threshold.
-        :rtype: List[BaseEntity]
-        """
-        if self.threshold is None:
-            return entities
-
-        high_scoring_entities = []
-        for entity in entities:
-            if entity.score is None:
-                high_scoring_entities.append(entity)
-
-            if entity.score is not None and self.threshold < entity.score:
-                high_scoring_entities.append(entity)
-
-        return high_scoring_entities
-
-    @staticmethod
-    def entity_scoring(presence: int, input_size: int) -> float:
-        return presence / input_size
-
-    @staticmethod
-    def aggregate_entities(
-        entity_type_value_group: Dict[Tuple[str, Any], List[BaseEntity]],
-        input_size: int,
-    ) -> List[BaseEntity]:
-        """
-        Reduce entities sharing same type and value.
-
-        Entities with same type and value are considered identical even if other metadata is same.
-
-        :param entity_type_val_group: A data-structure that groups entities by type and value.
-        :type entity_type_val_group: Dict[Tuple[str, Any], List[BaseEntity]]
-        :return: A list of de-duplicated entities.
-        :rtype: List[BaseEntity]
-        """
-        aggregated_entities = []
-        for entities in entity_type_value_group.values():
-            indices = [entity.alternative_index for entity in entities]
-            min_alternative_index = py_.min_(indices)
-            representative = entities[0]
-            representative.alternative_index = min_alternative_index
-            representative.score = DucklingPlugin.entity_scoring(
-                len(py_.uniq(indices)), input_size
-            )
-            aggregated_entities.append(representative)
-        return aggregated_entities
-
-    @staticmethod
-    def entity_consensus(
-        entities: List[BaseEntity], input_size: int
-    ) -> List[BaseEntity]:
-        """
-        Combine entities by type and value.
-
-        This issue:
-        https://github.com/Vernacular-ai/dialogy/issues/52
-        Points at the problems where we can return multiple identical entities,
-        depending on the number of transcripts that contain same body.
-
-        :param entities: A list of entities which may have duplicates.
-        :type entities: List[BaseEntity]
-        :return: A list of entities scored and unique by type and value.
-        :rtype: List[BaseEntity]
-        """
-        entity_type_value_group = py_.group_by(
-            entities, lambda entity: (entity.type, entity.get_value())
-        )
-        return DucklingPlugin.aggregate_entities(entity_type_value_group, input_size)
-
     def utility(self, *args: Any) -> List[BaseEntity]:
         """
         Produces Duckling entities, runs with a :ref:`Workflow's run<workflow_run>` method.
@@ -480,6 +397,6 @@ class DucklingPlugin(Plugin):
                 shaped_entities.append(self._reshape(entities, alternative_index))
 
             filtered_entities = self.apply_filters(py_.flatten(shaped_entities))
-            return DucklingPlugin.entity_consensus(filtered_entities, input_size)
+            return EntityExtractor.entity_consensus(filtered_entities, input_size)
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error

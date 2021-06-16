@@ -8,7 +8,7 @@ import numpy as np
 import pydash as py_  # type: ignore
 
 from dialogy import constants as const
-from dialogy.plugin import Plugin
+from dialogy.base.plugin import Plugin
 from dialogy.types import Signal
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn

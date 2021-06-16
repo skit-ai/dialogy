@@ -17,15 +17,10 @@ simply concatenation of each transcript.
 This may not be very helpful, there is a :ref:`VotePlugin <vote_plugin>` under development so use it with caution. It may
 help with precision at the cost of recall.
 """
-from typing import Any, List
+from typing import Any, List, Optional
 
-from dialogy.preprocess.text.normalize_utterance import normalize
-from dialogy.types.plugin import (
-    GetWorkflowUtteranceFn,
-    PluginFn,
-    UpdateWorkflowStringFn,
-)
-from dialogy.workflow import Workflow
+from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.plugins.preprocess.text.normalize_utterance import normalize
 
 
 # == merge_asr_output ==
@@ -73,32 +68,23 @@ def merge_asr_output(utterances: Any) -> str:
         raise TypeError("`transcript` is expected in the ASR output.") from type_error
 
 
-def merge_asr_output_plugin(
-    access: GetWorkflowUtteranceFn, mutate: UpdateWorkflowStringFn
-) -> PluginFn:
+class MergeASROutputPlugin(Plugin):
     """
     .. _merge_asr_output_plugin:
 
     Working details are covered in :ref:`merge_asr_output <merge_asr_output>`.
 
-    :param access: A function that provides a :ref:`workflow<workflow>` and returns the ASR Utterance.
-    :type access: GetWorkflowUtteranceFn
-    :param mutate: A function that places the concat'd string into the :ref:`workflow<workflow>` as required.
-    :type mutate: UpdateWorkflowStringFn
-    :return: The plugin function.
-    :rtype: Callable
+    :param Plugin: [description]
+    :type Plugin: [type]
     """
 
-    def inner(workflow: Workflow) -> None:
-        """
-        Uses the `merge_asr_output` to build the plugin.
+    def __init__(
+        self,
+        access: Optional[PluginFn],
+        mutate: Optional[PluginFn],
+        debug: bool = False,
+    ) -> None:
+        super().__init__(access, mutate, debug=debug)
 
-        :param workflow: A workflow to apply this plugin
-        :type workflow: Workflow
-        :return: None
-        :rtype: None
-        """
-        merged_string = merge_asr_output(access(workflow))
-        mutate(workflow, merged_string)
-
-    return inner
+    def utility(self, *args: Any) -> Any:
+        return merge_asr_output(*args)

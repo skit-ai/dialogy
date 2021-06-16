@@ -1,6 +1,6 @@
 import pytest
 
-from dialogy.preprocess.text.merge_asr_output import merge_asr_output_plugin
+from dialogy.plugins import MergeASROutputPlugin
 from dialogy.workflow import Workflow
 
 
@@ -12,14 +12,15 @@ def mutate(workflow, value):
     workflow.input = value
 
 
+merge_asr_output_plugin = MergeASROutputPlugin(access=access, mutate=mutate)()
+
+
 def test_merge_asr_output() -> None:
     """
     This case shows the merge in case there is only one option.
     """
 
-    workflow = Workflow(
-        preprocessors=[merge_asr_output_plugin(access, mutate)], postprocessors=[]
-    )
+    workflow = Workflow(preprocessors=[merge_asr_output_plugin], postprocessors=[])
 
     workflow.run([[{"transcript": "hello world", "confidence": None}]])
     assert workflow.input == "<s> hello world </s>"
@@ -29,9 +30,7 @@ def test_merge_longer_asr_output() -> None:
     """
     This case shows the merge in case there are multiple options.
     """
-    workflow = Workflow(
-        preprocessors=[merge_asr_output_plugin(access, mutate)], postprocessors=[]
-    )
+    workflow = Workflow(preprocessors=[merge_asr_output_plugin], postprocessors=[])
 
     workflow.run(
         [
@@ -54,9 +53,7 @@ def test_merge_keyerror_on_missing_transcript() -> None:
     then this plugin would not work for you.
     """
 
-    workflow = Workflow(
-        preprocessors=[merge_asr_output_plugin(access, mutate)], postprocessors=[]
-    )
+    workflow = Workflow(preprocessors=[merge_asr_output_plugin], postprocessors=[])
 
     with pytest.raises(TypeError):
         workflow.run([[{"not_transcript": "hello world", "confidence": None}]])

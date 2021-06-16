@@ -15,7 +15,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import pydash as py_  # type: ignore
 
 from dialogy import constants as const
-from dialogy.plugin import Plugin, PluginFn
+from dialogy.base.entity_extractor import EntityExtractor
+from dialogy.base.plugin import PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
 from dialogy.utils.logger import dbg, log
 
@@ -26,7 +27,7 @@ Value = str
 MatchType = List[Tuple[Text, Label, Value, Span]]
 
 
-class ListEntityPlugin(Plugin):
+class ListEntityPlugin(EntityExtractor):
     """
      A :ref:`Plugin<plugin>` for extracting entities using spacy or a list of regex patterns.
 
@@ -60,11 +61,12 @@ class ListEntityPlugin(Plugin):
         candidates: Optional[Dict[str, Dict[str, List[Any]]]] = None,
         spacy_nlp: Any = None,
         labels: Optional[List[str]] = None,
+        threshold: Optional[float] = None,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
         debug: bool = False,
     ):
-        super().__init__(access=access, mutate=mutate, debug=debug)
+        super().__init__(access=access, mutate=mutate, debug=debug, threshold=threshold)
         self.__style_search_map = {
             const.SPACY: self.ner_search,
             const.REGEX: self.regex_search,
@@ -198,7 +200,9 @@ class ListEntityPlugin(Plugin):
             entities.append(entity_)
         log.debug("Parsed entities")
         log.debug(entities)
-        return entities
+
+        filtered_entities = self.apply_filters(entities)
+        return EntityExtractor.entity_consensus(filtered_entities, len(transcripts))
 
     @dbg(log)
     def utility(self, *args: Any) -> Any:
