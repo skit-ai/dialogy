@@ -9,8 +9,9 @@ Import:
 - TIME_ENTITY_PROPS
 - PEOPLE_ENTITY_PROPS
 """
-PREPROCESSORS = "__preprocessors"
-POSTPROCESSORS = "__postprocessors"
+PREPROCESSORS = "preprocessors"
+POSTPROCESSORS = "postprocessors"
+DEBUG = "debug"
 WORKFLOW_PUBLIC_PROPERTIES = [PREPROCESSORS, POSTPROCESSORS]
 S_INTENT_OOS = "_oos_"
 TRANSCRIPT = "transcript"
