@@ -1,5 +1,5 @@
-dialogy.postprocess package
-===========================
+dialogy.plugins package
+=======================
 
 Subpackages
 -----------
@@ -7,12 +7,13 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   dialogy.postprocess.text
+   dialogy.plugins.postprocess
+   dialogy.plugins.preprocess
 
 Module contents
 ---------------
 
-.. automodule:: dialogy.postprocess
+.. automodule:: dialogy.plugins
    :members:
    :undoc-members:
    :show-inheritance:

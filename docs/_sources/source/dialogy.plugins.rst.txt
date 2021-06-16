@@ -1,5 +1,5 @@
-dialogy.parser.text package
-===========================
+dialogy.plugins package
+=======================
 
 Subpackages
 -----------
@@ -7,12 +7,13 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   dialogy.parser.text.entity
+   dialogy.plugins.postprocess
+   dialogy.plugins.preprocess
 
 Module contents
 ---------------
 
-.. automodule:: dialogy.parser.text
+.. automodule:: dialogy.plugins
    :members:
    :undoc-members:
    :show-inheritance:

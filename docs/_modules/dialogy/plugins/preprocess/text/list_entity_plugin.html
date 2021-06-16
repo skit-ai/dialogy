@@ -1,0 +1,496 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
+
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
+        <title>dialogy.plugins.preprocess.text.list_entity_plugin - dialogy 0.6.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
+    <link rel="stylesheet" href="../../../../../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../../../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
+    <link rel="stylesheet" href="../../../../../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.6.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">dialogy 0.6.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.html">dialogy.base package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.cli.html">dialogy.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.constants.html">dialogy.constants package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../source/dialogy.plugins.html">dialogy.plugins package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.html">dialogy.plugins.postprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.html">dialogy.plugins.postprocess.text package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.slot_filler.html">dialogy.plugins.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.voting.html">dialogy.plugins.postprocess.text.voting package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../source/dialogy.plugins.preprocess.html">dialogy.plugins.preprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../source/dialogy.plugins.preprocess.text.html">dialogy.plugins.preprocess.text package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.html">dialogy.plugins.postprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.html">dialogy.plugins.postprocess.text package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.slot_filler.html">dialogy.plugins.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.voting.html">dialogy.plugins.postprocess.text.voting package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.html">dialogy.plugins.postprocess.text package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.slot_filler.html">dialogy.plugins.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.voting.html">dialogy.plugins.postprocess.text.voting package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.slot_filler.html">dialogy.plugins.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.postprocess.text.voting.html">dialogy.plugins.postprocess.text.voting package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../source/dialogy.plugins.preprocess.html">dialogy.plugins.preprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.plugins.preprocess.text.html">dialogy.plugins.preprocess.text package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.preprocess.text.html">dialogy.plugins.preprocess.text package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../source/dialogy.types.html">dialogy.types package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label for="toctree-checkbox-9"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.types.entity.html">dialogy.types.entity package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.types.intent.html">dialogy.types.intent package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.types.signal.html">dialogy.types.signal package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.types.slots.html">dialogy.types.slots package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../source/dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.html">dialogy.types.entity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.intent.html">dialogy.types.intent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.signal.html">dialogy.types.signal package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.slots.html">dialogy.types.slots package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.utils.html">dialogy.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.workflow.html">dialogy.workflow package</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <h1>Source code for dialogy.plugins.preprocess.text.list_entity_plugin</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">.. _list_entity_plugin:</span>
+
+<span class="sd">Module needs refactor. We are currently keeping all strategies bundled as methods as opposed to SearchStrategyClasses.</span>
+
+<span class="sd">Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We can ship individual plugins but at the</span>
+<span class="sd">same time, the difference is just configuration of each of these tools/services. There is another difference of</span>
+<span class="sd">intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting</span>
+<span class="sd">all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.</span>
+<span class="sd">"""</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">pydash</span> <span class="k">as</span> <span class="nn">py_</span>  <span class="c1"># type: ignore</span>
+
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">dialogy.base.entity_extractor</span> <span class="kn">import</span> <span class="n">EntityExtractor</span>
+<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">KeywordEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">dbg</span><span class="p">,</span> <span class="n">log</span>
+
+<span class="n">Text</span> <span class="o">=</span> <span class="nb">str</span>
+<span class="n">Label</span> <span class="o">=</span> <span class="nb">str</span>
+<span class="n">Span</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="n">Value</span> <span class="o">=</span> <span class="nb">str</span>
+<span class="n">MatchType</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Label</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Span</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="ListEntityPlugin"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.preprocess.text.html#dialogy.plugins.preprocess.text.list_entity_plugin.ListEntityPlugin">[docs]</a><span class="k">class</span> <span class="nc">ListEntityPlugin</span><span class="p">(</span><span class="n">EntityExtractor</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">     A :ref:`Plugin&lt;plugin&gt;` for extracting entities using spacy or a list of regex patterns.</span>
+
+<span class="sd">     .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy</span>
+<span class="sd">        and regex based entity parsers.</span>
+
+<span class="sd">    :param style: One of ["regex", "spacy"]</span>
+<span class="sd">    :type style: Optional[str]</span>
+<span class="sd">    :param candidates: Required if style is "regex", this is a :code:`dict` that shows a mapping of entity</span>
+<span class="sd">        values and their patterns.</span>
+<span class="sd">    :type candidates: Optional[Dict[str, List[str]]]</span>
+<span class="sd">    :param spacy_nlp: Required if style is "spacy", this is a</span>
+<span class="sd">        `spacy model &lt;https://spacy.io/usage/spacy-101#annotations-ner&gt;`_.</span>
+<span class="sd">    :type spacy_nlp: Any</span>
+<span class="sd">    :param labels: Required if style is "spacy". If there is a need to extract only a few labels from all the other</span>
+<span class="sd">        `available labels &lt;https://github.com/explosion/spaCy/issues/441#issuecomment-311804705&gt;`_.</span>
+<span class="sd">    :type labels: Optional[List[str]]</span>
+<span class="sd">    :param access: A plugin io utility that allows access to transcripts</span>
+<span class="sd">        :code:`List[str]` within a :ref:`Workflow &lt;workflow&gt;`.</span>
+<span class="sd">    :type access: Optional[PluginFn]</span>
+<span class="sd">    :param mutate: A plugin io utility that allows insertion of :code:`List[BaseEntity]` within a</span>
+<span class="sd">        :ref:`Workflow &lt;workflow&gt;`.</span>
+<span class="sd">    :type mutate: Optional[PluginFn]</span>
+<span class="sd">    :param debug: A flag to set debugging on the plugin methods</span>
+<span class="sd">    :type debug: bool</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">candidates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">spacy_nlp</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__style_search_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">const</span><span class="o">.</span><span class="n">SPACY</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ner_search</span><span class="p">,</span>
+            <span class="n">const</span><span class="o">.</span><span class="n">REGEX</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex_search</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">style</span> <span class="ow">or</span> <span class="n">const</span><span class="o">.</span><span class="n">REGEX</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spacy_nlp</span> <span class="o">=</span> <span class="n">spacy_nlp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">REGEX</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Pre compile regex patterns to speed up runtime evaluation.</span>
+
+<span class="sd">        This method's search will still be slow depending on the list of patterns.</span>
+
+<span class="sd">        :param candidates: A map for entity types and their pattern list.</span>
+<span class="sd">        :type candidates: Optional[Dict[str, List[str]]]</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: NoneType</span>
+<span class="sd">        """</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="n">pformat</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">"style"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span>
+                    <span class="s2">"candidates"</span><span class="p">:</span> <span class="n">candidates</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">'Expected "candidates" to be a Dict[str, List[str]]'</span>
+                <span class="sa">f</span><span class="s2">" but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span><span class="si">}</span><span class="s2"> was found."</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">candidates</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">'Expected "candidates" to be a Dict[str, List[str]]'</span>
+                <span class="sa">f</span><span class="s2">" but </span><span class="si">{</span><span class="n">candidates</span><span class="si">}</span><span class="s2"> was found."</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__style_search_map</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Expected style to be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__style_search_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s1">' but "</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="si">}</span><span class="s1">" was found.'</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">REGEX</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">entity_value_dict</span> <span class="ow">in</span> <span class="n">candidates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">entity_value</span><span class="p">,</span> <span class="n">entity_patterns</span> <span class="ow">in</span> <span class="n">entity_value_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">entity_patterns</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span> <span class="o">=</span> <span class="p">{</span><span class="n">entity_type</span><span class="p">:</span> <span class="p">{</span><span class="n">entity_value</span><span class="p">:</span> <span class="n">patterns</span><span class="p">}}</span>
+                    <span class="k">elif</span> <span class="n">entity_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">[</span><span class="n">entity_type</span><span class="p">][</span><span class="n">entity_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">patterns</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">[</span><span class="n">entity_type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">entity_value</span><span class="p">:</span> <span class="n">patterns</span><span class="p">}</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"compiled patterns"</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MatchType</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Search for tokens in a list of strings.</span>
+
+<span class="sd">        :param transcripts: A list of transcripts, :code:`List[str]`.</span>
+<span class="sd">        :type transcripts: List[str]</span>
+<span class="sd">        :return: Token matches with the transcript.</span>
+<span class="sd">        :rtype: List[MatchType]</span>
+<span class="sd">        """</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"style: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"transcripts"</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span>
+        <span class="n">search_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__style_search_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">search_fn</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Expected style to be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__style_search_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s1">' but "</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="si">}</span><span class="s1">" was found.'</span>
+            <span class="p">)</span>
+        <span class="n">token_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">search_fn</span><span class="p">(</span><span class="n">transcript</span><span class="p">)</span> <span class="k">for</span> <span class="n">transcript</span> <span class="ow">in</span> <span class="n">transcripts</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">token_list</span>
+
+<div class="viewcode-block" id="ListEntityPlugin.get_entities"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.preprocess.text.html#dialogy.plugins.preprocess.text.list_entity_plugin.ListEntityPlugin.get_entities">[docs]</a>    <span class="k">def</span> <span class="nf">get_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Parse entities using regex and spacy ner.</span>
+
+<span class="sd">        :param transcripts: A list of strings within which to search for entities.</span>
+<span class="sd">        :type transcripts: List[str]</span>
+<span class="sd">        :return: List of entities from regex matches or spacy ner.</span>
+<span class="sd">        :rtype: List[KeywordEntity]</span>
+<span class="sd">        """</span>
+        <span class="n">matches_on_transcripts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">matches_on_transcripts</span><span class="p">)</span>
+        <span class="n">entity_metadata</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">matches_on_transcript</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matches_on_transcripts</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">span</span> <span class="ow">in</span> <span class="n">matches_on_transcript</span><span class="p">:</span>
+                <span class="n">entity</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">"start"</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="s2">"end"</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="s2">"body"</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+                    <span class="s2">"dim"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                    <span class="s2">"parsers"</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">],</span>
+                    <span class="s2">"score"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">"alternative_index"</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                    <span class="s2">"latent"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s2">"__group"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                    <span class="s2">"type"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                    <span class="s2">"entity_type"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                    <span class="s2">"value"</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">"values"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}],</span>
+                    <span class="p">},</span>
+                <span class="p">}</span>
+                <span class="n">entity_metadata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+        <span class="n">entity_groups</span> <span class="o">=</span> <span class="n">py_</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">entity_metadata</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="s2">"__group"</span><span class="p">])</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"entity groups:"</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="n">entity_groups</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">grouped_entities</span> <span class="ow">in</span> <span class="n">entity_groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">entity</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">grouped_entities</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="s2">"alternative_index"</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">entity</span><span class="p">[</span><span class="s2">"__group"</span><span class="p">]</span>
+            <span class="n">entity</span><span class="p">[</span><span class="s2">"score"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grouped_entities</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">transcripts</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">entity_</span> <span class="o">=</span> <span class="n">KeywordEntity</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+            <span class="n">entity_</span><span class="o">.</span><span class="n">set_value</span><span class="p">()</span>
+            <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity_</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Parsed entities"</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+
+        <span class="n">filtered_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">EntityExtractor</span><span class="o">.</span><span class="n">entity_consensus</span><span class="p">(</span><span class="n">filtered_entities</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">transcripts</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ListEntityPlugin.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.preprocess.text.html#dialogy.plugins.preprocess.text.list_entity_plugin.ListEntityPlugin.utility">[docs]</a>    <span class="nd">@dbg</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-value-for-parameter</span></div>
+
+<div class="viewcode-block" id="ListEntityPlugin.ner_search"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.preprocess.text.html#dialogy.plugins.preprocess.text.list_entity_plugin.ListEntityPlugin.ner_search">[docs]</a>    <span class="k">def</span> <span class="nf">ner_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transcript</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchType</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Wrapper over spacy's ner search.</span>
+
+<span class="sd">        :param transcript: A string to search entities within.</span>
+<span class="sd">        :type transcript: str</span>
+<span class="sd">        :return: NER parsing via spacy.</span>
+<span class="sd">        :rtype: MatchType</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacy_nlp</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Expected spacy_nlp to be a spacy"</span>
+                <span class="sa">f</span><span class="s2">" instance but </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">spacy_nlp</span><span class="si">}</span><span class="s2"> was found."</span>
+            <span class="p">)</span>
+        <span class="n">parsed_transcript</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacy_nlp</span><span class="p">(</span><span class="n">transcript</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="p">(</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">label_</span><span class="p">,</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="p">(</span>
+                        <span class="n">transcript</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                        <span class="n">transcript</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">parsed_transcript</span><span class="o">.</span><span class="n">ents</span>
+                <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">label_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="p">(</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">label_</span><span class="p">,</span>
+                    <span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="p">(</span>
+                        <span class="n">transcript</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                        <span class="n">transcript</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">parsed_transcript</span><span class="o">.</span><span class="n">ents</span>
+            <span class="p">]</span></div>
+
+<div class="viewcode-block" id="ListEntityPlugin.regex_search"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.preprocess.text.html#dialogy.plugins.preprocess.text.list_entity_plugin.ListEntityPlugin.regex_search">[docs]</a>    <span class="k">def</span> <span class="nf">regex_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transcript</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchType</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Wrapper over regex searches.</span>
+
+<span class="sd">        :param transcript: A string to search entities within.</span>
+<span class="sd">        :type transcript: str</span>
+<span class="sd">        :return: regex parsing via spacy.</span>
+<span class="sd">        :rtype: MatchType</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">"Expected compiled_patterns to be "</span>
+                <span class="sa">f</span><span class="s2">"Dict[str, List[str]] but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">)</span><span class="si">}</span><span class="s2"> was found."</span>
+            <span class="p">)</span>
+
+        <span class="n">entity_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">entity_value_dict</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">entity_value</span><span class="p">,</span> <span class="n">entity_patterns</span> <span class="ow">in</span> <span class="n">entity_value_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">entity_patterns</span><span class="p">:</span>
+                    <span class="n">matches</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">transcript</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
+                        <span class="n">entity_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(),</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">entity_value</span><span class="p">,</span> <span class="n">matches</span><span class="o">.</span><span class="n">span</span><span class="p">())</span>
+                        <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">entity_tokens</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">entity_tokens</span></div></div>
+</pre></div>
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </main>
+</div>
+    <script id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/clipboard.min.js"></script>
+    <script src="../../../../../_static/copybutton.js"></script>
+    <script src="../../../../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

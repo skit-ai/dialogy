@@ -1,0 +1,395 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.postprocess.text.voting package" href="dialogy.plugins.postprocess.text.voting.html" /><link rel="prev" title="dialogy.plugins.postprocess.text package" href="dialogy.plugins.postprocess.text.html" />
+
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
+        <title>dialogy.plugins.postprocess.text.slot_filler package - dialogy 0.7.0 documentation</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">dialogy 0.7.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">dialogy 0.7.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.html">dialogy.base package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.cli.html">dialogy.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.constants.html">dialogy.constants package</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.html">dialogy.plugins package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.plugins.postprocess.html">dialogy.plugins.postprocess package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current has-children"><a class="reference internal" href="dialogy.plugins.postprocess.text.html">dialogy.plugins.postprocess.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">dialogy.plugins.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dialogy.plugins.postprocess.text.voting.html">dialogy.plugins.postprocess.text.voting package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="dialogy.plugins.preprocess.html">dialogy.plugins.preprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.preprocess.text.html">dialogy.plugins.preprocess.text package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.postprocess.html">dialogy.plugins.postprocess package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.plugins.postprocess.text.html">dialogy.plugins.postprocess.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">dialogy.plugins.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.postprocess.text.voting.html">dialogy.plugins.postprocess.text.voting package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.postprocess.text.html">dialogy.plugins.postprocess.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dialogy.plugins.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.postprocess.text.voting.html">dialogy.plugins.postprocess.text.voting package</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">dialogy.plugins.postprocess.text.slot_filler package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.postprocess.text.voting.html">dialogy.plugins.postprocess.text.voting package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.plugins.preprocess.html">dialogy.plugins.preprocess package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.preprocess.text.html">dialogy.plugins.preprocess.text package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.preprocess.text.html">dialogy.plugins.preprocess.text package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.types.html">dialogy.types package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label for="toctree-checkbox-9"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.types.signal.html">dialogy.types.signal package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.types.slots.html">dialogy.types.slots package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.signal.html">dialogy.types.signal package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">dialogy.types.slots package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.utils.html">dialogy.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">dialogy.workflow package</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="dialogy-plugins-postprocess-text-slot-filler-package">
+<h1>dialogy.plugins.postprocess.text.slot_filler package<a class="headerlink" href="#dialogy-plugins-postprocess-text-slot-filler-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler">
+<span id="dialogy-plugins-postprocess-text-slot-filler-rule-slot-filler-module"></span><h2>dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler module<a class="headerlink" href="#module-dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler" title="Permalink to this headline">¶</a></h2>
+<p id="rule-slot-filler">Module provides access to a rule-based <a class="reference internal" href="#slot-filler"><span class="std std-ref">slot filler</span></a>.</p>
+<dl class="py class">
+<dt id="dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler.</span></code><code class="sig-name descname"><span class="pre">RuleBasedSlotFillerPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_multiple</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.base.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
+<p>A utility <a class="reference internal" href="dialogy.base.html#plugin"><span class="std std-ref">plugin</span></a> for
+<cite>slot filling &lt;https://nlpprogress.com/english/intent_detection_slot_filling.html&gt;</cite>._
+An <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> may have a few slots that need to be filled.</p>
+<p>This plugin can assist filling pertaining to certain intent:entity:slot-name association rules.</p>
+<p>Schema for rules looks like:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">"intent_name"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"slot_name"</span><span class="p">:</span><span class="s2">"entity_type"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This can be represented in a yaml format like so:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">slots</span><span class="p">:</span>
+    <span class="nt">faqs</span><span class="p">:</span>
+        <span class="nt">action_slot</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions</span>
+    <span class="nt">report</span><span class="p">:</span>
+        <span class="nt">time_slot</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">time</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">number</span>
+</pre></div>
+</div>
+<p>Let’s run through a practical example. We will create a workflow and preset the output to have expected intent and
+entities.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="gp">In [3]: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+
+<span class="gp">In [4]: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">RuleBasedSlotFillerPlugin</span>
+
+<span class="gp">In [5]: </span><span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
+
+<span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">PeopleEntity</span><span class="p">,</span> <span class="n">NumericalEntity</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># Create rules</span>
+<span class="gp">In [7]: </span><span class="n">rule_string</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="gp">   ...: </span><span class="s2">faqs:</span>
+<span class="gp">   ...: </span><span class="s2">    number_slot: number</span>
+<span class="gp">   ...: </span><span class="s2">count_people:</span>
+<span class="gp">   ...: </span><span class="s2">    number_slot:</span>
+<span class="gp">   ...: </span><span class="s2">    - people</span>
+<span class="gp">   ...: </span><span class="s2">    - number</span>
+<span class="gp">   ...: </span><span class="s2">"""</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [8]: </span><span class="n">slot_rules</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">rule_string</span><span class="p">)</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># Setting up the plugin</span>
+<span class="gp">In [9]: </span><span class="n">slot_filler</span> <span class="o">=</span> <span class="n">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">rules</span><span class="o">=</span><span class="n">slot_rules</span><span class="p">,</span> <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">w</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)()</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># Creating synthetic values.</span>
+<span class="go"># normally you'd get these by running the workflow with models.</span>
+<span class="gp">In [10]: </span><span class="n">intent</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"count_people"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="gp">In [11]: </span><span class="n">number_entity</span> <span class="o">=</span> <span class="n">NumericalEntity</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"number"</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">"start"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">body</span><span class="o">=</span><span class="s1">'2 people'</span><span class="p">,</span> <span class="n">latent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[{</span><span class="s2">"values"</span><span class="p">:</span><span class="mi">2</span><span class="p">}],</span> <span class="n">dim</span><span class="o">=</span><span class="s2">"number"</span><span class="p">)</span>
+
+<span class="gp">In [12]: </span><span class="n">people_entity</span> <span class="o">=</span> <span class="n">PeopleEntity</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"people"</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="s2">"start"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">body</span><span class="o">=</span><span class="s1">'2 people'</span><span class="p">,</span> <span class="n">latent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[{</span><span class="s2">"values"</span><span class="p">:</span><span class="mi">2</span><span class="p">}],</span> <span class="n">dim</span><span class="o">=</span><span class="s2">"people"</span><span class="p">)</span>
+
+<span class="gp">In [13]: </span><span class="n">entities</span> <span class="o">=</span> <span class="p">[</span><span class="n">people_entity</span><span class="p">,</span> <span class="n">number_entity</span><span class="p">]</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># setting up the workflow to use slot_filler</span>
+<span class="gp">In [14]: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[],</span> <span class="n">postprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">slot_filler</span><span class="p">],</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="go"># ---------------------------------------------------------------------------------------------------</span>
+<span class="go"># If you notice the instantiation of RuleBasedSlotFillerPlugin,</span>
+<span class="go"># you will notice the `access` method expects a Tuple of two elements.</span>
+<span class="gp">In [15]: </span><span class="n">workflow</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span>
+
+<span class="gp">In [16]: </span><span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="s2">"2 am"</span><span class="p">)</span>
+<span class="gh">Out[16]: </span><span class="go"></span>
+<span class="go">(Intent(name=count_people, score=1, slots={}),</span>
+<span class="go"> [PeopleEntity(type='people', body='2 people', parsers=[], score=None, alternative_index=None, latent=False, value=None, origin='value', unit=''),</span>
+<span class="go">  NumericalEntity(type='number', body='2 people', parsers=[], score=None, alternative_index=None, latent=False, value=None, origin='value')])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rules</strong> (<em>Rule</em>) – A mapping that defines relationship between an intent, its slots and the entities that fill them.</p></li>
+<li><p><strong>fill_multiple</strong> (<em>bool</em>) – More than one item be allowed to fill a single slot.</p></li>
+<li><p><strong>access</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – Signature for workflow access is <code class="code docutils literal notranslate"><span class="pre">access(workflow)</span> <span class="pre">-&gt;</span> <span class="pre">(Intent,</span> <span class="pre">List[BaseEntity])</span></code></p></li>
+<li><p><strong>mutate</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – Not needed, pass <code class="code docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Irrespective of the entities that are found, only the listed type in the slot shall be present in <cite>values</cite>.</p>
+<dl class="py method">
+<dt id="dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill">
+<code class="sig-name descname"><span class="pre">fill</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/plugins/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility">
+<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/plugins/postprocess/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+</div>
+<div class="section" id="module-dialogy.plugins.postprocess.text.slot_filler">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.postprocess.text.slot_filler" title="Permalink to this headline">¶</a></h2>
+<p id="slot-filler">To handle a single dialog we need a system that can:</p>
+<ol class="arabic simple">
+<li><p>Classify inputs into categories.</p></li>
+<li><p>Extract tokens of additional significance.</p></li>
+<li><p>Check for associations between the two.</p></li>
+</ol>
+<p>A slot-filler does the third bit. Once an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> and a set of
+<a class="reference internal" href="dialogy.types.entity.html#base-entity"><span class="std std-ref">Entity</span></a> are identified, there needs to be an arrangement that
+tells us if any of these are related to each other.</p>
+<p>As per the current design, an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> can contain a number of <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a>. A <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a>
+fills an entity of a pre-defined type.</p>
+<ul class="simple">
+<li><p>A <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a> configured to fill a <a class="reference internal" href="dialogy.types.entity.html#time-entity"><span class="std std-ref">TimeEntity</span></a> will not fill a <a class="reference internal" href="dialogy.types.entity.html#location-entity"><span class="std std-ref">LocationEntity</span></a>.</p></li>
+<li><p>A <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a> will not fill more than one entity even if the type matches, unless <code class="code docutils literal notranslate"><span class="pre">fill_multiple</span></code> is provided.</p></li>
+</ul>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="dialogy.plugins.postprocess.text.voting.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">dialogy.plugins.postprocess.text.voting package</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="dialogy.plugins.postprocess.text.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">dialogy.plugins.postprocess.text package</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/source/dialogy.plugins.postprocess.text.slot_filler.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">dialogy.plugins.postprocess.text.slot_filler package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler">dialogy.plugins.postprocess.text.slot_filler.rule_slot_filler module</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.postprocess.text.slot_filler">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
+</div>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

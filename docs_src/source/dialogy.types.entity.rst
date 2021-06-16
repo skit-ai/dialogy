@@ -20,6 +20,14 @@ dialogy.types.entity.duration\_entity module
    :undoc-members:
    :show-inheritance:
 
+dialogy.types.entity.keyword\_entity module
+-------------------------------------------
+
+.. automodule:: dialogy.types.entity.keyword_entity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.types.entity.location\_entity module
 --------------------------------------------
 

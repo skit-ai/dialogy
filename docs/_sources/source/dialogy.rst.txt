@@ -7,12 +7,10 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   dialogy.base
    dialogy.cli
    dialogy.constants
-   dialogy.parser
-   dialogy.plugin
-   dialogy.postprocess
-   dialogy.preprocess
+   dialogy.plugins
    dialogy.types
    dialogy.utils
    dialogy.workflow
