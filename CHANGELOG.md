@@ -1,3 +1,9 @@
+# 0.7.0
+- [x] add: `KeywordEntity` entity-type class.
+- [x] refactor: `ListEntityPlugin` doesn't need an entity map. Uses `KeywordEntity` instead.
+- [x] refactor: **breaking** All plugins are now available under: `dialogy.plugins`.
+- [x] refactor: `Workflow` can be serialized.
+
 # 0.6.4
 - [x] docs: Better error message for -- `DucklingPlugin` comparison requires reference time to be unix timestamp.
 - [x] fix: `DucklingPlugin` doesn't return duplicate entities when a list of strings is input.
