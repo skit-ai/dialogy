@@ -50,14 +50,17 @@ The aim of this project is to be largest supplier of plugins for SLU application
     to offer flexibility of use.
 """
 from pprint import pformat
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Dict, List
 
-from dialogy import constants
+import attr
+
+from dialogy import constants as const
 from dialogy.utils.logger import dbg, log
 
 PluginFn = Callable[["Workflow"], None]
 
 
+@attr.s
 class Workflow:
     """
     This is a light but fairly flexible workflow for building a machine learning pipeline.
@@ -78,28 +81,37 @@ class Workflow:
     :type debug: bool
     """
 
-    def __init__(
-        self,
-        preprocessors: Optional[List[PluginFn]] = None,
-        postprocessors: Optional[List[PluginFn]] = None,
-        debug: bool = False,
-    ) -> None:
-        """
-        constructor.
-        """
-        self.input: Any = None
-        self.output: Any = None
+    input: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
+    output: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
+    debug = attr.ib(
+        type=bool, default=False, validator=attr.validators.instance_of(bool)
+    )
+    preprocessors = attr.ib(
+        factory=list,
+        type=List[PluginFn],
+        validator=attr.validators.instance_of(list),
+        kw_only=True,
+    )
+    postprocessors = attr.ib(
+        factory=list,
+        type=List[PluginFn],
+        validator=attr.validators.instance_of(list),
+        kw_only=True,
+    )
+    NON_SERIALIZABLE_FIELDS = [const.PREPROCESSORS, const.POSTPROCESSORS, const.DEBUG]
 
-        if not isinstance(preprocessors, list):
-            # Type check to ensure preprocessors are lists.
-            raise TypeError(f"preprocessors={preprocessors} should be a list")
-        self.__preprocessors = preprocessors
+    def __attrs_post_init__(self) -> None:
+        """
+        Post init hook.
+        """
+        self.set_io()
 
-        if not isinstance(postprocessors, list):
-            # Type check to ensure postprocessors are lists.
-            raise TypeError(f"preprocessors={postprocessors} should be a list")
-        self.__postprocessors = postprocessors
-        self.debug = debug
+    def set_io(self) -> None:
+        """
+        Use this method to keep workflow-io in the same format as expected.
+        """
+        self.input: Dict[str, Any] = {}
+        self.output: Dict[str, Any] = {}
 
     def load_model(self) -> None:
         """
@@ -130,7 +142,7 @@ class Workflow:
             `TypeError`: If any element in processors list is not a Callable.
         """
         for processor in processors:
-            if not isinstance(processor, Callable):  # type: ignore
+            if not callable(processor):
                 raise TypeError(f"{processor_type}={processor} is not a callable")
 
             # logs are available only when debug=True during class initialization
@@ -165,7 +177,7 @@ class Workflow:
 
         Uses preprocessors over the `update` method, expect input to change.
         """
-        self.update(constants.PREPROCESSORS, self.__preprocessors)
+        self.update(const.PREPROCESSORS, self.preprocessors)
 
     def postprocess(self) -> None:
         """
@@ -173,7 +185,7 @@ class Workflow:
 
         Uses postprocessors over the `update` method, expect output to change.
         """
-        self.update(constants.POSTPROCESSORS, self.__postprocessors)
+        self.update(const.POSTPROCESSORS, self.postprocessors)
 
     def inference(self) -> None:
         """
@@ -216,5 +228,16 @@ class Workflow:
         """
         Reset :code:`workflow.input` and :code:`workflow.output`.
         """
-        self.input = None
-        self.output = None
+        self.set_io()
+
+    def json(self) -> Dict[str, Any]:
+        """
+        Represent the workflow as a python dict.
+
+        :rtype: Dict[str, Any]
+        """
+        return attr.asdict(
+            self,
+            filter=lambda attribute, _: attribute.name
+            not in self.NON_SERIALIZABLE_FIELDS,
+        )

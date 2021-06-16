@@ -8,7 +8,7 @@ def test_workflow_get_input() -> None:
     Basic initialization.
     """
     workflow = Workflow(preprocessors=[], postprocessors=[])
-    assert workflow.input is None, "workflow.get_input() is not None."
+    assert workflow.input == {}, "workflow.get_input() is a dict()."
 
 
 def test_workflow_set_output() -> None:
@@ -133,5 +133,21 @@ def test_workflow_flush() -> None:
     assert workflow.input == 20, "workflow.get_input() should be 20."
     assert workflow.output == 10, "workflow.get_output() should be 10."
     workflow.flush()
-    assert workflow.input == None, "workflow.get_input() should be None."
-    assert workflow.output == None, "workflow.get_output() should be None."
+    assert workflow.input == {}, "workflow.get_input() should be dict()."
+    assert workflow.output == {}, "workflow.get_output() should be dict()."
+
+
+def test_workflow_json() -> None:
+    """
+    Test if the workflow can be made a python dictionary.
+    """
+
+    def mock_postproc(w) -> None:
+        w.output = 10
+
+    def mock_preproc(w) -> None:
+        w.input = 20
+
+    workflow = Workflow(preprocessors=[mock_preproc], postprocessors=[mock_postproc])
+    workflow.run(1)
+    assert workflow.json() == {"input": 20, "output": 10}
