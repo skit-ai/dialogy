@@ -98,7 +98,7 @@ class VotePlugin(Plugin):
 
     .. ipython:: python
 
-        from dialogy.postprocess.text.voting.intent_voting import VotePlugin
+        from dialogy.plugins import VotePlugin
         from dialogy.workflow import Workflow
         from dialogy.types import Intent
 

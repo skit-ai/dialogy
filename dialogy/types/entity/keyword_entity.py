@@ -17,8 +17,8 @@ from dialogy.types.entity import BaseEntity
 @attr.s
 class KeywordEntity(BaseEntity):
     """
-    Use this type for handling locations available with reference-ids.
-    This is not meant for (latitude, longitude) values, those will be covered in GeoPointEntity.
+    Use this type for handling keyword based extractions where presence of specific tokens in the ASR
+    is enough for detection.
     """
 
     _meta = attr.ib(type=Dict[str, str], default=attr.Factory(dict))

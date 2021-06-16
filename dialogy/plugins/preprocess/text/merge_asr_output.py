@@ -43,7 +43,7 @@ def merge_asr_output(utterances: Any) -> str:
 
     .. ipython:: python
 
-        from dialogy.preprocess import merge_asr_output
+        from dialogy.plugins.preprocess.text.merge_asr_output import merge_asr_output
 
         utterances = ["This is a sentence", "That is a sentence"]
         merge_asr_output(utterances)

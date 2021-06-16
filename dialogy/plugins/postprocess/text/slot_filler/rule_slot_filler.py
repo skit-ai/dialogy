@@ -51,7 +51,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         import yaml
         from pprint import pprint
         from dialogy.workflow import Workflow
-        from dialogy.postprocess.text.slot_filler.rule_slot_filler import RuleBasedSlotFillerPlugin
+        from dialogy.plugins import RuleBasedSlotFillerPlugin
         from dialogy.types.intent import Intent
         from dialogy.types.entity import PeopleEntity, NumericalEntity
 
