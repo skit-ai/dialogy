@@ -396,7 +396,10 @@ class DucklingPlugin(EntityExtractor):
             for (alternative_index, entities) in enumerate(list_of_entities):
                 shaped_entities.append(self._reshape(entities, alternative_index))
 
-            filtered_entities = self.apply_filters(py_.flatten(shaped_entities))
-            return EntityExtractor.entity_consensus(filtered_entities, input_size)
+            shaped_entities_flattened = py_.flatten(shaped_entities)
+            filtered_entities = EntityExtractor.entity_consensus(
+                shaped_entities_flattened, input_size
+            )
+            return self.apply_filters(py_.flatten(filtered_entities))
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error
