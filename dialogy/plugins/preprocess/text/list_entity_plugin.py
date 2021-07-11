@@ -201,11 +201,8 @@ class ListEntityPlugin(EntityExtractor):
         log.debug("Parsed entities")
         log.debug(entities)
 
-        shaped_entities = py_.flatten(entities)
-        filtered_entities = EntityExtractor.entity_consensus(
-            shaped_entities, len(transcripts)
-        )
-        return self.apply_filters(py_.flatten(filtered_entities))
+        aggregated_entities = self.entity_consensus(entities, len(transcripts))
+        return self.apply_filters(aggregated_entities)
 
     @dbg(log)
     def utility(self, *args: Any) -> Any:
