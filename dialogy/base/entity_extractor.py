@@ -79,18 +79,17 @@ class EntityExtractor(Plugin):
 
     def apply_filters(self, entities: List[BaseEntity]) -> List[BaseEntity]:
         """
-        [summary]
+        Conditionally remove entities.
 
-        :param entities: [description]
+        :param entities: A list of entities.
         :type entities: List[BaseEntity]
-        :return: [description]
+        :return: A list of entities. This can be at most the same length as `entities`.
         :rtype: List[BaseEntity]
         """
         return self.remove_low_scoring_entities(entities)
 
-    @staticmethod
     def entity_consensus(
-        entities: List[BaseEntity], input_size: int
+        self, entities: List[BaseEntity], input_size: int
     ) -> List[BaseEntity]:
         """
         Combine entities by type and value.
@@ -108,4 +107,7 @@ class EntityExtractor(Plugin):
         entity_type_value_group = py_.group_by(
             entities, lambda entity: (entity.type, entity.get_value())
         )
-        return EntityExtractor.aggregate_entities(entity_type_value_group, input_size)
+        aggregate_entities = EntityExtractor.aggregate_entities(
+            entity_type_value_group, input_size
+        )
+        return self.apply_filters(aggregate_entities)
