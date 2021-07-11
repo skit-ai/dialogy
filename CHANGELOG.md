@@ -1,3 +1,8 @@
+# 0.7.1
+- [x] [fix](https://github.com/Vernacular-ai/dialogy/issues/60): Entity scoring within `EntityExtractor` and `DucklingPlugin`.
+- [x] [fix](https://github.com/Vernacular-ai/dialogy/issues/58): CurrencyEntity added to operate on `amount-of-money` dimension. 
+- [x] add: TimeIntervalEntities sometimes may contain a hybrid structure that resembles some values as `TimeEntities`.
+
 # 0.7.0
 - [x] add: `KeywordEntity` entity-type class.
 - [x] refactor: `ListEntityPlugin` doesn't need an entity map. Uses `KeywordEntity` instead.
