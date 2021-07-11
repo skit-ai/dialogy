@@ -261,7 +261,9 @@ class DucklingPlugin(EntityExtractor):
         :rtype: List[BaseEntity]
         """
         if self.datetime_filters:
-            entities = self.select_datetime(entities, self.datetime_filters)
+            return self.select_datetime(entities, self.datetime_filters)
+
+        # We call the filters that exist on the EntityExtractor class like threshold filtering.
         return super().apply_filters(entities)
 
     @dbg(log)
@@ -397,9 +399,9 @@ class DucklingPlugin(EntityExtractor):
                 shaped_entities.append(self._reshape(entities, alternative_index))
 
             shaped_entities_flattened = py_.flatten(shaped_entities)
-            filtered_entities = EntityExtractor.entity_consensus(
+            aggregate_entities = self.entity_consensus(
                 shaped_entities_flattened, input_size
             )
-            return self.apply_filters(py_.flatten(filtered_entities))
+            return self.apply_filters(aggregate_entities)
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error
