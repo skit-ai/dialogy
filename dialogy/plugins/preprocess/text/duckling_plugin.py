@@ -246,7 +246,7 @@ class DucklingPlugin(EntityExtractor):
 
     def apply_filters(self, entities: List[BaseEntity]) -> List[BaseEntity]:
         """
-        Filter entities by configurable criteria.
+        Conditionally remove entities.
 
         The utility of this method is tracked here:
         https://github.com/Vernacular-ai/dialogy/issues/42
