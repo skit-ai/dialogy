@@ -718,3 +718,19 @@
   {"entity": "TimeEntity"}, 
   {"entity": "TimeEntity"}, 
   {"entity": "TimeEntity"}]
+
+- description: "Testing currency entity."
+  input: "300 dollars"
+  duckling:
+    locale: "en_IN"
+    dimensions: ["time", "date", "amount-of-money"]
+    timezone: "Asia/Kolkata"
+    debug: False
+  mock_entity_json: [{'body': '300 dollars',
+  'start': 0,
+  'value': {'value': 300, 'type': 'value', 'unit': '$'},
+  'end': 11,
+  'dim': 'amount-of-money',
+  'latent': False}]
+  reference_time: 1622640071000
+  expected: [{"entity": "CurrencyEntity"}]
