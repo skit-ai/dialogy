@@ -34,16 +34,15 @@ class TimeIntervalEntity(TimeEntity):
     @classmethod
     def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
         dict_ = super(TimeIntervalEntity, cls).reshape(dict_)
-        if all(
-            value[const.EntityKeys.TYPE] == const.EntityKeys.INTERVAL
-            for value in dict_[const.EntityKeys.VALUES]
-        ):
-            date_range = dict_[const.EntityKeys.VALUES][0].get(
-                const.EntityKeys.FROM
-            ) or dict_[const.EntityKeys.VALUES][0].get(const.EntityKeys.TO)
-            if not date_range:
-                raise TypeError(f"{dict_} does not match TimeIntervalEntity format")
-            dict_[const.EntityKeys.GRAIN] = date_range[const.EntityKeys.GRAIN]
+        for value in dict_[const.EntityKeys.VALUES]:
+            if value[const.EntityKeys.TYPE] == const.EntityKeys.INTERVAL:
+                date_range = dict_[const.EntityKeys.VALUES][0].get(
+                    const.EntityKeys.FROM
+                ) or dict_[const.EntityKeys.VALUES][0].get(const.EntityKeys.TO)
+                if not date_range:
+                    raise TypeError(f"{dict_} does not match TimeIntervalEntity format")
+                dict_[const.EntityKeys.GRAIN] = date_range[const.EntityKeys.GRAIN]
+                break
         return dict_
 
     def get_value(self, reference: Any = None) -> Any:
@@ -76,6 +75,8 @@ class TimeIntervalEntity(TimeEntity):
 
         if date_dict:
             return datetime.fromisoformat(date_dict.get(const.EntityKeys.VALUE))
+        elif reference.get(const.EntityKeys.VALUE):
+            return datetime.fromisoformat(reference.get(const.EntityKeys.VALUE))
         else:
             raise KeyError(
                 f"Expected at least 1 of `from` or `to` in {self.values} for {self}"
