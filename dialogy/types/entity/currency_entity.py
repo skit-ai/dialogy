@@ -28,9 +28,8 @@ class CurrencyEntity(NumericalEntity):
         - `dim` dimension of the entity from duckling parser
         - `type` is the type of the entity which can have values in ["value", "interval"]
     """
-    unit = attr.ib(
-        type=str, validator=attr.validators.instance_of(str), kw_only=True
-    )
+
+    unit = attr.ib(type=str, validator=attr.validators.instance_of(str), kw_only=True)
 
     @classmethod
     def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
