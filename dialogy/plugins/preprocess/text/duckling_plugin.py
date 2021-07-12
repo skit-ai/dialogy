@@ -341,14 +341,20 @@ class DucklingPlugin(EntityExtractor):
         :rtype: List[Dict[str, Any]]
         """
         body = self.__create_req_body(text, reference_time, locale)
-        response = requests.post(
-            self.url, data=body, headers=self.headers, timeout=self.timeout
-        )
 
-        if response.status_code == 200:
-            # The API call was successful, expect the following to contain entities.
-            # A list of dicts or an empty list.
-            return response.json()
+        try:
+            response = requests.post(
+                self.url, data=body, headers=self.headers, timeout=self.timeout
+            )
+
+            if response.status_code == 200:
+                # The API call was successful, expect the following to contain entities.
+                # A list of dicts or an empty list.
+                return response.json()
+        except requests.exceptions.Timeout as timeout_exception:
+            log.error("Duckling timed out: %s", timeout_exception)
+            log.error(pformat(body))
+            return []
 
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
@@ -389,9 +395,10 @@ class DucklingPlugin(EntityExtractor):
             ):
                 input_size = len(input_)
                 for text in input_:
-                    list_of_entities.append(
-                        self._get_entities(text, locale, reference_time=reference_time)
+                    entities = self._get_entities(
+                        text, locale, reference_time=reference_time
                     )
+                    list_of_entities.append(entities)
             else:
                 raise TypeError(f"Expected {input_} to be a List[str] or str.")
 
