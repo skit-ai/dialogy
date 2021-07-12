@@ -1,3 +1,7 @@
+# 0.7.2 [Unreleased]
+- [x] add: Template migration `dialogy update <project>`.
+- [x] add: `DucklingPlugin` tracks network issues and optionally returns entities collected till failure.
+
 # 0.7.1
 - [x] [fix](https://github.com/Vernacular-ai/dialogy/issues/60): Entity scoring within `EntityExtractor` and `DucklingPlugin`.
 - [x] [fix](https://github.com/Vernacular-ai/dialogy/issues/58): CurrencyEntity added to operate on `amount-of-money` dimension. 
