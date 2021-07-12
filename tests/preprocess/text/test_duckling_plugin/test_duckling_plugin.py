@@ -1,4 +1,5 @@
 import importlib
+import time
 
 import httpretty
 import pytest
@@ -117,6 +118,46 @@ def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
         entity_A,
         entity_B,
     ]
+
+
+@httpretty.activate
+def test_duckling_timeout() -> None:
+    """
+    [summary]
+
+    :return: [description]
+    :rtype: [type]
+    """
+    locale = "en_IN"
+    wait_time = 0.1
+
+    def raise_timeout(_, __, headers):
+        time.sleep(wait_time)
+        return 200, headers, "received"
+
+    def access(workflow):
+        return workflow.input, None, locale
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+
+    duckling_plugin = DucklingPlugin(
+        locale=locale,
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        access=access,
+        mutate=mutate,
+        threshold=0.2,
+        timeout=0.01,
+    )
+
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=raise_timeout
+    )
+
+    workflow = Workflow(preprocessors=[duckling_plugin()], postprocessors=[])
+    workflow.run("test")
+    assert workflow.output["entities"] == []
 
 
 @httpretty.activate
