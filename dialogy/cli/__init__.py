@@ -11,8 +11,10 @@ This module exposes a command line utility to create project scaffolding. This c
     make lint
 
 Usage:
-  __init__.py create <project> <template> [--namespace=<namespace>] [--vcs=<vcs>]
   __init__.py create <project>
+  __init__.py create <project> <template> [--namespace=<namespace>] [--vcs=<vcs>]
+  __init__.py update <project>
+  __init__.py update <project> <template> [--namespace=<namespace>] [--vcs=<vcs>]
 
 Options:
 
@@ -45,11 +47,12 @@ from dialogy.cli.project import canonicalize_project_name
 from dialogy.utils.logger import log
 
 
-def new_project(
+def project(
     destination_path: str,
     template: str = "dialogy-template-simple-transformers",
     namespace: str = "vernacular-ai",
     vcs_ref: Optional[str] = None,
+    is_update: bool = False,
 ) -> None:
     """
     Create a new project using scaffolding from an existing template.
@@ -72,7 +75,7 @@ def new_project(
     if not os.path.exists(destination_path):
         os.mkdir(destination_path)
 
-    if os.listdir(destination_path):
+    if os.listdir(destination_path) and not is_update:
         log.error("There are files on the destination path. Aborting !")
         return None
 
@@ -80,9 +83,20 @@ def new_project(
     if vcs_ref is not None:
         if vcs_ref == "TAG":
             vcs_ref = None
-        copy(template, destination_path, vcs_ref=vcs_ref)
+        copy(
+            template,
+            destination_path,
+            vcs_ref=vcs_ref,
+            only_diff=is_update,
+            force=is_update,
+        )
     else:
-        copy(f"gh:{namespace}/{template}.git", destination_path)
+        copy(
+            f"gh:{namespace}/{template}.git",
+            destination_path,
+            only_diff=is_update,
+            force=is_update,
+        )
 
     return None
 
@@ -96,6 +110,7 @@ def main() -> None:
     template_name = args["<template>"]
     namespace = args["--namespace"]
     vcs_ref = args["--vcs"]
+    is_update = args["update"]
 
     if vcs_ref not in [None, "TAG", "HEAD"]:
         raise ValueError(
@@ -104,6 +119,10 @@ def main() -> None:
         )
 
     template_name, namespace = canonicalize_project_name(template_name, namespace)
-    new_project(
-        project_name, template=template_name, namespace=namespace, vcs_ref=vcs_ref
+    project(
+        project_name,
+        template=template_name,
+        namespace=namespace,
+        vcs_ref=vcs_ref,
+        is_update=is_update,
     )
