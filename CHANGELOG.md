@@ -1,4 +1,4 @@
-# 0.7.2 [Unreleased]
+# 0.7.2
 - [x] add: Template migration `dialogy update <project>`.
 - [x] add: `DucklingPlugin` tracks network issues and optionally returns entities collected till failure.
 
