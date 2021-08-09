@@ -46,8 +46,11 @@ def test_filter_asr_output() -> None:
         ]
     ]
 
-    assert filter_asr_output(asr_output, 1.5, vectorizer, classifier) == (asr_output, [1,1])
-    assert filter_asr_output(asr_output, 0.5, vectorizer, classifier) == ([[]], [1,1])
+    assert filter_asr_output(asr_output, 1.5, vectorizer, classifier) == (
+        asr_output,
+        [1, 1],
+    )
+    assert filter_asr_output(asr_output, 0.5, vectorizer, classifier) == ([[]], [1, 1])
 
     asr_output = [
         [
@@ -59,5 +62,11 @@ def test_filter_asr_output() -> None:
             {"transcript": "yes", "am_score": 300, "lm_score": 400},
         ],
     ]
-    assert filter_asr_output(asr_output, 1.5, vectorizer, classifier) == (asr_output, [1,1,1,1])
-    assert filter_asr_output(asr_output, 0.5, vectorizer, classifier) == ([[], []], [1,1,1,1])
+    assert filter_asr_output(asr_output, 1.5, vectorizer, classifier) == (
+        asr_output,
+        [1, 1, 1, 1],
+    )
+    assert filter_asr_output(asr_output, 0.5, vectorizer, classifier) == (
+        [[], []],
+        [1, 1, 1, 1],
+    )
