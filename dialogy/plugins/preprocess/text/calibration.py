@@ -40,7 +40,7 @@ def filter_asr_output(
 
     This functions returns the good alternatives in the same format as the input.
     The good alternatives are decided if the pWER (predicted WER) is less than
-    `threshold`.
+    `threshold`. Also returns the list of predicted wers.
 
     .. ipython:: python
 
@@ -55,17 +55,19 @@ def filter_asr_output(
         1. :code:`List[List[Dict[str, Any]]]`
 
     :type utterances: List[List[Dict[str, Any]]]
-    :return: Good alternatives.
-    :rtype: List[List[Dict[str, Any]]]
+    :return: Tuple(Good alternatives, predicted wers)
+    :rtype: Tuple[List[List[Dict[str, Any]]], List]
     :raises: `AssertionError` if utterance isn't in the desired format.
     """
 
     valid_alternatives = []
+    pred_wers = []
     for utterance in utterances:
         res = []
         for alternative in utterance:
             pred_wer = predict_alternative(alternative, vectorizer, classifier)
+            pred_wers.append(pred_wer)
             if pred_wer < threshold:
                 res.append(alternative)
         valid_alternatives.append(res)
-    return valid_alternatives
+    return valid_alternatives, pred_wers
