@@ -1,4 +1,4 @@
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Tuple
 from dialogy import constants
 import math
 import numpy as np
@@ -32,7 +32,7 @@ def filter_asr_output(
     threshold: float,
     vectorizer: Any,
     classifier: Any,
-) -> List[List[Dict[str, Any]]]:
+) -> Tuple[List[List[Dict[str, Any]]], List[float]]:
     """
     .. _filter_asr_output:
 
@@ -55,8 +55,8 @@ def filter_asr_output(
         1. :code:`List[List[Dict[str, Any]]]`
 
     :type utterances: List[List[Dict[str, Any]]]
-    :return: Tuple(Good alternatives, predicted wers)
-    :rtype: Tuple[List[List[Dict[str, Any]]], List]
+    :return: Good alternatives, predicted wers
+    :rtype: Tuple[List[List[Dict[str, Any]]], List[float]]
     :raises: `AssertionError` if utterance isn't in the desired format.
     """
 
