@@ -1,7 +1,9 @@
-from typing import Any, List, Dict, Tuple
-from dialogy import constants
 import math
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
+
+from dialogy import constants
 
 
 def predict_alternative(

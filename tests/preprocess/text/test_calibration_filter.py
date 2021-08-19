@@ -1,9 +1,10 @@
-from dialogy.plugins.preprocess.text.calibration import (
-    predict_alternative,
-    filter_asr_output,
-)
 import numpy as np
 from scipy import sparse
+
+from dialogy.plugins.preprocess.text.calibration import (
+    filter_asr_output,
+    predict_alternative,
+)
 
 
 class MyVectorizer(object):
