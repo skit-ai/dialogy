@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dialogy"
-version = "0.7.2"
+version = "0.7.3"
 description = "Language understanding for human dialog."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 
