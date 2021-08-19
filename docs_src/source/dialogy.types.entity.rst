@@ -12,6 +12,14 @@ dialogy.types.entity.base\_entity module
    :undoc-members:
    :show-inheritance:
 
+dialogy.types.entity.currency\_entity module
+--------------------------------------------
+
+.. automodule:: dialogy.types.entity.currency_entity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.types.entity.duration\_entity module
 --------------------------------------------
 
