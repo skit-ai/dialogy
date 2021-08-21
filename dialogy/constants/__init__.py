@@ -92,3 +92,5 @@ class SIGNAL:
 KEYWORD = "keyword"
 REGEX = "regex"
 SPACY = "spacy"
+PWER = "pWER"
+ALTERNATIVES = "alternatives"
