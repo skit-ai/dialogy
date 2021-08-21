@@ -1,3 +1,9 @@
+# 0.7.4
+- [x] update: WER calibration as a plugin.
+
+# 0.7.3
+- [x] add: WER calibration. This plugin can eliminate ASR alternatives if acoustic model and language model scores are available.
+
 # 0.7.2
 - [x] add: Template migration `dialogy update <project>`.
 - [x] add: `DucklingPlugin` tracks network issues and optionally returns entities collected till failure.
