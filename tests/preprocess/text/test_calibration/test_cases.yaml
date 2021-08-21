@@ -1,0 +1,59 @@
+- description: "Return input as-is if models not found"
+  input: &input1 
+    -
+      - transcript: "hello world"
+        am_score: 200
+        lm_score: 100
+      - transcript: "yes"
+        am_score: 300
+        lm_score": 400
+  lang: "en"
+  config: {
+    "en": {
+      "vectorizer_path": None,
+      "classifier_path": None,
+      "threshold": 0.5
+    }
+  }
+  expected: 
+    alternatives: *input1
+    pWER: [0.0, 0.0]
+
+
+- description: "Run mock vectorizer and classifier"
+  input: &input2
+    - 
+      - transcript: "hello world"
+        am_score: 200
+        lm_score: 100
+      - transcript: "yes"
+        am_score: 300
+        lm_score: 400
+    -
+      - transcript: "hello world"
+        am_score: 200
+        lm_score: 100
+      - transcript: "yes"
+        am_score: 300
+        lm_score: 400
+  lang: "en"
+  threshold: 1.5
+  mock: true
+  expected: 
+    alternatives: *input2
+    pWER: [1.0, 1.0, 1.0, 1.0]
+
+
+- description: "Invalid input checks"
+  input: [[]]
+  lang: "en"
+  config: {
+    "en": {
+      "vectorizer_path": None,
+      "classifier_path": None,
+      "threshold": 0.5
+    }
+  }
+  expected: 
+    alternatives: [[]]
+    pWER: []
