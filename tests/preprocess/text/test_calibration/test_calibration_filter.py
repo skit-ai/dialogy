@@ -6,7 +6,6 @@ from dialogy import constants as const
 from dialogy.plugins.preprocess.text.calibration import (
     WERCalibrationConfig,
     WERCalibrationPlugin,
-    predict_alternative,
 )
 from dialogy.workflow.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
