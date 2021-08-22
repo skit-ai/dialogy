@@ -97,11 +97,55 @@ class WERCalibrationPlugin(Plugin):
 
         .. ipython:: python
 
-            from dialogy.plugins.preprocess.text.calibration import filter_asr_output
+            import numpy as np
+            from scipy import sparse
+            from dialogy.plugins import WERCalibrationPlugin
+            from dialogy.plugins.preprocess.text.calibration import WERCalibrationConfig
+            from dialogy.workflow.workflow import Workflow
+            from dialogy import constants as const
 
-            utterances = [[{"transcript": "This is a sentence", "am_score":230, "lm_score":100}, \
-                                {"transcript": "This is another sentence", "am_score":230, "lm_score":100}]]
-            filter_asr_output(utterances)
+            utterances = [[{"transcript": "This is a sentence", "am_score":230, "lm_score":50},
+                                    {"transcript": "This is another sentence", "am_score":300, "lm_score":400}]]
+            lang = "en"
+
+            # This is just to mock the vectorizer and classifier
+            # We don't need to use them in a realistic cases
+            # In a realistic scenario we need to load
+            # these from pickle files
+            #
+            # and...
+            #
+            # the ideal config object looks like:
+            # config = {
+            #    "en": {
+            #        "threshold": 0.5,
+            #        "vectorizer_path": "path/to/vectorizer.pkl",
+            #        "classifier_path": "path/to/classifier.pkl",
+            #    }
+            # }
+            # but since we have items mocked, we will be using the mocks directly
+
+            class MyClassifier(object):
+                def predict(self, X):
+                    return np.array([1])
+            classifier = MyClassifier()
+
+            class MyVectorizer(object):
+                def transform(self, text):
+                    assert isinstance(text, list)
+                    return sparse.csr_matrix(np.array([1]))
+            vectorizer = MyVectorizer()
+            def mutate(workflow, value):
+                workflow.input = value[const.ALTERNATIVES]
+            config = {}
+            plugin = WERCalibrationPlugin(config, access=lambda _: (utterances, lang), mutate=mutate)
+            plugin.config[lang] = WERCalibrationConfig(
+                vectorizer=vectorizer, classifier=classifier, threshold=1.5
+            )
+            workflow = Workflow(preprocessors=[plugin()])
+            workflow.run(input_=utterances)
+            workflow.input
+
 
         :param utterances: A structure representing ASR output. We support only:
 
