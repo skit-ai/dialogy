@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types package" href="dialogy.types.html" /><link rel="prev" title="dialogy.plugins.preprocess package" href="dialogy.plugins.preprocess.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugins.preprocess.text package - dialogy 0.7.0 documentation</title>
+        <title>dialogy.plugins.preprocess.text package - dialogy 0.7.4 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.7.4 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.7.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.7.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -182,6 +182,124 @@
 <h1>dialogy.plugins.preprocess.text package<a class="headerlink" href="#dialogy-plugins-preprocess-text-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dialogy.plugins.preprocess.text.calibration">
+<span id="dialogy-plugins-preprocess-text-calibration-module"></span><h2>dialogy.plugins.preprocess.text.calibration module<a class="headerlink" href="#module-dialogy.plugins.preprocess.text.calibration" title="Permalink to this headline">¶</a></h2>
+<p id="calibration-plugin">This module provides a plugin to calibrate the ASR output. We look for Acoustic model and Language model scores of the ASR
+and predict the quality of the transcripts. Poor transcripts are filtered out. This plugin ships a trainable component.</p>
+<dl class="py class">
+<dt id="dialogy.plugins.preprocess.text.calibration.WERCalibrationConfig">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugins.preprocess.text.calibration.</span></code><code class="sig-name descname"><span class="pre">WERCalibrationConfig</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vectorizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vectorizer_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifier_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/preprocess/text/calibration.html#WERCalibrationConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.preprocess.text.calibration.WERCalibrationConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Config object for WERCalibrationPlugin.</p>
+</dd></dl>
+<dl class="py class">
+<dt id="dialogy.plugins.preprocess.text.calibration.WERCalibrationPlugin">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugins.preprocess.text.calibration.</span></code><code class="sig-name descname"><span class="pre">WERCalibrationPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/preprocess/text/calibration.html#WERCalibrationPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.preprocess.text.calibration.WERCalibrationPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.base.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
+<p id="wercalibrationplugin">Plugin to calibrate the ASR output.</p>
+<dl class="py method">
+<dt id="dialogy.plugins.preprocess.text.calibration.WERCalibrationPlugin.filter_asr_output">
+<code class="sig-name descname"><span class="pre">filter_asr_output</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">utterances</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> → <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/plugins/preprocess/text/calibration.html#WERCalibrationPlugin.filter_asr_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.preprocess.text.calibration.WERCalibrationPlugin.filter_asr_output" title="Permalink to this definition">¶</a></dt>
+<dd><p id="filter-asr-output">Filter ASR output to return alternatives considered safe for classification.</p>
+<p>The good alternatives are decided by the pWER (predicted WER). If the pWER is less than
+the <cite>threshold</cite>.
+Also returns the list of predicted wers.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
+
+<span class="gp">In [3]: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">WERCalibrationPlugin</span>
+
+<span class="gp">In [4]: </span><span class="kn">from</span> <span class="nn">dialogy.plugins.preprocess.text.calibration</span> <span class="kn">import</span> <span class="n">WERCalibrationConfig</span>
+
+<span class="gp">In [5]: </span><span class="kn">from</span> <span class="nn">dialogy.workflow.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+
+<span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+
+<span class="gp">In [7]: </span><span class="n">utterances</span> <span class="o">=</span> <span class="p">[[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"This is a sentence"</span><span class="p">,</span> <span class="s2">"am_score"</span><span class="p">:</span><span class="mi">230</span><span class="p">,</span> <span class="s2">"lm_score"</span><span class="p">:</span><span class="mi">50</span><span class="p">},</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"This is another sentence"</span><span class="p">,</span> <span class="s2">"am_score"</span><span class="p">:</span><span class="mi">300</span><span class="p">,</span> <span class="s2">"lm_score"</span><span class="p">:</span><span class="mi">400</span><span class="p">}]]</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [8]: </span><span class="n">lang</span> <span class="o">=</span> <span class="s2">"en"</span>
+
+<span class="go"># This is just to mock the vectorizer and classifier</span>
+<span class="go"># We don't need to use them in a realistic cases</span>
+<span class="go"># In a realistic scenario we need to load</span>
+<span class="go"># these from pickle files</span>
+<span class="go">#</span>
+<span class="go"># and...</span>
+<span class="go">#</span>
+<span class="go"># the ideal config object looks like:</span>
+<span class="go"># config = {</span>
+<span class="go">#    "en": {</span>
+<span class="go">#        "threshold": 0.5,</span>
+<span class="go">#        "vectorizer_path": "path/to/vectorizer.pkl",</span>
+<span class="go">#        "classifier_path": "path/to/classifier.pkl",</span>
+<span class="go">#    }</span>
+<span class="go"># }</span>
+<span class="go"># but since we have items mocked, we will be using the mocks directly</span>
+<span class="gp">In [9]: </span><span class="k">class</span> <span class="nc">MyClassifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [10]: </span><span class="n">classifier</span> <span class="o">=</span> <span class="n">MyClassifier</span><span class="p">()</span>
+
+<span class="gp">In [11]: </span><span class="k">class</span> <span class="nc">MyVectorizer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="gp">   ....: </span>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="gp">   ....: </span>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+<span class="gp">   ....: </span>        <span class="k">return</span> <span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]))</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [12]: </span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">MyVectorizer</span><span class="p">()</span>
+
+<span class="gp">In [13]: </span><span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="gp">   ....: </span>    <span class="n">workflow</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVES</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">   ....: </span><span class="n">plugin</span> <span class="o">=</span> <span class="n">WERCalibrationPlugin</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="p">(</span><span class="n">utterances</span><span class="p">,</span> <span class="n">lang</span><span class="p">),</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">plugin</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">WERCalibrationConfig</span><span class="p">(</span>
+<span class="gp">   ....: </span>    <span class="n">vectorizer</span><span class="o">=</span><span class="n">vectorizer</span><span class="p">,</span> <span class="n">classifier</span><span class="o">=</span><span class="n">classifier</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">1.5</span>
+<span class="gp">   ....: </span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">plugin</span><span class="p">()])</span>
+<span class="gp">   ....: </span><span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="n">utterances</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">workflow</span><span class="o">.</span><span class="n">input</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[13]: </span><span class="go"></span>
+<span class="go">[[{'transcript': 'This is a sentence', 'am_score': 230, 'lm_score': 50},</span>
+<span class="go">  {'transcript': 'This is another sentence',</span>
+<span class="go">   'am_score': 300,</span>
+<span class="go">   'lm_score': 400}]]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>utterances</strong> (<em>List</em><em>[</em><em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>) – <p>A structure representing ASR output. We support only:</p>
+<ol class="arabic simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">List[List[Dict[str,</span> <span class="pre">Any]]]</span></code></p></li>
+</ol>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Good alternatives, predicted wers</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[List[List[Dict[str, Any]]], List[float]]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><cite>AssertionError</cite> if utterance isn’t in the desired format.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.preprocess.text.calibration.WERCalibrationPlugin.utility">
+<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/plugins/preprocess/text/calibration.html#WERCalibrationPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.preprocess.text.calibration.WERCalibrationPlugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.plugins.preprocess.text.calibration.predict_alternative">
+<code class="sig-prename descclassname"><span class="pre">dialogy.plugins.preprocess.text.calibration.</span></code><code class="sig-name descname"><span class="pre">predict_alternative</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alternative</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vectorizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">float</span><a class="reference internal" href="../_modules/dialogy/plugins/preprocess/text/calibration.html#predict_alternative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.preprocess.text.calibration.predict_alternative" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 </div>
 <div class="section" id="module-dialogy.plugins.preprocess.text.duckling_plugin">
 <span id="dialogy-plugins-preprocess-text-duckling-plugin-module"></span><h2>dialogy.plugins.preprocess.text.duckling_plugin module<a class="headerlink" href="#module-dialogy.plugins.preprocess.text.duckling_plugin" title="Permalink to this headline">¶</a></h2>
@@ -809,6 +927,7 @@ Defaults to <code class="code docutils literal notranslate"><span class="pre">co
             <ul>
 <li><a class="reference internal" href="#">dialogy.plugins.preprocess.text package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.preprocess.text.calibration">dialogy.plugins.preprocess.text.calibration module</a></li>
 <li><a class="reference internal" href="#module-dialogy.plugins.preprocess.text.duckling_plugin">dialogy.plugins.preprocess.text.duckling_plugin module</a></li>
 <li><a class="reference internal" href="#module-dialogy.plugins.preprocess.text.list_entity_plugin">dialogy.plugins.preprocess.text.list_entity_plugin module</a></li>
 <li><a class="reference internal" href="#module-dialogy.plugins.preprocess.text.merge_asr_output">dialogy.plugins.preprocess.text.merge_asr_output module</a></li>

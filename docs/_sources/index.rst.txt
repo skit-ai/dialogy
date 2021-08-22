@@ -35,7 +35,8 @@ Sections 📄
       1. Preprocessors
 
          1. :ref:`DucklingPlugin<duckling_plugin>`
-         2. :ref:`merge_asr_output<merge_asr_output>`
+         2. :ref:`MergeASROutput<merge_asr_output>`
+         3. :ref:`WERCalibrationPlugin<calibration_plugin>`
 
       2. Postprocessors
 

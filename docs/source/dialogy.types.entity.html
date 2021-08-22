@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.intent package" href="dialogy.types.intent.html" /><link rel="prev" title="dialogy.types package" href="dialogy.types.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.types.entity package - dialogy 0.7.0 documentation</title>
+        <title>dialogy.types.entity package - dialogy 0.7.4 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.7.4 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.7.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.7.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -363,6 +363,65 @@ the new value being type safe.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a></p>
 </dd>
 </dl>
+</dd></dl>
+</div>
+<div class="section" id="module-dialogy.types.entity.currency_entity">
+<span id="dialogy-types-entity-currency-entity-module"></span><h2>dialogy.types.entity.currency_entity module<a class="headerlink" href="#module-dialogy.types.entity.currency_entity" title="Permalink to this headline">¶</a></h2>
+<p>Module provides access to entity types that can be parsed to currencies and their value.</p>
+<dl class="simple">
+<dt>Import classes:</dt><dd><ul class="simple">
+<li><p>CurrencyEntity</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt id="dialogy.types.entity.currency_entity.CurrencyEntity">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.types.entity.currency_entity.</span></code><code class="sig-name descname"><span class="pre">CurrencyEntity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot_names</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/currency_entity.html#CurrencyEntity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.currency_entity.CurrencyEntity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dialogy.types.entity.numerical_entity.NumericalEntity" title="dialogy.types.entity.numerical_entity.NumericalEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.types.entity.numerical_entity.NumericalEntity</span></code></a></p>
+<p>Numerical Entity Type</p>
+<p>Use this type for handling all entities that can be parsed to obtain:
+- numbers
+- date
+- time
+- datetime</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><ul class="simple">
+<li><p><cite>dim</cite> dimension of the entity from duckling parser</p></li>
+<li><p><cite>type</cite> is the type of the entity which can have values in [“value”, “interval”]</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="dialogy.types.entity.currency_entity.CurrencyEntity.entity_type">
+<code class="sig-name descname"><span class="pre">entity_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.currency_entity.CurrencyEntity.entity_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="dialogy.types.entity.currency_entity.CurrencyEntity.get_value">
+<code class="sig-name descname"><span class="pre">get_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/types/entity/currency_entity.html#CurrencyEntity.get_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.currency_entity.CurrencyEntity.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for CurrencyEntity.</p>
+<p>We are yet to decide the pros and cons of the output. It seems retaining {“value”: float, “unit”: }</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reference</strong> (<em>Any</em><em>, </em><em>optional</em>) – [description], defaults to None</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[description]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.types.entity.currency_entity.CurrencyEntity.reshape">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">reshape</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/types/entity/currency_entity.html#CurrencyEntity.reshape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.currency_entity.CurrencyEntity.reshape" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt id="dialogy.types.entity.currency_entity.CurrencyEntity.value">
+<code class="sig-name descname"><span class="pre">value</span></code><em class="property"><span class="pre">:</span> <span class="pre">Any</span></em><a class="headerlink" href="#dialogy.types.entity.currency_entity.CurrencyEntity.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 </dd></dl>
 </div>
 <div class="section" id="module-dialogy.types.entity.duration_entity">
@@ -861,6 +920,7 @@ will be added depending on open issues.</p>
 <li><a class="reference internal" href="#">dialogy.types.entity package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-dialogy.types.entity.base_entity">dialogy.types.entity.base_entity module</a></li>
+<li><a class="reference internal" href="#module-dialogy.types.entity.currency_entity">dialogy.types.entity.currency_entity module</a></li>
 <li><a class="reference internal" href="#module-dialogy.types.entity.duration_entity">dialogy.types.entity.duration_entity module</a></li>
 <li><a class="reference internal" href="#module-dialogy.types.entity.keyword_entity">dialogy.types.entity.keyword_entity module</a></li>
 <li><a class="reference internal" href="#module-dialogy.types.entity.location_entity">dialogy.types.entity.location_entity module</a></li>

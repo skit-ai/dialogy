@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugins.preprocess.text.duckling_plugin - dialogy 0.7.0 documentation</title>
+        <title>dialogy.plugins.preprocess.text.duckling_plugin - dialogy 0.7.3 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../../../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">dialogy 0.7.0 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.7.3 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.7.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.7.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -443,7 +443,9 @@
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datetime_filters</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_datetime</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datetime_filters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">entities</span></div>
+
+        <span class="c1"># We call the filters that exist on the EntityExtractor class like threshold filtering.</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span></div>
 
     <span class="nd">@dbg</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_reshape</span><span class="p">(</span>
@@ -520,14 +522,20 @@
 <span class="sd">        :rtype: List[Dict[str, Any]]</span>
 <span class="sd">        """</span>
         <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_req_body</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">,</span> <span class="n">locale</span><span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span>
-        <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-            <span class="c1"># The API call was successful, expect the following to contain entities.</span>
-            <span class="c1"># A list of dicts or an empty list.</span>
-            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="c1"># The API call was successful, expect the following to contain entities.</span>
+                <span class="c1"># A list of dicts or an empty list.</span>
+                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span> <span class="k">as</span> <span class="n">timeout_exception</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Duckling timed out: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">timeout_exception</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
+            <span class="k">return</span> <span class="p">[]</span>
 
         <span class="c1"># Control flow reaching here would mean the API call wasn't successful.</span>
         <span class="c1"># To prevent rest of the things from crashing, we will raise an exception.</span>
@@ -568,9 +576,10 @@
             <span class="p">):</span>
                 <span class="n">input_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">input_</span><span class="p">:</span>
-                    <span class="n">list_of_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">locale</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">)</span>
+                    <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities</span><span class="p">(</span>
+                        <span class="n">text</span><span class="p">,</span> <span class="n">locale</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span>
                     <span class="p">)</span>
+                    <span class="n">list_of_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected </span><span class="si">{</span><span class="n">input_</span><span class="si">}</span><span class="s2"> to be a List[str] or str."</span><span class="p">)</span>
 

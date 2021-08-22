@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.constants package" href="dialogy.constants.html" /><link rel="prev" title="dialogy.base package" href="dialogy.base.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.cli package - dialogy 0.7.0 documentation</title>
+        <title>dialogy.cli package - dialogy 0.7.4 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.7.4 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.7.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.7.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -217,8 +217,10 @@ make lint
 </pre></div>
 </td></tr></table></div></div>
 <dl class="simple">
-<dt>Usage:</dt><dd><p>__init__.py create &lt;project&gt; &lt;template&gt; [–namespace=&lt;namespace&gt;] [–vcs=&lt;vcs&gt;]
-__init__.py create &lt;project&gt;</p>
+<dt>Usage:</dt><dd><p>__init__.py create &lt;project&gt;
+__init__.py create &lt;project&gt; &lt;template&gt; [–namespace=&lt;namespace&gt;] [–vcs=&lt;vcs&gt;]
+__init__.py update &lt;project&gt;
+__init__.py update &lt;project&gt; &lt;template&gt; [–namespace=&lt;namespace&gt;] [–vcs=&lt;vcs&gt;]</p>
 </dd>
 </dl>
 <p>Options:</p>
@@ -252,8 +254,8 @@ Show current project version.</p>
 <dd><p>Create project scaffolding cli.</p>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.cli.new_project">
-<code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">new_project</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dialogy-template-simple-transformers'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'vernacular-ai'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vcs_ref</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli.html#new_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.new_project" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.cli.project">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">project</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dialogy-template-simple-transformers'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'vernacular-ai'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vcs_ref</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_update</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli.html#project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new project using scaffolding from an existing template.</p>
 <p>This function uses <a class="reference external" href="https://copier.readthedocs.io/en/stable/">copier’s</a> <a class="reference external" href="https://copier.readthedocs.io/en/stable/#quick-usage">copy</a> to use an existing template.</p>
 <p>An example template is <a class="reference external" href="https://github.com/Vernacular-ai/dialogy-template-simple-transformers">here:</a>.</p>

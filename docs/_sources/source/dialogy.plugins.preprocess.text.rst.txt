@@ -4,6 +4,14 @@ dialogy.plugins.preprocess.text package
 Submodules
 ----------
 
+dialogy.plugins.preprocess.text.calibration module
+--------------------------------------------------
+
+.. automodule:: dialogy.plugins.preprocess.text.calibration
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.plugins.preprocess.text.duckling\_plugin module
 -------------------------------------------------------
 

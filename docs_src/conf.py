@@ -12,16 +12,23 @@
 #
 import os
 import sys
+import toml
 sys.path.insert(0, os.path.abspath('.'))
 
 
+with open(os.path.join(os.path.abspath('.'), "..", "pyproject.toml")) as f:
+    pyproject = toml.load(f)
+    pyproject_version = pyproject["tool"]["poetry"]["version"]
+    pyproject_name = pyproject["tool"]["poetry"]["name"]
+    pyproject_authors = pyproject["tool"]["poetry"]["authors"]
+
 # -- Project information -----------------------------------------------------
 
-project = 'dialogy'
-author = 'ltbringer'
+project = pyproject_name
+author = pyproject_authors[0]
 
 # The full version, including alpha/beta/rc tags
-release = '0.7.3'
+release = pyproject_version
 
 
 # -- General configuration ---------------------------------------------------
