@@ -50,14 +50,14 @@ The aim of this project is to be largest supplier of plugins for SLU application
 """
 import json
 import time
-from typing import Any, Callable, Dict, List
+from typing import Any, Dict, List
 
 import attr
+import pandas as pd  # type: ignore
 
 from dialogy import constants as const
+from dialogy.base.plugin import Plugin
 from dialogy.utils.logger import logger
-
-PluginFn = Callable[["Workflow"], None]
 
 
 @attr.s
@@ -81,7 +81,7 @@ class Workflow:
 
     plugins = attr.ib(
         factory=list,
-        type=List[PluginFn],
+        type=List[Plugin],
         validator=attr.validators.instance_of(list),
     )
     input: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
@@ -136,7 +136,7 @@ class Workflow:
                     ),
                 }
             start = time.perf_counter()
-            plugin(self)
+            plugin()(self)
             end = time.perf_counter()
             # logs are available only when debug=True during class initialization
             if self.debug:
@@ -188,3 +188,8 @@ class Workflow:
             filter=lambda attribute, _: attribute.name
             not in self.NON_SERIALIZABLE_FIELDS,
         )
+
+    def train(self, training_data: pd.DataFrame) -> None:
+        for plugin in self.plugins:
+            plugin.train(training_data)
+        return None
