@@ -56,5 +56,4 @@ def test_calibration(payload):
     workflow = Workflow(preprocessors=[plugin()])
     workflow.run(input_=body)
 
-    assert workflow.input[const.ALTERNATIVES] == expected[const.ALTERNATIVES]
-    assert workflow.input[const.PWER] == expected[const.PWER]
+    assert workflow.input == expected[const.ALTERNATIVES]
