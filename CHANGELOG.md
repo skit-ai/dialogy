@@ -1,3 +1,6 @@
+# 0.7.5
+- [x] update: WER calibration refactored to contain core logic.
+
 # 0.7.4
 - [x] update: WER calibration as a plugin.
 
