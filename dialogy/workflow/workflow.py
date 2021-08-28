@@ -54,6 +54,7 @@ from typing import Any, Dict, List, Union
 
 import attr
 import pandas as pd  # type: ignore
+from tqdm import tqdm  # type: ignore
 
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin
@@ -127,26 +128,20 @@ class Workflow:
             if self.debug:
                 history = {
                     "plugin": plugin,
-                    "before": json.dumps(
-                        {
-                            "input": self.input,
-                            "output": self.output,
-                        },
-                        indent=2,
-                    ),
+                    "before": {
+                        "input": self.input,
+                        "output": self.output,
+                    },
                 }
             start = time.perf_counter()
             plugin()(self)
             end = time.perf_counter()
             # logs are available only when debug=True during class initialization
             if self.debug:
-                history["after"] = json.dumps(
-                    {
-                        "input": self.input,
-                        "output": self.output,
-                    },
-                    indent=2,
-                )
+                history["after"] = {
+                    "input": self.input,
+                    "output": self.output,
+                }
                 history["perf"] = round(end - start, 4)
             if history:
                 logger.debug(history)
