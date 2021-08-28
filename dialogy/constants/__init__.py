@@ -99,3 +99,7 @@ UTTERANCES = "utterances"
 
 # Transcripts containing less than or equal to this number of for words.
 WORD_THRESHOLD = 2
+
+# XLMR
+XLMR_MODULE = "simpletransformers.classification"
+XLMR_MULTI_CLASS_MODEL = "ClassificationModel"
