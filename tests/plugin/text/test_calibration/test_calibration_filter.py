@@ -50,7 +50,7 @@ def test_calibration(payload):
         wer_calibration.config[lang] = WERCalibrationConfig(
             vectorizer=vectorizer, classifier=classifier, threshold=threshold
         )
-    workflow = Workflow([wer_calibration()])
+    workflow = Workflow([wer_calibration])
     workflow.run(input_=body)
 
     assert workflow.input == expected[const.ALTERNATIVES]

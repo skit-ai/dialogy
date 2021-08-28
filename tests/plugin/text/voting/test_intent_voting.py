@@ -22,7 +22,7 @@ def test_voting_0_intents():
     have a test to see if it takes care of division 0.
     """
     intents: List[Intent] = []
-    vote_plugin = VotePlugin(access=lambda w: (w.output[0], 0), mutate=update_intent)()
+    vote_plugin = VotePlugin(access=lambda w: (w.output[0], 0), mutate=update_intent)
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -41,7 +41,7 @@ def test_voting_n_intents():
     ]
     vote_plugin = VotePlugin(
         debug=False, access=lambda w: (w.output[0], len(intents)), mutate=update_intent
-    )()
+    )
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -60,7 +60,7 @@ def test_voting_on_conflicts():
     ]
     vote_plugin = VotePlugin(
         access=lambda w: (w.output[0], len(intents)), mutate=update_intent
-    )()
+    )
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -79,7 +79,7 @@ def test_voting_on_weak_signals():
     ]
     vote_plugin = VotePlugin(
         access=lambda w: (w.output[0], len(intents)), mutate=update_intent
-    )()
+    )
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -94,7 +94,7 @@ def test_missing_access():
         Intent(name="b", score=0.1),
     ]
 
-    vote_plugin = VotePlugin(mutate=update_intent)()
+    vote_plugin = VotePlugin(mutate=update_intent)
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     with pytest.raises(TypeError):
@@ -109,7 +109,7 @@ def test_missing_mutate():
         Intent(name="b", score=0.1),
     ]
 
-    vote_plugin = VotePlugin(access=lambda w: w.output[0])()
+    vote_plugin = VotePlugin(access=lambda w: w.output[0])
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     with pytest.raises(TypeError):
@@ -127,7 +127,7 @@ def test_representation_oos():
 
     vote_plugin = VotePlugin(
         access=lambda w: (w.output[0], len(intents)), mutate=update_intent
-    )()
+    )
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -146,7 +146,7 @@ def test_representation_intent():
 
     vote_plugin = VotePlugin(
         access=lambda w: (w.output[0], len(intents)), mutate=update_intent
-    )()
+    )
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
@@ -167,7 +167,7 @@ def test_aggregate_fn_incorrect():
         access=lambda w: (w.output[0], len(intents)),
         mutate=update_intent,
         aggregate_fn=5,
-    )()
+    )
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []
 

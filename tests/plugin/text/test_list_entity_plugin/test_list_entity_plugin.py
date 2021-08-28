@@ -74,7 +74,7 @@ def test_get_list_entities(payload):
     if expected:
         list_entity_plugin = ListEntityPlugin(
             access=lambda w: (w.input,), mutate=mutate, spacy_nlp=spacy_mocker, **config
-        )()
+        )
 
         workflow = Workflow([list_entity_plugin])
         workflow.run(input_=transcripts)
@@ -93,7 +93,7 @@ def test_get_list_entities(payload):
                 mutate=mutate,
                 spacy_nlp=spacy_mocker,
                 **config
-            )()
+            )
 
             workflow = Workflow([list_entity_plugin])
             workflow.run(input_=input_)
