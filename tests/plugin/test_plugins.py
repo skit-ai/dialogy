@@ -25,68 +25,6 @@ def mutate(workflow: Workflow, value: Any) -> Any:
     workflow.output = value
 
 
-# == tokenizer_plugin ==
-def tokenizer_plugin(
-    pattern: str = r" ",
-    maxsplit: int = 0,
-    flags: int = re.I | re.U,
-    access: Optional[PluginFn] = None,
-    mutate: Optional[PluginFn] = None,
-) -> PluginFn:
-    """
-    Expects a string from the `access(workflow)` and tokenizes the string.
-    Example: "an apple" -> ["an", "apple"]
-
-    Args:
-
-    - pattern (str, optional): The string to be tokenized, probably a sentence or document. Defaults to r" ".
-    - maxsplit (int, optional): Number of splits for a given pattern, with 0 being an exception, 0 splits for every pattern match. Defaults to 0.
-    - flags ([type], optional): Pattern matching would be case-insensitive and applicable on unicode. Defaults to re.I|re.U.
-
-    Raises:
-
-    - TypeError: If there is no input string.
-    - ValueError: If the string is empty (0 length).
-
-    Returns:
-
-    - PluginFn: Tokenizer
-    """
-    # Always compile strings before using them in loops.
-    compiled_pattern = re.compile(pattern, flags=flags)
-
-    def plugin(workflow: Workflow) -> Any:
-        if access and mutate:
-            # assuming consumers would have `workflow.input` as `str`.
-            text = access(workflow)
-            if not isinstance(text, str):
-                raise TypeError(f"Expected str found {type(text)}.")
-            if not text:
-                raise ValueError("Expected str of non-zero length.")
-
-            # assuming the previously held value is of no relevance.
-            mutate(workflow, compiled_pattern.split(text, maxsplit=maxsplit))
-        else:
-            raise TypeError("access and mutate should be of type PluginFn.")
-
-    return plugin
-
-
-# == Plugin as a function with workflow ==
-def test_tokenizer_plugin() -> None:
-    """
-    We will test the tokenizer plugin.
-    """
-    # create an instance of a `Workflow`.
-    # we are calling the `arbitrary_plugin` to get the `plugin` de method.
-    workflow = Workflow(
-        [tokenizer_plugin(access=access, mutate=mutate)],
-    )
-    workflow.run("Mary had a little lambda")
-
-    assert workflow.output == ["Mary", "had", "a", "little", "lambda"]
-
-
 # == ArbitraryPlugin ==
 class ArbitraryPlugin(Plugin):
     """
@@ -148,7 +86,7 @@ def test_arbitrary_plugin() -> None:
     We will test how an arbitrary-class-based plugin works with a workflow.
     """
     # create an instance of `ArbitraryPlugin`.
-    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate)()
+    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate)
 
     # create an instance of a `Workflow`.
     # we are calling the `arbitrary_plugin` to get the `plugin` de method.

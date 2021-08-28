@@ -12,7 +12,7 @@ def mutate(workflow, value):
     workflow.input = value
 
 
-merge_asr_output_plugin = MergeASROutputPlugin(access=access, mutate=mutate)()
+merge_asr_output_plugin = MergeASROutputPlugin(access=access, mutate=mutate)
 
 
 def test_merge_asr_output() -> None:

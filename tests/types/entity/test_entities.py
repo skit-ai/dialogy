@@ -441,7 +441,7 @@ def test_entity_type(payload) -> None:
         dimensions=["people", "time", "date", "duration"],
         locale="en_IN",
         timezone="Asia/Kolkata",
-    )()
+    )
 
     request_callback = request_builder(mock_entity_json)
     httpretty.register_uri(

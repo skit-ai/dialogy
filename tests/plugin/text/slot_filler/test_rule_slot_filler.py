@@ -35,7 +35,7 @@ def test_slot_filling() -> None:
     intent_name = "intent_1"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)
 
     # Create a mock `workflow`
     workflow = Workflow([slot_filler])
@@ -74,7 +74,7 @@ def test_slot_no_fill() -> None:
     intent_name = "intent_1"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)
 
     # Create a mock `workflow`
     workflow = Workflow([slot_filler])
@@ -113,7 +113,7 @@ def test_slot_dual_fill() -> None:
     intent_name = "intent_2"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)
 
     # Create a mock `workflow`
     workflow = Workflow([slot_filler])
@@ -163,7 +163,7 @@ def test_slot_filling_multiple() -> None:
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
     slot_filler = RuleBasedSlotFillerPlugin(
         rules=rules, access=access, fill_multiple=True
-    )()
+    )
 
     # Create a mock `workflow`
     workflow = Workflow([slot_filler])
@@ -210,7 +210,7 @@ def test_slot_competition() -> None:
     intent_name = "intent_1"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)
 
     # Create a mock `workflow`
     workflow = Workflow([slot_filler])
@@ -253,7 +253,7 @@ def test_incorrect_access_fn() -> None:
     rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
     access = 5
 
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)
     workflow = Workflow([slot_filler])
     intent = Intent(name="intent", score=0.8)
 
@@ -276,7 +276,7 @@ def test_missing_access_fn() -> None:
     """
     This test shows that the plugin needs an `access` provided or else it raises a type error.
     """
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)()
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules)
     workflow = Workflow([slot_filler])
     intent = Intent(name="intent", score=0.8)
 
