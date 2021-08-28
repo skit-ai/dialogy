@@ -13,7 +13,7 @@ import numpy as np
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin
 from dialogy.types import PluginFn, Transcript, Utterance
-from dialogy.utils import normalize, safe_load
+from dialogy.utils import load_file, normalize
 
 
 def predict_alternative(
@@ -53,13 +53,13 @@ class WERCalibrationConfig:
         if vectorizer:
             self.vectorizer = vectorizer
         else:
-            self.vectorizer = safe_load(
+            self.vectorizer = load_file(
                 file_path=vectorizer_path, mode="rb", loader=pickle.load
             )
         if classifier:
             self.classifier = classifier
         else:
-            self.classifier = safe_load(
+            self.classifier = load_file(
                 file_path=classifier_path, mode="rb", loader=pickle.load
             )
 
