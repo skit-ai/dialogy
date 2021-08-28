@@ -86,7 +86,7 @@ class Plugin:
         self.debug = debug
 
     def utility(self, *args: Any) -> Any:
-        ...
+        return None
 
     def plugin(self, workflow: Workflow) -> None:
         if self.access:
@@ -111,3 +111,11 @@ class Plugin:
         to have a `__call__()` method.
         """
         return self.plugin
+
+    def train(self, training_data: Any) -> None:
+        """
+        Train a plugin.
+
+        This method is called by the workflow after the pre-processing stage.
+        """
+        return None
