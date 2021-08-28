@@ -101,7 +101,12 @@ UTTERANCES = "utterances"
 WORD_THRESHOLD = 2
 
 # XLMR
+ID = "id"
 XLMR_MODULE = "simpletransformers.classification"
 XLMR_MULTI_CLASS_MODEL = "ClassificationModel"
 XLMR_MODEL = "roberta"
 XLMR_MODEL_TIER = "roberta-base"
+INTENT = "intent"
+INTENTS = f"{INTENT}s"
+ENTITIES = "entities"
+SCORE = "score"
