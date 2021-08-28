@@ -95,7 +95,7 @@ class Plugin:
             logger.disable("dialogy")
         if self.access:
             args = self.access(workflow)
-            value = self.utility(*args)
+            value = self.utility(*args)  # pylint: disable=assignment-from-none
             if value is not None and self.mutate:
                 self.mutate(workflow, value)
         else:
@@ -124,7 +124,7 @@ class Plugin:
         """
         return None
 
-    def transform(self, training_data: Any) -> Any: # pylint: disable=unused-argument
+    def transform(self, training_data: Any) -> Any:  # pylint: disable=unused-argument
         """
         Transform data for a plugin in the workflow.
         """
