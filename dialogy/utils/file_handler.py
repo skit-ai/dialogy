@@ -53,8 +53,10 @@ def save_file(
     if not isinstance(file_path, str):
         return None
 
-    with open(file_path, mode, encoding=encoding, newline=newline) as file:
-        if not writer:
-            file.write(content)
-        else:
-            writer(file, content)
+    
+    if mode == "wb":
+        with open(file_path, mode) as file:
+            _ = file.write(content) if not writer else writer(content, file)
+    else:
+        with open(file_path, mode, encoding=encoding, newline=newline) as file:
+            _ = file.write(content) if not writer else writer(content, file)
