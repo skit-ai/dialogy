@@ -143,3 +143,8 @@ docs_src/_build/
 .idea/
 
 .DS_Store
+
+# files
+*.csv
+*.json
+*.pb
