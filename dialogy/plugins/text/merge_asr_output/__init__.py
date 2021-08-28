@@ -94,7 +94,7 @@ class MergeASROutputPlugin(Plugin):
     def utility(self, *args: Any) -> Any:
         return merge_asr_output(*args)
 
-    def train(self, training_data: pd.DataFrame) -> Any:
+    def transform(self, training_data: pd.DataFrame) -> Any:
         training_data.loc[:, self.data_column] = training_data[self.data_column].apply(
             lambda row: merge_asr_output(json.loads(row)[const.ALTERNATIVES])
         )

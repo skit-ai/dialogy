@@ -50,7 +50,7 @@ The aim of this project is to be largest supplier of plugins for SLU application
 """
 import json
 import time
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import attr
 import pandas as pd  # type: ignore
@@ -192,4 +192,21 @@ class Workflow:
     def train(self, training_data: pd.DataFrame) -> None:
         for plugin in self.plugins:
             plugin.train(training_data)
-        return None
+            transformed_data = plugin.transform(training_data)
+            if transformed_data is not None:
+                training_data = transformed_data
+
+    def bulk_run(self, testing_data: pd.DataFrame, id_: Union[str, int]) -> None:
+        results = []
+        for _, row in testing_data.iterrows():
+            self.run(input_=row)
+            intents = self.output[const.INTENTS]
+            if intents:
+                results.append(
+                    {
+                        const.ID: row[id_],
+                        const.INTENT: intents[0].name,
+                        const.SCORE: intents[0].score,
+                    }
+                )
+        return pd.DataFrame(results)

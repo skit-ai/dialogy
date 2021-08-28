@@ -116,10 +116,16 @@ class Plugin:
         """
         return self.plugin
 
-    def train(self, training_data: Any) -> None:
+    def train(self, training_data: Any) -> Any:  # pylint: disable=unused-argument
         """
         Train a plugin.
 
         This method is called by the workflow after the pre-processing stage.
+        """
+        return None
+
+    def transform(self, training_data: Any) -> Any: # pylint: disable=unused-argument
+        """
+        Transform data for a plugin in the workflow.
         """
         return None
