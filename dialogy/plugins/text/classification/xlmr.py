@@ -155,7 +155,7 @@ class XLMRMultiClass(Plugin):
 
         for column in [self.data_column, self.label_column]:
             if column not in training_data.columns:
-                logger.error(f"Column {column} not found in training data")
+                logger.warning(f"Column {column} not found in training data")
                 return False
         return True
 
@@ -163,12 +163,14 @@ class XLMRMultiClass(Plugin):
         """
         Train an intent-classifier on the provided training data.
 
+        The training is skipped if the data-format is not valid.
         :param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
         :type training_data: pd.DataFrame
-        :raises ValueError: In case the training data is not valid.
         """
         if not self.validate(training_data):
-            raise ValueError("Training dataframe is invalid.")
+            logger.warning(f"Training dataframe is invalid, for {self.__class__.__name__} plugin.")
+            return
+
         encoder = self.labelencoder.fit(training_data[self.label_column])
         training_data.rename(columns={self.data_column: "text"}, inplace=True)
         training_data[self.label_column] = encoder.transform(
