@@ -2,6 +2,8 @@
 This module provides a trainable XLMR classifier.
 [read-more](https://arxiv.org/abs/1911.02116)
 """
+import os
+import pickle
 import importlib
 from typing import Any, List, Optional
 
@@ -12,7 +14,7 @@ from sklearn import preprocessing  # type: ignore
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import Intent
-from dialogy.utils.logger import logger
+from dialogy.utils import logger, save_file, load_file
 
 
 class XLMRMultiClass(Plugin):
