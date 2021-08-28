@@ -3,10 +3,7 @@ import pytest
 from scipy import sparse
 
 from dialogy import constants as const
-from dialogy.plugins.preprocess.text.calibration import (
-    WERCalibrationConfig,
-    WERCalibrationPlugin,
-)
+from dialogy.plugins.text.calibration import WERCalibrationConfig, WERCalibrationPlugin
 from dialogy.workflow.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 
@@ -48,12 +45,12 @@ def test_calibration(payload):
     def mutate(workflow, value):
         workflow.input = value
 
-    plugin = WERCalibrationPlugin(config, access=access, mutate=mutate)
+    wer_calibration = WERCalibrationPlugin(config, access=access, mutate=mutate)
     if mock:
-        plugin.config[lang] = WERCalibrationConfig(
+        wer_calibration.config[lang] = WERCalibrationConfig(
             vectorizer=vectorizer, classifier=classifier, threshold=threshold
         )
-    workflow = Workflow(preprocessors=[plugin()])
+    workflow = Workflow([wer_calibration()])
     workflow.run(input_=body)
 
     assert workflow.input == expected[const.ALTERNATIVES]

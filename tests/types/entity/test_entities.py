@@ -435,20 +435,20 @@ def test_entity_type(payload) -> None:
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
 
-    parser = DucklingPlugin(
+    duckling_plugin = DucklingPlugin(
         access=access,
         mutate=mutate,
         dimensions=["people", "time", "date", "duration"],
         locale="en_IN",
         timezone="Asia/Kolkata",
-    )
+    )()
 
     request_callback = request_builder(mock_entity_json)
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    workflow = Workflow(preprocessors=[parser()], postprocessors=[])
+    workflow = Workflow([duckling_plugin])
 
     if expected:
         workflow.run(body)
