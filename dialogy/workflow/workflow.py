@@ -48,8 +48,8 @@ The aim of this project is to be largest supplier of plugins for SLU application
     abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden
     to offer flexibility of use.
 """
+import time
 import json
-from pprint import pformat
 from typing import Any, Callable, Dict, List
 
 import attr
@@ -135,7 +135,9 @@ class Workflow:
                         indent=2,
                     ),
                 }
+            start = time.perf_counter()
             plugin(self)
+            end = time.perf_counter()
             # logs are available only when debug=True during class initialization
             if self.debug:
                 history["after"] = json.dumps(
@@ -145,6 +147,7 @@ class Workflow:
                     },
                     indent=2,
                 )
+                history["perf"] = round(end - start, 4)
             if history:
                 logger.debug(history)
 
