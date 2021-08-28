@@ -6,7 +6,8 @@ from typing import Any, List
 
 import pytest
 
-from dialogy.plugins.text.normalize_utterance import is_list_of_string, normalize
+from dialogy.utils import normalize
+from dialogy.utils.normalize_utterance import is_list_of_string
 
 TEST_STRING = "hello world"
 EXPECTED_OUTPUT = [TEST_STRING]

@@ -7,7 +7,7 @@ from functools import partial
 from typing import Any, Callable, Dict, List
 
 from dialogy import constants as const
-from dialogy.types import Transcript, Utterance
+from dialogy.types.utterances import Transcript, Utterance
 
 
 def dict_get(prop: str, obj: Dict[str, Any]) -> Any:

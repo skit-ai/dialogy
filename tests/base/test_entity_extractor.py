@@ -5,7 +5,7 @@ import pytest
 
 from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.plugins import DucklingPlugin
-from dialogy.types.entity import KeywordEntity
+from dialogy.types import KeywordEntity
 from tests import EXCEPTIONS, load_tests
 
 
