@@ -17,8 +17,12 @@ simply concatenation of each transcript.
 This may not be very helpful, there is a :ref:`VotePlugin <vote_plugin>` under development so use it with caution. It may
 help with precision at the cost of recall.
 """
+import json
 from typing import Any, List, Optional
 
+import pandas as pd  # type: ignore
+
+import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.utils import normalize
 
@@ -85,6 +89,13 @@ class MergeASROutputPlugin(Plugin):
         debug: bool = False,
     ) -> None:
         super().__init__(access, mutate, debug=debug)
+        self.data_column = "data"
 
     def utility(self, *args: Any) -> Any:
         return merge_asr_output(*args)
+
+    def train(self, training_data: pd.DataFrame) -> Any:
+        training_data.loc[:, self.data_column] = training_data[self.data_column].apply(
+            lambda row: merge_asr_output(json.loads(row)[const.ALTERNATIVES])
+        )
+        return training_data
