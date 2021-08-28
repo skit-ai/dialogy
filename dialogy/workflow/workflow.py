@@ -19,8 +19,7 @@ A workflow allows flexibility, that's why. There is very little structure to it.
 
 - input
 - output
-- preprocessors
-- postprocessors
+- plugins
 
 Apart from these, we expect at the core, an inference function with machine learning models. Which ones? A N Y ones.
 As long as you have the compute, there is no restriction. Use statistical models or DL or a bunch of conditions,
@@ -73,32 +72,23 @@ class Workflow:
     here could use more arguments, say, `load_model()` requires `path` and `version` and in some other cases
     `path`, `version` and `language`.
 
-    :param preprocessors: A list of functions to execute before inference.
-    :type preprocessors: Optional[List[PluginFn]]
-    :param postprocessors: A list of functions to execute after inference.
-    :type postprocessors: Optional[List[PluginFn]]
+    :param plugins: A list of functions to execute before inference.
+    :type plugins: Optional[List[PluginFn]]
     :param debug: log level shifts to debug if True.
     :type debug: bool
     """
 
+    plugins = attr.ib(
+        factory=list,
+        type=List[PluginFn],
+        validator=attr.validators.instance_of(list),
+    )
     input: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
     output: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
     debug = attr.ib(
         type=bool, default=False, validator=attr.validators.instance_of(bool)
     )
-    preprocessors = attr.ib(
-        factory=list,
-        type=List[PluginFn],
-        validator=attr.validators.instance_of(list),
-        kw_only=True,
-    )
-    postprocessors = attr.ib(
-        factory=list,
-        type=List[PluginFn],
-        validator=attr.validators.instance_of(list),
-        kw_only=True,
-    )
-    NON_SERIALIZABLE_FIELDS = [const.PREPROCESSORS, const.POSTPROCESSORS, const.DEBUG]
+    NON_SERIALIZABLE_FIELDS = [const.PLUGINS, const.DEBUG]
 
     def __attrs_post_init__(self) -> None:
         """
@@ -113,20 +103,8 @@ class Workflow:
         self.input: Dict[str, Any] = {}
         self.output: Dict[str, Any] = {}
 
-    def load_model(self) -> None:
-        """
-        Override method in sub-class to load model(s).
-
-        Raises:
-            NotImplementedError: Safeguard against using this class directly.
-        """
-        class_name = self.__class__.__name__
-        raise NotImplementedError(
-            f"Override method `load_model` in class {class_name}."
-        )
-
     @dbg(log)
-    def update(self, processor_type: str, processors: List[PluginFn]) -> None:
+    def execute(self) -> None:
         """
         Update input, output attributes.
 
@@ -135,71 +113,37 @@ class Workflow:
         would modify the input, and post-processing functions would modify the output.
 
         Args:
-            processor_type (`str`): One of ["__preprocessor", "__postprocessor"]
             processors (`List`): The list of preprocess or postprocess functions.
 
         Raises:
             `TypeError`: If any element in processors list is not a Callable.
         """
-        for processor in processors:
-            if not callable(processor):
-                raise TypeError(f"{processor_type}={processor} is not a callable")
+        for plugin in self.plugins:
+            if not callable(plugin):
+                raise TypeError(f"{plugin=} is not a callable")
 
             # logs are available only when debug=True during class initialization
             log.debug(
                 pformat(
                     {
                         "stage": "Before",
-                        "type": processor_type,
-                        "plugin": processor,
+                        "plugin": plugin,
                         "input": self.input,
                         "output": self.output,
                     }
                 )
             )
-            processor(self)
+            plugin(self)
             # logs are available only when debug=True during class initialization
             log.debug(
                 pformat(
                     {
                         "stage": "After",
-                        "type": processor_type,
-                        "plugin": processor,
+                        "plugin": plugin,
                         "input": self.input,
                         "output": self.output,
                     }
                 )
-            )
-
-    def preprocess(self) -> None:
-        """
-        Convenience over `update` method.
-
-        Uses preprocessors over the `update` method, expect input to change.
-        """
-        self.update(const.PREPROCESSORS, self.preprocessors)
-
-    def postprocess(self) -> None:
-        """
-        Convenience over `update` method.
-
-        Uses postprocessors over the `update` method, expect output to change.
-        """
-        self.update(const.POSTPROCESSORS, self.postprocessors)
-
-    def inference(self) -> None:
-        """
-        Get model predictions.
-
-        Depending on the number of models in use. This place can be used to collate results, sort, filter, etc.
-
-        Raises:
-            `NotImplementedError`: This method needs to be implemented by the sub-classes.
-        """
-        class_name = self.__class__.__name__
-        if class_name != "Workflow":
-            raise NotImplementedError(
-                f"Override method `inference` in class {class_name}."
             )
 
     def run(self, input_: Any) -> Any:
@@ -219,9 +163,7 @@ class Workflow:
             (`Any`): This function can return any arbitrary value. Subclasses may enforce a stronger check.
         """
         self.input = input_
-        self.preprocess()
-        self.inference()
-        self.postprocess()
+        self.execute()
         return self.output
 
     def flush(self) -> None:
