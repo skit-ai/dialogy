@@ -36,4 +36,6 @@ from dialogy.types.entity import (
     TimeIntervalEntity,
 )
 from dialogy.types.intent import Intent
+from dialogy.types.plugin import PluginFn
 from dialogy.types.signal.signal import Signal
+from dialogy.types.utterances import Alternative, Transcript, Utterance
