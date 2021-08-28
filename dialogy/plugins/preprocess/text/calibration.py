@@ -6,13 +6,14 @@ and predict the quality of the transcripts. Poor transcripts are filtered out. T
 """
 import math
 import pickle
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin
-from dialogy.types.plugin import PluginFn
+from dialogy.plugins.preprocess.text.normalize_utterance import normalize
+from dialogy.types import PluginFn, Transcript, Utterance
 from dialogy.utils.file_handler import safe_load
 
 
@@ -83,9 +84,7 @@ class WERCalibrationPlugin(Plugin):
         for lang in config:
             self.config[lang] = WERCalibrationConfig(**config[lang])
 
-    def filter_asr_output(
-        self, utterances: List[List[Dict[str, Any]]], lang: str
-    ) -> Dict[str, Any]:
+    def filter_asr_output(self, utterances: List[Utterance], lang: str) -> List[str]:
         """
         .. _filter_asr_output:
 
@@ -160,23 +159,36 @@ class WERCalibrationPlugin(Plugin):
         classifier = self.config[lang].classifier
         threshold = self.config[lang].threshold
 
-        if vectorizer is None or classifier is None:
-            return {
-                const.ALTERNATIVES: utterances,
-                const.PWER: [0.0] * len(utterances[0]),
-            }
+        transcripts: List[Transcript] = normalize(utterances)
+        transcript_lengths: List[int] = [
+            len(transcript.split()) for transcript in transcripts
+        ]
+        average_word_count: float = (
+            sum(transcript_lengths) / len(transcript_lengths) if transcripts else 0.0
+        )
 
-        valid_alternatives = []
-        pred_wers = []
-        for utterance in utterances:
-            res = []
-            for alternative in utterance:
-                pred_wer = predict_alternative(alternative, vectorizer, classifier)
-                pred_wers.append(pred_wer)
-                if pred_wer < threshold:
-                    res.append(alternative)
-            valid_alternatives.append(res)
-        return {const.ALTERNATIVES: valid_alternatives, const.PWER: pred_wers}
+        # We want to run this plugin if transcripts have more than WORD_THRESHOLD words
+        # below that count, WER is mostly high. We expect this plugin to override
+        # a classifier's prediction to a fallback label.
+        # If the transcripts have less than WORD_THRESHOLD words, we will always predict the fallback label.
+        if (
+            vectorizer is None
+            or classifier is None
+            or average_word_count <= const.WORD_THRESHOLD
+        ):
+            return normalize(utterances)
+
+        return normalize(
+            [
+                [
+                    alternative
+                    for alternative in utterance
+                    if predict_alternative(alternative, vectorizer, classifier)
+                    < threshold
+                ]
+                for utterance in utterances
+            ]
+        )
 
     def utility(self, *args: Any) -> Any:
         return self.filter_asr_output(*args)
