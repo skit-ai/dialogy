@@ -63,7 +63,7 @@ from dialogy.base.plugin import PluginFn
 from dialogy.constants import EntityKeys
 from dialogy.types.entity import BaseEntity, dimension_entity_map
 from dialogy.utils import dt2timestamp
-from dialogy.utils.logger import dbg, log
+from dialogy.utils.logger import logger
 
 
 class DucklingPlugin(EntityExtractor):
@@ -166,7 +166,6 @@ class DucklingPlugin(EntityExtractor):
                 " check valid types here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
             ) from unknown_timezone_error
 
-    @dbg(log)
     def __create_req_body(
         self, text: str, reference_time: Optional[int], locale: str = "en_IN"
     ) -> Dict[str, Any]:
@@ -196,12 +195,11 @@ class DucklingPlugin(EntityExtractor):
             "dims": json.dumps(dimensions),
             "reftime": reference_time,
         }
-        log.debug("Duckling API payload:")
-        log.debug(pformat(payload))
+        logger.debug("Duckling API payload:")
+        logger.debug(pformat(payload))
 
         return payload
 
-    @dbg(log)
     def select_datetime(
         self, entities: List[BaseEntity], filter_type: Any
     ) -> List[BaseEntity]:
@@ -227,7 +225,7 @@ class DucklingPlugin(EntityExtractor):
             try:
                 operation = getattr(operator, filter_type)
             except (AttributeError, TypeError) as exception:
-                log.debug(traceback.format_exc())
+                logger.debug(traceback.format_exc())
                 raise ValueError(
                     f"Expected datetime_filters to be one of {self.FUTURE}, {self.PAST} "
                     "or a valid comparison operator here: https://docs.python.org/3/library/operator.html"
@@ -266,7 +264,6 @@ class DucklingPlugin(EntityExtractor):
         # We call the filters that exist on the EntityExtractor class like threshold filtering.
         return super().apply_filters(entities)
 
-    @dbg(log)
     def _reshape(
         self, entities_json: List[Dict[str, Any]], alternative_index: int = 0
     ) -> List[BaseEntity]:
@@ -315,7 +312,7 @@ class DucklingPlugin(EntityExtractor):
         except KeyError as key_error:
             # Being vary of structural changes in the API or entity dicts.
             # Under normal circumstances this error shouldn't be raised.
-            log.debug(traceback.format_exc())
+            logger.debug(traceback.format_exc())
             raise KeyError(
                 f"Missing key {key_error} in entity {entity}."
             ) from key_error
@@ -352,8 +349,8 @@ class DucklingPlugin(EntityExtractor):
                 # A list of dicts or an empty list.
                 return response.json()
         except requests.exceptions.Timeout as timeout_exception:
-            log.error("Duckling timed out: %s", timeout_exception)
-            log.error(pformat(body))
+            logger.error(f"Duckling timed out: {timeout_exception}")
+            logger.error(pformat(body))
             return []
 
         # Control flow reaching here would mean the API call wasn't successful.

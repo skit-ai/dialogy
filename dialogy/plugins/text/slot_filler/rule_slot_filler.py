@@ -10,7 +10,7 @@ from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule
-from dialogy.utils.logger import dbg, log
+from dialogy.utils.logger import logger
 
 
 class RuleBasedSlotFillerPlugin(Plugin):
@@ -142,8 +142,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
             intent.fill_slot(entity, fill_multiple=self.fill_multiple)
 
         intent.cleanup()
-        log.debug("intent after slot-filling: %s", intent)
+        logger.debug(f"intent after slot-filling: {intent}")
 
-    @dbg(log)
     def utility(self, *args: Any) -> Any:
         return self.fill(*args)  # pylint: disable=no-value-for-parameter

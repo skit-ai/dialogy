@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 from dialogy.types.entity import BaseEntity
 from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule, Slot
-from dialogy.utils.logger import log
+from dialogy.utils.logger import logger
 
 
 class Intent:
@@ -126,23 +126,27 @@ class Intent:
         :return: The calling Intent with modifications to its slots.
         :rtype: Intent
         """
-        log.debug("Looping through slot_names for each entity.")
-        log.debug("intent slots: %s", self.slots)
+        logger.debug("Looping through slot_names for each entity.")
+        logger.debug(f"intent slots: {self.slots}")
         for slot_name, slot in self.slots.items():
-            log.debug("slot_name: %s", slot_name)
-            log.debug("slot type: %s", slot.types)
-            log.debug("entity type: %s", entity.type)
+            logger.debug(f"slot_name: {slot_name}")
+            logger.debug(
+                f"slot type: {slot.types}",
+            )
+            logger.debug(
+                f"entity type: {entity.type}",
+            )
             if entity.type in slot.types:
                 if fill_multiple:
                     self.slots[slot_name].add(entity)
                     return self
 
                 if not self.slots[slot_name].values:
-                    log.debug("filling %s into %s.", entity, self.name)
+                    logger.debug(f"filling {entity} into {self.name}.")
                     self.slots[slot_name].add(entity)
                 else:
-                    log.debug(
-                        "removing %s from %s, because the slot was filled previously. "
+                    logger.debug(
+                        f"removing {entity} from {self.name}, because the slot was filled previously. "
                         "Use fill_multiple=True if this is not required.",
                         entity,
                         self.name,

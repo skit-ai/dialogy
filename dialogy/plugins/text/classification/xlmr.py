@@ -12,7 +12,7 @@ from sklearn import preprocessing  # type: ignore
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import Intent
-from dialogy.utils.logger import log
+from dialogy.utils.logger import logger
 
 
 class XLMRMultiClass(Plugin):
@@ -60,12 +60,12 @@ class XLMRMultiClass(Plugin):
 
     def validate(self, training_data: pd.DataFrame) -> bool:
         if not training_data.empty:
-            log.error("Training dataframe is empty.")
+            logger.error("Training dataframe is empty.")
             return False
 
         for column, dtype in self.training_data_schema.items():
             if column not in training_data.columns:
-                log.error(f"Column {column} not found in training data")
+                logger.error(f"Column {column} not found in training data")
                 return False
 
         columns = list(self.training_data_schema.keys())
@@ -74,8 +74,9 @@ class XLMRMultiClass(Plugin):
             for column in columns:
                 dtype = self.training_data_schema[column]
                 if not isinstance(row[column], dtype):
-                    log.error(f"Column {type(column)=} but expected {dtype}")
+                    logger.error(f"Column {type(column)=} but expected {dtype}")
                     return False
+        return True
 
     def train(self, training_data: pd.DataFrame) -> None:
         self.validate(training_data)

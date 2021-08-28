@@ -44,7 +44,7 @@ from copier import copy  # type: ignore
 from docopt import docopt  # type: ignore
 
 from dialogy.cli.project import canonicalize_project_name
-from dialogy.utils.logger import log
+from dialogy.utils.logger import logger
 
 
 def project(
@@ -76,7 +76,7 @@ def project(
         os.mkdir(destination_path)
 
     if os.listdir(destination_path) and not is_update:
-        log.error("There are files on the destination path. Aborting !")
+        logger.error("There are files on the destination path. Aborting !")
         return None
 
     # to handle copier vcs associated git template building.

@@ -48,13 +48,14 @@ The aim of this project is to be largest supplier of plugins for SLU application
     abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden
     to offer flexibility of use.
 """
+import json
 from pprint import pformat
 from typing import Any, Callable, Dict, List
 
 import attr
 
 from dialogy import constants as const
-from dialogy.utils.logger import dbg, log
+from dialogy.utils.logger import logger
 
 PluginFn = Callable[["Workflow"], None]
 
@@ -103,7 +104,6 @@ class Workflow:
         self.input: Dict[str, Any] = {}
         self.output: Dict[str, Any] = {}
 
-    @dbg(log)
     def execute(self) -> None:
         """
         Update input, output attributes.
@@ -118,33 +118,29 @@ class Workflow:
         Raises:
             `TypeError`: If any element in processors list is not a Callable.
         """
+        history = {}
         for plugin in self.plugins:
             if not callable(plugin):
                 raise TypeError(f"{plugin=} is not a callable")
 
             # logs are available only when debug=True during class initialization
-            log.debug(
-                pformat(
-                    {
-                        "stage": "Before",
-                        "plugin": plugin,
+            if self.debug:
+                history = {
+                    "plugin": plugin,
+                    "before": {
                         "input": self.input,
                         "output": self.output,
-                    }
-                )
-            )
+                    },
+                }
             plugin(self)
             # logs are available only when debug=True during class initialization
-            log.debug(
-                pformat(
-                    {
-                        "stage": "After",
-                        "plugin": plugin,
-                        "input": self.input,
-                        "output": self.output,
-                    }
-                )
-            )
+            if self.debug:
+                history["after"] = {
+                    "input": self.input,
+                    "output": self.output,
+                }
+            if history:
+                logger.debug(history)
 
     def run(self, input_: Any) -> Any:
         """
