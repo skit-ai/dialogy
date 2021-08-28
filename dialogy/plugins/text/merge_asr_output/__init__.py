@@ -28,7 +28,7 @@ from dialogy.utils import normalize
 
 
 # == merge_asr_output ==
-def merge_asr_output(utterances: Any) -> str:
+def merge_asr_output(utterances: Any) -> List[str]:
     """
     .. _merge_asr_output:
 
@@ -67,7 +67,7 @@ def merge_asr_output(utterances: Any) -> str:
     """
     try:
         flat_representation: List[str] = normalize(utterances)
-        return "<s> " + " </s> <s> ".join(flat_representation) + " </s>"
+        return ["<s> " + " </s> <s> ".join(flat_representation) + " </s>"]
     except TypeError as type_error:
         raise TypeError("`transcript` is expected in the ASR output.") from type_error
 
@@ -96,6 +96,6 @@ class MergeASROutputPlugin(Plugin):
 
     def transform(self, training_data: pd.DataFrame) -> Any:
         training_data.loc[:, self.data_column] = training_data[self.data_column].apply(
-            lambda row: merge_asr_output(json.loads(row)[const.ALTERNATIVES])
+            lambda row: merge_asr_output(json.loads(row)[const.ALTERNATIVES])[0]
         )
         return training_data
