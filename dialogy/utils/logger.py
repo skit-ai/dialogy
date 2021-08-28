@@ -19,7 +19,7 @@ config = {
 <level>{level}</level>
 -------
 TIME: <green>{time}</green>
-FILE: {name}:L{line} <blue>{function}(...)</blue> 
+FILE: {name}:L{line} <blue>{function}(...)</blue>
 <level>{message}</level>
 -------------------------------------------------------
             """.strip(),
