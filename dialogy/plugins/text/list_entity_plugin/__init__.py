@@ -18,7 +18,7 @@ from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.base.plugin import PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
-from dialogy.utils.logger import dbg, log
+from dialogy.utils.logger import logger
 
 Text = str
 Label = str
@@ -92,7 +92,7 @@ class ListEntityPlugin(EntityExtractor):
         :return: None
         :rtype: NoneType
         """
-        log.debug(
+        logger.debug(
             pformat(
                 {
                     "style": self.style,
@@ -130,8 +130,8 @@ class ListEntityPlugin(EntityExtractor):
                     else:
                         self.compiled_patterns[entity_type] = {entity_value: patterns}
 
-        log.debug("compiled patterns")
-        log.debug(self.compiled_patterns)
+        logger.debug("compiled patterns")
+        logger.debug(self.compiled_patterns)
 
     def _search(self, transcripts: List[str]) -> List[MatchType]:
         """
@@ -142,9 +142,9 @@ class ListEntityPlugin(EntityExtractor):
         :return: Token matches with the transcript.
         :rtype: List[MatchType]
         """
-        log.debug("style: %s", self.style)
-        log.debug("transcripts")
-        log.debug(transcripts)
+        logger.debug(f"style: {self.style}")
+        logger.debug("transcripts")
+        logger.debug(transcripts)
         search_fn = self.__style_search_map.get(self.style)
         if not search_fn:
             raise ValueError(
@@ -164,7 +164,7 @@ class ListEntityPlugin(EntityExtractor):
         :rtype: List[KeywordEntity]
         """
         matches_on_transcripts = self._search(transcripts)
-        log.debug(matches_on_transcripts)
+        logger.debug(matches_on_transcripts)
         entity_metadata = []
         entities: List[BaseEntity] = []
 
@@ -188,8 +188,8 @@ class ListEntityPlugin(EntityExtractor):
                 }
                 entity_metadata.append(entity)
         entity_groups = py_.group_by(entity_metadata, lambda e: e["__group"])
-        log.debug("entity groups:")
-        log.debug(pformat(entity_groups))
+        logger.debug("entity groups:")
+        logger.debug(pformat(entity_groups))
 
         for _, grouped_entities in entity_groups.items():
             entity = sorted(grouped_entities, key=lambda e: e["alternative_index"])[0]
@@ -198,13 +198,12 @@ class ListEntityPlugin(EntityExtractor):
             entity_ = KeywordEntity.from_dict(entity)
             entity_.set_value()
             entities.append(entity_)
-        log.debug("Parsed entities")
-        log.debug(entities)
+        logger.debug("Parsed entities")
+        logger.debug(entities)
 
         aggregated_entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(aggregated_entities)
 
-    @dbg(log)
     def utility(self, *args: Any) -> Any:
         return self.get_entities(*args)  # pylint: disable=no-value-for-parameter
 
@@ -276,5 +275,5 @@ class ListEntityPlugin(EntityExtractor):
                         entity_tokens.append(
                             (matches.group(), entity_type, entity_value, matches.span())
                         )
-        log.debug(entity_tokens)
+        logger.debug(entity_tokens)
         return entity_tokens

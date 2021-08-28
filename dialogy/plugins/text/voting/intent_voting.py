@@ -12,7 +12,7 @@ from dialogy.base.plugin import Plugin
 from dialogy.types import Signal
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
-from dialogy.utils.logger import dbg, log
+from dialogy.utils.logger import logger
 
 
 def adjust_signal_strength(
@@ -49,8 +49,8 @@ def adjust_signal_strength(
             f" operates on a list of floats. Found {type(aggregate_fn)} instead."
         )
     signal_groups = py_.group_by(signals, lambda signal: signal[const.SIGNAL.NAME])
-    log.debug("signal groups:")
-    log.debug(signal_groups)
+    logger.debug("signal groups:")
+    logger.debug(signal_groups)
 
     signals_ = sorted(
         [
@@ -68,8 +68,8 @@ def adjust_signal_strength(
         reverse=True,
     )
 
-    log.debug("sorted and ranked signals:")
-    log.debug(signals_)
+    logger.debug("sorted and ranked signals:")
+    logger.debug(signals_)
     return signals_
 
 
@@ -188,7 +188,6 @@ class VotePlugin(Plugin):
         self.fallback_intent: str = fallback_intent
         self.aggregate_fn: Any = aggregate_fn
 
-    @dbg(log)
     def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
         """
         Reduce a list of intents.
@@ -218,26 +217,22 @@ class VotePlugin(Plugin):
             intent_signals[1] if len(intent_signals) > 1 else ("_", 0, 0)
         )
 
-        log.debug("Intents with adjusted signal strength: ")
-        log.debug(intent_signals)
+        logger.debug("Intents with adjusted signal strength: ")
+        logger.debug(intent_signals)
 
         representative_signal = self.representation <= (main_intent[const.SIGNAL.REPRESENTATION] - conflict_intent[const.SIGNAL.REPRESENTATION])  # type: ignore
-        log.debug("representative signal: %s", representative_signal)
+        logger.debug(f"representative signal: {representative_signal}")
 
         consensus_achieved = (
             main_intent[const.SIGNAL.STRENGTH] - conflict_intent[const.SIGNAL.STRENGTH]  # type: ignore
             > self.consensus
         )
-        log.debug(
-            "consensus achieved: %s | (%s - %s) > %s",
-            consensus_achieved,
-            main_intent[const.SIGNAL.STRENGTH],
-            conflict_intent[const.SIGNAL.STRENGTH],
-            self.consensus,
+        logger.debug(
+            f"consensus achieved: {consensus_achieved=} | ({main_intent[const.SIGNAL.STRENGTH]=} - {conflict_intent[const.SIGNAL.STRENGTH]=}) > {self.consensus=}"
         )
 
         strong_signal = main_intent[const.SIGNAL.STRENGTH] > self.threshold  # type: ignore
-        log.debug("strong signal: %s", strong_signal)
+        logger.debug(f"strong signal: {strong_signal}")
 
         if (consensus_achieved or representative_signal) and strong_signal:
             return Intent(
