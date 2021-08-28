@@ -94,3 +94,7 @@ REGEX = "regex"
 SPACY = "spacy"
 PWER = "pWER"
 ALTERNATIVES = "alternatives"
+UTTERANCES = "utterances"
+
+# Transcripts containing less than or equal to this number of for words.
+WORD_THRESHOLD = 2
