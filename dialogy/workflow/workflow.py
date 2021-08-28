@@ -193,8 +193,14 @@ class Workflow:
 
     def bulk_run(self, testing_data: pd.DataFrame, id_: Union[str, int]) -> None:
         results = []
-        for _, row in testing_data.iterrows():
-            self.run(input_=row)
+        for _, row in tqdm(testing_data.iterrows(), total=len(testing_data)):
+            self.run(
+                input_={
+                    const.CLASSIFICATION_INPUT: json.loads(row[const.DATA])[
+                        const.ALTERNATIVES
+                    ]
+                }
+            )
             intents = self.output[const.INTENTS]
             if intents:
                 results.append(
