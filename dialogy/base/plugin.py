@@ -19,6 +19,7 @@ examples:
 from typing import Any, Optional
 
 from dialogy.types.plugin import PluginFn
+from dialogy.utils.logger import logger
 from dialogy.workflow import Workflow
 
 
@@ -89,6 +90,10 @@ class Plugin:
         return None
 
     def plugin(self, workflow: Workflow) -> None:
+        if self.debug:
+            logger.enable("dialogy")
+        else:
+            logger.disable("dialogy")
         if self.access:
             args = self.access(workflow)
             value = self.utility(*args)
