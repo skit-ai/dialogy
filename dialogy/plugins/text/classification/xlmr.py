@@ -21,8 +21,9 @@ from dialogy.utils import load_file, logger, save_file
 
 class XLMRMultiClass(Plugin):
     """
-    This plugin provides a classifier based on `XLM-Roberta <https://arxiv.org/abs/1911.02116>`. 
+    This plugin provides a classifier based on `XLM-Roberta <https://arxiv.org/abs/1911.02116>`.
     """
+
     def __init__(
         self,
         model_dir: str,
@@ -112,7 +113,9 @@ class XLMRMultiClass(Plugin):
         :return: A list of intents corresponding to texts.
         :rtype: List[Intent]
         """
-        fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self.__class__)
+        fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(
+            self.__class__
+        )
         if self.model is None:
             return [fallback_output]
 
@@ -131,7 +134,9 @@ class XLMRMultiClass(Plugin):
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(
                 self.__class__
-            ) if score > self.threshold else fallback_output
+            )
+            if score > self.threshold
+            else fallback_output
             for intent, score in zip(predicted_intents, confidence_list)
         ]
 
