@@ -113,6 +113,7 @@ class XLMRMultiClass(Plugin):
         :return: A list of intents corresponding to texts.
         :rtype: List[Intent]
         """
+        logger.debug(texts)
         fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(
             self.__class__
         )
@@ -168,10 +169,13 @@ class XLMRMultiClass(Plugin):
         :type training_data: pd.DataFrame
         """
         if not self.validate(training_data):
-            logger.warning(f"Training dataframe is invalid, for {self.__class__.__name__} plugin.")
+            logger.warning(
+                f"Training dataframe is invalid, for {self.__class__.__name__} plugin."
+            )
             return
 
         encoder = self.labelencoder.fit(training_data[self.label_column])
+        logger.debug(f"sample\n{training_data.sample(5)}")
         training_data.rename(columns={self.data_column: "text"}, inplace=True)
         training_data[self.label_column] = encoder.transform(
             training_data[self.label_column]
