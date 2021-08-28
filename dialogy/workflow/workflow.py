@@ -48,8 +48,8 @@ The aim of this project is to be largest supplier of plugins for SLU application
     abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden
     to offer flexibility of use.
 """
-import time
 import json
+import time
 from typing import Any, Callable, Dict, List
 
 import attr
