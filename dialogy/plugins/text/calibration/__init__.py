@@ -12,9 +12,8 @@ import numpy as np
 
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin
-from dialogy.plugins.text.normalize_utterance import normalize
 from dialogy.types import PluginFn, Transcript, Utterance
-from dialogy.utils.file_handler import safe_load
+from dialogy.utils import normalize, safe_load
 
 
 def predict_alternative(

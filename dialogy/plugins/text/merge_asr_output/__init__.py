@@ -20,7 +20,7 @@ help with precision at the cost of recall.
 from typing import Any, List, Optional
 
 from dialogy.base.plugin import Plugin, PluginFn
-from dialogy.plugins.text.normalize_utterance import normalize
+from dialogy.utils import normalize
 
 
 # == merge_asr_output ==
