@@ -2,10 +2,12 @@
 This module was created in response to: https://github.com/Vernacular-ai/dialogy/issues/9
 we will ship functions to assist normalization of ASR output, we will refer to these as Utterances.
 """
+import itertools
 from functools import partial
 from typing import Any, Callable, Dict, List
 
 from dialogy import constants as const
+from dialogy.types import Transcript, Utterance
 
 
 def dict_get(prop: str, obj: Dict[str, Any]) -> Any:
@@ -173,6 +175,18 @@ def is_string(maybe_utterance: Any) -> bool:
     return isinstance(maybe_utterance, str)
 
 
+def utterance2alternatives(
+    utterances: List[Utterance], key: str = const.TRANSCRIPT
+) -> List[Transcript]:
+    """
+    Convert a list of utterances to a list of alternatives.
+    """
+    return [
+        " ".join([alternative[key] for alternative in alternatives])
+        for alternatives in itertools.product(*utterances)
+    ]
+
+
 def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
     """
     Adapt various non-standard ASR alternative forms.
@@ -201,11 +215,7 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
         TypeError: If :code:`maybe_utterance` is none of the expected types.
     """
     if is_utterance(maybe_utterance):
-        return [
-            alternative[key]
-            for alternatives in maybe_utterance
-            for alternative in alternatives
-        ]
+        return utterance2alternatives(maybe_utterance)
 
     if is_unsqueezed_utterance(maybe_utterance):
         return [alternative[key] for alternative in maybe_utterance]
