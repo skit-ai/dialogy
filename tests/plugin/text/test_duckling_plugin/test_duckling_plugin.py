@@ -36,7 +36,7 @@ def test_plugin_io_missing() -> None:
     )
     plugin = parser()
 
-    workflow = Workflow(preprocessors=[plugin], postprocessors=[])
+    workflow = Workflow([plugin])
     with pytest.raises(TypeError):
         workflow.run("")
 
@@ -56,16 +56,15 @@ def test_plugin_io_type_mismatch(access, mutate) -> None:
     Since we have provided `access`, `mutate` of incorrect types to `DucklingPlugin`
     we will receive a `TypeError`.
     """
-    parser = DucklingPlugin(
+    duckling_plugin = DucklingPlugin(
         access=access,
         mutate=mutate,
         locale="en_IN",
         dimensions=["time"],
         timezone="Asia/Kolkata",
-    )
-    plugin = parser()
+    )()
 
-    workflow = Workflow(preprocessors=[plugin], postprocessors=[])
+    workflow = Workflow([duckling_plugin])
     with pytest.raises(TypeError):
         workflow.run("")
 
@@ -149,13 +148,13 @@ def test_duckling_timeout() -> None:
         mutate=mutate,
         threshold=0.2,
         timeout=0.01,
-    )
+    )()
 
     httpretty.register_uri(
         httpretty.POST, "http://0.0.0.0:8000/parse", body=raise_timeout
     )
 
-    workflow = Workflow(preprocessors=[duckling_plugin()], postprocessors=[])
+    workflow = Workflow([duckling_plugin])
     workflow.run("test")
     assert workflow.output["entities"] == []
 
@@ -188,7 +187,7 @@ def test_plugin_working_cases(payload) -> None:
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    workflow = Workflow(preprocessors=[parser()], postprocessors=[])
+    workflow = Workflow([parser()])
 
     if expected_types is not None:
         workflow.run(body)

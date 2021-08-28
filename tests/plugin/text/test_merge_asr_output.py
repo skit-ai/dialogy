@@ -20,7 +20,7 @@ def test_merge_asr_output() -> None:
     This case shows the merge in case there is only one option.
     """
 
-    workflow = Workflow(preprocessors=[merge_asr_output_plugin], postprocessors=[])
+    workflow = Workflow([merge_asr_output_plugin])
 
     workflow.run([[{"transcript": "hello world", "confidence": None}]])
     assert workflow.input == "<s> hello world </s>"
@@ -30,7 +30,7 @@ def test_merge_longer_asr_output() -> None:
     """
     This case shows the merge in case there are multiple options.
     """
-    workflow = Workflow(preprocessors=[merge_asr_output_plugin], postprocessors=[])
+    workflow = Workflow([merge_asr_output_plugin])
 
     workflow.run(
         [
@@ -53,7 +53,7 @@ def test_merge_keyerror_on_missing_transcript() -> None:
     then this plugin would not work for you.
     """
 
-    workflow = Workflow(preprocessors=[merge_asr_output_plugin], postprocessors=[])
+    workflow = Workflow([merge_asr_output_plugin])
 
     with pytest.raises(TypeError):
         workflow.run([[{"not_transcript": "hello world", "confidence": None}]])

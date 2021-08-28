@@ -80,8 +80,7 @@ def test_tokenizer_plugin() -> None:
     # create an instance of a `Workflow`.
     # we are calling the `arbitrary_plugin` to get the `plugin` de method.
     workflow = Workflow(
-        preprocessors=[tokenizer_plugin(access=access, mutate=mutate)],
-        postprocessors=[],
+        [tokenizer_plugin(access=access, mutate=mutate)],
     )
     workflow.run("Mary had a little lambda")
 
@@ -149,11 +148,11 @@ def test_arbitrary_plugin() -> None:
     We will test how an arbitrary-class-based plugin works with a workflow.
     """
     # create an instance of `ArbitraryPlugin`.
-    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate)
+    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate)()
 
     # create an instance of a `Workflow`.
     # we are calling the `arbitrary_plugin` to get the `plugin` de method.
-    workflow = Workflow(preprocessors=[arbitrary_plugin()], postprocessors=[])
+    workflow = Workflow([arbitrary_plugin])
 
     # This runs all the `preprocessors` and `postprocessors` provided previously.
     # we can expect our `arbitrary_plugin` will also be used.

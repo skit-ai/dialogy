@@ -20,7 +20,7 @@ help with precision at the cost of recall.
 from typing import Any, List, Optional
 
 from dialogy.base.plugin import Plugin, PluginFn
-from dialogy.plugins.preprocess.text.normalize_utterance import normalize
+from dialogy.plugins.text.normalize_utterance import normalize
 
 
 # == merge_asr_output ==
@@ -43,7 +43,7 @@ def merge_asr_output(utterances: Any) -> str:
 
     .. ipython:: python
 
-        from dialogy.plugins.preprocess.text.merge_asr_output import merge_asr_output
+        from dialogy.plugins.text.merge_asr_output import merge_asr_output
 
         utterances = ["This is a sentence", "That is a sentence"]
         merge_asr_output(utterances)

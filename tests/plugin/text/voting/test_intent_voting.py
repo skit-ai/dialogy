@@ -23,7 +23,7 @@ def test_voting_0_intents():
     """
     intents: List[Intent] = []
     vote_plugin = VotePlugin(access=lambda w: (w.output[0], 0), mutate=update_intent)()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
     assert intent.name == const.S_INTENT_OOS
@@ -42,7 +42,7 @@ def test_voting_n_intents():
     vote_plugin = VotePlugin(
         debug=True, access=lambda w: (w.output[0], len(intents)), mutate=update_intent
     )()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
     assert intent.name == "a"
@@ -61,7 +61,7 @@ def test_voting_on_conflicts():
     vote_plugin = VotePlugin(
         access=lambda w: (w.output[0], len(intents)), mutate=update_intent
     )()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
     assert intent.name == "_oos_"
@@ -80,7 +80,7 @@ def test_voting_on_weak_signals():
     vote_plugin = VotePlugin(
         access=lambda w: (w.output[0], len(intents)), mutate=update_intent
     )()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
     assert intent.name == "_oos_"
@@ -95,7 +95,7 @@ def test_missing_access():
     ]
 
     vote_plugin = VotePlugin(mutate=update_intent)()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     with pytest.raises(TypeError):
         intent, _ = workflow.run(input_="")
@@ -110,7 +110,7 @@ def test_missing_mutate():
     ]
 
     vote_plugin = VotePlugin(access=lambda w: w.output[0])()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     with pytest.raises(TypeError):
         intent, _ = workflow.run(input_="")
@@ -128,7 +128,7 @@ def test_representation_oos():
     vote_plugin = VotePlugin(
         access=lambda w: (w.output[0], len(intents)), mutate=update_intent
     )()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
     assert intent.name == "_oos_"
@@ -147,7 +147,7 @@ def test_representation_intent():
     vote_plugin = VotePlugin(
         access=lambda w: (w.output[0], len(intents)), mutate=update_intent
     )()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
     intent, _ = workflow.run(input_="")
     assert intent.name == "a"
@@ -168,7 +168,7 @@ def test_aggregate_fn_incorrect():
         mutate=update_intent,
         aggregate_fn=5,
     )()
-    workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+    workflow = Workflow([vote_plugin])
     workflow.output = intents, []
 
     with pytest.raises(TypeError):

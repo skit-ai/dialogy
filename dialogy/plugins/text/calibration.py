@@ -12,7 +12,7 @@ import numpy as np
 
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin
-from dialogy.plugins.preprocess.text.normalize_utterance import normalize
+from dialogy.plugins.text.normalize_utterance import normalize
 from dialogy.types import PluginFn, Transcript, Utterance
 from dialogy.utils.file_handler import safe_load
 
@@ -99,7 +99,7 @@ class WERCalibrationPlugin(Plugin):
             import numpy as np
             from scipy import sparse
             from dialogy.plugins import WERCalibrationPlugin
-            from dialogy.plugins.preprocess.text.calibration import WERCalibrationConfig
+            from dialogy.plugins.text.calibration import WERCalibrationConfig
             from dialogy.workflow.workflow import Workflow
             from dialogy import constants as const
 
