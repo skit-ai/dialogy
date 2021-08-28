@@ -9,6 +9,7 @@ Import:
 - TIME_ENTITY_PROPS
 - PEOPLE_ENTITY_PROPS
 """
+PLUGINS = "plugins"
 PREPROCESSORS = "preprocessors"
 POSTPROCESSORS = "postprocessors"
 DEBUG = "debug"
