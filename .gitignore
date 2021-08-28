@@ -144,7 +144,10 @@ docs_src/_build/
 
 .DS_Store
 
-# files
+# xlmr meta and data files
 *.csv
 *.json
 *.pb
+cache_dir
+outputs
+runs
