@@ -16,31 +16,35 @@
     }
   }
   expected: 
-    alternatives: *input1
+    alternatives: ["hello world", "yes"]
     pWER: [0.0, 0.0]
 
 
 - description: "Run mock vectorizer and classifier"
   input: &input2
     - 
-      - transcript: "hello world"
+      - transcript: "hello"
         am_score: 200
         lm_score: 100
-      - transcript: "yes"
+      - transcript: "yellow"
         am_score: 300
         lm_score: 400
     -
-      - transcript: "hello world"
+      - transcript: "yes"
         am_score: 200
         lm_score: 100
-      - transcript: "yes"
+      - transcript: "es"
         am_score: 300
         lm_score: 400
+    - 
+      - transcript: "listen"
+        am_score: 200
+        lm_score: 100
   lang: "en"
   threshold: 1.5
   mock: true
   expected: 
-    alternatives: *input2
+    alternatives: ["hello yes listen", "hello es listen", "yellow yes listen", "yellow es listen"]
     pWER: [1.0, 1.0, 1.0, 1.0]
 
 
@@ -55,5 +59,5 @@
     }
   }
   expected: 
-    alternatives: [[]]
+    alternatives: []
     pWER: []
