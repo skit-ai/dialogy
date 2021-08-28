@@ -127,18 +127,24 @@ class Workflow:
             if self.debug:
                 history = {
                     "plugin": plugin,
-                    "before": {
-                        "input": self.input,
-                        "output": self.output,
-                    },
+                    "before": json.dumps(
+                        {
+                            "input": self.input,
+                            "output": self.output,
+                        },
+                        indent=2,
+                    ),
                 }
             plugin(self)
             # logs are available only when debug=True during class initialization
             if self.debug:
-                history["after"] = {
-                    "input": self.input,
-                    "output": self.output,
-                }
+                history["after"] = json.dumps(
+                    {
+                        "input": self.input,
+                        "output": self.output,
+                    },
+                    indent=2,
+                )
             if history:
                 logger.debug(history)
 

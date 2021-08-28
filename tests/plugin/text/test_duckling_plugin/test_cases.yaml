@@ -366,7 +366,7 @@
     dimensions: ["time", "date"]
     timezone: "Asia/Kolkata"
     datetime_filters: "future"
-    debug: True
+    debug: False
   mock_entity_json: [{
     'body': 'परसो शाम 5 बजे',
     'dim': 'time',
@@ -411,7 +411,7 @@
     dimensions: ["time", "date", "numer"]
     timezone: "Asia/Kolkata"
     datetime_filters: "future"
-    debug: True
+    debug: False
   mock_entity_json: [{
     'body': 'परसो शाम 5 बजे 2 प्लेट चहिये',
     'dim': 'time',
@@ -464,7 +464,7 @@
     dimensions: ["time", "date"]
     timezone: "Asia/Kolkata"
     datetime_filters: "latest"
-    debug: True
+    debug: False
   mock_entity_json: [{
     'body': 'परसो शाम 5 बजे',
     'dim': 'time',
@@ -508,7 +508,7 @@
     dimensions: ["time", "date"]
     timezone: "Asia/Kolkata"
     datetime_filters: 1425
-    debug: True
+    debug: False
   mock_entity_json: [{
     'body': 'परसो शाम 5 बजे',
     'dim': 'time',
@@ -552,7 +552,7 @@
     dimensions: ["time", "date"]
     timezone: "Asia/Kolkata"
     datetime_filters: "latest"
-    debug: True
+    debug: False
   mock_entity_json: [{
     'body': 'परसो शाम 5 बजे',
     'dim': 'time',
@@ -596,7 +596,7 @@
     dimensions: ["time", "date"]
     timezone: "Asia/Kolkata"
     datetime_filters: 12
-    debug: True
+    debug: False
   mock_entity_json: [{
     'body': 'परसो शाम 5 बजे',
     'dim': 'time',

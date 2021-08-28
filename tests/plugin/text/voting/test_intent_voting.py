@@ -40,7 +40,7 @@ def test_voting_n_intents():
         Intent(name="a", score=1),
     ]
     vote_plugin = VotePlugin(
-        debug=True, access=lambda w: (w.output[0], len(intents)), mutate=update_intent
+        debug=False, access=lambda w: (w.output[0], len(intents)), mutate=update_intent
     )()
     workflow = Workflow([vote_plugin])
     workflow.output = intents, []

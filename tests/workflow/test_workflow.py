@@ -69,7 +69,7 @@ def test_workflow_run_debug_mode() -> None:
     def mock_preproc(w):
         w.input = 20
 
-    workflow = Workflow([mock_preproc, mock_postproc], debug=True)
+    workflow = Workflow([mock_preproc, mock_postproc], debug=False)
 
     workflow.run(2)
 
