@@ -121,6 +121,7 @@ class XLMRMultiClass(Plugin):
             self.__class__
         )
         if self.model is None:
+            logger.error(f"No model found for plugin {self.__class__.__name__}!")
             return [fallback_output]
 
         if not self.valid_labelencoder:
