@@ -1,7 +1,7 @@
 ---
 exclude_paths:
+  - "dialogy/plugins/__init__.py"
   - "dialogy/parser/text/entity/__init__.py"
-  - "dialogy/plugin/__init__.py"
   - "dialogy/postprocess/text/__init__.py"
   - "dialogy/constants/__init__.py"
   - "dialogy/errors/__init__.py"
@@ -21,4 +21,3 @@ exclude_paths:
   - "docs_src/**"
   - ".github/**"
   - "*.md"
-
