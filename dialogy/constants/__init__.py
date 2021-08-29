@@ -114,3 +114,4 @@ LABELS = "labels"
 ENTITIES = "entities"
 SCORE = "score"
 LABELENCODER_FILE = "labelencoder.pkl"
+INVALID_TOKENS = ["<UNK>", "<PAD>", "<SOS>", "<EOS>"]
