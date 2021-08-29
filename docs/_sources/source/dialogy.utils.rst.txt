@@ -20,6 +20,22 @@ dialogy.utils.logger module
    :undoc-members:
    :show-inheritance:
 
+dialogy.utils.misc module
+-------------------------
+
+.. automodule:: dialogy.utils.misc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dialogy.utils.normalize\_utterance module
+-----------------------------------------
+
+.. automodule:: dialogy.utils.normalize_utterance
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

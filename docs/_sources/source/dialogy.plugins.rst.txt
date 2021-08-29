@@ -7,8 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   dialogy.plugins.postprocess
-   dialogy.plugins.preprocess
+   dialogy.plugins.text
 
 Module contents
 ---------------
