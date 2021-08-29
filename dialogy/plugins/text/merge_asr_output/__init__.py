@@ -18,6 +18,7 @@ This may not be very helpful, there is a :ref:`VotePlugin <vote_plugin>` under d
 help with precision at the cost of recall.
 """
 import json
+import traceback
 from logging import log
 from typing import Any, List, Optional
 
@@ -25,7 +26,7 @@ import pandas as pd  # type: ignore
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
-from dialogy.utils import normalize, logger
+from dialogy.utils import logger, normalize
 
 
 # == merge_asr_output ==
@@ -99,12 +100,23 @@ class MergeASROutputPlugin(Plugin):
         training_data["use"] = True
         logger.debug("Transforming training data.")
         for i, row in training_data.iterrows():
-            asr_output = json.loads(row[self.data_column]).get(const.ALTERNATIVES, [])
-            if asr_output:
-                training_data.loc[i, self.data_column] = merge_asr_output(asr_output)[0]
-            else:
+            try:
+                asr_output = json.loads(row[self.data_column]).get(
+                    const.ALTERNATIVES, []
+                )
+                if asr_output:
+                    training_data.loc[i, self.data_column] = merge_asr_output(
+                        asr_output
+                    )[0]
+                else:
+                    training_data.loc[i, "use"] = False
+            except Exception as error:  # pylint: disable=broad-except
                 training_data.loc[i, "use"] = False
+                logger.error(f"{error}\n{traceback.format_exc()}")
+
         training_data_ = training_data[training_data.use]
         discarded_data = len(training_data) - len(training_data_)
-        logger.debug(f"Discarding {discarded_data} samples because the alternatives couldn't be parsed.")
+        logger.debug(
+            f"Discarding {discarded_data} samples because the alternatives couldn't be parsed."
+        )
         return training_data_
