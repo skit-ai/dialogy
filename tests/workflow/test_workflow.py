@@ -1,5 +1,6 @@
 import pytest
 
+from dialogy.plugins import MergeASROutputPlugin
 from dialogy.workflow import Workflow
 
 
@@ -29,8 +30,26 @@ def test_workflow_postprocessors_not_list_error() -> None:
 
 
 def test_not_callable_pre_post_processors_type_error() -> None:
-    """"""
     workflow = Workflow([2, 3])  # type: ignore
 
     with pytest.raises(TypeError):
         workflow.execute()
+
+
+def test_workflow_history_logs() -> None:
+    """
+    We can execute the workflow.
+    """
+
+    def m(w, v):
+        w.output = v
+
+    workflow = Workflow(
+        [MergeASROutputPlugin(access=lambda w: w.input, mutate=m, debug=True)],
+        debug=True,
+    )
+    workflow.run(input_=["apples"])
+    assert workflow.output == ["<s> apples </s>"], "workflow.output should == 'apples'."
+    workflow.flush()
+    assert workflow.input == {}
+    assert workflow.output == {}
