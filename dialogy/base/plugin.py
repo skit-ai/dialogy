@@ -116,7 +116,7 @@ class Plugin:
         """
         return self.plugin
 
-    def train(self, training_data: Any) -> Any:  # pylint: disable=unused-argument
+    def train(self, training_data: Any) -> Any:  # pylint: disable=unused-argument disable=no-self-use
         """
         Train a plugin.
 
@@ -124,7 +124,7 @@ class Plugin:
         """
         return None
 
-    def transform(self, training_data: Any) -> Any:  # pylint: disable=unused-argument
+    def transform(self, training_data: Any) -> Any:  # pylint: disable=unused-argument disable=no-self-use
         """
         Transform data for a plugin in the workflow.
         """
