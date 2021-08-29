@@ -1,3 +1,6 @@
+import json
+
+import pandas as pd
 import pytest
 
 from dialogy.plugins import MergeASROutputPlugin
@@ -56,3 +59,15 @@ def test_merge_keyerror_on_missing_transcript() -> None:
 
     with pytest.raises(TypeError):
         workflow.run([[{"not_transcript": "hello world", "confidence": None}]])
+
+
+def test_invalid_data() -> None:
+    train_df = pd.DataFrame(
+        [
+            {"data": json.dumps({"alternatives": "yes"})},
+            {"data": json.dumps({})},
+            {"data": ""},
+        ]
+    )
+    train_df_ = merge_asr_output_plugin.transform(train_df)
+    assert len(train_df) - len(train_df_) == 2
