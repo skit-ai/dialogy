@@ -52,7 +52,9 @@ class XLMRMultiClass(Plugin):
         self.fallback_label = "_error_"
         self.data_column = "data"
         self.label_column = "labels"
-        self.labelencoder_file_path = os.path.join(self.model_dir, "labelencoder.pkl")
+        self.labelencoder_file_path = os.path.join(
+            self.model_dir, const.LABELENCODER_FILE
+        )
         self.threshold = threshold
         self.round = score_round_off
         self.args = args
@@ -62,7 +64,8 @@ class XLMRMultiClass(Plugin):
                 self.init_model()
         except EOFError:
             logger.error(
-                f"Plugin {self.__class__.__name__} Failed to load labelencoder from {self.labelencoder_file_path}."
+                f"Plugin {self.__class__.__name__} Failed to load labelencoder from {self.labelencoder_file_path}. "
+                "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
             )
 
     def init_model(self, n: Optional[int] = None) -> None:
