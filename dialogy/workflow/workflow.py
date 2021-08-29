@@ -203,7 +203,7 @@ class Workflow:
 
     def prediction_labels(
         self, testing_data: pd.DataFrame, id_: Union[str, int]
-    ) -> None:
+    ) -> pd.DataFrame:
         """
         Evaluate the workflow with all the embedded plugins.
 
@@ -230,11 +230,11 @@ class Workflow:
                     ]
                 }
             )
-            intents = self.output[const.INTENTS]
+            intents = self.output.get(const.INTENTS, [])
             if intents:
                 results.append(
                     {
-                        const.ID: row[id_],
+                        id_: row[id_],
                         const.INTENT: intents[0].name,
                         const.SCORE: intents[0].score,
                     }
