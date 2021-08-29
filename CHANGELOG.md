@@ -2,7 +2,6 @@
 - [x] update: WER calibration refactored to contain core logic.
 - [x] update: **Deprecated** post-processors and pre-processors.
 - [x] feat: trainable plugins.
-- [x] feat: workflows produce events.
 
 # 0.7.4
 - [x] update: WER calibration as a plugin.
