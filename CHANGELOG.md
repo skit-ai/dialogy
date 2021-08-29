@@ -2,6 +2,7 @@
 - [x] update: WER calibration refactored to contain core logic.
 - [x] update: **Deprecated** post-processors and pre-processors.
 - [x] feat: trainable plugins.
+- [x] update: **Drop support for python 3.7**
 
 # 0.7.4
 - [x] update: WER calibration as a plugin.
@@ -15,7 +16,7 @@
 
 # 0.7.1
 - [x] [fix](https://github.com/Vernacular-ai/dialogy/issues/60): Entity scoring within `EntityExtractor` and `DucklingPlugin`.
-- [x] [fix](https://github.com/Vernacular-ai/dialogy/issues/58): CurrencyEntity added to operate on `amount-of-money` dimension. 
+- [x] [fix](https://github.com/Vernacular-ai/dialogy/issues/58): CurrencyEntity added to operate on `amount-of-money` dimension.
 - [x] add: TimeIntervalEntities sometimes may contain a hybrid structure that resembles some values as `TimeEntities`.
 
 # 0.7.0
@@ -32,10 +33,10 @@
 
 # 0.6.3
 - [x] fix: #46 `ListEntityPlugin` overwrites if there are mutliple `entity_value` patterns for the same `entity_type`.
-- [x] fix: #47 `DucklingPlugin` compares int vs int for `Duckling.FUTURE` and `Duckling.PAST` feature comparison. 
+- [x] fix: #47 `DucklingPlugin` compares int vs int for `Duckling.FUTURE` and `Duckling.PAST` feature comparison.
 
 # 0.6.2
-- [x] fix: `ListEntityPlugin` 
+- [x] fix: `ListEntityPlugin`
   - Now supports a map for entity-type, entity-values for keyword based entities.
   - Fixed bug that returns `None` when custom entity classes are required.
 
@@ -57,7 +58,7 @@
 - [x] deprecate: DucklingParser set for deprecation.
 - [x] add: DucklingPlugin. ([#28](https://github.com/Vernacular-ai/dialogy/pull/28))
 - [x] add: DucklingPlugin supports association of [custom entities with dimensions](https://github.com/Vernacular-ai/dialogy/issues/21). ([8d7fbc47](https://github.com/Vernacular-ai/dialogy/commit/8d7fbc47f08da9384add9d850aeadbb08b3de0d9))
-- [x] refactor: [DucklingParser had methods that parsed and restructured json](https://github.com/Vernacular-ai/dialogy/issues/26) to be compatible with a certain class structure. This made it hard to execute `BaseEntity.from_dict(duckling_json)`. 
+- [x] refactor: [DucklingParser had methods that parsed and restructured json](https://github.com/Vernacular-ai/dialogy/issues/26) to be compatible with a certain class structure. This made it hard to execute `BaseEntity.from_dict(duckling_json)`.
   These methods are now part of individual `Entity` class. ([#28](https://github.com/Vernacular-ai/dialogy/pull/28))
 
 # 0.5.0
