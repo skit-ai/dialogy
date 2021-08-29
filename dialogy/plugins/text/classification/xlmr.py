@@ -129,6 +129,9 @@ class XLMRMultiClass(Plugin):
                 f"Seems like you forgot to save the {self.__class__.__name__} plugin."
             )
 
+        if not texts:
+            return [fallback_output]
+
         predictions, logits = self.model.predict(texts)
         if not predictions:
             return [fallback_output]
