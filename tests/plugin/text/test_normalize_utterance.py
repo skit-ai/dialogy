@@ -29,13 +29,7 @@ def test_normalize_utterance(utterance: Any, expected: List[str]) -> None:
 
 @pytest.mark.parametrize(
     "utterance",
-    [
-        1,
-        [[{"teapot": TEST_STRING}]],
-        [{"teapot": TEST_STRING}],
-        [1, 2],
-        None,
-    ],
+    [1, [[{"teapot": TEST_STRING}]], [{"teapot": TEST_STRING}], [1, 2]],
 )
 def test_cant_normalize_utterance(utterance: Any) -> None:
     with pytest.raises(TypeError):
