@@ -201,7 +201,9 @@ class Workflow:
             if transformed_data is not None:
                 training_data = transformed_data
 
-    def prediction_labels(self, testing_data: pd.DataFrame, id_: Union[str, int]) -> None:
+    def prediction_labels(
+        self, testing_data: pd.DataFrame, id_: Union[str, int]
+    ) -> None:
         """
         Evaluate the workflow with all the embedded plugins.
 
