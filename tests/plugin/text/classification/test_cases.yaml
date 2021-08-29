@@ -1,37 +1,37 @@
-- description: ""
-  input:
+- input:
     - "yes"
-  expected: 
+  expected:
     label: "_confirm_"
-    scores: [[-7.4609375,  7.640625 ]]
+    scores: 1
 
-- description: ""
-  input:
+- input:
     - "no"
-  expected: 
+  expected:
     label: "_cancel_"
-    scores: [[ 7.40625  , -7.5546875]]
+    scores: 1
 
-- description: ""
-  input:
+- input:
     - "yes"
     - "s"
-  expected: 
+  expected:
     label: "_confirm_"
-    scores: [[-7.47265625,  7.69140625]]
+    scores: 1
 
-- description: ""
-  input: 
+- input:
     - "9"
     - "new"
     - "no"
   expected:
     label: "_cancel_"
-    scores: [[ 7.41796875, -7.56640625]]
+    scores: 1
 
-- description: ""
-  input: 
+- input:
     - "this will blow up into an error label"
   expected:
     label: "_error_"
-    scores: [[ 7.41796875, -7.56640625]]
+    scores: 1
+
+- input: []
+  expected:
+    label: "_error_"
+    scores: 1
