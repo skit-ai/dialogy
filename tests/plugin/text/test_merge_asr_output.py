@@ -23,7 +23,7 @@ def test_merge_asr_output() -> None:
     workflow = Workflow([merge_asr_output_plugin])
 
     workflow.run([[{"transcript": "hello world", "confidence": None}]])
-    assert workflow.input == "<s> hello world </s>"
+    assert workflow.input == ["<s> hello world </s>"]
 
 
 def test_merge_longer_asr_output() -> None:
@@ -41,10 +41,9 @@ def test_merge_longer_asr_output() -> None:
             ]
         ]
     )
-    assert (
-        workflow.input
-        == "<s> hello world </s> <s> hello word </s> <s> jello world </s>"
-    )
+    assert workflow.input == [
+        "<s> hello world </s> <s> hello word </s> <s> jello world </s>"
+    ]
 
 
 def test_merge_keyerror_on_missing_transcript() -> None:
