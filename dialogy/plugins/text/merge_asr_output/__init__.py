@@ -19,7 +19,6 @@ help with precision at the cost of recall.
 """
 import json
 import traceback
-from logging import log
 from typing import Any, List, Optional
 
 import pandas as pd  # type: ignore
@@ -68,8 +67,14 @@ def merge_asr_output(utterances: Any) -> List[str]:
         :code:`List[Dict[str, str]]`.
     """
     try:
-        flat_representation: List[str] = normalize(utterances)
-        return ["<s> " + " </s> <s> ".join(flat_representation) + " </s>"]
+        transcripts: List[str] = normalize(utterances)
+        invalid_transcript = len(transcripts) == 1 and any(
+            token.lower() in transcripts for token in const.INVALID_TOKENS
+        )
+        if invalid_transcript or not transcripts:
+            return []
+        else:
+            return ["<s> " + " </s> <s> ".join(transcripts) + " </s>"]
     except TypeError as type_error:
         raise TypeError("`transcript` is expected in the ASR output.") from type_error
 
