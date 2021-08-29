@@ -185,13 +185,40 @@ class Workflow:
         )
 
     def train(self, training_data: pd.DataFrame) -> None:
+        """
+        Train all the plugins in the workflow.
+
+        Plugin's have a no-op train method by default. The one's that do require training
+        should override this method. All trainable plugins manage their data validation
+        (in case the data isn't suitable for them) and saving/loading artifacts.
+
+        :param training_data: [description]
+        :type training_data: pd.DataFrame
+        """
         for plugin in self.plugins:
             plugin.train(training_data)
             transformed_data = plugin.transform(training_data)
             if transformed_data is not None:
                 training_data = transformed_data
 
-    def bulk_run(self, testing_data: pd.DataFrame, id_: Union[str, int]) -> None:
+    def prediction_labels(self, testing_data: pd.DataFrame, id_: Union[str, int]) -> None:
+        """
+        Evaluate the workflow with all the embedded plugins.
+
+        Plugins can be evaluated individually for fine-tuning but since there are interactions
+        between them, we need to evaluate them all together. This helps in cases where these interactions
+        are a cause of a model's poor performance.
+
+        This method doesn't mutate the given test dataset, instead we produce results with the same `id_`
+        so that they can be joined and studied together.
+
+        :param testing_data: A pandas DataFrame containing the testing data.
+        :type testing_data: pd.DataFrame
+        :param id_: The join parameter, which is used to join the testing data with the ground truth data.
+        :type id_: Union[str, int]
+        :return: A pandas DataFrame containing the workflow output.
+        :rtype: pd.DataFrame
+        """
         results = []
         for _, row in tqdm(testing_data.iterrows(), total=len(testing_data)):
             self.run(
