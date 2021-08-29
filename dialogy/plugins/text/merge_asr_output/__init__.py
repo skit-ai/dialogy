@@ -18,13 +18,14 @@ This may not be very helpful, there is a :ref:`VotePlugin <vote_plugin>` under d
 help with precision at the cost of recall.
 """
 import json
+from logging import log
 from typing import Any, List, Optional
 
 import pandas as pd  # type: ignore
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
-from dialogy.utils import normalize
+from dialogy.utils import normalize, logger
 
 
 # == merge_asr_output ==
@@ -94,8 +95,16 @@ class MergeASROutputPlugin(Plugin):
     def utility(self, *args: Any) -> Any:
         return merge_asr_output(*args)
 
-    def transform(self, training_data: pd.DataFrame) -> Any:
-        training_data.loc[:, self.data_column] = training_data[self.data_column].apply(
-            lambda row: merge_asr_output(json.loads(row)[const.ALTERNATIVES])[0]
-        )
-        return training_data
+    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+        training_data["use"] = True
+        logger.debug("Transforming training data.")
+        for i, row in training_data.iterrows():
+            asr_output = json.loads(row[self.data_column]).get(const.ALTERNATIVES, [])
+            if asr_output:
+                training_data.loc[i, self.data_column] = merge_asr_output(asr_output)[0]
+            else:
+                training_data.loc[i, "use"] = False
+        training_data_ = training_data[training_data.use]
+        discarded_data = len(training_data) - len(training_data_)
+        logger.debug(f"Discarding {discarded_data} samples because the alternatives couldn't be parsed.")
+        return training_data_
