@@ -218,4 +218,4 @@ class XLMRMultiClass(Plugin):
         )
 
     def utility(self, *args: Any) -> Any:
-        return self.inference(*args) # pylint: disable=no-value-for-parameter
+        return self.inference(*args)  # pylint: disable=no-value-for-parameter
