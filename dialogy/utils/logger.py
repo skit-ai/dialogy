@@ -22,7 +22,7 @@ TIME: <green>{time}</green>
 FILE: {name}:L{line} <blue>{function}(...)</blue>
 <level>{message}</level>
 -------------------------------------------------------
-            """.strip(),
+""",
             "colorize": True,
         },
         {
