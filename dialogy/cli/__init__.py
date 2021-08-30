@@ -10,48 +10,36 @@ This module exposes a command line utility to create project scaffolding. This c
     poetry install
     make lint
 
-Usage:
-  __init__.py create <project>
-  __init__.py create <project> <template> [--namespace=<namespace>] [--vcs=<vcs>]
-  __init__.py update <project>
-  __init__.py update <project> <template> [--namespace=<namespace>] [--vcs=<vcs>]
+usage: dialogy [-h] [--template TEMPLATE] [--namespace NAMESPACE] [--vcs {HEAD,TAG}] {create,update} project
 
-Options:
+positional arguments:
+  {create,update}
+  project               A directory with this name will be created at the root of command invocation.
 
-    <template>
-        The source data directory; models, datasets, metrics will be copied from here.
-
-    <project>
-        A directory with this name will be created at the root of command invocation.
-
-    --namespace=<namespace>
-        The version of the dataset, model, metrics to use.
-
-    --vcs=<vcs>
-        accepts either "HEAD" or "TAG", "HEAD" refers to the latest git commit in the <template>
-        "TAG" refers to the latest git release tag in <template>
-
-    -h --help
-        Show this screen.
-
-    --version
-        Show current project version.
+optional arguments:
+  -h, --help            show this help message and exit
+  --template TEMPLATE
+  --namespace NAMESPACE
+                        The github/gitlab user or organization name where the template project lies.
+  --vcs {HEAD,TAG}      Download the template's latest tag (TAG) or master branch (HEAD).
 """
+import argparse
 import os
+import shutil
 from typing import Optional
 
 from copier import copy  # type: ignore
-from docopt import docopt  # type: ignore
 
-from dialogy.cli.project import canonicalize_project_name
+import dialogy.constants as const
 from dialogy.utils.logger import logger
 
 
 def project(
     destination_path: str,
-    template: str = "dialogy-template-simple-transformers",
-    namespace: str = "vernacular-ai",
-    vcs_ref: Optional[str] = None,
+    template: str = const.DEFAULT_PROJECT_TEMPLATE,
+    namespace: str = const.DEFAULT_NAMESPACE,
+    use_master: bool = False,
+    pretend: bool = False,
     is_update: bool = False,
 ) -> None:
     """
@@ -72,21 +60,13 @@ def project(
     :return: None
     :rtype: NoneType
     """
-    if not os.path.exists(destination_path):
-        os.mkdir(destination_path)
-
-    if os.listdir(destination_path) and not is_update:
-        logger.error("There are files on the destination path. Aborting !")
-        return None
-
     # to handle copier vcs associated git template building.
-    if vcs_ref is not None:
-        if vcs_ref == "TAG":
-            vcs_ref = None
+    if use_master:
         copy(
             template,
             destination_path,
-            vcs_ref=vcs_ref,
+            vcs_ref="HEAD",
+            pretend=pretend,
             only_diff=is_update,
             force=is_update,
         )
@@ -95,34 +75,111 @@ def project(
             f"gh:{namespace}/{template}.git",
             destination_path,
             only_diff=is_update,
+            pretend=pretend,
             force=is_update,
         )
 
     return None
 
 
-def main() -> None:
+def add_project_command_arguments(
+    parser: argparse.ArgumentParser,
+) -> argparse.ArgumentParser:
+    parser.add_argument(
+        "project",
+        help="A directory with this name will be created at the root of command invocation.",
+    )
+    parser.add_argument("--template", default=const.DEFAULT_PROJECT_TEMPLATE)
+    parser.add_argument(
+        "--dry-run",
+        help="Make no change to the directory structure.",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--namespace",
+        help="The github/gitlab user or organization name where the template project lies.",
+        default=const.DEFAULT_NAMESPACE,
+    )
+    parser.add_argument(
+        "--master",
+        help="Download the template's master branch (HEAD) instead of the latest tag.",
+        action="store_true",
+    )
+    return parser
+
+
+def add_workflow_command_arguments(
+    parser: argparse.ArgumentParser, objective: str
+) -> argparse.ArgumentParser:
+    parser.add_argument(
+        "module", help="The module that contains a Workflow (or subclass)."
+    )
+    parser.add_argument("--workflow", help="The Workflow class.", default="Workflow")
+    parser.add_argument(
+        "--data",
+        help=f"The dataset (.csv) to be use for {objective.lower()}ing the workflow.",
+    )
+    parser.add_argument(
+        "--out",
+        help="model",
+        default="The directory where the artifacts must be stored.",
+    )
+    parser.add_argument(
+        "--version",
+        help="The version of the model to be used for {objective.lower()}ing the workflow.",
+    )
+    return parser
+
+
+def project_command_parser(command_string: Optional[str]) -> argparse.Namespace:
+    argument_parser = argparse.ArgumentParser()
+
+    parser = argument_parser.add_subparsers(
+        help="Dialogy project utilities.", dest="command"
+    )
+    create_parser = parser.add_parser("create", help="Create a new project.")
+    update_parser = parser.add_parser(
+        "update", help="Migrate an existing project to the latest template version."
+    )
+    create_parser = add_project_command_arguments(create_parser)
+    update_parser = add_project_command_arguments(update_parser)
+    train_workflow_parser = parser.add_parser("train", help="Train a workflow.")
+    test_workflow_parser = parser.add_parser("test", help="Test a workflow.")
+    train_workflow_parser = add_workflow_command_arguments(
+        train_workflow_parser, "train"
+    )
+    test_workflow_parser = add_workflow_command_arguments(test_workflow_parser, "test")
+
+    command = command_string.split() if command_string else None
+    return argument_parser.parse_args(args=command)
+
+
+def main(command_string: Optional[str] = None) -> None:
     """
     Create project scaffolding cli.
     """
-    args = docopt(__doc__)
-    project_name = args["<project>"]
-    template_name = args["<template>"]
-    namespace = args["--namespace"]
-    vcs_ref = args["--vcs"]
-    is_update = args["update"]
+    args = project_command_parser(command_string)
+    destination_path = project_name = args.project
+    template_name = args.template
+    namespace = args.namespace
+    use_master = args.master
+    is_update = args.command == "update"
+    pretend = args.dry_run
 
-    if vcs_ref not in [None, "TAG", "HEAD"]:
-        raise ValueError(
-            f'--vcs expects either "HEAD" or "TAG" but was passed {vcs_ref}, \
-            see more in --help'
-        )
+    if os.path.exists(destination_path) and os.listdir(destination_path) and not is_update:
+        raise RuntimeError("There are files on the destination path. Aborting !")
 
-    template_name, namespace = canonicalize_project_name(template_name, namespace)
+    if not os.path.exists(project_name):
+        os.mkdir(destination_path)
+        if pretend:
+            shutil.rmtree(destination_path)
+
     project(
         project_name,
         template=template_name,
         namespace=namespace,
-        vcs_ref=vcs_ref,
+        use_master=use_master,
         is_update=is_update,
+        pretend=pretend,
     )
