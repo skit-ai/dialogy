@@ -1,4 +1,0 @@
-[run]
-omit =
-    */cli/__init__.py
-    */parser/**.py
