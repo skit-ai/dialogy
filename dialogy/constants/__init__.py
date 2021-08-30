@@ -1,14 +1,8 @@
-"""Module provides Constants to be used throughtout the project.
+"""Module provides Constants to be used throughtout the project."""
 
-Import:
+DEFAULT_NAMESPACE = "vernacular-ai"
+DEFAULT_PROJECT_TEMPLATE = "dialogy-template-simple-transformers"
 
-- PREPROCESSORS
-- POSTPROCESSORS
-- WORKFLOW_PUBLIC_PROPERTIES
-- BASE_ENTITY_PROPS
-- TIME_ENTITY_PROPS
-- PEOPLE_ENTITY_PROPS
-"""
 PLUGINS = "plugins"
 PREPROCESSORS = "preprocessors"
 POSTPROCESSORS = "postprocessors"
