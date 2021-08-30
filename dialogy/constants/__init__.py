@@ -109,3 +109,9 @@ ENTITIES = "entities"
 SCORE = "score"
 LABELENCODER_FILE = "labelencoder.pkl"
 INVALID_TOKENS = ["<UNK>", "<PAD>", "<SOS>", "<EOS>"]
+
+# CLI Commands
+TRAIN = "train"
+TEST = "test"
+CREATE = "create"
+UPDATE = "update"
