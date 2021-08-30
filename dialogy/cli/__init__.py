@@ -24,62 +24,10 @@ optional arguments:
   --vcs {HEAD,TAG}      Download the template's latest tag (TAG) or master branch (HEAD).
 """
 import argparse
-import os
-import shutil
 from typing import Optional
 
-from copier import copy  # type: ignore
-
 import dialogy.constants as const
-from dialogy.utils.logger import logger
-
-
-def project(
-    destination_path: str,
-    template: str = const.DEFAULT_PROJECT_TEMPLATE,
-    namespace: str = const.DEFAULT_NAMESPACE,
-    use_master: bool = False,
-    pretend: bool = False,
-    is_update: bool = False,
-) -> None:
-    """
-    Create a new project using scaffolding from an existing template.
-
-    This function uses `copier's <https://copier.readthedocs.io/en/stable/>`_ `copy <https://copier.readthedocs.io/en/stable/#quick-usage>`_ to use an existing template.
-
-    An example template is `here: <https://github.com/Vernacular-ai/dialogy-template-simple-transformers>`_.
-
-    :param destination_path: The directory where the scaffolding must be generated, creates a dir if missing but aborts if there are files already in the specified location.
-    :type destination_path: str
-    :param template: Scaffolding will be generated using a copier template project. This is the link to the project.
-    :type template: str
-    :param namespace: The user or the organization that supports the template, defaults to "vernacular-ai"
-    :type namespace: str, optional
-    :param vcs_ref: support for building from local git templates optionally, `--vcs` takes `"TAG"` or `"HEAD"`. defaults to `None`.
-    :type vcs_ref: str, optional
-    :return: None
-    :rtype: NoneType
-    """
-    # to handle copier vcs associated git template building.
-    if use_master:
-        copy(
-            template,
-            destination_path,
-            vcs_ref="HEAD",
-            pretend=pretend,
-            only_diff=is_update,
-            force=is_update,
-        )
-    else:
-        copy(
-            f"gh:{namespace}/{template}.git",
-            destination_path,
-            only_diff=is_update,
-            pretend=pretend,
-            force=is_update,
-        )
-
-    return None
+from dialogy.cli import project, workflow
 
 
 def add_project_command_arguments(
@@ -115,19 +63,10 @@ def add_workflow_command_arguments(
     parser.add_argument(
         "module", help="The module that contains a Workflow (or subclass)."
     )
-    parser.add_argument("--workflow", help="The Workflow class.", default="Workflow")
+    parser.add_argument("--fn", help="A function that returns a Workflow or its subclass's instance.")
     parser.add_argument(
         "--data",
         help=f"The dataset (.csv) to be use for {objective.lower()}ing the workflow.",
-    )
-    parser.add_argument(
-        "--out",
-        help="model",
-        default="The directory where the artifacts must be stored.",
-    )
-    parser.add_argument(
-        "--version",
-        help="The version of the model to be used for {objective.lower()}ing the workflow.",
     )
     return parser
 
@@ -138,18 +77,29 @@ def project_command_parser(command_string: Optional[str]) -> argparse.Namespace:
     parser = argument_parser.add_subparsers(
         help="Dialogy project utilities.", dest="command"
     )
-    create_parser = parser.add_parser("create", help="Create a new project.")
+    create_parser = parser.add_parser(const.CREATE, help="Create a new project.")
     update_parser = parser.add_parser(
-        "update", help="Migrate an existing project to the latest template version."
+        const.UPDATE, help="Migrate an existing project to the latest template version."
     )
     create_parser = add_project_command_arguments(create_parser)
     update_parser = add_project_command_arguments(update_parser)
-    train_workflow_parser = parser.add_parser("train", help="Train a workflow.")
-    test_workflow_parser = parser.add_parser("test", help="Test a workflow.")
+    train_workflow_parser = parser.add_parser(const.TRAIN, help="Train a workflow.")
+    test_workflow_parser = parser.add_parser(const.TEST, help="Test a workflow.")
     train_workflow_parser = add_workflow_command_arguments(
-        train_workflow_parser, "train"
+        train_workflow_parser, const.TRAIN
     )
-    test_workflow_parser = add_workflow_command_arguments(test_workflow_parser, "test")
+    test_workflow_parser = add_workflow_command_arguments(
+        test_workflow_parser, const.TEST
+    )
+    test_workflow_parser.add_argument(
+        "--out",
+        help="model",
+        default="The directory where the artifacts must be stored.",
+    )
+    test_workflow_parser.add_argument(
+        "--join-id",
+        help="Join prediction dataframe and (truth) labeled dataframe by id."
+    )
 
     command = command_string.split() if command_string else None
     return argument_parser.parse_args(args=command)
@@ -160,26 +110,7 @@ def main(command_string: Optional[str] = None) -> None:
     Create project scaffolding cli.
     """
     args = project_command_parser(command_string)
-    destination_path = project_name = args.project
-    template_name = args.template
-    namespace = args.namespace
-    use_master = args.master
-    is_update = args.command == "update"
-    pretend = args.dry_run
-
-    if os.path.exists(destination_path) and os.listdir(destination_path) and not is_update:
-        raise RuntimeError("There are files on the destination path. Aborting !")
-
-    if not os.path.exists(project_name):
-        os.mkdir(destination_path)
-        if pretend:
-            shutil.rmtree(destination_path)
-
-    project(
-        project_name,
-        template=template_name,
-        namespace=namespace,
-        use_master=use_master,
-        is_update=is_update,
-        pretend=pretend,
-    )
+    if args.command in [const.CREATE, const.UPDATE]:
+        project.project_cli(args)
+    elif args.command in [const.TRAIN, const.TEST]:
+        workflow.workflow_cli(args)
