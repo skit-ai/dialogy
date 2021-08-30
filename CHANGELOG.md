@@ -1,3 +1,7 @@
+# 0.8.1
+- [x] update: dialogy cli has updated project creation and migration.
+- [x] add: dialogy cli can also train and test workflows.
+
 # 0.8.0
 - [x] update: WER calibration refactored to contain core logic.
 - [x] update: **Deprecated** post-processors and pre-processors.
