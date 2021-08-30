@@ -2,8 +2,9 @@ import json
 import os
 import pickle
 import tempfile
+from datetime import datetime
 
-from dialogy.utils.file_handler import load_file, save_file
+from dialogy.utils.file_handler import load_file, save_file, create_timestamps_path
 
 
 def test_load_file_json():
@@ -37,3 +38,11 @@ def test_save_binary_file():
 
 def test_save_file_no_path():
     assert save_file(None) is None
+
+
+def test_create_timestamps_path():
+    timestamp = datetime.now()
+    directory = "hello-world"
+    file_name = "some.csv"
+    path = os.path.join(directory, timestamp.strftime("%d-%B-%Y"), timestamp.strftime("%H-%M-%S-%f"), file_name)
+    assert create_timestamps_path(directory, file_name, timestamp=timestamp, dry_run=True) == path
