@@ -1,6 +1,6 @@
 import os
-from typing import Any, Optional
 from datetime import datetime
+from typing import Any, Optional
 
 
 def load_file(
@@ -62,9 +62,16 @@ def save_file(
             _ = file.write(content) if not writer else writer(content, file)
 
 
-def create_timestamps_path(directory: str, file_name: str, timestamp: Optional[datetime] = None, dry_run: bool = False) -> str:
+def create_timestamps_path(
+    directory: str,
+    file_name: str,
+    timestamp: Optional[datetime] = None,
+    dry_run: bool = False,
+) -> str:
     timestamp = timestamp or datetime.now()
-    dir_path = os.path.join(directory, timestamp.strftime("%d-%B-%Y"), timestamp.strftime("%H-%M-%S-%f"))
+    dir_path = os.path.join(
+        directory, timestamp.strftime("%d-%B-%Y"), timestamp.strftime("%H-%M-%S-%f")
+    )
     if not dry_run:
         os.makedirs(dir_path, exist_ok=True)
     return os.path.join(dir_path, file_name)
