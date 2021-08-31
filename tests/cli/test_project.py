@@ -24,11 +24,11 @@ class MockWorkflow:
         return report_df
 
 
-def get_workflow():
+def get_workflow(**kwargs):
     return MockWorkflow()
 
 
-def get_trash_workflow():
+def get_trash_workflow(**kwargs):
     return None
 
 
@@ -107,7 +107,9 @@ def test_workflow_without_test_method():
     train_df = pd.DataFrame([{"data": "..."}])
     train_df.to_csv(file_name, index=False)
     with pytest.raises(AttributeError):
-        cli.main(f"test {module} --fn={func} --data={file_name} --out=any --join-id=data_id")
+        cli.main(
+            f"test {module} --fn={func} --data={file_name} --out=any --join-id=data_id"
+        )
     os.remove(file_name)
 
 
@@ -149,7 +151,9 @@ def test_workflow_test():
 
     train_df.to_csv(file_name, index=False)
     try:
-        cli.main(f"test {module} --fn={func} --data={file_name} --out={output} --join-id=id")
+        cli.main(
+            f"test {module} --fn={func} --data={file_name} --out={output} --join-id=id"
+        )
         os.remove(file_name)
         shutil.rmtree(output)
     except (ModuleNotFoundError, AttributeError) as error:
