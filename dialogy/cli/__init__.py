@@ -63,10 +63,22 @@ def add_workflow_command_arguments(
     parser.add_argument(
         "module", help="The module that contains a Workflow (or subclass)."
     )
-    parser.add_argument("--fn", help="A function that returns a Workflow or its subclass's instance.")
+    parser.add_argument(
+        "--fn", help="A function that returns a Workflow or its subclass's instance.",
+        required=True
+    )
     parser.add_argument(
         "--data",
         help=f"The dataset (.csv) to be use for {objective.lower()}ing the workflow.",
+        required=True
+    )
+    parser.add_argument(
+        "--project", help=f"The project to be used for {objective.lower()}ing."
+    )
+    parser.add_argument(
+        "--lang",
+        help=f"The language expected for {objective.lower()}ing.",
+        default="all",
     )
     return parser
 
@@ -95,10 +107,12 @@ def project_command_parser(command_string: Optional[str]) -> argparse.Namespace:
         "--out",
         help="model",
         default="The directory where the artifacts must be stored.",
+        required=True
     )
     test_workflow_parser.add_argument(
         "--join-id",
-        help="Join prediction dataframe and (truth) labeled dataframe by id."
+        help="Join prediction dataframe and (truth) labeled dataframe by id.",
+        required=True
     )
 
     command = command_string.split() if command_string else None

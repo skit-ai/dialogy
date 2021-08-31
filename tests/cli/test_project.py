@@ -107,7 +107,7 @@ def test_workflow_without_test_method():
     train_df = pd.DataFrame([{"data": "..."}])
     train_df.to_csv(file_name, index=False)
     with pytest.raises(AttributeError):
-        cli.main(f"test {module} --fn={func} --data={file_name} --out=any")
+        cli.main(f"test {module} --fn={func} --data={file_name} --out=any --join-id=data_id")
     os.remove(file_name)
 
 
@@ -130,21 +130,26 @@ def test_workflow_test():
     _, file_name = tempfile.mkstemp(suffix=".csv")
     module = "tests.cli.test_project"
     func = "get_workflow"
-    train_df = pd.DataFrame([{
-        "id": "1",
-        "data": "...",
-        const.LABELS: "_confirm_",
-    }, {
-        "id": "2",
-        "data": "...",
-        const.LABELS: "_cancel_",
-    }])
+    train_df = pd.DataFrame(
+        [
+            {
+                "id": "1",
+                "data": "...",
+                const.LABELS: "_confirm_",
+            },
+            {
+                "id": "2",
+                "data": "...",
+                const.LABELS: "_cancel_",
+            },
+        ]
+    )
 
     output = "hello-world"
 
     train_df.to_csv(file_name, index=False)
     try:
-        cli.main(f"test {module} --fn={func} --data={file_name} --out={output}")
+        cli.main(f"test {module} --fn={func} --data={file_name} --out={output} --join-id=id")
         os.remove(file_name)
         shutil.rmtree(output)
     except (ModuleNotFoundError, AttributeError) as error:

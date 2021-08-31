@@ -1,12 +1,12 @@
 import argparse
 import importlib
 
-import pandas as pd
-from sklearn.metrics import classification_report
+import pandas as pd  # type: ignore
+from sklearn.metrics import classification_report  # type: ignore
 
 import dialogy.constants as const
+from dialogy.utils import create_timestamps_path, logger
 from dialogy.workflow import Workflow
-from dialogy.utils import logger, create_timestamps_path
 
 
 def train_workflow(args: argparse.Namespace) -> None:
@@ -45,7 +45,14 @@ def test_workflow(args: argparse.Namespace) -> None:
         raise AttributeError from error
 
     result_df = pd.merge(test_df, result_df, on=join_id)
-    report = pd.DataFrame(classification_report(result_df[const.LABELS], result_df[const.INTENT], zero_division=0, output_dict=True)).T
+    report = pd.DataFrame(
+        classification_report(
+            result_df[const.LABELS],
+            result_df[const.INTENT],
+            zero_division=0,
+            output_dict=True,
+        )
+    ).T
     report.to_csv(create_timestamps_path(output_dir, "report.csv"), index=False)
 
 
