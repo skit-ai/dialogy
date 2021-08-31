@@ -16,8 +16,13 @@ def train_workflow(args: argparse.Namespace) -> None:
     module = args.module
     get_workflow_fn = args.fn
     data = args.data
+    lang = args.lang
+    project = args.project
+    kwargs = {"lang": lang, "project": project}
 
-    workflow: Workflow = getattr(importlib.import_module(module), get_workflow_fn)()
+    workflow: Workflow = getattr(importlib.import_module(module), get_workflow_fn)(
+        **kwargs
+    )
     train_df = pd.read_csv(data)
     try:
         workflow.train(train_df)
@@ -35,8 +40,13 @@ def test_workflow(args: argparse.Namespace) -> None:
     data = args.data
     output_dir = args.out
     join_id = args.join_id
+    lang = args.lang
+    project = args.project
+    kwargs = {"lang": lang, "project": project}
 
-    workflow: Workflow = getattr(importlib.import_module(module), get_workflow_fn)()
+    workflow: Workflow = getattr(importlib.import_module(module), get_workflow_fn)(
+        **kwargs
+    )
     test_df = pd.read_csv(data)
     try:
         result_df = workflow.prediction_labels(test_df, join_id)
