@@ -4,7 +4,7 @@ import pickle
 import tempfile
 from datetime import datetime
 
-from dialogy.utils.file_handler import load_file, save_file, create_timestamps_path
+from dialogy.utils.file_handler import create_timestamps_path, load_file, save_file
 
 
 def test_load_file_json():
@@ -44,5 +44,13 @@ def test_create_timestamps_path():
     timestamp = datetime.now()
     directory = "hello-world"
     file_name = "some.csv"
-    path = os.path.join(directory, timestamp.strftime("%d-%B-%Y"), timestamp.strftime("%H-%M-%S-%f"), file_name)
-    assert create_timestamps_path(directory, file_name, timestamp=timestamp, dry_run=True) == path
+    path = os.path.join(
+        directory,
+        timestamp.strftime("%d-%B-%Y"),
+        timestamp.strftime("%H-%M-%S-%f"),
+        file_name,
+    )
+    assert (
+        create_timestamps_path(directory, file_name, timestamp=timestamp, dry_run=True)
+        == path
+    )
