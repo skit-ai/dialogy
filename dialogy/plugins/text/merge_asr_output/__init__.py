@@ -119,7 +119,7 @@ class MergeASROutputPlugin(Plugin):
                 training_data.loc[i, "use"] = False
                 logger.error(f"{error}\n{traceback.format_exc()}")
 
-        training_data_ = training_data[training_data.use]
+        training_data_ = training_data[training_data.use].copy()
         discarded_data = len(training_data) - len(training_data_)
         logger.debug(
             f"Discarding {discarded_data} samples because the alternatives couldn't be parsed."
