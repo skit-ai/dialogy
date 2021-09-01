@@ -9,6 +9,12 @@ from dialogy.utils import create_timestamps_path, logger
 from dialogy.workflow import Workflow
 
 
+def get_workflow(module: str, get_workflow_fn: str, purpose: str, **kwargs) -> Workflow:
+    return getattr(importlib.import_module(module), get_workflow_fn)(
+        purpose, **kwargs
+    )
+
+
 def train_workflow(args: argparse.Namespace) -> None:
     """
     Train a workflow.
@@ -20,9 +26,7 @@ def train_workflow(args: argparse.Namespace) -> None:
     project = args.project
     kwargs = {"lang": lang, "project": project}
 
-    workflow: Workflow = getattr(importlib.import_module(module), get_workflow_fn)(
-        **kwargs
-    )
+    workflow: Workflow = get_workflow(module, get_workflow_fn, args.command, **kwargs)
     train_df = pd.read_csv(data)
     try:
         workflow.train(train_df)
@@ -44,9 +48,7 @@ def test_workflow(args: argparse.Namespace) -> None:
     project = args.project
     kwargs = {"lang": lang, "project": project}
 
-    workflow: Workflow = getattr(importlib.import_module(module), get_workflow_fn)(
-        **kwargs
-    )
+    workflow: Workflow = get_workflow(module, get_workflow_fn, args.command, **kwargs)
     test_df = pd.read_csv(data)
     try:
         result_df = workflow.prediction_labels(test_df, join_id)
