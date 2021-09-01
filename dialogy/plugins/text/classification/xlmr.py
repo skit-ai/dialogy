@@ -189,12 +189,12 @@ class XLMRMultiClass(Plugin):
 
         encoder = self.labelencoder.fit(training_data[self.label_column])
         sample_size = 5 if len(training_data) > 5 else len(training_data)
-        logger.debug(f"sample\n{training_data.sample(sample_size)}")
         training_data.rename(columns={self.data_column: "text"}, inplace=True)
-        training_data[self.label_column] = encoder.transform(
+        training_data.loc[:, self.label_column] = encoder.transform(
             training_data[self.label_column]
         )
         self.init_model(len(encoder.classes_))
+        logger.debug(f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}")
         self.model.train_model(training_data)
         self.save()
 
