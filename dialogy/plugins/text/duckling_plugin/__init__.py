@@ -175,7 +175,7 @@ class DucklingPlugin(EntityExtractor):
         example: "3 people tomorrow"
 
         Make your own reference time using the current timestamp using: :code:`int(datetime.now().timestamp() * 1000)`
-        These are the seconds since the `Unix epoch <https://en.wikipedia.org/wiki/Unix_time>`_
+        These are the milliseconds since the `Unix epoch <https://en.wikipedia.org/wiki/Unix_time>`_
 
         :param text: A sentence or document.
         :type text: str
