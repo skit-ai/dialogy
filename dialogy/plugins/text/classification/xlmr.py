@@ -73,20 +73,20 @@ class XLMRMultiClass(Plugin):
                 "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
             )
 
-    def init_model(self, n: Optional[int] = None) -> None:
+    def init_model(self, label_count: Optional[int] = None) -> None:
         """
         Initialize the model if artifacts are available.
 
-        :param n: number of labels to train on or predict, defaults to None
-        :type n: Optional[int], optional
+        :param label_count: number of labels to train on or predict, defaults to None
+        :type label_count: Optional[int], optional
         :raises ValueError: In case n is not provided or can't be calculated.
         """
         model_dir = const.XLMR_MODEL_TIER
         if os.path.exists(self.labelencoder_file_path):
             self.load()
-            n = len(self.labelencoder.classes_)
+            label_count = len(self.labelencoder.classes_)
             model_dir = self.model_dir
-        if not n:
+        if not label_count:
             raise ValueError(
                 f"Plugin {self.__class__.__name__} needs either the training data or an existing labelencoder to initialize."
             )
@@ -95,6 +95,7 @@ class XLMRMultiClass(Plugin):
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 model_dir,
+                num_labels=label_count,
                 args=args,
                 **self.kwargs,
             )
@@ -102,6 +103,7 @@ class XLMRMultiClass(Plugin):
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 const.XLMR_MODEL_TIER,
+                num_labels=label_count,
                 args=args,
                 **self.kwargs,
             )
