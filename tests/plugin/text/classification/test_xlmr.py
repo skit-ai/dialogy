@@ -126,6 +126,24 @@ def test_xlmr_init_mock():
     const.XLMR_MODULE = save_module_name
     const.XLMR_MULTI_CLASS_MODEL = save_model_name
 
+def test_xlmr_init_mock():
+    save_module_name = const.XLMR_MODULE
+    save_model_name = const.XLMR_MULTI_CLASS_MODEL
+    const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
+    const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
+
+    with pytest.raises(ValueError):
+        XLMRMultiClass(
+            model_dir=".",
+            access=lambda w: w.input[const.CLASSIFICATION_INPUT],
+            mutate=write_intent_to_workflow,
+            args_map={
+                "invalid": "value"
+            }
+        )
+    const.XLMR_MODULE = save_module_name
+    const.XLMR_MULTI_CLASS_MODEL = save_model_name
+
 
 def test_train_xlmr_mock():
     save_module_name = const.XLMR_MODULE
