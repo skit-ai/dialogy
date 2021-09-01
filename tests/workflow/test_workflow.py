@@ -60,7 +60,7 @@ def test_workflow_history_logs() -> None:
     assert workflow.input == ["<s> apples </s>"], "workflow.output should == 'apples'."
     workflow.flush()
     assert workflow.input == {}
-    assert workflow.output == {}
+    assert workflow.output == {const.INTENTS: [], const.ENTITIES: []}
 
 
 def test_workflow_prediction_labels() -> None:
@@ -127,4 +127,4 @@ def test_workflow_as_dict():
     We can serialize a workflow.
     """
     workflow = Workflow()
-    assert workflow.json() == {"input": {}, "output": {}}
+    assert workflow.json() == {"input": {}, "output": {const.INTENTS: [], const.ENTITIES: []}}
