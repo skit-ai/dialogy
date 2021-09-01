@@ -33,6 +33,7 @@ class XLMRMultiClass(Plugin):
         threshold: float = 0.1,
         score_round_off: int = 5,
         purpose: str = const.TRAIN,
+        args_map: Optional[Dict[str, Any]] = None,
         kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
         try:
@@ -58,7 +59,10 @@ class XLMRMultiClass(Plugin):
         self.threshold = threshold
         self.purpose = purpose
         self.round = score_round_off
-        self.args = args
+        if args_map and (const.TRAIN not in args_map or const.TEST not in args_map or const.PRODUCTION not in args_map):
+            raise ValueError(f"Attempting to set {args_map=}. "\
+                "It is missing some of {const.TRAIN}, {const.TEST} or {const.PRODUCTION} or 'production' config.")
+        self.args_map = args_map
         self.kwargs = kwargs or {}
         try:
             if os.path.exists(self.labelencoder_file_path):
@@ -86,20 +90,19 @@ class XLMRMultiClass(Plugin):
             raise ValueError(
                 f"Plugin {self.__class__.__name__} needs either the training data or an existing labelencoder to initialize."
             )
+        args = self.args_map[self.purpose] if self.args_map and self.purpose in self.args_map else {}
         try:
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 model_dir,
-                num_labels=n,
-                args=self.args,
+                args=args,
                 **self.kwargs,
             )
         except OSError:
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 const.XLMR_MODEL_TIER,
-                num_labels=n,
-                args=self.args,
+                args=args,
                 **self.kwargs,
             )
 
