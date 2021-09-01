@@ -59,9 +59,15 @@ class XLMRMultiClass(Plugin):
         self.threshold = threshold
         self.purpose = purpose
         self.round = score_round_off
-        if args_map and (const.TRAIN not in args_map or const.TEST not in args_map or const.PRODUCTION not in args_map):
-            raise ValueError(f"Attempting to set invalid {args_map=}. "\
-                "It is missing some of {const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs.")
+        if args_map and (
+            const.TRAIN not in args_map
+            or const.TEST not in args_map
+            or const.PRODUCTION not in args_map
+        ):
+            raise ValueError(
+                f"Attempting to set invalid {args_map=}. "
+                "It is missing some of {const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
+            )
         self.args_map = args_map
         self.kwargs = kwargs or {}
         try:
@@ -90,7 +96,11 @@ class XLMRMultiClass(Plugin):
             raise ValueError(
                 f"Plugin {self.__class__.__name__} needs either the training data or an existing labelencoder to initialize."
             )
-        args = self.args_map[self.purpose] if self.args_map and self.purpose in self.args_map else {}
+        args = (
+            self.args_map[self.purpose]
+            if self.args_map and self.purpose in self.args_map
+            else {}
+        )
         try:
             self.model = self.classifier(
                 const.XLMR_MODEL,
@@ -194,7 +204,9 @@ class XLMRMultiClass(Plugin):
             training_data[self.label_column]
         )
         self.init_model(len(encoder.classes_))
-        logger.debug(f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}")
+        logger.debug(
+            f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}"
+        )
         self.model.train_model(training_data)
         self.save()
 

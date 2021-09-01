@@ -126,6 +126,7 @@ def test_xlmr_init_mock():
     const.XLMR_MODULE = save_module_name
     const.XLMR_MULTI_CLASS_MODEL = save_model_name
 
+
 def test_xlmr_init_mock():
     save_module_name = const.XLMR_MODULE
     save_model_name = const.XLMR_MULTI_CLASS_MODEL
@@ -137,9 +138,7 @@ def test_xlmr_init_mock():
             model_dir=".",
             access=lambda w: w.input[const.CLASSIFICATION_INPUT],
             mutate=write_intent_to_workflow,
-            args_map={
-                "invalid": "value"
-            }
+            args_map={"invalid": "value"},
         )
     const.XLMR_MODULE = save_module_name
     const.XLMR_MULTI_CLASS_MODEL = save_model_name

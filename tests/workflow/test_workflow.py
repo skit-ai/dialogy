@@ -127,4 +127,7 @@ def test_workflow_as_dict():
     We can serialize a workflow.
     """
     workflow = Workflow()
-    assert workflow.json() == {"input": {}, "output": {const.INTENTS: [], const.ENTITIES: []}}
+    assert workflow.json() == {
+        "input": {},
+        "output": {const.INTENTS: [], const.ENTITIES: []},
+    }
