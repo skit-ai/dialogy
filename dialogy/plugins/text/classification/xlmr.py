@@ -32,7 +32,7 @@ class XLMRMultiClass(Plugin):
         debug: bool = False,
         threshold: float = 0.1,
         score_round_off: int = 5,
-        args: Optional[Dict[str, Any]] = None,
+        purpose: str = const.TRAIN,
         kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
         try:
@@ -56,6 +56,7 @@ class XLMRMultiClass(Plugin):
             self.model_dir, const.LABELENCODER_FILE
         )
         self.threshold = threshold
+        self.purpose = purpose
         self.round = score_round_off
         self.args = args
         self.kwargs = kwargs or {}
