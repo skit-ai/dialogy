@@ -1,5 +1,6 @@
 import argparse
 import importlib
+from typing import Any
 
 import pandas as pd  # type: ignore
 from sklearn.metrics import classification_report  # type: ignore
@@ -9,10 +10,10 @@ from dialogy.utils import create_timestamps_path, logger
 from dialogy.workflow import Workflow
 
 
-def get_workflow(module: str, get_workflow_fn: str, purpose: str, **kwargs) -> Workflow:
-    return getattr(importlib.import_module(module), get_workflow_fn)(
-        purpose, **kwargs
-    )
+def get_workflow(
+    module: str, get_workflow_fn: str, purpose: str, **kwargs: Any
+) -> Workflow:
+    return getattr(importlib.import_module(module), get_workflow_fn)(purpose, **kwargs)
 
 
 def train_workflow(args: argparse.Namespace) -> None:

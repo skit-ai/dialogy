@@ -24,11 +24,11 @@ class MockWorkflow:
         return report_df
 
 
-def get_workflow(**kwargs):
+def get_workflow(purpose, **kwargs):
     return MockWorkflow()
 
 
-def get_trash_workflow(**kwargs):
+def get_trash_workflow(purpose, **kwargs):
     return None
 
 
