@@ -103,7 +103,7 @@ class Workflow:
         Use this method to keep workflow-io in the same format as expected.
         """
         self.input: Dict[str, Any] = {}
-        self.output: Dict[str, Any] = {}
+        self.output: Dict[str, Any] = {const.INTENTS: [], const.ENTITIES: []}
 
     def execute(self) -> None:
         """
