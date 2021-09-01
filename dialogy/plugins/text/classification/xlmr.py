@@ -60,8 +60,8 @@ class XLMRMultiClass(Plugin):
         self.purpose = purpose
         self.round = score_round_off
         if args_map and (const.TRAIN not in args_map or const.TEST not in args_map or const.PRODUCTION not in args_map):
-            raise ValueError(f"Attempting to set {args_map=}. "\
-                "It is missing some of {const.TRAIN}, {const.TEST} or {const.PRODUCTION} or 'production' config.")
+            raise ValueError(f"Attempting to set invalid {args_map=}. "\
+                "It is missing some of {const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs.")
         self.args_map = args_map
         self.kwargs = kwargs or {}
         try:
