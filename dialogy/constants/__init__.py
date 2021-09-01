@@ -113,5 +113,6 @@ INVALID_TOKENS = ["<UNK>", "<PAD>", "<SOS>", "<EOS>"]
 # CLI Commands
 TRAIN = "train"
 TEST = "test"
+PRODUCTION = "production"
 CREATE = "create"
 UPDATE = "update"
