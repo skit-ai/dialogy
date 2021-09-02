@@ -21,8 +21,8 @@ from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
 
-def mock_plugin(_: Workflow) -> None:
-    pass
+class MockPlugin:
+    ...
 
 
 def make_mock_entity():
@@ -66,9 +66,9 @@ def test_entity_parser():
         type="basic",
         values=[{"value": 0}],
     )
-    entity.add_parser(mock_plugin)
+    entity.add_parser(MockPlugin())
 
-    assert entity.parsers == ["mock_plugin"], "parser was not added"
+    assert entity.parsers == ["MockPlugin"], "parser was not added"
     assert entity.get_value() == 0, "value incorrect"
 
 
