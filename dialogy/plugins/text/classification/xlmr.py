@@ -31,6 +31,7 @@ class XLMRMultiClass(Plugin):
         mutate: Optional[PluginFn] = None,
         debug: bool = False,
         threshold: float = 0.1,
+        use_cuda: bool = False,
         score_round_off: int = 5,
         purpose: str = const.TRAIN,
         args_map: Optional[Dict[str, Any]] = None,
@@ -52,6 +53,7 @@ class XLMRMultiClass(Plugin):
         self.model_dir = model_dir
         self.fallback_label = "_error_"
         self.data_column = "data"
+        self.use_cuda = use_cuda
         self.label_column = "labels"
         self.labelencoder_file_path = os.path.join(
             self.model_dir, const.LABELENCODER_FILE
@@ -106,6 +108,7 @@ class XLMRMultiClass(Plugin):
                 const.XLMR_MODEL,
                 model_dir,
                 num_labels=label_count,
+                use_cuda=self.use_cuda,
                 args=args,
                 **self.kwargs,
             )
@@ -114,6 +117,7 @@ class XLMRMultiClass(Plugin):
                 const.XLMR_MODEL,
                 const.XLMR_MODEL_TIER,
                 num_labels=label_count,
+                use_cuda=self.use_cuda,
                 args=args,
                 **self.kwargs,
             )
