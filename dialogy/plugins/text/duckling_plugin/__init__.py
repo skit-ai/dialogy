@@ -296,7 +296,8 @@ class DucklingPlugin(EntityExtractor):
                     else:
                         cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
                     # The most appropriate class is picked for making an object from the dict.
-                    duckling_entity = cls.from_dict(entity)
+                    duckling_entity: BaseEntity = cls.from_dict(entity)
+                    duckling_entity.add_parser(self)
                     # Depending on the type of entity, the value is searched and filled.
                     duckling_entity.set_value()
                     duckling_entity.alternative_index = alternative_index
