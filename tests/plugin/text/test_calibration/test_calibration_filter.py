@@ -43,7 +43,7 @@ def test_calibration(payload):
         return body, lang
 
     def mutate(workflow, value):
-        workflow.input = value
+        workflow.output = value
 
     wer_calibration = WERCalibrationPlugin(config, access=access, mutate=mutate)
     if mock:
@@ -51,6 +51,6 @@ def test_calibration(payload):
             vectorizer=vectorizer, classifier=classifier, threshold=threshold
         )
     workflow = Workflow([wer_calibration])
-    workflow.run(input_=body)
+    output = workflow.run(input_=body)
 
-    assert workflow.input == expected[const.ALTERNATIVES]
+    assert output == expected[const.ALTERNATIVES]

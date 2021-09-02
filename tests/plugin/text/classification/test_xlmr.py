@@ -290,9 +290,9 @@ def test_inference(payload):
         xlmr_clf.model, MockClassifier
     ), "model should be a MockClassifier after training."
 
-    workflow.run(input_={const.CLASSIFICATION_INPUT: text})
-    assert workflow.output[const.INTENTS][0].name == intent
-    assert workflow.output[const.INTENTS][0].score > 0.9
+    output = workflow.run(input_={const.CLASSIFICATION_INPUT: text})
+    assert output[const.INTENTS][0].name == intent
+    assert output[const.INTENTS][0].score > 0.9
 
     if os.path.exists(file_path):
         os.remove(file_path)

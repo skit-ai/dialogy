@@ -50,6 +50,7 @@ The aim of this project is to be largest supplier of plugins for SLU application
 """
 import json
 import time
+import copy
 from typing import Any, Dict, List, Union
 
 import attr
@@ -164,7 +165,9 @@ class Workflow:
         """
         self.input = input_
         self.execute()
-        return self.output
+        output = copy.copy(self.output)
+        self.flush()
+        return output
 
     def flush(self) -> None:
         """
@@ -223,14 +226,14 @@ class Workflow:
         """
         results = []
         for _, row in tqdm(testing_data.iterrows(), total=len(testing_data)):
-            self.run(
+            output = self.run(
                 input_={
                     const.CLASSIFICATION_INPUT: json.loads(row[const.DATA])[
                         const.ALTERNATIVES
                     ]
                 }
             )
-            intents = self.output.get(const.INTENTS, [])
+            intents = output.get(const.INTENTS, [])
             if intents:
                 results.append(
                     {

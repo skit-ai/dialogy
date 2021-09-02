@@ -12,7 +12,7 @@ def access(workflow):
 
 
 def mutate(workflow, value):
-    workflow.input = value
+    workflow.output = value
 
 
 merge_asr_output_plugin = MergeASROutputPlugin(access=access, mutate=mutate)
@@ -25,8 +25,8 @@ def test_merge_asr_output() -> None:
 
     workflow = Workflow([merge_asr_output_plugin])
 
-    workflow.run([[{"transcript": "hello world", "confidence": None}]])
-    assert workflow.input == ["<s> hello world </s>"]
+    output = workflow.run([[{"transcript": "hello world", "confidence": None}]])
+    assert output == ["<s> hello world </s>"]
 
 
 def test_merge_longer_asr_output() -> None:
@@ -35,7 +35,7 @@ def test_merge_longer_asr_output() -> None:
     """
     workflow = Workflow([merge_asr_output_plugin])
 
-    workflow.run(
+    output = workflow.run(
         [
             [
                 {"transcript": "hello world", "confidence": None},
@@ -44,7 +44,7 @@ def test_merge_longer_asr_output() -> None:
             ]
         ]
     )
-    assert workflow.input == [
+    assert output == [
         "<s> hello world </s> <s> hello word </s> <s> jello world </s>"
     ]
 

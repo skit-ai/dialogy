@@ -94,9 +94,9 @@ def test_arbitrary_plugin() -> None:
 
     # This runs all the `preprocessors` and `postprocessors` provided previously.
     # we can expect our `arbitrary_plugin` will also be used.
-    workflow.run(([2, 5], ["hello", "hi"]))
+    output = workflow.run(([2, 5], ["hello", "hi"]))
 
-    numbers, words = workflow.output  # pylint: disable=unpacking-non-sequence
+    numbers, words = output  # pylint: disable=unpacking-non-sequence
 
     # This test would pass only if our plugin works correctly!
     assert numbers == [4, 7]
@@ -116,9 +116,9 @@ def test_arbitrary_plugin_with_debug_mode() -> None:
 
     # This runs all the `preprocessors` and `postprocessors` provided previously.
     # we can expect our `arbitrary_plugin` will also be used.
-    workflow.run(([2, 5], ["hello", "hi"]))
+    output = workflow.run(([2, 5], ["hello", "hi"]))
 
-    numbers, words = workflow.output  # pylint: disable=unpacking-non-sequence
+    numbers, words = output  # pylint: disable=unpacking-non-sequence
 
     # This test would pass only if our plugin works correctly!
     assert numbers == [4, 7]
