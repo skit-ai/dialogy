@@ -5,11 +5,10 @@ import pytest
 
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
-from dialogy.workflow import Workflow
 
 
-def mock_plugin(_: Workflow) -> None:
-    pass
+class MockPlugin:
+    ...
 
 
 def test_intent_parser() -> None:
@@ -17,9 +16,9 @@ def test_intent_parser() -> None:
     Creating an instance.
     """
     intent = Intent(name="intent_name", score=0.5)
-    intent.add_parser(mock_plugin)
+    intent.add_parser(MockPlugin())
 
-    assert intent.parsers == ["mock_plugin"]
+    assert intent.parsers == ["MockPlugin"]
 
 
 def test_rule_application() -> None:
