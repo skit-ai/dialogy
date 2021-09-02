@@ -11,7 +11,6 @@ from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
 
-
 # This tutorial would be centered around these rules:
 rules = {
     "intent_1": {
