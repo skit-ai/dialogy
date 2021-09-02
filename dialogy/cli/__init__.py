@@ -126,7 +126,7 @@ def main(command_string: Optional[str] = None) -> None:
     """
     Create project scaffolding cli.
     """
-    args = project_command_parser(command_string)
+    args = project_command_parser(command_string=command_string)
     if args.command in [const.CREATE, const.UPDATE]:
         project.project_cli(args)
     elif args.command in [const.TRAIN, const.TEST]:
