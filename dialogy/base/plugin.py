@@ -18,7 +18,7 @@ examples:
 """
 from typing import Any, Optional
 
-from dialogy.types.plugin import PluginFn
+from dialogy.types import PluginFn
 from dialogy.utils.logger import logger
 
 
