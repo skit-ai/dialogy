@@ -10,7 +10,6 @@ Import classes:
 from typing import Any, Dict, List, Optional
 
 from dialogy.types.entity import BaseEntity
-from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule, Slot
 from dialogy.utils.logger import logger
 
@@ -92,19 +91,20 @@ class Intent:
 
         return self
 
-    def add_parser(self, postprocessor: PluginFn) -> "Intent":
+    def add_parser(self, plugin: Any) -> "Intent":
         """
-        Update parsers with the postprocessor function name
+        Update parsers with the plugin name
 
-        This helps us identify the progression in which the postprocessing functions
-        were applied to an intent. This helps in debugging and has no production utility
+        This is to identify the progression in which the plugins were applied to an intent.
+        This only helps in debugging and has no production utility.
 
-        :param postprocessor: The callable that modifies this instance. Preferably should be a plugin.
-        :type postprocessor: PluginFn
+        :param plugin: The class that modifies this instance. Preferably should be a plugin.
+        :type plugin: Plugin
         :return: Calling instance with modifications to :code:`parsers` attribute.
         :rtype: Intent
         """
-        self.parsers.append(postprocessor.__name__)
+        plugin_name = plugin if isinstance(plugin, str) else plugin.__class__.__name__
+        self.parsers.append(plugin_name)
         return self
 
     def fill_slot(self, entity: BaseEntity, fill_multiple: bool = False) -> "Intent":
