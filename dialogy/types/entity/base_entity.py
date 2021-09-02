@@ -11,12 +11,11 @@ Import classes:
 - BaseEntity
 """
 import copy
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import attr
 
 from dialogy import constants as const
-from dialogy.types.plugin import PluginFn
 from dialogy.utils import traverse_dict, validate_type
 
 
@@ -167,19 +166,21 @@ class BaseEntity:
         cls.validate(dict_)
         return cls(**dict_)
 
-    def add_parser(self, postprocessor: PluginFn) -> None:
+    def add_parser(self, plugin: Union[Any, str]) -> "BaseEntity":
         """
         Update parsers with the postprocessor function name
 
-        This helps us identify the progression in which the postprocessing functions
-        were applied to an entity. This helps in debugging and has no production utility
+        This is to identify the progression in which the plugins were applied to an entity.
+        This only helps in debugging and has no production utility.
 
-        :param postprocessor: Plugin function applied to an entity
-        :type postprocessor: PluginFn
-        :return: None
-        :rtype: None
+        :param plugin: The class that modifies this instance. Preferably should be a plugin.
+        :type plugin: Plugin
+        :return: Calling instance with modifications to :code:`parsers` attribute.
+        :rtype: BaseEntity
         """
-        self.parsers.append(postprocessor.__name__)
+        plugin_name = plugin if isinstance(plugin, str) else plugin.__class__.__name__
+        self.parsers.append(plugin_name)
+        return self
 
     def get_value(self, reference: Any = None) -> Any:
         """
