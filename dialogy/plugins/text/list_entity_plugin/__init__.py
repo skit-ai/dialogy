@@ -196,7 +196,7 @@ class ListEntityPlugin(EntityExtractor):
             del entity["__group"]
             entity["score"] = round(len(grouped_entities) / len(transcripts), 4)
             entity_ = KeywordEntity.from_dict(entity)
-            entity_.set_value()
+            entity_.add_parser(self).set_value()
             entities.append(entity_)
         logger.debug("Parsed entities")
         logger.debug(entities)
