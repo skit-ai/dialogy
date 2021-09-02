@@ -5,10 +5,12 @@ from typing import Any
 
 import pytest
 
+import dialogy.constants as const
 from dialogy.plugins import RuleBasedSlotFillerPlugin
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
+
 
 # This tutorial would be centered around these rules:
 rules = {
@@ -30,7 +32,7 @@ def test_slot_filling() -> None:
     """
 
     def access(workflow: Workflow) -> Any:
-        return workflow.output
+        return (workflow.output[const.INTENTS], workflow.output[const.ENTITIES])
 
     intent_name = "intent_1"
 
@@ -54,12 +56,12 @@ def test_slot_filling() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.output = (intent, [entity])
+    workflow.output = {const.INTENTS: [intent], const.ENTITIES: [entity]}
     workflow.run(body)
 
     # `workflow.output[0]` is the `Intent` we created.
     # so we are checking if the `entity_1_slot` is filled by our mock entity.
-    assert workflow.output[0].slots["entity_1_slot"].values[0] == entity
+    assert workflow.output[const.INTENTS][0].slots["entity_1_slot"].values[0] == entity
 
 
 def test_slot_no_fill() -> None:
@@ -69,7 +71,7 @@ def test_slot_no_fill() -> None:
     """
 
     def access(workflow: Workflow) -> Any:
-        return workflow.output
+        return (workflow.output[const.INTENTS], workflow.output[const.ENTITIES])
 
     intent_name = "intent_1"
 
@@ -93,12 +95,84 @@ def test_slot_no_fill() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.output = (intent, [entity])
+    workflow.output = {const.INTENTS: [intent], const.ENTITIES: [entity]}
     workflow.run(body)
 
     # `workflow.output[0]` is the `Intent` we created.
     # we can see that the `entity_2_slot` is not filled by our mock entity.
-    assert "entity_1_slot" not in workflow.output[0].slots
+    assert "entity_1_slot" not in workflow.output[const.INTENTS][0].slots
+
+
+def test_slot_invalid_intent() -> None:
+    """
+    Here, we will see that an entity will not fill an intent unless the intent has a slot for it.
+    `intent_1` doesn't have a slot for an entity of type `entity_2`.
+    """
+
+    def access(workflow: Workflow) -> Any:
+        return (workflow.output[const.INTENTS], workflow.output[const.ENTITIES])
+
+    intent_name = "intent_1"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)
+
+    # Create a mock `workflow`
+    workflow = Workflow([slot_filler])
+
+    # and a mock `Entity`.
+    body = "12th december"
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_2",
+        values=[{"key": "value"}],
+    )
+
+    # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
+    workflow.output = {const.INTENTS: [1], const.ENTITIES: [entity]}
+    workflow.run(body)
+
+    # `workflow.output[0]` is the `Intent` we created.
+    # we can see that the `entity_2_slot` is not filled by our mock entity.
+    assert workflow.output[const.INTENTS] == [1]
+
+
+def test_slot_invalid_intents() -> None:
+    """
+    Here, we will see that an entity will not fill an intent unless the intent has a slot for it.
+    `intent_1` doesn't have a slot for an entity of type `entity_2`.
+    """
+
+    def access(workflow: Workflow) -> Any:
+        return (workflow.output[const.INTENTS], workflow.output[const.ENTITIES])
+
+    intent_name = "intent_1"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, access=access)
+
+    # Create a mock `workflow`
+    workflow = Workflow([slot_filler])
+
+    # and a mock `Entity`.
+    body = "12th december"
+    entity = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        type="entity_2",
+        values=[{"key": "value"}],
+    )
+
+    # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
+    workflow.output = {const.INTENTS: [], const.ENTITIES: [entity]}
+    workflow.run(body)
+
+    # `workflow.output[0]` is the `Intent` we created.
+    # we can see that the `entity_2_slot` is not filled by our mock entity.
+    assert workflow.output[const.INTENTS] == []
 
 
 def test_slot_dual_fill() -> None:
@@ -108,7 +182,7 @@ def test_slot_dual_fill() -> None:
     """
 
     def access(workflow: Workflow) -> Any:
-        return workflow.output
+        return (workflow.output[const.INTENTS], workflow.output[const.ENTITIES])
 
     intent_name = "intent_2"
 
@@ -140,13 +214,13 @@ def test_slot_dual_fill() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.output = (intent, [entity_1, entity_2])
+    workflow.output = {const.INTENTS: [intent], const.ENTITIES: [entity_1, entity_2]}
     workflow.run(body)
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert workflow.output[0].slots["entity_1_slot"].values == [entity_1]
-    assert workflow.output[0].slots["entity_2_slot"].values == [entity_2]
+    assert workflow.output[const.INTENTS][0].slots["entity_1_slot"].values == [entity_1]
+    assert workflow.output[const.INTENTS][0].slots["entity_2_slot"].values == [entity_2]
 
 
 def test_slot_filling_multiple() -> None:
@@ -156,7 +230,7 @@ def test_slot_filling_multiple() -> None:
     """
 
     def access(workflow: Workflow) -> Any:
-        return workflow.output
+        return (workflow.output[const.INTENTS], workflow.output[const.ENTITIES])
 
     intent_name = "intent_2"
 
@@ -190,13 +264,13 @@ def test_slot_filling_multiple() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.output = (intent, [entity_1, entity_2])
+    workflow.output = {const.INTENTS: [intent], const.ENTITIES: [entity_1, entity_2]}
     workflow.run(body)
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert workflow.output[0].slots["entity_1_slot"].values == [entity_1]
-    assert workflow.output[0].slots["entity_2_slot"].values == [entity_2]
+    assert workflow.output[const.INTENTS][0].slots["entity_1_slot"].values == [entity_1]
+    assert workflow.output[const.INTENTS][0].slots["entity_2_slot"].values == [entity_2]
 
 
 def test_slot_competition() -> None:
@@ -205,7 +279,7 @@ def test_slot_competition() -> None:
     """
 
     def access(workflow: Workflow) -> Any:
-        return workflow.output
+        return (workflow.output[const.INTENTS], workflow.output[const.ENTITIES])
 
     intent_name = "intent_1"
 
@@ -237,12 +311,12 @@ def test_slot_competition() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.output = (intent, [entity_1, entity_2])
+    workflow.output = {const.INTENTS: [intent], const.ENTITIES: [entity_1, entity_2]}
     workflow.run(body)
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert "entity_1_slot" not in workflow.output[0].slots
+    assert "entity_1_slot" not in workflow.output[const.INTENTS][0].slots
 
 
 def test_incorrect_access_fn() -> None:
@@ -266,7 +340,7 @@ def test_incorrect_access_fn() -> None:
         values=[{"key": "value"}],
     )
 
-    workflow.output = (intent, [entity])
+    workflow.output = {const.INTENTS: [intent], const.ENTITIES: [entity]}
 
     with pytest.raises(TypeError):
         workflow.run("")
@@ -289,7 +363,7 @@ def test_missing_access_fn() -> None:
         values=[{"key": "value"}],
     )
 
-    workflow.output = (intent, [entity])
+    workflow.output = {const.INTENTS: [intent], const.ENTITIES: [entity]}
 
     with pytest.raises(TypeError):
         workflow.run("")
