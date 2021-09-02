@@ -44,9 +44,7 @@ def test_merge_longer_asr_output() -> None:
             ]
         ]
     )
-    assert output == [
-        "<s> hello world </s> <s> hello word </s> <s> jello world </s>"
-    ]
+    assert output == ["<s> hello world </s> <s> hello word </s> <s> jello world </s>"]
 
 
 def test_merge_keyerror_on_missing_transcript() -> None:
