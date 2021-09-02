@@ -127,22 +127,20 @@ class WERCalibrationPlugin(Plugin):
                 def predict(self, X):
                     return np.array([1])
             classifier = MyClassifier()
-
             class MyVectorizer(object):
                 def transform(self, text):
                     assert isinstance(text, list)
                     return sparse.csr_matrix(np.array([1]))
             vectorizer = MyVectorizer()
             def mutate(workflow, value):
-                workflow.input = value[const.ALTERNATIVES]
+                workflow.input = value
             config = {}
-            plugin = WERCalibrationPlugin(config, access=lambda _: (utterances, lang), mutate=mutate)
+            plugin = WERCalibrationPlugin(config, access=lambda _: (utterances, lang), mutate=mutate, debug=True)
             plugin.config[lang] = WERCalibrationConfig(
                 vectorizer=vectorizer, classifier=classifier, threshold=1.5
             )
-            workflow = Workflow(preprocessors=[plugin()])
+            workflow = Workflow([plugin])
             workflow.run(input_=utterances)
-            workflow.input
 
 
         :param utterances: A structure representing ASR output. We support only:
