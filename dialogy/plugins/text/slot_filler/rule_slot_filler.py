@@ -135,7 +135,14 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
-    def fill(self, intent: Intent, entities: List[BaseEntity]) -> None:
+    def fill(self, intents: List[Intent], entities: List[BaseEntity]) -> None:
+        if not intents:
+            return
+
+        if not (isinstance(intents, list) and isinstance(intents[0], Intent)):
+            return
+
+        intent = intents[0]
         intent.apply(self.rules)
 
         for entity in entities:
