@@ -77,8 +77,8 @@ def test_get_list_entities(payload):
         )
 
         workflow = Workflow([list_entity_plugin])
-        workflow.run(input_=transcripts)
-        entities = workflow.output
+        output = workflow.run(input_=transcripts)
+        entities = output
 
         if not entities and expected:
             pytest.fail("No entities found!")

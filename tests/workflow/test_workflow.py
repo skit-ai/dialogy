@@ -50,14 +50,14 @@ def test_workflow_history_logs() -> None:
     """
 
     def m(w, v):
-        w.input = v
+        w.output = v
 
     workflow = Workflow(
         [MergeASROutputPlugin(access=lambda w: w.input, mutate=m, debug=True)],
         debug=True,
     )
-    workflow.run(input_=["apples"])
-    assert workflow.input == ["<s> apples </s>"], "workflow.output should == 'apples'."
+    output = workflow.run(input_=["apples"])
+    assert output == ["<s> apples </s>"], "workflow.output should == 'apples'."
     workflow.flush()
     assert workflow.input == {}
     assert workflow.output == {const.INTENTS: [], const.ENTITIES: []}
