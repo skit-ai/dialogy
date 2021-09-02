@@ -137,16 +137,19 @@ class XLMRMultiClass(Plugin):
         :rtype: List[Intent]
         """
         logger.debug(f"Classifier input:\n{texts}")
-        fallback_output = Intent(name=self.fallback_label, score=1.0)\
-            .add_parser(self.__class__)
+        fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(
+            self.__class__
+        )
 
         if self.model is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
             return [fallback_output]
 
         if not self.valid_labelencoder:
-            raise AttributeError(f"Seems like you forgot to "
-                "save the {self.__class__.__name__} plugin.")
+            raise AttributeError(
+                f"Seems like you forgot to "
+                "save the {self.__class__.__name__} plugin."
+            )
 
         if not texts:
             return [fallback_output]

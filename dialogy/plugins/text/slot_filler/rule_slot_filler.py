@@ -84,7 +84,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
         # ---------------------------------------------------------------------------------------------------
         # setting up the workflow to use slot_filler
-        workflow = Workflow(preprocessors=[], postprocessors=[slot_filler], debug=True)
+        workflow = Workflow([slot_filler], debug=True)
         # ---------------------------------------------------------------------------------------------------
 
         # If you notice the instantiation of RuleBasedSlotFillerPlugin,
