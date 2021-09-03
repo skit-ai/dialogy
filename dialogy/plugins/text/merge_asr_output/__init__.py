@@ -115,13 +115,13 @@ class MergeASROutputPlugin(Plugin):
                     training_data.loc[i, "use"] = False
             except Exception as error:  # pylint: disable=broad-except
                 training_data.loc[i, "use"] = False
-                logger.error(f"{error}\n{traceback.format_exc()}")
+                logger.error(f"{error} -- {asr_output}\n{traceback.format_exc()}")
 
         training_data_ = training_data[training_data.use].copy()
         training_data_.drop("use", axis=1, inplace=True)
         discarded_data = len(training_data) - len(training_data_)
         if discarded_data:
-        logger.debug(
-            f"Discarding {discarded_data} samples because the alternatives couldn't be parsed."
-        )
+            logger.debug(
+                f"Discarding {discarded_data} samples because the alternatives couldn't be parsed."
+            )
         return training_data_
