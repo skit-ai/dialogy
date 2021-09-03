@@ -63,65 +63,6 @@ def test_workflow_history_logs() -> None:
     assert workflow.output == {const.INTENTS: [], const.ENTITIES: []}
 
 
-def test_workflow_prediction_labels() -> None:
-    def modify_input(w, v):
-        w.input[const.CLASSIFICATION_INPUT] = v
-
-    def modify_output(w, v):
-        w.output[const.INTENTS] = v
-
-    class MockClassificationPlugin(Plugin):
-        def __init__(
-            self,
-            access: Optional[PluginFn] = None,
-            mutate: Optional[PluginFn] = None,
-            debug: bool = False,
-        ) -> None:
-            super().__init__(access, mutate, debug=debug)
-
-        def inference(self, text):
-            return [Intent(name="_error_", score=1)]
-
-        def utility(self, *args: Any) -> Any:
-            return self.inference(*args)
-
-    workflow = Workflow(
-        [
-            MockClassificationPlugin(
-                access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-                mutate=modify_output,
-                debug=True,
-            )
-        ],
-        debug=True,
-    )
-
-    test_df = pd.DataFrame(
-        [
-            {
-                "id": 1,
-                "data": json.dumps({"alternatives": [[{"transcript": "yes"}]]}),
-                "labels": "_confirm_",
-            },
-            {
-                "id": 2,
-                "data": json.dumps({"alternatives": [[{"transcript": "no"}]]}),
-                "labels": "_cancel_",
-            },
-        ]
-    )
-
-    report_df: pd.DataFrame = workflow.prediction_labels(test_df, id_="id")
-    result = pd.merge(test_df, report_df, on="id")
-    score = f1_score(
-        result[const.LABELS],
-        result[const.INTENT],
-        zero_division=0,
-        average="micro",
-    )
-    assert score == 0
-
-
 def test_workflow_as_dict():
     """
     We can serialize a workflow.
