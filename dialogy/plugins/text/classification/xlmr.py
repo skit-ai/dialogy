@@ -34,6 +34,9 @@ class XLMRMultiClass(Plugin):
         use_cuda: bool = False,
         score_round_off: int = 5,
         purpose: str = const.TRAIN,
+        fallback_label: str = const.ERROR_LABEL,
+        data_column: str = const.DATA,
+        label_column: str = const.LABELS,
         args_map: Optional[Dict[str, Any]] = None,
         kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
@@ -51,10 +54,10 @@ class XLMRMultiClass(Plugin):
         self.classifier = classifer
         self.model: Any = None
         self.model_dir = model_dir
-        self.fallback_label = "_error_"
-        self.data_column = "data"
+        self.fallback_label = fallback_label
+        self.data_column = data_column
+        self.label_column = label_column
         self.use_cuda = use_cuda
-        self.label_column = "labels"
         self.labelencoder_file_path = os.path.join(
             self.model_dir, const.LABELENCODER_FILE
         )

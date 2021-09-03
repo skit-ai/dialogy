@@ -93,10 +93,11 @@ class MergeASROutputPlugin(Plugin):
         self,
         access: Optional[PluginFn],
         mutate: Optional[PluginFn],
+        data_column: str = "data",
         debug: bool = False,
     ) -> None:
         super().__init__(access, mutate, debug=debug)
-        self.data_column = "data"
+        self.data_column = data_column
 
     def utility(self, *args: Any) -> Any:
         return merge_asr_output(*args)
