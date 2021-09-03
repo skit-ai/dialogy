@@ -23,6 +23,7 @@ class XLMRMultiClass(Plugin):
     """
     This plugin provides a classifier based on `XLM-Roberta <https://arxiv.org/abs/1911.02116>`.
     """
+
     def __init__(
         self,
         model_dir: str,
@@ -212,8 +213,13 @@ class XLMRMultiClass(Plugin):
 
         encoder = self.labelencoder.fit(training_data[self.label_column])
         sample_size = 5 if len(training_data) > 5 else len(training_data)
-        training_data.rename(columns={self.data_column: const.TEXT, self.label_column: const.LABELS}, inplace=True)
-        training_data.loc[:, const.LABELS] = encoder.transform(training_data[const.LABELS])
+        training_data.rename(
+            columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
+            inplace=True,
+        )
+        training_data.loc[:, const.LABELS] = encoder.transform(
+            training_data[const.LABELS]
+        )
         training_data = training_data[[const.TEXT, const.LABELS]]
         self.init_model(len(encoder.classes_))
         logger.debug(
