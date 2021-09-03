@@ -120,6 +120,7 @@ class MergeASROutputPlugin(Plugin):
         training_data_ = training_data[training_data.use].copy()
         training_data_.drop("use", axis=1, inplace=True)
         discarded_data = len(training_data) - len(training_data_)
+        if discarded_data:
         logger.debug(
             f"Discarding {discarded_data} samples because the alternatives couldn't be parsed."
         )
