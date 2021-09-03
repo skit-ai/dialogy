@@ -217,7 +217,7 @@ class XLMRMultiClass(Plugin):
         training_data = training_data[[const.TEXT, const.LABELS]]
         self.init_model(len(encoder.classes_))
         logger.debug(
-            f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}"
+            f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}\nLabels: {len(encoder.classes_)}."
         )
         self.model.train_model(training_data)
         self.save()
