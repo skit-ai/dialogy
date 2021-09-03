@@ -62,7 +62,7 @@ def test_merge_keyerror_on_missing_transcript() -> None:
 def test_invalid_data() -> None:
     train_df = pd.DataFrame(
         [
-            {"data": json.dumps({"alternatives": "yes"})},
+            {"data": json.dumps([[{"transcript": "yes"}]])},
             {"data": json.dumps({})},
             {"data": ""},
         ]

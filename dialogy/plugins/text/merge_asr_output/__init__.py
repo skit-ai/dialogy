@@ -107,9 +107,7 @@ class MergeASROutputPlugin(Plugin):
         logger.debug("Transforming training data.")
         for i, row in training_data.iterrows():
             try:
-                asr_output = json.loads(row[self.data_column]).get(
-                    const.ALTERNATIVES, []
-                )
+                asr_output = json.loads(row[self.data_column])
                 if asr_output:
                     training_data.loc[i, self.data_column] = merge_asr_output(
                         asr_output
