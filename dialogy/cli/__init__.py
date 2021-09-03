@@ -99,23 +99,8 @@ def project_command_parser(command_string: Optional[str]) -> argparse.Namespace:
     create_parser = add_project_command_arguments(create_parser)
     update_parser = add_project_command_arguments(update_parser)
     train_workflow_parser = parser.add_parser(const.TRAIN, help="Train a workflow.")
-    test_workflow_parser = parser.add_parser(const.TEST, help="Test a workflow.")
     train_workflow_parser = add_workflow_command_arguments(
         train_workflow_parser, const.TRAIN
-    )
-    test_workflow_parser = add_workflow_command_arguments(
-        test_workflow_parser, const.TEST
-    )
-    test_workflow_parser.add_argument(
-        "--out",
-        help="model",
-        default="The directory where the artifacts must be stored.",
-        required=True,
-    )
-    test_workflow_parser.add_argument(
-        "--join-id",
-        help="Join prediction dataframe and (truth) labeled dataframe by id.",
-        required=True,
     )
 
     command = command_string.split() if command_string else None
@@ -129,5 +114,5 @@ def main(command_string: Optional[str] = None) -> None:
     args = project_command_parser(command_string=command_string)
     if args.command in [const.CREATE, const.UPDATE]:
         project.project_cli(args)
-    elif args.command in [const.TRAIN, const.TEST]:
+    elif args.command in [const.TRAIN]:
         workflow.workflow_cli(args)
