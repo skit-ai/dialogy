@@ -38,6 +38,7 @@ class XLMRMultiClass(Plugin):
         data_column: str = const.DATA,
         label_column: str = const.LABELS,
         args_map: Optional[Dict[str, Any]] = None,
+        skip_labels: Optional[List[str]] = None,
         kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
         try:
@@ -62,6 +63,7 @@ class XLMRMultiClass(Plugin):
             self.model_dir, const.LABELENCODER_FILE
         )
         self.threshold = threshold
+        self.skip_labels = set(skip_labels or set())
         self.purpose = purpose
         self.round = score_round_off
         if args_map and (
@@ -206,6 +208,8 @@ class XLMRMultiClass(Plugin):
             )
             return
 
+        skip_labels_filter = training_data[self.label_column].isin(self.skip_labels)
+        training_data = training_data[~skip_labels_filter].copy()
         encoder = self.labelencoder.fit(training_data[self.label_column])
         sample_size = 5 if len(training_data) > 5 else len(training_data)
         training_data.rename(columns={self.data_column: "text"}, inplace=True)
