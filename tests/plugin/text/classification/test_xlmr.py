@@ -267,19 +267,19 @@ def test_inference(payload):
     train_df = pd.DataFrame(
         [
             {
-                "data": json.dumps({"alternatives": [[{"transcript": "yes"}]]}),
+                "data": json.dumps([[{"transcript": "yes"}]]),
                 "labels": "_confirm_",
             },
             {
-                "data": json.dumps({"alternatives": [[{"transcript": "yea"}]]}),
+                "data": json.dumps([[{"transcript": "yea"}]]),
                 "labels": "_confirm_",
             },
             {
-                "data": json.dumps({"alternatives": [[{"transcript": "no"}]]}),
+                "data": json.dumps([[{"transcript": "no"}]]),
                 "labels": "_cancel_",
             },
             {
-                "data": json.dumps({"alternatives": [[{"transcript": "nope"}]]}),
+                "data": json.dumps([[{"transcript": "nope"}]]),
                 "labels": "_cancel_",
             },
         ]
