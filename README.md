@@ -1,17 +1,12 @@
 # Dialogy
 
-[![Build Status](https://travis-ci.com/Vernacular-ai/dialogy.svg?branch=master)](https://travis-ci.com/Vernacular-ai/dialogy)
-[![Coverage Status](https://coveralls.io/repos/github/Vernacular-ai/dialogy/badge.svg?branch=master)](https://coveralls.io/github/Vernacular-ai/dialogy?branch=master)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c)](https://www.codacy.com/gh/Vernacular-ai/dialogy/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Vernacular-ai/dialogy&utm_campaign=Badge_Grade)
+[![Build Status](https://app.travis-ci.com/skit-ai/dialogy.svg?branch=master)](https://app.travis-ci.com/skit-ai/dialogy)
+[![Coverage Status](https://coveralls.io/repos/github/skit-ai/dialogy/badge.svg?branch=master)](https://coveralls.io/github/skit-ai/dialogy?branch=master)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c)](https://www.codacy.com/gh/skit-ai/dialogy/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Vernacular-ai/dialogy&amp;utm_campaign=Badge_Grade)
 [![PyPI version](https://badge.fury.io/py/dialogy.svg)](https://badge.fury.io/py/dialogy)
 
-Dialogy is a batteries-included 🔋 opinionated framework to build machine-learning solutions for speech applications. 
-
--   Plugin-based: Makes it easy to import/export components to other projects. 🔌
--   Stack-agnostic: No assumptions made on ML stack; your choice of machine learning library will not be affected by using Dialogy. 👍
--   Progressive: Minimal boilerplate writing to let you focus on your machine learning problems. 🤏
-
-[Documentation](https://vernacular-ai.github.io/dialogy/)
+Dialogy is a library for building SLU applications.
+[Documentation](https://skit-ai.github.io/dialogy/)
 
 ## Installation
 
@@ -19,95 +14,66 @@ Dialogy is a batteries-included 🔋 opinionated framework to build machine-lear
 pip install dialogy
 ```
 
+Dialogy's CLI supports building and migration of projects.
+
+```txt
+dialogy -h
+usage: dialogy [-h] {create,update,train} ...
+
+positional arguments:
+  {create,update,train}
+                        Dialogy project utilities.
+    create              Create a new project.
+    update              Migrate an existing project to the latest template version.
+    train               Train a workflow.
+
+optional arguments:
+  -h, --help            show this help message and exit
+```
+
+## Project Creation
+
+```txt
+dialogy create -h
+usage: dialogy create [-h] [--template TEMPLATE] [--dry-run] [--namespace NAMESPACE] [--master] project
+
+positional arguments:
+  project               A directory with this name will be created at the root of command invocation.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --template TEMPLATE
+  --dry-run             Make no change to the directory structure.
+  --namespace NAMESPACE
+                        The github/gitlab user or organization name where the template project lies.
+  --master              Download the template's master branch (HEAD) instead of the latest tag.
+```
+
+## Concepts
+
+There are a few key concepts to build a machine-learning `Workflow`(s) using Dialogy.
+All the effects comprising pre-processing, classification, scoring, ranking, etc are governed by `Plugin`(s).
+
+### Workflow
+
+A workflow has these objectives.
+
+1. Allow interactions between different plugins.
+
+2. Isolating plugins from each other. A plugin can't access another in the chain.
+
+3. Storing the information till the end of the execution of plugin chain.
+
+### Plugin
+
+A plugin transforms data. Depending on its utility, a plugin may have phases of operation.
+
+- Bulk transformation during training phase.
+
+- Inference or Transformation
+
 ## Test
 
 ```shell
 make test
 ```
-
-## Examples
-
-Using `dialogy` to run a classifier on a new input.
-
-```python
-import pickle
-from dialogy.workflow import Workflow
-from dialogy.preprocessing import merge_asr_output
-
-
-def access(workflow):
-    return workflow.input
-
-
-def mutate(workflow, value):
-    workflow.input = value
-
-
-def vectorizer(workflow):
-    vectorizer = TfidfVectorizer()
-    workflow.input = vectorizer.transform(workflow.input)
-
-
-class TfidfMLPClfWorkflow(Workflow):
-    def __init__(self):
-        super(TfidfMLPClfWorkflow).__init__()
-        self.model = None
-
-    def load_model(self, model_path):
-        with open(model_path, "rb") as binary:
-            self.model = binary.load()
-
-    def inference(self):
-        self.output = self.model.predict(self.input)
-
-
-preprocessors = [merge_asr_output(access=access, mutate=mutate), vectorizer]
-workflow = TfidfMLPClfWorkflow(preprocessors=preprocessors, postprocessors=[])
-output = workflow.run([[{"transcript": "hello world", "confidence": 0.97}]]) # output -> _greeting_
-```
-
-Refer to the source for [`merge_asr_output`](https://vernacular-ai.github.io/dialogy/dialogy/preprocess/text/merge_asr_output.html) and [`Plugins`](https://vernacular-ai.github.io/dialogy/dialogy/plugin/plugin.html) to understand this example better.
-
-## Note
-
--   Popular workflow sub-classes will be accepted after code-review.
-## FAQs
-
-### Training boilerplate
-
-❌. This is not an end-to-end automated model training framework. That said, no one wants to write boilerplate code,
-unfortunately, it doesn't align with the objectives of this project. Also, it is hard to accomodate for different needs 
-like: 
-
--   library dependencies 
--   hardware support
--   Need for visualizations/reports during/after training.
-
-Any rigidity here would lead to distractions both to maintainers and users of this project. [`Plugins`](https://vernacular-ai.github.io/dialogy/dialogy/plugin/plugin.html) and custom
-[Workflow](https://vernacular-ai.github.io/dialogy/dialogy/workflow/workflow.html) are certainly welcome and can take care of recipe-based needs. 
-
-### Common Evaluation Plans
-
-❌. Evaluation of models is hard to standardize. if you have a fairly common need, feel free to contribute your `workflow`, `plugins`.
-
-### Benefits
-
--   ✅. This project offers a conduit for an untrained model. This means once a [Workflow](https://vernacular-ai.github.io/dialogy/dialogy/workflow/workflow.html) is ready you can use it anywhere:
-    evaluation scripts, serving your models via an API, custom training/evaluation scripts, combining another workflow, etc. 
-
--   ✅. If your application needs spoken language understanding, you should find little need to write data processing functions.
-
--   ✅. Little to no learning curve, if you know python you know how to use this project.
-
-## Contributions
-
--   Go through the docs.
-
--   Name your branch as "purpose/short-description". examples:
-    -   "feature/hippos_can_fly"
-    -   "fix/breathing_water_instead_of_fire"
-    -   "docs/chapter_on_mighty_sphinx"
-    -   "refactor/limbs_of_mummified_pharao"
-    -   "test/my_patience"
-
--   Make sure tests are added are passing. Run `make test lint` at project root. Coverage is important aim for 100% unless reviewer agrees.
