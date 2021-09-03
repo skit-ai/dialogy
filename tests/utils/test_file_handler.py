@@ -1,6 +1,7 @@
 import json
 import os
 import pickle
+import shutil
 import tempfile
 from datetime import datetime
 
@@ -54,3 +55,20 @@ def test_create_timestamps_path():
         create_timestamps_path(directory, file_name, timestamp=timestamp, dry_run=True)
         == path
     )
+
+
+def test_create_timestamps_path_real_run():
+    timestamp = datetime.now()
+    directory = "hello-world"
+    file_name = "some.csv"
+    dir_path = os.path.join(
+        directory,
+        timestamp.strftime("%d-%B-%Y"),
+        timestamp.strftime("%H-%M-%S-%f"),
+    )
+    path_ = os.path.join(dir_path, file_name)
+    produced_path = create_timestamps_path(
+        directory, file_name, timestamp=timestamp, dry_run=False
+    )
+    shutil.rmtree(dir_path)
+    assert produced_path == path_
