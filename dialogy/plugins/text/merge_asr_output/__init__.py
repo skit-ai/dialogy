@@ -109,9 +109,8 @@ class MergeASROutputPlugin(Plugin):
             try:
                 asr_output = json.loads(row[self.data_column])
                 if asr_output:
-                    training_data.loc[i, self.data_column] = merge_asr_output(
-                        asr_output
-                    )[0]
+                    merged_asr_ouptut = merge_asr_output(asr_output)
+                    training_data.loc[i, self.data_column] = merged_asr_ouptut[0]
                 else:
                     training_data.loc[i, "use"] = False
             except Exception as error:  # pylint: disable=broad-except
