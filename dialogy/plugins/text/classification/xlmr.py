@@ -150,8 +150,8 @@ class XLMRMultiClass(Plugin):
 
         if not self.valid_labelencoder:
             raise AttributeError(
-                f"Seems like you forgot to "
-                "save the {self.__class__.__name__} plugin."
+                "Seems like you forgot to "
+                f"save the {self.__class__.__name__} plugin."
             )
 
         if not texts:
