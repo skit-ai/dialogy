@@ -106,10 +106,9 @@ class MergeASROutputPlugin(Plugin):
         training_data["use"] = True
         logger.debug("Transforming training data.")
         for i, row in training_data.iterrows():
+            asr_output = json.loads(row[self.data_column])
             try:
-                asr_output = json.loads(row[self.data_column])
-                if asr_output:
-                    merged_asr_ouptut = merge_asr_output(asr_output)
+                if asr_output and (merged_asr_ouptut := merge_asr_output(asr_output)):
                     training_data.loc[i, self.data_column] = merged_asr_ouptut[0]
                 else:
                     training_data.loc[i, "use"] = False
