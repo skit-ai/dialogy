@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.workflow package" href="dialogy.workflow.html" /><link rel="prev" title="dialogy.types.utterances package" href="dialogy.types.utterances.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.utils package - dialogy 0.8.0 documentation</title>
+        <title>dialogy.utils package - dialogy 0.8.1 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.8.1 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -181,8 +181,12 @@
 <div class="section" id="module-dialogy.utils.file_handler">
 <span id="dialogy-utils-file-handler-module"></span><h2>dialogy.utils.file_handler module<a class="headerlink" href="#module-dialogy.utils.file_handler" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="dialogy.utils.file_handler.safe_load">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.file_handler.</span></code><code class="sig-name descname"><span class="pre">safe_load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#safe_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.safe_load" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.utils.file_handler.create_timestamps_path">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.file_handler.</span></code><code class="sig-name descname"><span class="pre">create_timestamps_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> → <span class="pre">str</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#create_timestamps_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.create_timestamps_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.file_handler.load_file">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.file_handler.</span></code><code class="sig-name descname"><span class="pre">load_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#load_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.load_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Safely load a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -199,18 +203,64 @@
 </dd>
 </dl>
 </dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.file_handler.save_file">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.file_handler.</span></code><code class="sig-name descname"><span class="pre">save_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#save_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.save_file" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Save a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param file_path</dt>
+<dd class="field-odd"><p>The path to the file to save.</p>
+</dd>
+<dt class="field-even">type file_path</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">param content</dt>
+<dd class="field-odd"><p>The content to save.</p>
+</dd>
+<dt class="field-even">type content</dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+<dt class="field-odd">param mode</dt>
+<dd class="field-odd"><p>The mode to use when opening the file., defaults to “w”</p>
+</dd>
+<dt class="field-even">type mode</dt>
+<dd class="field-even"><p>str, optional</p>
+</dd>
+<dt class="field-odd">param encoding</dt>
+<dd class="field-odd"><p>The encoding to use when writing the file, defaults to “utf-8”</p>
+</dd>
+<dt class="field-even">type encoding</dt>
+<dd class="field-even"><p>str, optional</p>
+</dd>
+<dt class="field-odd">param newline</dt>
+<dd class="field-odd"><p>The newline character to use when writing the file, defaults to “</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>“</dt><dd><dl class="field-list simple">
+<dt class="field-odd">type newline</dt>
+<dd class="field-odd"><p>str, optional</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 </div>
-<div class="section" id="dialogy-utils-logger-module">
-<h2>dialogy.utils.logger module<a class="headerlink" href="#dialogy-utils-logger-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dialogy.utils.logger">
+<span id="dialogy-utils-logger-module"></span><h2>dialogy.utils.logger module<a class="headerlink" href="#module-dialogy.utils.logger" title="Permalink to this headline">¶</a></h2>
+<p>Module provides access to logger.</p>
+<p>This needs to be used sparingly, prefer to raise specific exceptions instead.</p>
+<dl class="simple">
+<dt>Import functions:</dt><dd><ul class="simple">
+<li><p>change_log_level</p></li>
+</ul>
+</dd>
+</dl>
 </div>
-<div class="section" id="dialogy-utils-misc-module">
-<h2>dialogy.utils.misc module<a class="headerlink" href="#dialogy-utils-misc-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="dialogy-utils-normalize-utterance-module">
-<h2>dialogy.utils.normalize_utterance module<a class="headerlink" href="#dialogy-utils-normalize-utterance-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-dialogy.utils">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.utils" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dialogy.utils.misc">
+<span id="dialogy-utils-misc-module"></span><h2>dialogy.utils.misc module<a class="headerlink" href="#module-dialogy.utils.misc" title="Permalink to this headline">¶</a></h2>
 <p>Module provides utility functions for entities.</p>
 <dl class="simple">
 <dt>Import functions:</dt><dd><ul class="simple">
@@ -220,8 +270,8 @@
 </dd>
 </dl>
 <dl class="py function">
-<dt id="dialogy.utils.dt2timestamp">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.</span></code><code class="sig-name descname"><span class="pre">dt2timestamp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span> → <span class="pre">int</span><a class="reference internal" href="../_modules/dialogy/utils.html#dt2timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.dt2timestamp" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.utils.misc.dt2timestamp">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.misc.</span></code><code class="sig-name descname"><span class="pre">dt2timestamp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span> → <span class="pre">int</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#dt2timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.dt2timestamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a python datetime object to unix-timestamp.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -236,8 +286,8 @@
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.traverse_dict">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.</span></code><code class="sig-name descname"><span class="pre">traverse_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils.html#traverse_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.traverse_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.utils.misc.traverse_dict">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.misc.</span></code><code class="sig-name descname"><span class="pre">traverse_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#traverse_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.traverse_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Traverse a dictionary for a given list of properties.</p>
 <p>This is useful for traversing a deeply nested dictionary.
 Instead of recursion, we are using reduce to update the <cite>dict</cite>.
@@ -268,14 +318,14 @@ Missing properties will lead to KeyErrors.</p>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">556</span><span class="n">a11057179</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
 
-<span class="nn">~/anaconda3/envs/dialogy/lib/python3.8/site-packages/dialogy/utils/__init__.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
+<span class="nn">~/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
 <span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">"""</span>
 <span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd">     try:</span>
 <span class="ne">---&gt; </span><span class="mi">53</span><span class="sd">         return reduce(lambda o, k: o[k], properties, obj)</span>
 <span class="g g-Whitespace">     </span><span class="mi">54</span><span class="sd">     except KeyError as key_error:</span>
 <span class="g g-Whitespace">     </span><span class="mi">55</span><span class="sd">         raise KeyError(</span>
 
-<span class="nn">~/anaconda3/envs/dialogy/lib/python3.8/site-packages/dialogy/utils/__init__.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
+<span class="nn">~/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
 <span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd">     """</span>
 <span class="g g-Whitespace">     </span><span class="mi">52</span>     <span class="k">try</span><span class="p">:</span>
 <span class="ne">---&gt; </span><span class="mi">53</span>         <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
@@ -307,8 +357,8 @@ Missing properties will lead to KeyErrors.</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.validate_type">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.</span></code><code class="sig-name descname"><span class="pre">validate_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils.html#validate_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.validate_type" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.utils.misc.validate_type">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.misc.</span></code><code class="sig-name descname"><span class="pre">validate_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#validate_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.validate_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raise TypeError on object type mismatch.</p>
 <blockquote>
 <div><p>This is syntatic sugar for instance type checks.</p>
@@ -336,6 +386,224 @@ Missing properties will lead to KeyErrors.</p>
 </dl>
 </div></blockquote>
 </dd></dl>
+</div>
+<div class="section" id="module-dialogy.utils.normalize_utterance">
+<span id="dialogy-utils-normalize-utterance-module"></span><h2>dialogy.utils.normalize_utterance module<a class="headerlink" href="#module-dialogy.utils.normalize_utterance" title="Permalink to this headline">¶</a></h2>
+<p>This module was created in response to: <a class="reference external" href="https://github.com/Vernacular-ai/dialogy/issues/9">https://github.com/Vernacular-ai/dialogy/issues/9</a>
+we will ship functions to assist normalization of ASR output, we will refer to these as Utterances.</p>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.dict_get">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">dict_get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#dict_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.dict_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get value of prop within obj.</p>
+<p>This simple function exists to facilitate a partial function defined <a class="reference internal" href="#is-utterance"><span class="std std-ref">here</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prop</strong> (<em>str</em>) – A property within a <code class="code docutils literal notranslate"><span class="pre">dict</span></code>.</p></li>
+<li><p><strong>obj</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A <code class="code docutils literal notranslate"><span class="pre">dict</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of a property within a <code class="code docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.is_each_element">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_each_element</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">type_:</span> <span class="pre">type,</span> <span class="pre">input_:</span> <span class="pre">List[Any],</span> <span class="pre">transform:</span> <span class="pre">Callable[[Any],</span> <span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;</span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_each_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_each_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if each element in a list is of a given type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>Type</em>) – Expected <code class="code docutils literal notranslate"><span class="pre">Type</span></code> of each element in the <code class="code docutils literal notranslate"><span class="pre">input_</span></code> which is a <code class="code docutils literal notranslate"><span class="pre">list</span></code>.</p></li>
+<li><p><strong>input</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – A <code class="code docutils literal notranslate"><span class="pre">list</span></code>.</p></li>
+<li><p><strong>transform</strong> (<em>Callable</em><em>[</em><em>[</em><em>Any</em><em>]</em><em>, </em><em>Any</em><em>]</em>) – We may apply some transforms to
+each element before making these checks. This is to check if a certain key
+in a Dict matches the expected type. In case this is not needed,
+leave the argument unset and an identity transform is applied. Defaults to lambda x:x.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Checks each element in a list to match <code class="code docutils literal notranslate"><span class="pre">type_</span></code>, if any element fails the check,
+this returns False, else True.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.is_list">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check type of <code class="code docutils literal notranslate"><span class="pre">input</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input</strong> (<em>Any</em>) – Any arbitrary input</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if <code class="code docutils literal notranslate"><span class="pre">input</span></code> is a <code class="code docutils literal notranslate"><span class="pre">list</span></code> else False</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.is_list_of_string">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_list_of_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_list_of_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_list_of_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check input to be of <cite>List[str]</cite>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_list_of_string</span>
+
+<span class="gp">In [2]: </span><span class="n">is_list_of_string</span><span class="p">([</span><span class="s2">"this"</span><span class="p">,</span> <span class="s2">"works"</span><span class="p">])</span>
+<span class="gh">Out[2]: </span><span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary input.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if <code class="code docutils literal notranslate"><span class="pre">maybe_utterance</span></code> is a <code class="code docutils literal notranslate"><span class="pre">str</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.is_string">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check input’s type is <cite>str</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary type input.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if <code class="code docutils literal notranslate"><span class="pre">maybe_utterance</span></code> is a <code class="code docutils literal notranslate"><span class="pre">str</span></code>, else False.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.is_unsqueezed_utterance">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_unsqueezed_utterance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_unsqueezed_utterance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_unsqueezed_utterance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check input to be of <cite>List[Dict]</cite>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_unsqueezed_utterance</span>
+
+<span class="go"># 1. This fails</span>
+<span class="gp">In [2]: </span><span class="n">is_unsqueezed_utterance</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"this"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"works"</span><span class="p">}]])</span>
+<span class="gh">Out[2]: </span><span class="go">False</span>
+
+<span class="go"># 2. key is configurable</span>
+<span class="gp">In [3]: </span><span class="n">is_unsqueezed_utterance</span><span class="p">([{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"this"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"works"</span><span class="p">}],</span> <span class="n">key</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+<span class="gh">Out[3]: </span><span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary type input.</p></li>
+<li><p><strong>key</strong> (<em>str</em><em>, </em><em>Defaults to const.TRANSCRIPT.</em>) – The key within which transcription string resides.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True, if the input is of type <code class="code docutils literal notranslate"><span class="pre">List[Dict[str,</span> <span class="pre">Any]]</span></code> else False.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.is_utterance">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_utterance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_utterance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_utterance" title="Permalink to this definition">¶</a></dt>
+<dd><p id="is-utterance">Check input to be of <cite>List[List[Dict]]</cite>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_utterance</span>
+
+<span class="go"># 1. :code:`List[List[Dict[str, str]]]`</span>
+<span class="gp">In [2]: </span><span class="n">is_utterance</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"this"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"works"</span><span class="p">}]])</span>
+<span class="gh">Out[2]: </span><span class="go">True</span>
+
+<span class="go"># 2. key is configurable</span>
+<span class="gp">In [3]: </span><span class="n">is_utterance</span><span class="p">([[{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"this"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"works"</span><span class="p">}]],</span> <span class="n">key</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+<span class="gh">Out[3]: </span><span class="go">True</span>
+
+<span class="go"># 3. Hope for everything else... you have a mastercard.</span>
+<span class="go"># Or use this lib, works just fine 🍷.</span>
+<span class="gp">In [4]: </span><span class="n">is_utterance</span><span class="p">([{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"this"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"doesn't"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"work"</span><span class="p">}])</span>
+<span class="gh">Out[4]: </span><span class="go">False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary input.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The key within which transcription string resides.
+Defaults to <code class="code docutils literal notranslate"><span class="pre">const.TRANSCRIPT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the inputs is <code class="code docutils literal notranslate"><span class="pre">List[List[Dict[str,</span> <span class="pre">str]]]</span></code>, else False.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.normalize">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">normalize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adapt various non-standard ASR alternative forms.</p>
+<p>The output will be a list of strings since models will expect that.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">normalize</span>
+
+<span class="gp">In [2]: </span><span class="n">normalize</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hi"</span><span class="p">}]])</span>
+<span class="gh">Out[2]: </span><span class="go">['hi']</span>
+
+<span class="gp">In [3]: </span><span class="n">normalize</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">}],</span> <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"world"</span><span class="p">}]])</span>
+<span class="gh">Out[3]: </span><span class="go">['hello world']</span>
+
+<span class="gp">In [4]: </span><span class="n">normalize</span><span class="p">([{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"I wanted to know umm hello?"</span><span class="p">}])</span>
+<span class="gh">Out[4]: </span><span class="go">['i wanted to know umm hello?']</span>
+
+<span class="gp">In [5]: </span><span class="n">normalize</span><span class="p">([</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">])</span>
+<span class="gh">Out[5]: </span><span class="go">['i wanted to know umm hello?']</span>
+
+<span class="gp">In [6]: </span><span class="n">normalize</span><span class="p">(</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">)</span>
+<span class="gh">Out[6]: </span><span class="go">['i wanted to know umm hello?']</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maybe_utterance</strong> (<em>Any</em>) – Arbitrary input.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – A string to be looked into <code class="code docutils literal notranslate"><span class="pre">List[List[Dict[str,</span> <span class="pre">str]]]</span></code>, <code class="code docutils literal notranslate"><span class="pre">List[Dict[str,</span> <span class="pre">str]]</span></code> type inputs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A flattened list of strings parsed from various formats.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>TypeError: If <code class="code docutils literal notranslate"><span class="pre">maybe_utterance</span></code> is none of the expected types.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.utils.normalize_utterance.utterance2alternatives">
+<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">utterance2alternatives</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">utterances</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#utterance2alternatives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.utterance2alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a list of utterances to a list of alternatives.</p>
+</dd></dl>
+</div>
+<div class="section" id="module-dialogy.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.utils" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -396,9 +664,9 @@ Missing properties will lead to KeyErrors.</p>
 <li><a class="reference internal" href="#">dialogy.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-dialogy.utils.file_handler">dialogy.utils.file_handler module</a></li>
-<li><a class="reference internal" href="#dialogy-utils-logger-module">dialogy.utils.logger module</a></li>
-<li><a class="reference internal" href="#dialogy-utils-misc-module">dialogy.utils.misc module</a></li>
-<li><a class="reference internal" href="#dialogy-utils-normalize-utterance-module">dialogy.utils.normalize_utterance module</a></li>
+<li><a class="reference internal" href="#module-dialogy.utils.logger">dialogy.utils.logger module</a></li>
+<li><a class="reference internal" href="#module-dialogy.utils.misc">dialogy.utils.misc module</a></li>
+<li><a class="reference internal" href="#module-dialogy.utils.normalize_utterance">dialogy.utils.normalize_utterance module</a></li>
 <li><a class="reference internal" href="#module-dialogy.utils">Module contents</a></li>
 </ul>
 </li>

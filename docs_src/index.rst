@@ -31,17 +31,12 @@ Sections 📄
 
    1. :ref:`Workflow<workflow>`
    2. :ref:`Plugin<Plugin>`
-
-      1. Preprocessors
-
          1. :ref:`DucklingPlugin<duckling_plugin>`
          2. :ref:`MergeASROutput<merge_asr_output>`
          3. :ref:`WERCalibrationPlugin<calibration_plugin>`
-
-      2. Postprocessors
-
-         1. :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>`
-         2. :ref:`VotePlugin<vote_plugin>`
+         4. :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>`
+         5. :ref:`VotePlugin<vote_plugin>`
+         6. :ref:`XLMRMultiClass<xlmr_classifier>`
 
 3. All Modules
 

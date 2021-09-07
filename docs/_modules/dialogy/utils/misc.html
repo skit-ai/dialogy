@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.types.slots - dialogy 0.8.1 documentation</title>
+        <title>dialogy.utils.misc - dialogy 0.8.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../_static/pygments_dark.css">
@@ -173,71 +173,100 @@
         <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <h1>Source code for dialogy.types.slots</h1><div class="highlight"><pre>
+        <h1>Source code for dialogy.utils.misc</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">.. _slot:</span>
+<span class="sd">Module provides utility functions for entities.</span>
 
-<span class="sd">Type definition for Slots.</span>
-
-<span class="sd">Import classes:</span>
-
-<span class="sd">    - Slot</span>
+<span class="sd">Import functions:</span>
+<span class="sd">    - dict_traversal</span>
+<span class="sd">    - validate_type</span>
 <span class="sd">"""</span>
-
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-
-<span class="kn">import</span> <span class="nn">dialogy.constants</span> <span class="k">as</span> <span class="nn">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 
-<div class="viewcode-block" id="Slot"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot">[docs]</a><span class="k">class</span> <span class="nc">Slot</span><span class="p">:</span>
-    <span class="sd">"""Slot Type</span>
+<div class="viewcode-block" id="traverse_dict"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.misc.traverse_dict">[docs]</a><span class="k">def</span> <span class="nf">traverse_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">properties</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Traverse a dictionary for a given list of properties.</span>
 
-<span class="sd">    Keys are:</span>
-<span class="sd">    - `name` of the slot</span>
-<span class="sd">    - `type` is a list of types that can fill this slot</span>
-<span class="sd">    - `values` list of entities extracted</span>
+<span class="sd">    This is useful for traversing a deeply nested dictionary.</span>
+<span class="sd">    Instead of recursion, we are using reduce to update the `dict`.</span>
+<span class="sd">    Missing properties will lead to KeyErrors.</span>
+
+<span class="sd">    .. ipython:: python</span>
+<span class="sd">        :okexcept:</span>
+
+<span class="sd">        from dialogy.utils import traverse_dict</span>
+
+<span class="sd">        input_ = {</span>
+<span class="sd">            "planets": {</span>
+<span class="sd">                "mars": [{</span>
+<span class="sd">                    "name": "",</span>
+<span class="sd">                    "languages": [{</span>
+<span class="sd">                        "beep": {"speakers": 11},</span>
+<span class="sd">                    }, {</span>
+<span class="sd">                        "bop": {"speakers": 30},</span>
+<span class="sd">                    }]</span>
+<span class="sd">                }]</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+<span class="sd">        traverse_dict(input_, ["planets", "mars", 0 , "languages", 1, "bop"])</span>
+
+<span class="sd">        # element with index 3 doesn't exist!</span>
+<span class="sd">        traverse_dict(input_, ["planets", "mars", 0 , "languages", 3, "bop"])</span>
+
+<span class="sd">    :param obj: The `dict` to traverse.</span>
+<span class="sd">    :type obj: Dict[Any, Any]</span>
+<span class="sd">    :param properties: List of properties to be parsed as a path to be navigated in the `dict`.</span>
+<span class="sd">    :type properties: List[int]</span>
+<span class="sd">    :return: A value within a deeply nested dict.</span>
+<span class="sd">    :rtype: Any</span>
+<span class="sd">    :raises KeyError: Missing property in the dictionary.</span>
+<span class="sd">    :raises TypeError: Properties don't describe a path due to possible type error.</span>
 <span class="sd">    """</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">types</span> <span class="o">=</span> <span class="n">types</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
-
-<div class="viewcode-block" id="Slot.add"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Slot"</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Insert the `BaseEntity` within the current `Slot` instance.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="Slot.clear"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Slot"</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Remove all `BaseEntity` within the current `Slot` instance.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="Slot.json"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Convert the object to a dictionary.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, Any]</span>
-<span class="sd">        """</span>
-        <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
-        <span class="n">slot_json</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">"name"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="s2">"type"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">,</span>
-            <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">:</span> <span class="n">entities_json</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">slot_json</span></div>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Slot(name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, types=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="si">}</span><span class="s2">, values=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s2">)"</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Missing property </span><span class="si">{</span><span class="n">key_error</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">. Check the types. Failed for path </span><span class="si">{</span><span class="n">properties</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
+    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">type_error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"The properties aren't describing path within a dictionary. | </span><span class="si">{</span><span class="n">type_error</span><span class="si">}</span><span class="s2">. Failed for path </span><span class="si">{</span><span class="n">properties</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span> <span class="kn">from</span> <span class="nn">type_error</span></div>
 
 
-<span class="n">Rule</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+<div class="viewcode-block" id="validate_type"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.misc.validate_type">[docs]</a><span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Raise TypeError on object type mismatch.</span>
+
+<span class="sd">        This is syntatic sugar for instance type checks.</span>
+
+<span class="sd">        The check is by exclusion of types. Wraps exception raising logic.</span>
+
+<span class="sd">        :param obj: An object available for type assertion</span>
+<span class="sd">        :type obj: Any</span>
+<span class="sd">        :param obj_type: This must match the type of the object.</span>
+<span class="sd">        :type obj_type: (Union[type, Tuple[type]])</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:</span>
+<span class="sd">        :raises TypeError: If the type `obj_type` doesn't match the type of `obj`.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> should be a </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dt2timestamp"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.misc.dt2timestamp">[docs]</a><span class="k">def</span> <span class="nf">dt2timestamp</span><span class="p">(</span><span class="n">date_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Converts a python datetime object to unix-timestamp.</span>
+
+<span class="sd">    :param date_time: An instance of datetime.</span>
+<span class="sd">    :type date_time: datetime</span>
+<span class="sd">    :return: Unix timestamp integer.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">date_time</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span></div>
 </pre></div>
       </article>
       <footer>

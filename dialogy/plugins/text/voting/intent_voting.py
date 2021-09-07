@@ -126,8 +126,8 @@ class VotePlugin(Plugin):
 
         def update_intent(w, intent):
             w.output[0] = intent
-        vote_plugin = VotePlugin(access=lambda w: (w.output, len(w.input[0])), mutate=update_intent, debug=True)()
-        workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])
+        vote_plugin = VotePlugin(access=lambda w: (w.output, len(w.input[0])), mutate=update_intent, debug=True)
+        workflow = Workflow([vote_plugin])
         workflow.output = intents
         workflow.run(input_=(transcripts,))
 

@@ -70,7 +70,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
         # ---------------------------------------------------------------------------------------------------
         # Setting up the plugin
-        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=True)()
+        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=True)
         # ---------------------------------------------------------------------------------------------------
 
         # ---------------------------------------------------------------------------------------------------

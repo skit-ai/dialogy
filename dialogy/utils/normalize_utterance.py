@@ -44,13 +44,6 @@ def is_each_element(
     """
     Check if each element in a list is of a given type.
 
-    .. ipython:: python
-
-        from dialogy.plugins.text.normalize_utterance import is_each_element
-
-        is_each_element(str, ["this", "returns", "False", "cuz:", False])
-        is_each_element(str, ["this", "returns", "True", "cuz:", "all", "str"])
-
     :param type_: Expected :code:`Type` of each element in the :code:`input_` which is a :code:`list`.
     :type type_: Type
     :param input_: A :code:`list`.
@@ -81,7 +74,7 @@ def is_utterance(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> bool:
 
     .. ipython:: python
 
-        from dialogy.plugins.text.normalize_utterance import is_utterance
+        from dialogy.utils.normalize_utterance import is_utterance
 
         # 1. :code:`List[List[Dict[str, str]]]`
         is_utterance([[{"transcript": "this"}, {"transcript": "works"}]])
@@ -119,7 +112,7 @@ def is_unsqueezed_utterance(maybe_utterance: Any, key: str = const.TRANSCRIPT) -
 
     .. ipython:: python
 
-        from dialogy.plugins.text.normalize_utterance import is_unsqueezed_utterance
+        from dialogy.utils.normalize_utterance import is_unsqueezed_utterance
 
         # 1. This fails
         is_unsqueezed_utterance([[{"transcript": "this"}, {"transcript": "works"}]])
@@ -149,7 +142,7 @@ def is_list_of_string(maybe_utterance: Any) -> bool:
 
     .. ipython:: python
 
-        from dialogy.plugins.text.normalize_utterance import is_list_of_string
+        from dialogy.utils.normalize_utterance import is_list_of_string
         is_list_of_string(["this", "works"])
 
     :param maybe_utterance: Arbitrary input.
@@ -196,7 +189,7 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
 
     .. ipython:: python
 
-        from dialogy.plugins.text.normalize_utterance import normalize
+        from dialogy.utils.normalize_utterance import normalize
 
         normalize([[{"transcript": "hi"}]])
         normalize([[{"transcript": "hello"}], [{"transcript": "world"}]])

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.list_entity_plugin package" href="dialogy.plugins.text.list_entity_plugin.html" /><link rel="prev" title="dialogy.plugins.text.classification package" href="dialogy.plugins.text.classification.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugins.text.duckling_plugin package - dialogy 0.8.0 documentation</title>
+        <title>dialogy.plugins.text.duckling_plugin package - dialogy 0.8.1 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.8.1 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -175,8 +175,189 @@
         </label>
         <div class="section" id="dialogy-plugins-text-duckling-plugin-package">
 <h1>dialogy.plugins.text.duckling_plugin package<a class="headerlink" href="#dialogy-plugins-text-duckling-plugin-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dialogy.plugins.text.duckling_plugin">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.duckling_plugin" title="Permalink to this headline">¶</a></h2>
+<p id="duckling-plugin">This module exposes a parser for <a class="reference external" href="https://github.com/facebook/duckling">Duckling</a>.</p>
+<p><a class="reference external" href="https://github.com/facebook/duckling">Duckling</a> helps parsing values like: <code class="code docutils literal notranslate"><span class="pre">date</span></code>, <code class="code docutils literal notranslate"><span class="pre">time</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">numbers</span></code>, <code class="code docutils literal notranslate"><span class="pre">currency</span></code> etc. The parser will expect Duckling to be running as an http service, and provide
+means to connect from the implementation here.</p>
+<div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+
+<span class="k">def</span> <span class="nf">update_workflow</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">entities</span><span class="p">):</span>
+<span class="hll">    <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"duckling_entities"</span><span class="p">]</span> <span class="o">=</span> <span class="n">entities</span>
+</span>
+<span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
+    <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">workflow</span><span class="p">:</span> <span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"sentence"</span><span class="p">],</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"reftime"</span><span class="p">],</span> <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"locale"</span><span class="p">])</span>
+    <span class="c1"># the access method guides the plugin to data within a workflow.</span>
+    <span class="c1"># in this case, the `input` property of a workflow is expected</span>
+    <span class="c1"># to be a `dict` with a key named "sentence". Check line 30.</span>
+    <span class="n">mutate</span><span class="o">=</span><span class="n">update_workflow</span><span class="p">,</span>
+    <span class="c1"># the mutate method guides the plugin to place the processed output</span>
+    <span class="c1"># somewhere on the workflow.</span>
+    <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"people"</span><span class="p">],</span>
+    <span class="c1"># Duckling supports multiple dimensions, by specifying a list, we make sure</span>
+    <span class="c1"># we are searching for a match within the expected dimensions only.</span>
+    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
+    <span class="c1"># Duckling supports a set of locales, we need to provide this info to</span>
+    <span class="c1"># get language specific matches.</span>
+    <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">,</span>
+    <span class="c1"># Date/Time related entities make this field imperative.</span>
+<span class="p">)()</span> <span class="c1"># ⬅️ the instance is also getting called.</span>
+<span class="c1"># Notice that we instantiate the class and also</span>
+<span class="c1"># invoke __call__ method of the instance.</span>
+<span class="c1"># The returned value from the instance is the plugin.</span>
+<span class="c1">#</span>
+<span class="c1"># This is a standard pattern across all plugins.</span>
+
+<span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">duckling_plugin</span><span class="p">])</span>
+<span class="hll"><span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="p">{</span><span class="s2">"sentence"</span><span class="p">:</span> <span class="s2">"there are 7 people"</span><span class="p">})</span>
+</span><span class="c1"># Once an input is run through the workflow as on line 30,</span>
+<span class="c1"># we can expect the plugin mutation to create an artifact</span>
+<span class="c1"># as per line 4.</span>
+</pre></div>
+</td></tr></table></div></div>
+<dl class="py class">
+<dt id="dialogy.plugins.text.duckling_plugin.DucklingPlugin">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugins.text.duckling_plugin.</span></code><code class="sig-name descname"><span class="pre">DucklingPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'http://0.0.0.0:8000/parse'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_filters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_map</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/duckling_plugin.html#DucklingPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.duckling_plugin.DucklingPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.base.html#dialogy.base.entity_extractor.EntityExtractor" title="dialogy.base.entity_extractor.EntityExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.entity_extractor.EntityExtractor</span></code></a></p>
+<p>A <a class="reference internal" href="dialogy.base.html#plugin"><span class="std std-ref">Plugin</span></a> for extracting entities using <a class="reference external" href="https://github.com/facebook/duckling">Duckling</a>. Once
+instantiated, a <code class="code docutils literal notranslate"><span class="pre">duckling_parser</span></code> object will interface to an http server, running <a class="reference external" href="https://github.com/facebook/duckling">Duckling</a>.</p>
+<p>This object when used as a plugin, transforms the <code class="code docutils literal notranslate"><span class="pre">List[Dict[str,</span> <span class="pre">Any]]</span></code> returned from the API to a
+<a class="reference internal" href="dialogy.types.entity.html#base-entity"><span class="std std-ref">BaseEntity</span></a> or one of its subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dimensions</strong> – <a class="reference external" href="https://github.com/facebook/duckling#supported-dimensions">Dimensions</a>. Of the listed</p>
+</dd>
+</dl>
+<p>dimensions, we support:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>Numeral</cite></p></li>
+<li><p><cite>Time</cite></p></li>
+<li><p><cite>TimeInterval</cite></p></li>
+<li><p><cite>Duration</cite></p></li>
+<li><p><cite>People</cite> - This isn’t part of the standard, we have a private fork to support this.</p></li>
+</ul>
+<p>Do note, passing more dimensions is not free. Duckling would search for extra set of patterns just because
+those dimensions were expected.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locale</strong> (<em>str</em>) – The format for expressing locale requires language code and country name ids. Read about
+<a class="reference external" href="https://github.com/facebook/duckling#extending-duckling">sections</a> that define
+<a class="reference external" href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">ISO-639-codes</a> for languages and
+<a class="reference external" href="https://www.iso.org/obp/ui/#search/code/">ISO3166 alpha2 country code</a> for country codes.
+Examples: <cite>“en_IN”</cite>, <cite>“en_US”</cite>, <cite>“en_GB”</cite>.</p></li>
+<li><p><strong>timezone</strong> – <cite>pytz</cite> Timezone. This is especially important when services are deployed across different</p></li>
+</ul>
+</dd>
+</dl>
+<p>geographies and consistency is expected in the responses. Get a valid value from a <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">list of tz database timezones</a>. Example: <cite>“Asia/Kolkata”</cite> :type timezone:
+Optional[str]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> – There are certain strings which tend to stall Duckling:</p>
+</dd>
+</dl>
+<p><a class="reference external" href="https://github.com/facebook/duckling/issues/338">example</a>.
+In such cases, to prevent the overall experience to slow
+down as well, provide a certain timeout value, defaults to 0.5.
+:type timeout: float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>url</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The address where Duckling’s entity parser can be reached, defaults to “<a class="reference external" href="http://0.0.0.0:8000/parse">http://0.0.0.0:8000/parse</a>”.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.duckling_plugin.DucklingPlugin.apply_filters">
+<code class="sig-name descname"><span class="pre">apply_filters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/plugins/text/duckling_plugin.html#DucklingPlugin.apply_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.duckling_plugin.DucklingPlugin.apply_filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conditionally remove entities.</p>
+<p>The utility of this method is tracked here:
+<a class="reference external" href="https://github.com/Vernacular-ai/dialogy/issues/42">https://github.com/Vernacular-ai/dialogy/issues/42</a></p>
+<p>We needed a way to express, not all datetime entities are needed. There are needs which can be
+expressed as filters: want greater or lesser than the reference time, etc. There are more applications
+where we expect sorting, filtering by other attributes as well. This method is an advent of such expressions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>entities</strong> (<em>List</em><em>[</em><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><em>BaseEntity</em></a><em>]</em>) – A list of entities.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of entities obtained after applying filters.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.duckling_plugin.DucklingPlugin.select_datetime">
+<code class="sig-name descname"><span class="pre">select_datetime</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/plugins/text/duckling_plugin.html#DucklingPlugin.select_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.duckling_plugin.DucklingPlugin.select_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select datetime entities as per the filters provided in the configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entities</strong> (<em>List</em><em>[</em><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><em>BaseEntity</em></a><em>]</em>) – A list of entities.</p></li>
+<li><p><strong>filter_type</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of entities obtained after applying comparator functions.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.duckling_plugin.DucklingPlugin.utility">
+<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/plugins/text/duckling_plugin.html#DucklingPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.duckling_plugin.DucklingPlugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces Duckling entities, runs with a <a class="reference internal" href="dialogy.workflow.html#workflow-run"><span class="std std-ref">Workflow’s run</span></a> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>Tuple</em><em>(</em><em>str</em><em>, </em><em>int</em><em>, </em><em>str</em><em>)</em>) – Expects a tuple of <code class="code docutils literal notranslate"><span class="pre">Tuple[natural</span> <span class="pre">language</span> <span class="pre">for</span> <span class="pre">parsing</span> <span class="pre">entities,</span> <span class="pre">reference</span> <span class="pre">time</span> <span class="pre">in</span> <span class="pre">seconds,</span> <span class="pre">locale]</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of duckling entities.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </div>
 </div>
 
@@ -235,7 +416,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.plugins.text.duckling_plugin package</a><ul>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.duckling_plugin">Module contents</a></li>
 </ul>
 </li>
 </ul>

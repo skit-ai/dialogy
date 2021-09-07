@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.constants package" href="dialogy.constants.html" /><link rel="prev" title="dialogy.base package" href="dialogy.base.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.cli package - dialogy 0.8.0 documentation</title>
+        <title>dialogy.cli package - dialogy 0.8.1 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.8.1 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -178,11 +178,105 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="dialogy-cli-project-module">
-<h2>dialogy.cli.project module<a class="headerlink" href="#dialogy-cli-project-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dialogy.cli.project">
+<span id="dialogy-cli-project-module"></span><h2>dialogy.cli.project module<a class="headerlink" href="#module-dialogy.cli.project" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="dialogy.cli.project.manage_project">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.project.</span></code><code class="sig-name descname"><span class="pre">manage_project</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dialogy-template-simple-transformers'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'vernacular-ai'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_master</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretend</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_update</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli/project.html#manage_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.project.manage_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new project using scaffolding from an existing template.</p>
+<p>This function uses <a class="reference external" href="https://copier.readthedocs.io/en/stable/">copier’s</a> <a class="reference external" href="https://copier.readthedocs.io/en/stable/#quick-usage">copy</a> to use an existing template.</p>
+<p>An example template is <a class="reference external" href="https://github.com/Vernacular-ai/dialogy-template-simple-transformers">here:</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>destination_path</strong> (<em>str</em>) – The directory where the scaffolding must be generated, creates a dir if missing but aborts if there are files already in the specified location.</p></li>
+<li><p><strong>template</strong> (<em>str</em>) – Scaffolding will be generated using a copier template project. This is the link to the project.</p></li>
+<li><p><strong>namespace</strong> (<em>str</em><em>, </em><em>optional</em>) – The user or the organization that supports the template, defaults to “vernacular-ai”</p></li>
+<li><p><strong>vcs_ref</strong> (<em>str</em><em>, </em><em>optional</em>) – support for building from local git templates optionally, <cite>–vcs</cite> takes <cite>“TAG”</cite> or <cite>“HEAD”</cite>. defaults to <cite>None</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NoneType</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.cli.project.project_cli">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.project.</span></code><code class="sig-name descname"><span class="pre">project_cli</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">argparse.Namespace</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli/project.html#project_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.project.project_cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>CLI for project command.</p>
+</dd></dl>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dialogy.cli.workflow">
+<span id="dialogy-cli-workflow-module"></span><h2>dialogy.cli.workflow module<a class="headerlink" href="#module-dialogy.cli.workflow" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="dialogy.cli.workflow.get_workflow">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.workflow.</span></code><code class="sig-name descname"><span class="pre">get_workflow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_workflow_fn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><span class="pre">dialogy.workflow.workflow.Workflow</span></a><a class="reference internal" href="../_modules/dialogy/cli/workflow.html#get_workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.workflow.get_workflow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt id="dialogy.cli.workflow.train_workflow">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.workflow.</span></code><code class="sig-name descname"><span class="pre">train_workflow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">argparse.Namespace</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli/workflow.html#train_workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.workflow.train_workflow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train a workflow.</p>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.cli.workflow.workflow_cli">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.workflow.</span></code><code class="sig-name descname"><span class="pre">workflow_cli</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">argparse.Namespace</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli/workflow.html#workflow_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.workflow.workflow_cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>CLI entry point for workflows.</p>
+<p>module      - We expect the Workflow or its subclass to be available at this path.
+fn          - A function that provides a Workflow or its subclass’ instance.
+data        - Path to dataset (.csv).
+output_dir  - Path where artifacts are expected.</p>
+</dd></dl>
+</div>
+<div class="section" id="module-dialogy.cli">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.cli" title="Permalink to this headline">¶</a></h2>
+<p>This module exposes a command line utility to create project scaffolding. This creates a starting point for any project, an exhibit:</p>
+<div class="highlight-bash notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll">dialogy create hello-world
+</span><span class="nb">cd</span> hello-world
+poetry install
+make lint
+</pre></div>
+</td></tr></table></div></div>
+<p>usage: dialogy [-h] [–template TEMPLATE] [–namespace NAMESPACE] [–vcs {HEAD,TAG}] {create,update} project</p>
+<dl>
+<dt>positional arguments:</dt><dd><p>{create,update}
+project               A directory with this name will be created at the root of command invocation.</p>
+</dd>
+<dt>optional arguments:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>show this help message and exit</p>
+</dd>
+</dl>
+<p>–template TEMPLATE
+–namespace NAMESPACE</p>
+<blockquote>
+<div><p>The github/gitlab user or organization name where the template project lies.</p>
+</div></blockquote>
+<p>–vcs {HEAD,TAG}      Download the template’s latest tag (TAG) or master branch (HEAD).</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="dialogy.cli.add_project_command_arguments">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">add_project_command_arguments</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">argparse.ArgumentParser</span></span></em><span class="sig-paren">)</span> → <span class="pre">argparse.ArgumentParser</span><a class="reference internal" href="../_modules/dialogy/cli.html#add_project_command_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.add_project_command_arguments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt id="dialogy.cli.add_workflow_command_arguments">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">add_workflow_command_arguments</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">argparse.ArgumentParser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> → <span class="pre">argparse.ArgumentParser</span><a class="reference internal" href="../_modules/dialogy/cli.html#add_workflow_command_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.add_workflow_command_arguments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt id="dialogy.cli.main">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_string</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create project scaffolding cli.</p>
+</dd></dl>
+<dl class="py function">
+<dt id="dialogy.cli.project_command_parser">
+<code class="sig-prename descclassname"><span class="pre">dialogy.cli.</span></code><code class="sig-name descname"><span class="pre">project_command_parser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_string</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">argparse.Namespace</span><a class="reference internal" href="../_modules/dialogy/cli.html#project_command_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.cli.project_command_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 </div>
 </div>
 
@@ -242,8 +336,9 @@
             <ul>
 <li><a class="reference internal" href="#">dialogy.cli package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#dialogy-cli-project-module">dialogy.cli.project module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.cli.project">dialogy.cli.project module</a></li>
+<li><a class="reference internal" href="#module-dialogy.cli.workflow">dialogy.cli.workflow module</a></li>
+<li><a class="reference internal" href="#module-dialogy.cli">Module contents</a></li>
 </ul>
 </li>
 </ul>

@@ -12,6 +12,14 @@ dialogy.cli.project module
    :undoc-members:
    :show-inheritance:
 
+dialogy.cli.workflow module
+---------------------------
+
+.. automodule:: dialogy.cli.workflow
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

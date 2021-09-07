@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.duckling_plugin package" href="dialogy.plugins.text.duckling_plugin.html" /><link rel="prev" title="dialogy.plugins.text.calibration package" href="dialogy.plugins.text.calibration.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugins.text.classification package - dialogy 0.8.0 documentation</title>
+        <title>dialogy.plugins.text.classification package - dialogy 0.8.1 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.8.1 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -178,11 +178,98 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="dialogy-plugins-text-classification-xlmr-module">
-<h2>dialogy.plugins.text.classification.xlmr module<a class="headerlink" href="#dialogy-plugins-text-classification-xlmr-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dialogy.plugins.text.classification.xlmr">
+<span id="dialogy-plugins-text-classification-xlmr-module"></span><h2>dialogy.plugins.text.classification.xlmr module<a class="headerlink" href="#module-dialogy.plugins.text.classification.xlmr" title="Permalink to this headline">¶</a></h2>
+<p id="xlmr-classifier">This module provides a trainable XLMR classifier.
+[read-more](<a class="reference external" href="https://arxiv.org/abs/1911.02116">https://arxiv.org/abs/1911.02116</a>)</p>
+<dl class="py class">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugins.text.classification.xlmr.</span></code><code class="sig-name descname"><span class="pre">XLMRMultiClass</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cuda</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_round_off</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_label</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'_error_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'labels'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_map</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_labels</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.base.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
+<p>This plugin provides a classifier based on <cite>XLM-Roberta &lt;https://arxiv.org/abs/1911.02116&gt;</cite>.</p>
+<dl class="py method">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.inference">
+<code class="sig-name descname"><span class="pre">inference</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">texts</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.inference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the intent of a list of texts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>texts</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – A list of strings, derived from ASR transcripts.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – In case the labelencoder is not available.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of intents corresponding to texts.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent">Intent</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.init_model">
+<code class="sig-name descname"><span class="pre">init_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label_count</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.init_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.init_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the model if artifacts are available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>label_count</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – number of labels to train on or predict, defaults to None</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – In case n is not provided or can’t be calculated.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.load">
+<code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the plugin artifacts.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.save">
+<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the plugin artifacts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – In case the labelencoder is not trained.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.train">
+<code class="sig-name descname"><span class="pre">train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train an intent-classifier on the provided training data.</p>
+<p>The training is skipped if the data-format is not valid.
+:param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
+:type training_data: pd.DataFrame</p>
+</dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.utility">
+<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.utility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.valid_labelencoder">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">valid_labelencoder</span></code><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.valid_labelencoder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.validate">
+<code class="sig-name descname"><span class="pre">validate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the training data is in the appropriate format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>training_data</strong> (<em>pd.DataFrame</em>) – A pandas dataframe containing at least list of strings and corresponding labels.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the dataframe is valid, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dialogy.plugins.text.classification">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.classification" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -242,8 +329,8 @@
             <ul>
 <li><a class="reference internal" href="#">dialogy.plugins.text.classification package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#dialogy-plugins-text-classification-xlmr-module">dialogy.plugins.text.classification.xlmr module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.classification.xlmr">dialogy.plugins.text.classification.xlmr module</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.classification">Module contents</a></li>
 </ul>
 </li>
 </ul>
