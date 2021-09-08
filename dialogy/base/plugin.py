@@ -1,20 +1,14 @@
 """
 .. _plugin:
 
-Module provides access to an abstract plugin class.
+Module provides access to a plugin class.
 
 We will summarize a few key points for creating plugins:
 
 -   Don't interact with the workflow directly, use functions to access and mutate.
 -   The convention for workflow access is `access(workflow)`.
--   The convention for workflow modification is `mutate(workflow, value)`.
--   Plugin names must end with Plugin for classes and _plugin for functions.
-
-examples:
-- Sentence2VecPlugin
-- words2num_plugin
-- RuleSlotFilerPlugin
-- VotePlugin
+-   The convention for insertion is `mutate(workflow, value)`.
+-   Plugin names must end with Plugin for classes.
 """
 from typing import Any, Optional
 
@@ -24,55 +18,90 @@ from dialogy.utils.logger import logger
 
 class Plugin:
     """
-    A :ref:`Plugin <plugin>` instance interacts with a :ref:`workflow<workflow>`. A :ref:`workflow<workflow>` expects
-    a set of plugins to be inserted into different stages: pre and post processing.
-    A plugin can be conveniently written being unaware of the structure of any :ref:`Workflow <workflow>`
-    by expecting `access` and `mutate` functions.
+    A :ref:`Plugin <plugin>` object provides utilities that perform a transformation. A :ref:`Plugin <plugin>` object differs
+    in behaviour depending on it's purpose. Purpose defines stages in a :ref:`Workflow <workflow>`'s lifecycle.
+    These are namely: ``train``, ``test`` and ``production``.
 
-    **Dynamic Inputs**
+    A :ref:`Plugin <plugin>` object:
 
-    An :code:`access` method helps a :ref:`Plugin <plugin>` to require dynamic inputs from the :ref:`workflow<workflow>`
-    while a :code:`mutate` method offers a :ref:`Plugin <plugin>` to update the processed output and place them as per
-    expectations of the :ref:`workflow<workflow>` implementer's design.
+    - May be trained, expected during the ``train`` lifecycle.
+    - May transform a dataframe, expected during the ``test`` lifecycle.
+    - Transforms a datapoint, expected during the ``production`` lifecycle.
 
-    **Static Inputs**
+    Imagine a workflow processing a dataframe. Sequencing plugins like so:
 
-    In case there are static inputs that won't change at runtime, these can be pre-loaded into the
-    :ref:`Plugin <plugin>` by extending it.
+    .. code-block::
 
-    An example for this is:
+        start -> A -> B -> C -> D -> end
 
-    .. code-block:: python
-        :linenos:
-        :emphasize-lines: 14, 20
+    Let's assume that the plugin B, and C are plugins that can transform data without any training.
+    However, plugins A and D require training and transform data. The data transformations differ slightly as per
+    the :ref:`workflow<workflow>` life-cycle.
 
-        class CustomPlugin(Plugin):
-            def __init__(
-                self,
-                access: Optional[PluginFn],
-                mutate: Optional[PluginFn]
-            ) -> None:
-                \"""
-                The `.load_corpus()` method reads some corpus.
-                This is useful since we expect to read this
-                just once and use it throughout the runtime.
-                \"""
-                self.access = access
-                self.mutate = mutate
-                self.corpus = None
-                self.load_corpus()
+    1. During the training phase:
+        1. Plugin A starts training on a dataframe and then transforms the data.
+        2. Plugin B, C start transforming the dataframe received from A.
+        3. Plugin D starts trains on the dataframe received from C.
+    2. During the evaluation phase:
+        1. Each plugin performs its own transformation and passes data ahead.
 
-            def load_corpus(corpus_dir: str, file_path: str) -> None:
-                corpus_file = os.path.join(corpus, file_path)
-                with open(corpus_file, "r") as handle:
-                    self.corpus = handle.read().splitlines()
+    How does plugin P2 get trained if plugin P1 requires data from an incompatable dataframe?
 
-    We ship a few :ref:`Plugins <plugin>` with Dialogy, namely:
+    .. code-block::
 
-    1. :ref:`DucklingPlugin <duckling_plugin>` (pre-processing)
-    2. :ref:`merge_asr_output_plugin <merge_asr_output_plugin>` (pre-processing)
-    3. :ref:`RuleBasedSlotFillerPlugin <rule_slot_filler>` (post-processing)
-    4. :ref:`VotePlugin <vote_plugin>` (post-processing)
+        start -> P1 -> P2 -> end
+
+    Given that the production lifecycle implies that a plugin either receives the base features
+    straight from the :ref:`Workflow <workflow>` or its derivates via transformations from pre-existing plugins.
+
+    Therefore we can redefine incompatibility as follows:
+
+    1. Label differences, i.e. P1 trains on Transcription dataframes but P2 trains on Intent Classification dataframes.
+    2. Feature differences, i.e. P1 trains on confidence scores but P2 trains on ASR transcripts.
+
+    Plugins require a method for validation to ensure the data they receive matches the data they are expected to process.
+    If the validation fails, plugins must not interrupt the training by raising exceptions.
+
+    Speaking from our example, P1 gets trained and P2 remaines untrained. This doesn't sound intuitive but
+    that's because we are looking at plugins within a :ref:`workflow<workflow>`. As a remedy, :ref:`plugins<plugins>`
+    can be trained in isolation. A plugin author still must provide ``train``, ``transform`` and ``utility``
+    methods for a trainable plugin.
+
+
+    **Input**
+
+    :ref:`Plugin <plugin>` instantiation provides the configuration but transformation is done by applying
+    functions on a :ref:`Workflow <workflow>`. This way the seemingly linear sequence of plugins has the freedom to
+    access anything committed to the :ref:`Workflow <workflow>`.
+
+    **Output**
+
+    Post transformation we need the plugin to commit a ``value``. This value is not passed to the next plugin, instead we commit
+    everything to the :ref:`Workflow <workflow>` by applying a ``mutate`` function with the ``value`` over to the :ref:`Workflow <workflow>`.
+
+    **Trainable Plugins**
+
+    If a :ref:`Plugin <plugin>` is trainable, it must implement these methods:
+
+    1. ``train(x: pd.DataFrame) -> Plugin``
+    2. ``utility(...) -> Any``
+    3. ``validate(x: pd.DataFrame) -> bool``
+    4. ``save() -> Plugin``
+    5. ``load() -> Plugin``
+
+    **Transformer Plugins**
+
+    If a :ref:`Plugin <plugin>` transforms data and produces trainable features, it must implement these methods:
+
+    1. ``transform(x: pd.DataFrame) -> pd.DataFrame``
+    2. ``utility(...) -> Any``
+    3. ``validate(x: pd.DataFrame) -> bool``
+
+    **Base Plugins**
+
+    If a :ref:`Plugin <plugin>` is expected to transform isolated data points (no-training, no feature generation):
+
+    1. ``utility(...) -> Any``
     """
 
     def __init__(
@@ -86,9 +115,24 @@ class Plugin:
         self.debug = debug
 
     def utility(self, *args: Any) -> Any:
+        """
+        Transform X -> y.
+
+        This method is called during a :ref:`Workflow <workflow>` run.
+
+        :return: A value that will be passed to the next plugin (if any).
+        :rtype: Any
+        """
         return None
 
     def plugin(self, workflow: Any) -> None:
+        """
+        Abstraction for plugin io.
+
+        :param workflow:
+        :type workflow: Workflow
+        :raises TypeError: If access method is missing, we can't get inputs for transformation.
+        """
         if self.debug:
             logger.enable("dialogy")
         else:
@@ -121,8 +165,6 @@ class Plugin:
     ) -> Any:  # pylint: disable=unused-argument disable=no-self-use
         """
         Train a plugin.
-
-        This method is called by the workflow after the pre-processing stage.
         """
         return None
 
