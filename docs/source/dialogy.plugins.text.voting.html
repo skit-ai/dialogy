@@ -274,7 +274,17 @@ if the confidence threshold is met but representation is poor.</p></li>
 <dl class="py method">
 <dt id="dialogy.plugins.text.voting.intent_voting.VotePlugin.utility">
 <code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/plugins/text/voting/intent_voting.html#VotePlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.voting.intent_voting.VotePlugin.utility" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Transform X -&gt; y.</p>
+<p>This method is called during a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A value that will be passed to the next plugin (if any).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py method">
 <dt id="dialogy.plugins.text.voting.intent_voting.VotePlugin.vote_signal">
 <code class="sig-name descname"><span class="pre">vote_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trials</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><a class="reference internal" href="../_modules/dialogy/plugins/text/voting/intent_voting.html#VotePlugin.vote_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.voting.intent_voting.VotePlugin.vote_signal" title="Permalink to this definition">¶</a></dt>

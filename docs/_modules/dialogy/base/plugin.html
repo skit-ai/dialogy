@@ -174,141 +174,183 @@
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
         <h1>Source code for dialogy.base.plugin</h1><div class="highlight"><pre>
-<span></span>"""
-.. _plugin:
+<span></span><span class="sd">"""</span>
+<span class="sd">.. _plugin:</span>
 
-Module provides access to an abstract plugin class.
+<span class="sd">Module provides access to a plugin class.</span>
 
-We will summarize a few key points for creating plugins:
+<span class="sd">We will summarize a few key points for creating plugins:</span>
 
--   Don't interact with the workflow directly, use functions to access and mutate.
--   The convention for workflow access is `access(workflow)`.
--   The convention for workflow modification is `mutate(workflow, value)`.
--   Plugin names must end with Plugin for classes and _plugin for functions.
+<span class="sd">-   Don't interact with the workflow directly, use functions to access and mutate.</span>
+<span class="sd">-   The convention for workflow access is `access(workflow)`.</span>
+<span class="sd">-   The convention for insertion is `mutate(workflow, value)`.</span>
+<span class="sd">-   Plugin names must end with Plugin for classes.</span>
+<span class="sd">"""</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
 
-examples:
-- Sentence2VecPlugin
-- words2num_plugin
-- RuleSlotFilerPlugin
-- VotePlugin
-"""
-from typing import Any, Optional
-
-from dialogy.types import PluginFn
-from dialogy.utils.logger import logger
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">logger</span>
 
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin">[docs]</a>class Plugin:
-    """
-    A :ref:`Plugin &lt;plugin&gt;` instance interacts with a :ref:`workflow&lt;workflow&gt;`. A :ref:`workflow&lt;workflow&gt;` expects
-    a set of plugins to be inserted into different stages: pre and post processing.
-    A plugin can be conveniently written being unaware of the structure of any :ref:`Workflow &lt;workflow&gt;`
-    by expecting `access` and `mutate` functions.
+<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    A :ref:`Plugin &lt;plugin&gt;` object provides utilities that perform a transformation. A :ref:`Plugin &lt;plugin&gt;` object differs</span>
+<span class="sd">    in behaviour depending on it's purpose. Purpose defines stages in a :ref:`Workflow &lt;workflow&gt;`'s lifecycle.</span>
+<span class="sd">    These are namely: ``train``, ``test`` and ``production``.</span>
 
-    **Dynamic Inputs**
+<span class="sd">    A :ref:`Plugin &lt;plugin&gt;` object:</span>
 
-    An :code:`access` method helps a :ref:`Plugin &lt;plugin&gt;` to require dynamic inputs from the :ref:`workflow&lt;workflow&gt;`
-    while a :code:`mutate` method offers a :ref:`Plugin &lt;plugin&gt;` to update the processed output and place them as per
-    expectations of the :ref:`workflow&lt;workflow&gt;` implementer's design.
+<span class="sd">    - May be trained, expected during the ``train`` lifecycle.</span>
+<span class="sd">    - May transform a dataframe, expected during the ``test`` lifecycle.</span>
+<span class="sd">    - Transforms a datapoint, expected during the ``production`` lifecycle.</span>
 
-    **Static Inputs**
+<span class="sd">    Imagine a workflow processing a dataframe. Sequencing plugins like so:</span>
 
-    In case there are static inputs that won't change at runtime, these can be pre-loaded into the
-    :ref:`Plugin &lt;plugin&gt;` by extending it.
+<span class="sd">    .. code-block::</span>
 
-    An example for this is:
+<span class="sd">        start -&gt; A -&gt; B -&gt; C -&gt; D -&gt; end</span>
 
-    .. code-block:: python
-        :linenos:
-        :emphasize-lines: 14, 20
+<span class="sd">    Let's assume that the plugin B, and C are plugins that can transform data without any training.</span>
+<span class="sd">    However, plugins A and D require training and transform data. The data transformations differ slightly as per</span>
+<span class="sd">    the :ref:`workflow&lt;workflow&gt;` life-cycle.</span>
 
-        class CustomPlugin(Plugin):
-            def __init__(
-                self,
-                access: Optional[PluginFn],
-                mutate: Optional[PluginFn]
-            ) -&gt; None:
-                \"""
-                The `.load_corpus()` method reads some corpus.
-                This is useful since we expect to read this
-                just once and use it throughout the runtime.
-                \"""
-                self.access = access
-                self.mutate = mutate
-                self.corpus = None
-                self.load_corpus()
+<span class="sd">    1. During the training phase:</span>
+<span class="sd">        1. Plugin A starts training on a dataframe and then transforms the data.</span>
+<span class="sd">        2. Plugin B, C start transforming the dataframe received from A.</span>
+<span class="sd">        3. Plugin D starts trains on the dataframe received from C.</span>
+<span class="sd">    2. During the evaluation phase:</span>
+<span class="sd">        1. Each plugin performs its own transformation and passes data ahead.</span>
 
-            def load_corpus(corpus_dir: str, file_path: str) -&gt; None:
-                corpus_file = os.path.join(corpus, file_path)
-                with open(corpus_file, "r") as handle:
-                    self.corpus = handle.read().splitlines()
+<span class="sd">    How does plugin P2 get trained if plugin P1 requires data from an incompatable dataframe?</span>
 
-    We ship a few :ref:`Plugins &lt;plugin&gt;` with Dialogy, namely:
+<span class="sd">    .. code-block::</span>
 
-    1. :ref:`DucklingPlugin &lt;duckling_plugin&gt;` (pre-processing)
-    2. :ref:`merge_asr_output_plugin &lt;merge_asr_output_plugin&gt;` (pre-processing)
-    3. :ref:`RuleBasedSlotFillerPlugin &lt;rule_slot_filler&gt;` (post-processing)
-    4. :ref:`VotePlugin &lt;vote_plugin&gt;` (post-processing)
-    """
+<span class="sd">        start -&gt; P1 -&gt; P2 -&gt; end</span>
 
-    def __init__(
-        self,
-        access: Optional[PluginFn],
-        mutate: Optional[PluginFn],
-        debug: bool = False,
-    ) -&gt; None:
-        self.access = access
-        self.mutate = mutate
-        self.debug = debug
+<span class="sd">    Given that the production lifecycle implies that a plugin either receives the base features</span>
+<span class="sd">    straight from the :ref:`Workflow &lt;workflow&gt;` or its derivates via transformations from pre-existing plugins.</span>
 
-<div class="viewcode-block" id="Plugin.utility"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.utility">[docs]</a>    def utility(self, *args: Any) -&gt; Any:
-        return None</div>
+<span class="sd">    Therefore we can redefine incompatibility as follows:</span>
 
-<div class="viewcode-block" id="Plugin.plugin"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.plugin">[docs]</a>    def plugin(self, workflow: Any) -&gt; None:
-        if self.debug:
-            logger.enable("dialogy")
-        else:
-            logger.disable("dialogy")
-        if self.access:
-            args = self.access(workflow)
-            value = self.utility(*args)  # pylint: disable=assignment-from-none
-            if value is not None and self.mutate:
-                self.mutate(workflow, value)
-        else:
-            raise TypeError(
-                "Expected access to be functions" f" but {type(self.access)} was found."
-            )</div>
+<span class="sd">    1. Label differences, i.e. P1 trains on Transcription dataframes but P2 trains on Intent Classification dataframes.</span>
+<span class="sd">    2. Feature differences, i.e. P1 trains on confidence scores but P2 trains on ASR transcripts.</span>
 
-    def __call__(self) -&gt; PluginFn:
-        """
-        Build a plugin.
+<span class="sd">    Plugins require a method for validation to ensure the data they receive matches the data they are expected to process.</span>
+<span class="sd">    If the validation fails, plugins must not interrupt the training by raising exceptions.</span>
 
-        This method returns a function. Since any functionality can be built into a plugin by
-        extending the `Plugin` class but they are expected to work uniformly within a `workflow`,
-        all plugins must have a standard API. The `__call__` method exists just for this abstraction.
+<span class="sd">    Speaking from our example, P1 gets trained and P2 remaines untrained. This doesn't sound intuitive but</span>
+<span class="sd">    that's because we are looking at plugins within a :ref:`workflow&lt;workflow&gt;`. As a remedy, :ref:`plugins&lt;plugins&gt;`</span>
+<span class="sd">    can be trained in isolation. A plugin author still must provide ``train``, ``transform`` and ``utility``</span>
+<span class="sd">    methods for a trainable plugin.</span>
 
-        A plugin can be designed to do anything, while the `workflow` will expect all plugins
-        to have a `__call__()` method.
-        """
-        return self.plugin
 
-<div class="viewcode-block" id="Plugin.train"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.train">[docs]</a>    def train(
-        self, training_data: Any
-    ) -&gt; Any:  # pylint: disable=unused-argument disable=no-self-use
-        """
-        Train a plugin.
+<span class="sd">    **Input**</span>
 
-        This method is called by the workflow after the pre-processing stage.
-        """
-        return None</div>
+<span class="sd">    :ref:`Plugin &lt;plugin&gt;` instantiation provides the configuration but transformation is done by applying</span>
+<span class="sd">    functions on a :ref:`Workflow &lt;workflow&gt;`. This way the seemingly linear sequence of plugins has the freedom to</span>
+<span class="sd">    access anything committed to the :ref:`Workflow &lt;workflow&gt;`.</span>
 
-<div class="viewcode-block" id="Plugin.transform"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.transform">[docs]</a>    def transform(
-        self, training_data: Any
-    ) -&gt; Any:  # pylint: disable=unused-argument disable=no-self-use
-        """
-        Transform data for a plugin in the workflow.
-        """
-        return None</div></div>
+<span class="sd">    **Output**</span>
+
+<span class="sd">    Post transformation we need the plugin to commit a ``value``. This value is not passed to the next plugin, instead we commit</span>
+<span class="sd">    everything to the :ref:`Workflow &lt;workflow&gt;` by applying a ``mutate`` function with the ``value`` over to the :ref:`Workflow &lt;workflow&gt;`.</span>
+
+<span class="sd">    **Trainable Plugins**</span>
+
+<span class="sd">    If a :ref:`Plugin &lt;plugin&gt;` is trainable, it must implement these methods:</span>
+
+<span class="sd">    1. ``train(x: pd.DataFrame) -&gt; Plugin``</span>
+<span class="sd">    2. ``utility(...) -&gt; Any``</span>
+<span class="sd">    3. ``validate(x: pd.DataFrame) -&gt; bool``</span>
+<span class="sd">    4. ``save() -&gt; Plugin``</span>
+<span class="sd">    5. ``load() -&gt; Plugin``</span>
+
+<span class="sd">    **Transformer Plugins**</span>
+
+<span class="sd">    If a :ref:`Plugin &lt;plugin&gt;` transforms data and produces trainable features, it must implement these methods:</span>
+
+<span class="sd">    1. ``transform(x: pd.DataFrame) -&gt; pd.DataFrame``</span>
+<span class="sd">    2. ``utility(...) -&gt; Any``</span>
+<span class="sd">    3. ``validate(x: pd.DataFrame) -&gt; bool``</span>
+
+<span class="sd">    **Base Plugins**</span>
+
+<span class="sd">    If a :ref:`Plugin &lt;plugin&gt;` is expected to transform isolated data points (no-training, no feature generation):</span>
+
+<span class="sd">    1. ``utility(...) -&gt; Any``</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
+        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access</span> <span class="o">=</span> <span class="n">access</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span> <span class="o">=</span> <span class="n">mutate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
+
+<div class="viewcode-block" id="Plugin.utility"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Transform X -&gt; y.</span>
+
+<span class="sd">        This method is called during a :ref:`Workflow &lt;workflow&gt;` run.</span>
+
+<span class="sd">        :return: A value that will be passed to the next plugin (if any).</span>
+<span class="sd">        :rtype: Any</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Plugin.plugin"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.plugin">[docs]</a>    <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Abstraction for plugin io.</span>
+
+<span class="sd">        :param workflow:</span>
+<span class="sd">        :type workflow: Workflow</span>
+<span class="sd">        :raises TypeError: If access method is missing, we can't get inputs for transformation.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="s2">"dialogy"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="s2">"dialogy"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">workflow</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utility</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># pylint: disable=assignment-from-none</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">"Expected access to be functions"</span> <span class="sa">f</span><span class="s2">" but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> was found."</span>
+            <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Build a plugin.</span>
+
+<span class="sd">        This method returns a function. Since any functionality can be built into a plugin by</span>
+<span class="sd">        extending the `Plugin` class but they are expected to work uniformly within a `workflow`,</span>
+<span class="sd">        all plugins must have a standard API. The `__call__` method exists just for this abstraction.</span>
+
+<span class="sd">        A plugin can be designed to do anything, while the `workflow` will expect all plugins</span>
+<span class="sd">        to have a `__call__()` method.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span>
+
+<div class="viewcode-block" id="Plugin.train"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument disable=no-self-use</span>
+        <span class="sd">"""</span>
+<span class="sd">        Train a plugin.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Plugin.transform"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument disable=no-self-use</span>
+        <span class="sd">"""</span>
+<span class="sd">        Transform data for a plugin in the workflow.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
 </pre></div>
       </article>
       <footer>

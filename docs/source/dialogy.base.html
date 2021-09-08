@@ -273,92 +273,114 @@ depending on the number of transcripts that contain same body.</p>
 </div>
 <div class="section" id="module-dialogy.base.plugin">
 <span id="dialogy-base-plugin-module"></span><h2>dialogy.base.plugin module<a class="headerlink" href="#module-dialogy.base.plugin" title="Permalink to this headline">¶</a></h2>
-<p id="plugin">Module provides access to an abstract plugin class.</p>
+<p id="plugin">Module provides access to a plugin class.</p>
 <p>We will summarize a few key points for creating plugins:</p>
 <ul class="simple">
 <li><p>Don’t interact with the workflow directly, use functions to access and mutate.</p></li>
 <li><p>The convention for workflow access is <cite>access(workflow)</cite>.</p></li>
-<li><p>The convention for workflow modification is <cite>mutate(workflow, value)</cite>.</p></li>
-<li><p>Plugin names must end with Plugin for classes and _plugin for functions.</p></li>
+<li><p>The convention for insertion is <cite>mutate(workflow, value)</cite>.</p></li>
+<li><p>Plugin names must end with Plugin for classes.</p></li>
 </ul>
-<p>examples:
-- Sentence2VecPlugin
-- words2num_plugin
-- RuleSlotFilerPlugin
-- VotePlugin</p>
 <dl class="py class">
 <dt id="dialogy.base.plugin.Plugin">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.base.plugin.</span></code><code class="sig-name descname"><span class="pre">Plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> instance interacts with a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>. A <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> expects
-a set of plugins to be inserted into different stages: pre and post processing.
-A plugin can be conveniently written being unaware of the structure of any <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>
-by expecting <cite>access</cite> and <cite>mutate</cite> functions.</p>
-<p><strong>Dynamic Inputs</strong></p>
-<p>An <code class="code docutils literal notranslate"><span class="pre">access</span></code> method helps a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> to require dynamic inputs from the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>
-while a <code class="code docutils literal notranslate"><span class="pre">mutate</span></code> method offers a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> to update the processed output and place them as per
-expectations of the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> implementer’s design.</p>
-<p><strong>Static Inputs</strong></p>
-<p>In case there are static inputs that won’t change at runtime, these can be pre-loaded into the
-<a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> by extending it.</p>
-<p>An example for this is:</p>
-<div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CustomPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
-        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        The `.load_corpus()` method reads some corpus.</span>
-<span class="sd">        This is useful since we expect to read this</span>
-<span class="sd">        just once and use it throughout the runtime.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">access</span> <span class="o">=</span> <span class="n">access</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span> <span class="o">=</span> <span class="n">mutate</span>
-<span class="hll">        <span class="bp">self</span><span class="o">.</span><span class="n">corpus</span> <span class="o">=</span> <span class="kc">None</span>
-</span>        <span class="bp">self</span><span class="o">.</span><span class="n">load_corpus</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">load_corpus</span><span class="p">(</span><span class="n">corpus_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">corpus_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">corpus_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
-<span class="hll">            <span class="bp">self</span><span class="o">.</span><span class="n">corpus</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-</span></pre></div>
-</td></tr></table></div></div>
-<p>We ship a few <a class="reference internal" href="#plugin"><span class="std std-ref">Plugins</span></a> with Dialogy, namely:</p>
+<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> object provides utilities that perform a transformation. A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> object differs
+in behaviour depending on it’s purpose. Purpose defines stages in a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>’s lifecycle.
+These are namely: <code class="docutils literal notranslate"><span class="pre">train</span></code>, <code class="docutils literal notranslate"><span class="pre">test</span></code> and <code class="docutils literal notranslate"><span class="pre">production</span></code>.</p>
+<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> object:</p>
+<ul class="simple">
+<li><p>May be trained, expected during the <code class="docutils literal notranslate"><span class="pre">train</span></code> lifecycle.</p></li>
+<li><p>May transform a dataframe, expected during the <code class="docutils literal notranslate"><span class="pre">test</span></code> lifecycle.</p></li>
+<li><p>Transforms a datapoint, expected during the <code class="docutils literal notranslate"><span class="pre">production</span></code> lifecycle.</p></li>
+</ul>
+<p>Imagine a workflow processing a dataframe. Sequencing plugins like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">-&gt;</span> <span class="n">A</span> <span class="o">-&gt;</span> <span class="n">B</span> <span class="o">-&gt;</span> <span class="n">C</span> <span class="o">-&gt;</span> <span class="n">D</span> <span class="o">-&gt;</span> <span class="n">end</span>
+</pre></div>
+</div>
+<p>Let’s assume that the plugin B, and C are plugins that can transform data without any training.
+However, plugins A and D require training and transform data. The data transformations differ slightly as per
+the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> life-cycle.</p>
 <ol class="arabic simple">
-<li><p><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html#duckling-plugin"><span class="std std-ref">DucklingPlugin</span></a> (pre-processing)</p></li>
-<li><p><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html#merge-asr-output-plugin"><span class="std std-ref">merge_asr_output_plugin</span></a> (pre-processing)</p></li>
-<li><p><a class="reference internal" href="dialogy.plugins.text.slot_filler.html#rule-slot-filler"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a> (post-processing)</p></li>
-<li><p><a class="reference internal" href="dialogy.plugins.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a> (post-processing)</p></li>
+<li><dl class="simple">
+<dt>During the training phase:</dt><dd><ol class="arabic simple">
+<li><p>Plugin A starts training on a dataframe and then transforms the data.</p></li>
+<li><p>Plugin B, C start transforming the dataframe received from A.</p></li>
+<li><p>Plugin D starts trains on the dataframe received from C.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>During the evaluation phase:</dt><dd><ol class="arabic simple">
+<li><p>Each plugin performs its own transformation and passes data ahead.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+<p>How does plugin P2 get trained if plugin P1 requires data from an incompatable dataframe?</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">-&gt;</span> <span class="n">P1</span> <span class="o">-&gt;</span> <span class="n">P2</span> <span class="o">-&gt;</span> <span class="n">end</span>
+</pre></div>
+</div>
+<p>Given that the production lifecycle implies that a plugin either receives the base features
+straight from the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> or its derivates via transformations from pre-existing plugins.</p>
+<p>Therefore we can redefine incompatibility as follows:</p>
+<ol class="arabic simple">
+<li><p>Label differences, i.e. P1 trains on Transcription dataframes but P2 trains on Intent Classification dataframes.</p></li>
+<li><p>Feature differences, i.e. P1 trains on confidence scores but P2 trains on ASR transcripts.</p></li>
+</ol>
+<p>Plugins require a method for validation to ensure the data they receive matches the data they are expected to process.
+If the validation fails, plugins must not interrupt the training by raising exceptions.</p>
+<p>Speaking from our example, P1 gets trained and P2 remaines untrained. This doesn’t sound intuitive but
+that’s because we are looking at plugins within a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>. As a remedy, <span class="xref std std-ref">plugins</span>
+can be trained in isolation. A plugin author still must provide <code class="docutils literal notranslate"><span class="pre">train</span></code>, <code class="docutils literal notranslate"><span class="pre">transform</span></code> and <code class="docutils literal notranslate"><span class="pre">utility</span></code>
+methods for a trainable plugin.</p>
+<p><strong>Input</strong></p>
+<p><a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> instantiation provides the configuration but transformation is done by applying
+functions on a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>. This way the seemingly linear sequence of plugins has the freedom to
+access anything committed to the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>.</p>
+<p><strong>Output</strong></p>
+<p>Post transformation we need the plugin to commit a <code class="docutils literal notranslate"><span class="pre">value</span></code>. This value is not passed to the next plugin, instead we commit
+everything to the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> by applying a <code class="docutils literal notranslate"><span class="pre">mutate</span></code> function with the <code class="docutils literal notranslate"><span class="pre">value</span></code> over to the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>.</p>
+<p><strong>Trainable Plugins</strong></p>
+<p>If a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is trainable, it must implement these methods:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">train(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">Plugin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utility(...)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save()</span> <span class="pre">-&gt;</span> <span class="pre">Plugin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load()</span> <span class="pre">-&gt;</span> <span class="pre">Plugin</span></code></p></li>
+</ol>
+<p><strong>Transformer Plugins</strong></p>
+<p>If a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> transforms data and produces trainable features, it must implement these methods:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">transform(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">pd.DataFrame</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utility(...)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></li>
+</ol>
+<p><strong>Base Plugins</strong></p>
+<p>If a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is expected to transform isolated data points (no-training, no feature generation):</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">utility(...)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code></p></li>
 </ol>
 <dl class="py method">
 <dt id="dialogy.base.plugin.Plugin.plugin">
 <code class="sig-name descname"><span class="pre">plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.plugin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Abstraction for plugin io.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>workflow</strong> (<a class="reference internal" href="dialogy.workflow.html#dialogy.workflow.workflow.Workflow" title="dialogy.workflow.workflow.Workflow"><em>Workflow</em></a>) – </p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If access method is missing, we can’t get inputs for transformation.</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py method">
 <dt id="dialogy.base.plugin.Plugin.train">
 <code class="sig-name descname"><span class="pre">train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train a plugin.</p>
-<p>This method is called by the workflow after the pre-processing stage.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="dialogy.base.plugin.Plugin.transform">
@@ -368,22 +390,21 @@ expectations of the <a class="reference internal" href="dialogy.workflow.html#wo
 <dl class="py method">
 <dt id="dialogy.base.plugin.Plugin.utility">
 <code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.utility" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Transform X -&gt; y.</p>
+<p>This method is called during a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A value that will be passed to the next plugin (if any).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 </div>
 <div class="section" id="module-dialogy.base">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.base" title="Permalink to this headline">¶</a></h2>
-<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is an abstraction to handle third-party features with custom <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> pipelines.</p>
-<p>We offer a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> that provides a simple API exposed via its <code class="code docutils literal notranslate"><span class="pre">run(input_=X)</span></code> method.
-The input has no restrictions, the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> will apply a set of pre-processing functions and
-post-processing functions.</p>
-<p>The challenge is <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> and <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> are not built usually by the same people.
-A tailor-made solution for a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> hampers the portability of the solution. These can be inserted
-in various ways, like methods, or external functions even. The hope here is to encourage better abstraction while
-writing plugins. This will help improvement, addition of existing features by keeping them in their separate, isolated,
-context-free boxes.</p>
-<p>An ideal <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a>  must therefore not assume a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> structure. It must use
-abstractions to specify requirements and expect these to be met for safe usage.</p>
 </div>
 </div>
 
