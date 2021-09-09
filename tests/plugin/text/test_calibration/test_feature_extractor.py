@@ -1,7 +1,9 @@
+import json
+
 import numpy as np
 import pandas as pd
+
 from dialogy.plugins.text.calibration.xgb import FeatureExtractor
-import json
 
 mock_data = json.load(open("test_df.json"))
 df = pd.DataFrame(mock_data, columns=["conv_id", "data", "tag", "value", "time"])

@@ -8,15 +8,9 @@ import httpretty
 import pytest
 
 from dialogy.plugins import DucklingPlugin
-from dialogy.types.entity import (
-    BaseEntity,
-    LocationEntity,
-    NumericalEntity,
-    PeopleEntity,
-    TimeEntity,
-    TimeIntervalEntity,
-    entity_synthesis,
-)
+from dialogy.types.entity import (BaseEntity, LocationEntity, NumericalEntity,
+                                  PeopleEntity, TimeEntity, TimeIntervalEntity,
+                                  entity_synthesis)
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
