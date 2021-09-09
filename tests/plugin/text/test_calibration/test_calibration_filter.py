@@ -3,7 +3,7 @@ import pytest
 from scipy import sparse
 
 from dialogy import constants as const
-from dialogy.plugins.text.calibration import WERCalibrationConfig, WERCalibrationPlugin
+from dialogy.plugins.text.calibration.xgb import CalibrationModel
 from dialogy.workflow.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 
@@ -27,30 +27,3 @@ class MyClassifier(object):
 
 vectorizer = MyVectorizer()
 classifier = MyClassifier()
-
-
-@pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_calibration(payload):
-    body = payload["input"]
-    expected = payload.get("expected")
-    # exception = payload.get("exception")
-    config = payload.get("config") or {}
-    lang = payload.get("lang")
-    mock = payload.get("mock")
-    threshold = payload.get("threshold")
-
-    def access(_):
-        return body, lang
-
-    def mutate(workflow, value):
-        workflow.output = value
-
-    wer_calibration = WERCalibrationPlugin(config, access=access, mutate=mutate)
-    if mock:
-        wer_calibration.config[lang] = WERCalibrationConfig(
-            vectorizer=vectorizer, classifier=classifier, threshold=threshold
-        )
-    workflow = Workflow([wer_calibration])
-    output = workflow.run(input_=body)
-
-    assert output == expected[const.ALTERNATIVES]

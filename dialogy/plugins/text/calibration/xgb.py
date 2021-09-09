@@ -4,7 +4,6 @@ Trains a calibraation model. This contains two models:
 - Classifier: XGBoostRegressor
 """
 
-from _typeshed import OpenBinaryMode
 import json
 import math
 import pickle
