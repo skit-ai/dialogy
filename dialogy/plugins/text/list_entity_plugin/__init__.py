@@ -64,6 +64,7 @@ class ListEntityPlugin(EntityExtractor):
         threshold: Optional[float] = None,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
+        flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
     ):
         super().__init__(access=access, mutate=mutate, debug=debug, threshold=threshold)
@@ -77,6 +78,7 @@ class ListEntityPlugin(EntityExtractor):
         self.keywords = None
         self.spacy_nlp = spacy_nlp
         self.compiled_patterns: Dict[str, Dict[str, List[Any]]] = {}
+        self.flags = flags
 
         if self.style == const.REGEX:
             self._parse(candidates)
@@ -122,7 +124,10 @@ class ListEntityPlugin(EntityExtractor):
         if self.style == const.REGEX:
             for entity_type, entity_value_dict in candidates.items():
                 for entity_value, entity_patterns in entity_value_dict.items():
-                    patterns = [re.compile(pattern) for pattern in entity_patterns]
+                    patterns = [
+                        re.compile(pattern, flags=self.flags)
+                        for pattern in entity_patterns
+                    ]
                     if not self.compiled_patterns:
                         self.compiled_patterns = {entity_type: {entity_value: patterns}}
                     elif entity_type in self.compiled_patterns:
