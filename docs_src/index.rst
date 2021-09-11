@@ -6,14 +6,14 @@
 Dialogy
 ========
 
-.. image:: https://travis-ci.com/Vernacular-ai/dialogy.svg?branch=master
-    :target: https://travis-ci.com/Vernacular-ai/dialogy
+.. image:: https://app.travis-ci.com/skit-ai/dialogy.svg?branch=master
+    :target: https://app.travis-ci.com/skit-ai/dialogy
 
-.. image:: https://coveralls.io/repos/github/Vernacular-ai/dialogy/badge.svg?branch=master
-   :target: https://coveralls.io/github/Vernacular-ai/dialogy?branch=master
+.. image:: https://coveralls.io/repos/github/skit-ai/dialogy/badge.svg?branch=master
+   :target: https://coveralls.io/github/skit-ai/dialogy?branch=master
 
 .. image:: https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c
-   :target: https://www.codacy.com/gh/Vernacular-ai/dialogy/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Vernacular-ai/dialogy&amp;utm_campaign=Badge_Grade
+   :target: https://www.codacy.com/gh/skit-ai/dialogy/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Vernacular-ai/dialogy&amp;utm_campaign=Badge_Grade
 
 .. image:: https://badge.fury.io/py/dialogy.svg
     :target: https://badge.fury.io/py/dialogy
