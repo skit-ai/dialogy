@@ -1,5 +1,6 @@
 import importlib
 import time
+import requests
 
 import httpretty
 import pytest
@@ -156,6 +157,44 @@ def test_duckling_timeout() -> None:
     workflow = Workflow([duckling_plugin])
     workflow.run("test")
     assert workflow.output["entities"] == []
+
+
+@httpretty.activate
+@pytest.mark.filterwarnings("ignore:.*:PytestUnhandledThreadExceptionWarning")
+def test_duckling_connection_error() -> None:
+    """
+    [summary]
+
+    :return: [description]
+    :rtype: [type]
+    """
+    locale = "en_IN"
+
+    def raise_connection_error(_, __, headers):
+        raise requests.exceptions.ConnectionError("Can't connect to duckling server")
+
+    def access(workflow):
+        return workflow.input, None, locale
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+
+    duckling_plugin = DucklingPlugin(
+        locale=locale,
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        access=access,
+        mutate=mutate,
+        threshold=0.2,
+        timeout=0.01,
+    )
+
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=raise_connection_error
+    )
+
+    workflow = Workflow([duckling_plugin])
+    workflow.run("test")
 
 
 @httpretty.activate
