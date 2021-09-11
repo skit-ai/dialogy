@@ -4,6 +4,7 @@ os:
 python:
   - "3.8"
   - "3.9"
+  - "3.10"
 install:
   - pip install poetry coveralls
   - poetry install
