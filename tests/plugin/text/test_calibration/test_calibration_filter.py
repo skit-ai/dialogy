@@ -3,8 +3,7 @@ import pytest
 from scipy import sparse
 
 from dialogy import constants as const
-from dialogy.plugins.text.calibration import (WERCalibrationConfig,
-                                              WERCalibrationPlugin)
+from dialogy.plugins.text.calibration import WERCalibrationConfig, WERCalibrationPlugin
 from dialogy.workflow.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 

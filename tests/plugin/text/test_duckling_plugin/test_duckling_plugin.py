@@ -1,9 +1,9 @@
 import importlib
 import time
-import requests
 
 import httpretty
 import pytest
+import requests
 
 from dialogy.plugins import DucklingPlugin
 from dialogy.types import BaseEntity
