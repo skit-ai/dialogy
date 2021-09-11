@@ -353,6 +353,10 @@ class DucklingPlugin(EntityExtractor):
             logger.error(f"Duckling timed out: {timeout_exception}")
             logger.error(pformat(body))
             return []
+        except requests.exceptions.ConnectionError as connection_error:
+            logger.error(f"Duckling server is turned off?: {connection_error}")
+            logger.error(pformat(body))
+            return []
 
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
