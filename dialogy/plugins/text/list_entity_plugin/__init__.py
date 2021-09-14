@@ -9,16 +9,19 @@ intermediate structure that the DucklingPlugin expects. We need to prevent the i
 all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.
 """
 import re
+import json
 from pprint import pformat
 from typing import Any, Dict, List, Optional, Tuple
 
+import pandas as pd # type: ignore
 import pydash as py_  # type: ignore
+from tqdm import tqdm
 
 from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.base.plugin import PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
-from dialogy.utils.logger import logger
+from dialogy.utils import logger, normalize
 
 Text = str
 Label = str
@@ -64,10 +67,21 @@ class ListEntityPlugin(EntityExtractor):
         threshold: Optional[float] = None,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
+        input_column: str = const.ALTERNATIVES,
+        output_column: Optional[str] = None,
+        use_transform: bool = True,
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
     ):
-        super().__init__(access=access, mutate=mutate, debug=debug, threshold=threshold)
+        super().__init__(
+            access=access,
+            mutate=mutate,
+            debug=debug,
+            threshold=threshold,
+            input_column=input_column,
+            output_column=output_column,
+            use_transform=use_transform,
+        )
         self.__style_search_map = {
             const.SPACY: self.ner_search,
             const.REGEX: self.regex_search,
@@ -282,3 +296,40 @@ class ListEntityPlugin(EntityExtractor):
                         )
         logger.debug(entity_tokens)
         return entity_tokens
+
+    def _make_transform_values(self, transcript: Any) -> List[str]:
+        """
+        Make transcripts from a string/json-string.
+
+        :param transcript: A string to search entities within.
+        :type transcript: str
+        :return: List of transcripts.
+        :rtype: List[str]
+        """
+        try:
+            transcript = json.loads(transcript)
+            return normalize(transcript)
+        except (json.JSONDecodeError, TypeError):
+            return normalize(transcript)
+
+    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Transform training data.
+
+        :param training_data: Training data.
+        :type training_data: pd.DataFrame
+        :return: Transformed training data.
+        :rtype: pd.DataFrame
+        """
+        training_data = training_data.copy()
+        if self.output_column not in training_data.columns:
+            training_data[self.output_column] = None
+
+        for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
+            transcripts = self._make_transform_values(row[self.input_column])
+            entities = self.utility(transcripts)
+            if row[self.output_column] is None or pd.isnull(row[self.output_column]):
+                training_data.at[i, self.output_column] = entities
+            else:
+                training_data.at[i, self.output_column] = row[self.output_column] + entities
+        return training_data
