@@ -93,24 +93,35 @@ class MergeASROutputPlugin(Plugin):
         self,
         access: Optional[PluginFn],
         mutate: Optional[PluginFn],
-        data_column: str = "data",
+        input_column: str = const.ALTERNATIVES,
+        output_column: Optional[str] = None,
+        use_transform: bool = False,
         debug: bool = False,
     ) -> None:
-        super().__init__(access, mutate, debug=debug)
-        self.data_column = data_column
+        super().__init__(
+            access=access,
+            mutate=mutate,
+            debug=debug,
+            input_column=input_column,
+            output_column=output_column,
+            use_transform=use_transform,
+        )
 
     def utility(self, *args: Any) -> Any:
         return merge_asr_output(*args)
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+        if not self.use_transform:
+            return training_data
+
         training_data["use"] = True
         logger.debug("Transforming training data.")
         for i, row in training_data.iterrows():
             asr_output = None
             try:
-                asr_output = json.loads(row[self.data_column])
+                asr_output = json.loads(row[self.input_column])
                 if asr_output and (merged_asr_ouptut := merge_asr_output(asr_output)):
-                    training_data.loc[i, self.data_column] = merged_asr_ouptut[0]
+                    training_data.loc[i, self.output_column] = merged_asr_ouptut[0]
                 else:
                     training_data.loc[i, "use"] = False
             except Exception as error:  # pylint: disable=broad-except

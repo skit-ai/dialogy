@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from pydash import py_  # type: ignore
 
+import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity
 
@@ -17,9 +18,19 @@ class EntityExtractor(Plugin):
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
         debug: bool = False,
+        input_column: str = const.ALTERNATIVES,
+        output_column: Optional[str] = None,
+        use_transform: bool = False,
         threshold: Optional[float] = None,
     ) -> None:
-        super().__init__(access, mutate, debug=debug)
+        super().__init__(
+            access=access,
+            mutate=mutate,
+            debug=debug,
+            input_column=input_column,
+            output_column=output_column,
+            use_transform=use_transform,
+        )
         self.threshold = threshold
 
     def remove_low_scoring_entities(

@@ -15,7 +15,9 @@ def mutate(workflow, value):
     workflow.output = value
 
 
-merge_asr_output_plugin = MergeASROutputPlugin(access=access, mutate=mutate)
+merge_asr_output_plugin = MergeASROutputPlugin(
+    access=access, mutate=mutate, use_transform=True, input_column="data"
+)
 
 
 def test_merge_asr_output() -> None:

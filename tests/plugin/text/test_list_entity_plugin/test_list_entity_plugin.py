@@ -1,7 +1,9 @@
 import pytest
 
+import pandas as pd
 from dialogy.plugins import ListEntityPlugin
 from dialogy.workflow import Workflow
+from dialogy.types import KeywordEntity
 from tests import EXCEPTIONS, load_tests
 
 
@@ -57,6 +59,64 @@ def test_type_error_if_compiled_patterns_missing():
             spacy_nlp=None,
         )
         l.regex_search("...")
+
+
+def test_entity_extractor_transform():
+    entity_extractor = ListEntityPlugin(
+        access=lambda x: x, mutate=lambda y: y, input_column="data", output_column="entities", use_transform=True, style="regex",
+        candidates={
+          "fruits": {
+            "apple": [r"apples?"],
+            "orange": [r"oranges?"]
+          }
+        }
+    )
+    df = pd.DataFrame(
+        [
+            {
+                "data": ["lets have apples today"],
+            },
+            {
+                "data": '[[{"transcript": "lets have oranges today"}]]',
+                "entities": [KeywordEntity(range={"start": 0, "end": 0}, value="apple", type="fruits", body="apple")]
+            }
+        ],
+        columns=["data", "entities"]
+    )
+    df_ = entity_extractor.transform(df)
+    parsed_entities = df_.entities
+    assert parsed_entities.iloc[0][0].type == "fruits"
+    assert parsed_entities.iloc[0][0].value == "apple"
+    assert parsed_entities.iloc[1][1].type == "fruits"
+    assert parsed_entities.iloc[1][1].value == "orange"
+
+
+def test_entity_extractor_transform_no_existing_entity():
+    entity_extractor = ListEntityPlugin(
+        access=lambda x: x, mutate=lambda y: y, input_column="data", output_column="entities", use_transform=True, style="regex",
+        candidates={
+          "fruits": {
+            "apple": [r"apples?"],
+            "orange": [r"oranges?"]
+          }
+        }
+    )
+    df = pd.DataFrame(
+        [
+            {
+                "data": ["lets have apples today"],
+            },
+            {
+                "data": '[[{"transcript": "lets have oranges today"}]]',
+            }
+        ]
+    )
+    df_ = entity_extractor.transform(df)
+    parsed_entities = df_.entities
+    assert parsed_entities.iloc[0][0].type == "fruits"
+    assert parsed_entities.iloc[0][0].value == "apple"
+    assert parsed_entities.iloc[1][0].type == "fruits"
+    assert parsed_entities.iloc[1][0].value == "orange"
 
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))

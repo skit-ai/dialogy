@@ -12,6 +12,7 @@ We will summarize a few key points for creating plugins:
 """
 from typing import Any, Optional
 
+import dialogy.constants as const
 from dialogy.types import PluginFn
 from dialogy.utils.logger import logger
 
@@ -106,13 +107,19 @@ class Plugin:
 
     def __init__(
         self,
-        access: Optional[PluginFn],
-        mutate: Optional[PluginFn],
+        access: Optional[PluginFn] = None,
+        mutate: Optional[PluginFn] = None,
+        input_column: str = const.ALTERNATIVES,
+        output_column: Optional[str] = None,
+        use_transform: bool = False,
         debug: bool = False,
     ) -> None:
         self.access = access
         self.mutate = mutate
         self.debug = debug
+        self.use_transform = use_transform
+        self.input_column = input_column
+        self.output_column = output_column or input_column
 
     def utility(self, *args: Any) -> Any:
         """
@@ -161,7 +168,7 @@ class Plugin:
         return self.plugin
 
     def train(
-        self, training_data: Any
+        self, _: Any
     ) -> Any:  # pylint: disable=unused-argument disable=no-self-use
         """
         Train a plugin.
@@ -174,4 +181,6 @@ class Plugin:
         """
         Transform data for a plugin in the workflow.
         """
-        return None
+        if not self.use_transform:
+            return training_data
+        return training_data
