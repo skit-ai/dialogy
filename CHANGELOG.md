@@ -1,10 +1,13 @@
 # Changelog
 
-## 0.8.2 (Unreleased)
+## 0.8.2
 
-- [x] docs: Explain plugins in terms of workflow lifecycle.
+- [x] **fix: Workflow is thread safe.**
 - [x] fix: Merge asr plugin on non-json inputs crashes workflow runs.
 - [x] feat: WER calibration plugin.
+- [x] feat: Canonicalization plugin.
+- [x] update: DucklingPlugin, ListEntityPlugin have transform methods.
+- [x] docs: Explain plugins in terms of workflow lifecycle.
 
 ## 0.8.1
 
