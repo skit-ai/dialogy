@@ -93,8 +93,6 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
         workflow.run(input_="2 am")
 
-
-
     :param rules: A mapping that defines relationship between an intent, its slots and the entities that fill them.
     :type rules: Rule
     :param fill_multiple: More than one item be allowed to fill a single slot.
