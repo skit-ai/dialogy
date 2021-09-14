@@ -49,9 +49,9 @@ The aim of this project is to be largest supplier of plugins for SLU application
     to offer flexibility of use.
 """
 import copy
-import json
 import time
-from typing import Any, Dict, List, Union
+from threading import Lock
+from typing import Any, Dict, List
 
 import attr
 import pandas as pd  # type: ignore
@@ -91,13 +91,15 @@ class Workflow:
     debug = attr.ib(
         type=bool, default=False, validator=attr.validators.instance_of(bool)
     )
-    NON_SERIALIZABLE_FIELDS = [const.PLUGINS, const.DEBUG]
+    lock: Lock
+    NON_SERIALIZABLE_FIELDS = [const.PLUGINS, const.DEBUG, const.LOCK]
 
     def __attrs_post_init__(self) -> None:
         """
         Post init hook.
         """
         self.set_io()
+        self.lock = Lock()
 
     def set_io(self) -> None:
         """
@@ -163,10 +165,11 @@ class Workflow:
         Returns:
             (`Any`): This function can return any arbitrary value. Subclasses may enforce a stronger check.
         """
-        self.input = input_
-        self.execute()
-        output = copy.copy(self.output)
-        self.flush()
+        with self.lock:
+            self.input = input_
+            self.execute()
+            output = copy.copy(self.output)
+            self.flush()
         return output
 
     def flush(self) -> None:
