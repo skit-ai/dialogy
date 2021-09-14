@@ -2,11 +2,12 @@ import importlib
 import time
 
 import httpretty
+import pandas as pd
 import pytest
 import requests
 
 from dialogy.plugins import DucklingPlugin
-from dialogy.types import BaseEntity
+from dialogy.types import BaseEntity, TimeEntity, KeywordEntity
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
@@ -240,3 +241,168 @@ def test_plugin_working_cases(payload) -> None:
     else:
         with pytest.raises(EXCEPTIONS[exception]):
             workflow.run(body)
+
+
+@httpretty.activate
+def test_plugin_transform():
+    mock_entity_json = [
+        {
+            "body": "today",
+            "start": 0,
+            "value": {
+                "values": [
+                    {
+                        "value": "2021-09-14T00:00:00.000+05:30",
+                        "grain": "day",
+                        "type": "value",
+                    }
+                ],
+                "value": "2021-09-14T00:00:00.000+05:30",
+                "grain": "day",
+                "type": "value",
+            },
+            "end": 5,
+            "dim": "time",
+            "latent": False,
+        }
+    ]
+    request_callback = request_builder(mock_entity_json, response_code=200)
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
+    )
+
+    def access(workflow):
+        return workflow.input, None, "en_IN"
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+
+    df = pd.DataFrame(
+        [
+            {
+                "data": ["today"],
+                "reftime": "2021-09-14T00:00:00.000+05:30",
+            },
+            {
+                "data": ["no"],
+                "reftime": "2021-09-14T00:00:00.000+05:30",
+            },
+            {
+                "data": ["no"],
+                "reftime": [],
+            },
+
+        ], columns=["data", "reftime"],
+    )
+
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        access=access,
+        mutate=mutate,
+        threshold=0.2,
+        timeout=0.01,
+        use_transform=True,
+        input_column="data",
+        output_column="entities",
+    )
+
+    today = TimeEntity(
+        type="date",
+        body="today",
+        parsers=["DucklingPlugin"],
+        range={"start": 0, "end": 5},
+        score=1.0,
+        alternative_index=0,
+        latent=False,
+        value="2021-09-14T00:00:00.000+05:30",
+        origin="value",
+        grain="day",
+    )
+
+    with pytest.raises(TypeError):
+        df_ = duckling_plugin.transform(df)
+        parsed_entity = df_["entities"].iloc[0][0]
+        assert parsed_entity.value == today.value
+        assert parsed_entity.type == today.type
+
+@httpretty.activate
+def test_plugin_transform_existing_entity():
+    mock_entity_json = [
+        {
+            "body": "today",
+            "start": 0,
+            "value": {
+                "values": [
+                    {
+                        "value": "2021-09-14T00:00:00.000+05:30",
+                        "grain": "day",
+                        "type": "value",
+                    }
+                ],
+                "value": "2021-09-14T00:00:00.000+05:30",
+                "grain": "day",
+                "type": "value",
+            },
+            "end": 5,
+            "dim": "time",
+            "latent": False,
+        }
+    ]
+    request_callback = request_builder(mock_entity_json, response_code=200)
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
+    )
+
+    def access(workflow):
+        return workflow.input, None, "en_IN"
+
+    def mutate(workflow, entities):
+        workflow.output = {"entities": entities}
+
+    df = pd.DataFrame(
+        [
+            {
+                "data": ["today"],
+                "reftime": "2021-09-14T00:00:00.000+05:30",
+            },
+            {
+                "data": ["no"],
+                "reftime": "2021-09-14T00:00:00.000+05:30",
+                "entities": [KeywordEntity(range={"start": 0, "end": 0}, value="apple", type="fruits", body="apple")]
+            }
+        ], columns=["data", "reftime", "entities"],
+    )
+
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        access=access,
+        mutate=mutate,
+        threshold=0.2,
+        timeout=0.01,
+        use_transform=True,
+        input_column="data",
+        output_column="entities",
+    )
+
+    df_ = duckling_plugin.transform(df)
+    today = TimeEntity(
+        type="date",
+        body="today",
+        parsers=["DucklingPlugin"],
+        range={"start": 0, "end": 5},
+        score=1.0,
+        alternative_index=0,
+        latent=False,
+        value="2021-09-14T00:00:00.000+05:30",
+        origin="value",
+        grain="day",
+    )
+    print(df_["entities"])
+    parsed_entity = df_["entities"].iloc[0][0]
+    assert parsed_entity.value == today.value
+    assert parsed_entity.type == today.type
+    assert df_["entities"].iloc[1][0].value == "apple"

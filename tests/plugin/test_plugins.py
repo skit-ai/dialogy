@@ -46,9 +46,12 @@ class ArbitraryPlugin(Plugin):
         self,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
+        use_transform: bool = False,
         debug=False,
     ):
-        super().__init__(access=access, mutate=mutate, debug=debug)
+        super().__init__(
+            access=access, mutate=mutate, debug=debug, use_transform=use_transform
+        )
 
     def utility(self, numbers, words) -> Any:
         """
@@ -135,6 +138,15 @@ def test_plugin_train() -> None:
     assert arbitrary_plugin.train([]) is None
 
 
+def test_plugin_transform_not_use_transform() -> None:
+    arbitrary_plugin = ArbitraryPlugin(
+        access=access, mutate=mutate, debug=True, use_transform=False
+    )
+    assert arbitrary_plugin.transform([]) == []
+
+
 def test_plugin_transform() -> None:
-    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate, debug=True)
-    assert arbitrary_plugin.transform([]) is None
+    arbitrary_plugin = ArbitraryPlugin(
+        access=access, mutate=mutate, debug=True, use_transform=True
+    )
+    assert arbitrary_plugin.transform([{"a": 1}]) == [{"a": 1}]

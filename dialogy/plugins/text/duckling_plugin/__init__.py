@@ -46,24 +46,26 @@ means to connect from the implementation here.
     # as per line 4.
 
 """
+from datetime import datetime
 import json
 import operator
 import traceback
 from pprint import pformat
 from typing import Any, Dict, List, Optional
 
+import pandas as pd  # type: ignore
 import pydash as py_  # type: ignore
 import pytz
 import requests
 from pytz.tzinfo import BaseTzInfo  # type: ignore
+from tqdm import tqdm  # type: ignore
 
 from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.base.plugin import PluginFn
 from dialogy.constants import EntityKeys
 from dialogy.types.entity import BaseEntity, dimension_entity_map
-from dialogy.utils import dt2timestamp
-from dialogy.utils.logger import logger
+from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
 
 
 class DucklingPlugin(EntityExtractor):
@@ -122,18 +124,31 @@ class DucklingPlugin(EntityExtractor):
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
         entity_map: Optional[Dict[str, Any]] = None,
+        reference_time_column: str = const.REFERENCE_TIME,
+        input_column: Optional[str] = None,
+        output_column: Optional[str] = None,
+        use_transform: bool = False,
         debug: bool = False,
     ) -> None:
         """
         constructor
         """
-        super().__init__(access=access, mutate=mutate, debug=debug, threshold=threshold)
+        super().__init__(
+            access=access,
+            mutate=mutate,
+            debug=debug,
+            threshold=threshold,
+            input_column=input_column,
+            output_column=output_column,
+            use_transform=use_transform,
+        )
         self.dimensions = dimensions
         self.locale = locale
         self.timezone = timezone
         self.timeout = timeout
         self.url = url
         self.reference_time: Optional[int] = None
+        self.reference_time_column = reference_time_column
         self.datetime_filters = datetime_filters
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
@@ -414,3 +429,33 @@ class DucklingPlugin(EntityExtractor):
             return self.apply_filters(aggregate_entities)
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error
+
+    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Transform training data.
+
+        :param training_data: Training data.
+        :type training_data: pd.DataFrame
+        :return: Transformed training data.
+        :rtype: pd.DataFrame
+        """
+        training_data = training_data.copy()
+        if self.output_column not in training_data.columns:
+            training_data[self.output_column] = None
+
+        for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
+            reference_time = row[self.reference_time_column]
+            if isinstance(reference_time, str):
+                reference_time = int(datetime.fromisoformat(reference_time).timestamp() * 1000)
+            elif not isinstance(reference_time, int):
+                raise TypeError(f"{reference_time=} should be isoformat date or unix timestamp integer.")
+            entities = self.utility(
+                row[self.input_column],
+                reference_time,
+                lang_detect_from_text(self.input_column),
+            )
+            if row[self.output_column] is None or pd.isnull(row[self.output_column]):
+                training_data.at[i, self.output_column] = entities
+            else:
+                training_data.at[i, self.output_column] = row[self.output_column] + entities
+        return training_data
