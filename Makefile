@@ -10,6 +10,8 @@ lint:
 	@black dialogy
 	@black tests
 	@echo -e "Running type checker"
+
+typecheck:
 	@mypy -p dialogy
 
 test: ## Run the tests.conf
@@ -22,4 +24,4 @@ docs:
 	@$(MAKE) html -C docs_src
 	@cp -r docs_src/_build/html/. ./docs
 
-all: lint test docs
+all: lint typecheck test docs
