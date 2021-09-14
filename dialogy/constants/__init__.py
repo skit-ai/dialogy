@@ -15,6 +15,7 @@ LM_SCORE = "lm_score"
 VALUE = "value"
 TO = "to"
 FROM = "from"
+LOCK = "lock"
 
 
 class EntityKeys:
@@ -118,3 +119,6 @@ CREATE = "create"
 UPDATE = "update"
 ERROR_LABEL = "_error_"
 TEXT = "text"
+CANONICALIZED_TRANSCRIPTS = "canonicalized_transcripts"
+REFERENCE_TIME = "reftime"
+ENTITY_COLUMN = "entities"
