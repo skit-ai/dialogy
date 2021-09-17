@@ -22,7 +22,7 @@ from sklearn.pipeline import Pipeline
 from tqdm import tqdm
 from xgboost import XGBRegressor
 
-from dialogy.base.plugin import Plugin
+from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import plugin
 from dialogy.utils import logger
 
@@ -89,7 +89,14 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
 
 
 class CalibrationModel(Plugin):
-    def __init__(self, threshold) -> None:
+    def __init__(
+        self,
+        access: Optional[PluginFn],
+        mutate: Optional[PluginFn],
+        threshold: float,
+        debug: bool = False,
+    ) -> None:
+        super().__init__(access, mutate, debug=debug)
         self.extraction_pipeline = FeatureExtractor()
         self.clf = XGBRegressor(n_jobs=1)
         self.data_column = "data"
@@ -144,3 +151,20 @@ class CalibrationModel(Plugin):
 
     def utility(self, *args: Any) -> Any:
         return self.inference(*args)  # pylint: disable=no-value-for-parameter
+
+    def validate(self, df: pd.DataFrame) -> bool:
+        """
+        Return if `df` is a valid trascription tagging job
+        should return `False` for intent tagging jobs.
+        example : ` '{"text": "I want to change and set my <INAUDIBLE>", "type": "TRANSCRIPT"}'`
+
+        Sharp bits:
+        - All rows in df should have same format. We just consider
+         the first row for sanity checks.
+        """
+        required_keys = ["text", "type"]
+        tagged_data = json.loads(df.iloc[0]["tag"])
+        if all(key in tagged_data for key in required_keys):
+            if tagged_data["type"] == "TRANSCRIPT":
+                return True
+        return False
