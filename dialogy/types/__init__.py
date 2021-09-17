@@ -25,9 +25,16 @@ We use :ref:`slots<slot>` within :ref:`intents<intent>` to associate relationshi
 So these :ref:`entities<base_entity>` would be filled within their respective :ref:`slots<slot>` already expected by the
 reservation :ref:`intents<intent>`.
 """
-from dialogy.types.entity import (BaseEntity, DurationEntity, KeywordEntity,
-                                  LocationEntity, NumericalEntity,
-                                  PeopleEntity, TimeEntity, TimeIntervalEntity)
+from dialogy.types.entity import (
+    BaseEntity,
+    DurationEntity,
+    KeywordEntity,
+    LocationEntity,
+    NumericalEntity,
+    PeopleEntity,
+    TimeEntity,
+    TimeIntervalEntity,
+)
 from dialogy.types.intent import Intent
 from dialogy.types.plugin import PluginFn
 from dialogy.types.signal.signal import Signal

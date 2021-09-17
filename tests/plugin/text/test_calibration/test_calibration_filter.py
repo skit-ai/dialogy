@@ -11,9 +11,16 @@ from dialogy.plugins.text.calibration.xgb import CalibrationModel
 from dialogy.workflow.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 
-df = pd.DataFrame(
-    json.load(open("test_df.json")), columns=["conv_id", "data", "tag", "value", "time"]
-)
+json_data = json.load(open("test_df.json"))
+df = pd.DataFrame(json_data, columns=["conv_id", "data", "tag", "value", "time"])
+
+
+def access(workflow):
+    return workflow.input
+
+
+def mutate(workflow, value):
+    workflow.output = value
 
 
 class MyVectorizer(object):
@@ -36,7 +43,7 @@ class MyClassifier(object):
 vectorizer = MyVectorizer()
 classifier = MyClassifier()
 
-calibration_model = CalibrationModel(threshold=1.0)
+calibration_model = CalibrationModel(access=access, mutate=mutate, threshold=1.0)
 calibration_model.train(df, "temp.pkl")
 
 
@@ -55,3 +62,11 @@ def test_calibration_model_filter_asr_output():
 def test_calibration_model_transform():
     # load intent tagging data here.
     assert calibration_model.transform(df).equals(df.drop("use", axis=1))
+
+
+def test_calibration_model_validation():
+    assert calibration_model.validate(df.iloc[0])
+    json_data[0][2] = '[{"type": "_cancel_", "value": true}]'
+    assert not calibration_model.validate(
+        pd.DataFrame(json_data, columns=["conv_id", "data", "tag", "value", "time"])
+    )
