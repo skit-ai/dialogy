@@ -14,16 +14,12 @@ from typing import Any, Dict, List, Optional, Tuple
 import jiwer
 import numpy as np
 import pandas as pd
-import sklearn
-from pandas.core.frame import DataFrame
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.pipeline import Pipeline
 from tqdm import tqdm
 from xgboost import XGBRegressor
 
 from dialogy.base.plugin import Plugin, PluginFn
-from dialogy.types import plugin
 from dialogy.utils import logger
 
 
@@ -89,6 +85,13 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
 
 
 class CalibrationModel(Plugin):
+    """
+    This plugin provides a calibration model that sits between ASR and SLU.
+    It trains a model that learn to classify alternatives from the text and
+    AM, LM score. Bad alternatives are removed before training SLU and during
+    inference.
+    """
+
     def __init__(
         self,
         access: Optional[PluginFn],
@@ -102,13 +105,30 @@ class CalibrationModel(Plugin):
         self.data_column = "data"
         self.threshold = threshold  # Todo : make configurable
 
-    def train(self, df: pd.DataFrame, model_name: str) -> None:
+    def train(self, df: pd.DataFrame, model_name: str = "calibration.pkl") -> None:
+        """
+        Trains the calibration pipeline.
+
+        :param df: dataframe to train on. Should be a valid transcrition tagging job.
+        :param model_name: Saves the pipline as {model_name}.pkl
+        :type df: pd.DataFrame
+        :type model_name: str
+        """
         X, y = self.extraction_pipeline.fit_transform(df)
         logger.debug("Step 2/2: Training regressor model")
         self.clf.fit(X, y)
         self.save(model_name)
 
     def filter_asr_output(self, asr_output: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Filters outputs from ASR based on calibration model prediction.
+
+        :param asr_output: output dictionary from ASR. Should have an _alternatives_
+                            key.
+        :type asr_output: Dict[str, Any]
+        :return: Filtered alternatives, in the same format as input.
+        :rtype: Dict[str, Any]
+        """
         alternatives = asr_output["alternatives"]
         filtered_alternatives = []
         for alternative, wer in zip(alternatives[0], self.inference(alternatives[0])):
@@ -117,6 +137,7 @@ class CalibrationModel(Plugin):
         return {"alternatives": [filtered_alternatives]}
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+        """ """
         # filters df alternatives and feeds into merge_asr_output,
         # doesn't change training_data schema
         training_data["use"] = True
@@ -161,6 +182,12 @@ class CalibrationModel(Plugin):
         Sharp bits:
         - All rows in df should have same format. We just consider
          the first row for sanity checks.
+
+        :param df: Input dataframe.
+        :type df: pd.DataFrame
+
+        :return: (bool) if the dataframe is valid for training calibration model.
+        :rtype: bool
         """
         required_keys = ["text", "type"]
         tagged_data = json.loads(df.iloc[0]["tag"])
