@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.voting package" href="dialogy.plugins.text.voting.html" /><link rel="prev" title="dialogy.plugins.text.merge_asr_output package" href="dialogy.plugins.text.merge_asr_output.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugins.text.slot_filler package - dialogy 0.8.1 documentation</title>
+        <title>dialogy.plugins.text.slot_filler package - dialogy 0.8.2 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.8.2 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.1 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -115,6 +115,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.html">dialogy.plugins package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -127,6 +128,7 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -136,6 +138,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -265,8 +268,8 @@ entities.</p>
 <span class="gp">In [16]: </span><span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="s2">"2 am"</span><span class="p">)</span>
 <span class="gh">Out[16]: </span><span class="go"></span>
 <span class="go">(Intent(name=count_people, score=1, slots={}),</span>
-<span class="go"> [PeopleEntity(type='people', body='2 people', parsers=[], score=None, alternative_index=None, latent=False, value=None, origin='value', unit=''),</span>
-<span class="go">  NumericalEntity(type='number', body='2 people', parsers=[], score=None, alternative_index=None, latent=False, value=None, origin='value')])</span>
+<span class="go"> [PeopleEntity(type='people', body='2 people', parsers=[], score=None, alternative_index=None, alternative_indices=None, latent=False, value=None, origin='value', unit=''),</span>
+<span class="go">  NumericalEntity(type='number', body='2 people', parsers=[], score=None, alternative_index=None, alternative_indices=None, latent=False, value=None, origin='value')])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.slot_filler package" href="dialogy.plugins.text.slot_filler.html" /><link rel="prev" title="dialogy.plugins.text.list_entity_plugin package" href="dialogy.plugins.text.list_entity_plugin.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugins.text.merge_asr_output package - dialogy 0.8.1 documentation</title>
+        <title>dialogy.plugins.text.merge_asr_output package - dialogy 0.8.2 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.8.2 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.1 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -115,6 +115,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.html">dialogy.plugins package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -127,6 +128,7 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -136,6 +138,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -193,7 +196,7 @@ simply concatenation of each transcript.</p>
 help with precision at the cost of recall.</p>
 <dl class="py class">
 <dt id="dialogy.plugins.text.merge_asr_output.MergeASROutputPlugin">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugins.text.merge_asr_output.</span></code><code class="sig-name descname"><span class="pre">MergeASROutputPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/merge_asr_output.html#MergeASROutputPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.merge_asr_output.MergeASROutputPlugin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugins.text.merge_asr_output.</span></code><code class="sig-name descname"><span class="pre">MergeASROutputPlugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/merge_asr_output.html#MergeASROutputPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.merge_asr_output.MergeASROutputPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.base.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
 <p id="merge-asr-output-plugin">Working details are covered in <a class="reference internal" href="#merge-asr-output"><span class="std std-ref">merge_asr_output</span></a>.</p>
 <dl class="field-list simple">

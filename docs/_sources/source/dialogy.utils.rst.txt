@@ -28,6 +28,14 @@ dialogy.utils.misc module
    :undoc-members:
    :show-inheritance:
 
+dialogy.utils.naive\_lang\_detect module
+----------------------------------------
+
+.. automodule:: dialogy.utils.naive_lang_detect
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.utils.normalize\_utterance module
 -----------------------------------------
 

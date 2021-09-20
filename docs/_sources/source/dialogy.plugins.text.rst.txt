@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    dialogy.plugins.text.calibration
+   dialogy.plugins.text.canonicalization
    dialogy.plugins.text.classification
    dialogy.plugins.text.duckling_plugin
    dialogy.plugins.text.list_entity_plugin
