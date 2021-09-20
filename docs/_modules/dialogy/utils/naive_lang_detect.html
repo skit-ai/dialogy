@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.utils.file_handler - dialogy 0.8.2 documentation</title>
+        <title>dialogy.utils.naive_lang_detect - dialogy 0.8.2 documentation</title>
       <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../_static/pygments_dark.css">
@@ -176,84 +176,27 @@
         <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <h1>Source code for dialogy.utils.file_handler</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+        <h1>Source code for dialogy.utils.naive_lang_detect</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 
-<div class="viewcode-block" id="load_file"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.file_handler.load_file">[docs]</a><span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">loader</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="sd">"""</span>
-<span class="sd">    Safely load a file.</span>
-
-<span class="sd">    :param file_path: The path to the file to load.</span>
-<span class="sd">    :type file_path: [type]</span>
-<span class="sd">    :param mode: The mode to use when opening the file., defaults to "r"</span>
-<span class="sd">    :type mode: str, optional</span>
-<span class="sd">    :return: The file contents.</span>
-<span class="sd">    :rtype: Any</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">loader</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">loader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+<span class="k">def</span> <span class="nf">_lang_detect</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^a-z\u0900-\u0c7f]+"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="n">maxchar</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"</span><span class="se">\u0c00</span><span class="s2">"</span> <span class="o">&lt;=</span> <span class="n">maxchar</span> <span class="o">&lt;=</span> <span class="s2">"</span><span class="se">\u0c7f</span><span class="s2">"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"te"</span>
+    <span class="k">if</span> <span class="s2">"</span><span class="se">\u0900</span><span class="s2">"</span> <span class="o">&lt;=</span> <span class="n">maxchar</span> <span class="o">&lt;=</span> <span class="s2">"</span><span class="se">\u097f</span><span class="s2">"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"hi"</span>
+    <span class="k">return</span> <span class="s2">"en"</span>
 
 
-<div class="viewcode-block" id="save_file"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.file_handler.save_file">[docs]</a><span class="k">def</span> <span class="nf">save_file</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">content</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"w"</span><span class="p">,</span>
-    <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"utf-8"</span><span class="p">,</span>
-    <span class="n">newline</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
-    <span class="n">writer</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">"""</span>
-<span class="sd">    Save a file.</span>
-
-<span class="sd">    :param file_path: The path to the file to save.</span>
-<span class="sd">    :type file_path: str</span>
-<span class="sd">    :param content: The content to save.</span>
-<span class="sd">    :type content: Any</span>
-<span class="sd">    :param mode: The mode to use when opening the file., defaults to "w"</span>
-<span class="sd">    :type mode: str, optional</span>
-<span class="sd">    :param encoding: The encoding to use when writing the file, defaults to "utf-8"</span>
-<span class="sd">    :type encoding: str, optional</span>
-<span class="sd">    :param newline: The newline character to use when writing the file, defaults to "\n"</span>
-<span class="sd">    :type newline: str, optional</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"wb"</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">writer</span> <span class="k">else</span> <span class="n">writer</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">writer</span> <span class="k">else</span> <span class="n">writer</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="create_timestamps_path"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.file_handler.create_timestamps_path">[docs]</a><span class="k">def</span> <span class="nf">create_timestamps_path</span><span class="p">(</span>
-    <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">timestamp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="ow">or</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-    <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-        <span class="n">directory</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"</span><span class="si">%d</span><span class="s2">-%B-%Y"</span><span class="p">),</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%H-%M-%S-</span><span class="si">%f</span><span class="s2">"</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span></div>
+<div class="viewcode-block" id="lang_detect_from_text"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.naive_lang_detect.lang_detect_from_text">[docs]</a><span class="k">def</span> <span class="nf">lang_detect_from_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_lang_detect</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">text</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_lang_detect</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">text</span><span class="si">=}</span><span class="s2"> must be a string or a list of strings"</span><span class="p">)</span></div>
 </pre></div>
       </article>
       <footer>

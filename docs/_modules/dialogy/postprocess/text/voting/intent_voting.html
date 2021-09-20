@@ -190,7 +190,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pydash</span> <span class="k">as</span> <span class="nn">py_</span>  <span class="c1"># type: ignore</span>
+<span class="kn">import</span> <span class="nn">pydash</span> <span class="k">as</span> <span class="nn">py_</span>  <span class="c1"></span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
@@ -406,11 +406,11 @@
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Intents with adjusted signal strength: "</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">intent_signals</span><span class="p">)</span>
 
-        <span class="n">representative_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">representation</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">]</span> <span class="o">-</span> <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">])</span>  <span class="c1"># type: ignore</span>
+        <span class="n">representative_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">representation</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">]</span> <span class="o">-</span> <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">REPRESENTATION</span><span class="p">])</span>  <span class="c1"></span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"representative signal: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">representative_signal</span><span class="p">)</span>
 
         <span class="n">consensus_achieved</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">-</span> <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+            <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">-</span> <span class="n">conflict_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span>  <span class="c1"></span>
             <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">consensus</span>
         <span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -421,13 +421,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">consensus</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">strong_signal</span> <span class="o">=</span> <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>  <span class="c1"># type: ignore</span>
+        <span class="n">strong_signal</span> <span class="o">=</span> <span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>  <span class="c1"></span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"strong signal: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">strong_signal</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">consensus_achieved</span> <span class="ow">or</span> <span class="n">representative_signal</span><span class="p">)</span> <span class="ow">and</span> <span class="n">strong_signal</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">NAME</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
-                <span class="n">score</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">NAME</span><span class="p">],</span>  <span class="c1"></span>
+                <span class="n">score</span><span class="o">=</span><span class="n">main_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SIGNAL</span><span class="o">.</span><span class="n">STRENGTH</span><span class="p">],</span>  <span class="c1"></span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 

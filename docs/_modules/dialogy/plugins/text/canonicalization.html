@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugins.text.merge_asr_output - dialogy 0.8.2 documentation</title>
+        <title>dialogy.plugins.text.canonicalization - dialogy 0.8.2 documentation</title>
       <link rel="stylesheet" href="../../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../../_static/pygments_dark.css">
@@ -176,146 +176,109 @@
         <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <h1>Source code for dialogy.plugins.text.merge_asr_output</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""</span>
-<span class="sd">We expect ASR transcripts to be the most common inputs to the system. Since there is a chance that we can improve the</span>
-<span class="sd">performance by asking the ASR to provide more information in the form of multiple alternatives. The problem though, is</span>
-<span class="sd">they can't be used as it is. Models that can operate on text data, need them to be vectorized. These vectors have</span>
-<span class="sd">semantic significance, where different text inputs imply different vectors. If their semantic differences are modeled</span>
-<span class="sd">well, we can expect these vectors to be similar or dissimilar just like the text that was used to create them.</span>
-
-<span class="sd">The problem with transcripts is, there **will** be noise in the transcripts, since we asked for :code:`N` transcripts,</span>
-<span class="sd">by definition, an ASR will provide N unique transcripts. The noise may in fact be inconsequential for downstream NLP</span>
-<span class="sd">tasks, but we have noticed that there are certain inputs owing to audio artifacts or state of LMs tend to have a great</span>
-<span class="sd">impact on the transcription.</span>
-
-<span class="sd">This module will ship a simple concatenation strategy to address this problem. The NLP model should be expected to</span>
-<span class="sd">handle documents (:code:`List[str]`) instead of single text. The plugin then will be able to produce a :code:`str` by</span>
-<span class="sd">simply concatenation of each transcript.</span>
-
-<span class="sd">This may not be very helpful, there is a :ref:`VotePlugin &lt;vote_plugin&gt;` under development so use it with caution. It may</span>
-<span class="sd">help with precision at the cost of recall.</span>
-<span class="sd">"""</span>
+        <h1>Source code for dialogy.plugins.text.canonicalization</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">import</span> <span class="nn">dialogy.constants</span> <span class="k">as</span> <span class="nn">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">plugin</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">normalize</span>
 
 
-<span class="c1"># == merge_asr_output ==</span>
-<div class="viewcode-block" id="merge_asr_output"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.merge_asr_output.html#dialogy.plugins.text.merge_asr_output.merge_asr_output">[docs]</a><span class="k">def</span> <span class="nf">merge_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_entity_type"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.get_entity_type">[docs]</a><span class="k">def</span> <span class="nf">get_entity_type</span><span class="p">(</span><span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&gt;"</span></div>
+
+
+<div class="viewcode-block" id="CanonicalizationPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.CanonicalizationPlugin">[docs]</a><span class="k">class</span> <span class="nc">CanonicalizationPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
-<span class="sd">    .. _merge_asr_output:</span>
-
-<span class="sd">    Join ASR output to single string.</span>
-
-<span class="sd">    This function provides a merging strategy for n-best ASR transcripts by</span>
-<span class="sd">    joining each transcript, such that:</span>
-
-<span class="sd">    - each sentence end is marked by " &lt;/s&gt;" and,</span>
-<span class="sd">    - sentence start marked by " &lt;s&gt;".</span>
-
-<span class="sd">    The key "transcript" is expected in the ASR output, the value of which would be operated on</span>
-<span class="sd">    by this function.</span>
-
-<span class="sd">    The normalization is done by :ref:`normalize&lt;normalize&gt;`</span>
-
-<span class="sd">    .. ipython:: python</span>
-
-<span class="sd">        from dialogy.plugins.text.merge_asr_output import merge_asr_output</span>
-
-<span class="sd">        utterances = ["This is a sentence", "That is a sentence"]</span>
-<span class="sd">        merge_asr_output(utterances)</span>
-
-<span class="sd">    :param utterances: A structure representing ASR output. We support only:</span>
-
-<span class="sd">        1. :code:`List[str]`</span>
-<span class="sd">        2. :code:`List[List[str]]`</span>
-<span class="sd">        3. :code:`List[List[Dict[str, str]]]`</span>
-<span class="sd">        4. :code:`List[Dict[str, str]]`</span>
-
-<span class="sd">    :type utterances: Any</span>
-<span class="sd">    :return: Concatenated string, separated by &lt;s&gt; and &lt;/s&gt; at respective terminal positions of each sentence.</span>
-<span class="sd">    :rtype: List[str]</span>
-<span class="sd">    :raises: TypeError if transcript is missing in cases of :code:`List[List[Dict[str, str]]]` or</span>
-<span class="sd">        :code:`List[Dict[str, str]]`.</span>
-<span class="sd">    """</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">utterances</span><span class="p">)</span>
-        <span class="n">invalid_transcript</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
-            <span class="n">token</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">transcripts</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">INVALID_TOKENS</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">invalid_transcript</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">transcripts</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="s2">"&lt;s&gt; "</span> <span class="o">+</span> <span class="s2">" &lt;/s&gt; &lt;s&gt; "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" &lt;/s&gt;"</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">type_error</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"`transcript` is expected in the ASR output."</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">type_error</span></div>
-
-
-<div class="viewcode-block" id="MergeASROutputPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.merge_asr_output.html#dialogy.plugins.text.merge_asr_output.MergeASROutputPlugin">[docs]</a><span class="k">class</span> <span class="nc">MergeASROutputPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    .. _merge_asr_output_plugin:</span>
-
-<span class="sd">    Working details are covered in :ref:`merge_asr_output &lt;merge_asr_output&gt;`.</span>
-
-<span class="sd">    :param Plugin: [description]</span>
-<span class="sd">    :type Plugin: [type]</span>
+<span class="sd">    This plugin implements the canonicalization of the text.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
-        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
+        <span class="n">serializer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseEntity</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_entity_type</span><span class="p">,</span>
+        <span class="n">mask</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"MASK"</span><span class="p">,</span>
+        <span class="n">mask_tokens</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plugin</span><span class="o">.</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plugin</span><span class="o">.</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">entity_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ENTITY_COLUMN</span><span class="p">,</span>
         <span class="n">input_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVES</span><span class="p">,</span>
         <span class="n">output_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_transform</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
         <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span>
-            <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span>
+            <span class="n">access</span><span class="p">,</span>
+            <span class="n">mutate</span><span class="p">,</span>
             <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
+            <span class="n">use_transform</span><span class="o">=</span><span class="n">use_transform</span><span class="p">,</span>
             <span class="n">input_column</span><span class="o">=</span><span class="n">input_column</span><span class="p">,</span>
             <span class="n">output_column</span><span class="o">=</span><span class="n">output_column</span><span class="p">,</span>
-            <span class="n">use_transform</span><span class="o">=</span><span class="n">use_transform</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_tokens</span> <span class="o">=</span> <span class="n">mask_tokens</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_patterns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\b</span><span class="si">%s</span><span class="s2">\b"</span> <span class="o">%</span> <span class="n">token</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span> <span class="o">|</span> <span class="n">re</span><span class="o">.</span><span class="n">U</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_tokens</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span> <span class="o">=</span> <span class="n">serializer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_column</span> <span class="o">=</span> <span class="n">entity_column</span>
 
-<div class="viewcode-block" id="MergeASROutputPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.merge_asr_output.html#dialogy.plugins.text.merge_asr_output.MergeASROutputPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">merge_asr_output</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+<div class="viewcode-block" id="CanonicalizationPlugin.mask_transcript"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.CanonicalizationPlugin.mask_transcript">[docs]</a>    <span class="k">def</span> <span class="nf">mask_transcript</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">],</span> <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">canonicalized_transcripts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">score</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">alternative_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">entity</span><span class="o">.</span><span class="n">alternative_indices</span><span class="p">:</span>
+                <span class="n">entity</span>
+                <span class="k">continue</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>
+            <span class="n">transcript</span> <span class="o">=</span> <span class="n">transcripts</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">alternative_index</span><span class="p">]</span>
+            <span class="n">canon</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">transcript</span><span class="p">[:</span><span class="n">start</span><span class="p">]</span><span class="si">}{</span><span class="n">get_entity_type</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span><span class="si">}{</span><span class="n">transcript</span><span class="p">[</span><span class="n">end</span><span class="p">:]</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">alternative_indices</span><span class="p">:</span>
+                <span class="n">canonicalized_transcripts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">canon</span>
 
-<div class="viewcode-block" id="MergeASROutputPlugin.transform"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.merge_asr_output.html#dialogy.plugins.text.merge_asr_output.MergeASROutputPlugin.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">transcript</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">canonicalized_transcripts</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_patterns</span><span class="p">:</span>
+                <span class="n">canonicalized_transcripts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">transcript</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">canonicalized_transcripts</span></div>
+
+<div class="viewcode-block" id="CanonicalizationPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.CanonicalizationPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">entities</span><span class="p">,</span> <span class="n">transcripts</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_transcript</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="n">transcripts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanonicalizationPlugin.transform"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.CanonicalizationPlugin.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_transform</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">training_data</span>
 
-        <span class="n">training_data</span><span class="p">[</span><span class="s2">"use"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Transforming dataset via </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">training_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)):</span>
-            <span class="n">asr_output</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">asr_output</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">])</span>
-                <span class="k">if</span> <span class="n">asr_output</span> <span class="ow">and</span> <span class="p">(</span><span class="n">merged_asr_ouptut</span> <span class="o">:=</span> <span class="n">merge_asr_output</span><span class="p">(</span><span class="n">asr_output</span><span class="p">)):</span>
-                    <span class="n">training_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">merged_asr_ouptut</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">training_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">"use"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">training_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">"use"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">asr_output</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">training_data_</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="n">training_data</span><span class="o">.</span><span class="n">use</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">training_data_</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">"use"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">discarded_data</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">training_data_</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">discarded_data</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"Discarding </span><span class="si">{</span><span class="n">discarded_data</span><span class="si">}</span><span class="s2"> samples because the alternatives couldn't be parsed."</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">training_data_</span></div></div>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">training_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">canonicalized_transcripts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utility</span><span class="p">(</span>
+                    <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_column</span><span class="p">],</span>
+                    <span class="n">normalize</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">])),</span>
+                <span class="p">)</span>
+                <span class="n">training_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                    <span class="n">canonicalized_transcripts</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">training_data</span></div></div>
 </pre></div>
       </article>
       <footer>

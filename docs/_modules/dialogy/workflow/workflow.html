@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.workflow.workflow - dialogy 0.8.1 documentation</title>
+        <title>dialogy.workflow.workflow - dialogy 0.8.2 documentation</title>
       <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.8.1 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.8.2 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.1 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -115,6 +115,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/dialogy.plugins.html">dialogy.plugins package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/dialogy.plugins.text.html">dialogy.plugins.text package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -127,6 +128,7 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/dialogy.plugins.text.html">dialogy.plugins.text package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -136,6 +138,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -225,13 +228,13 @@
 <span class="sd">    to offer flexibility of use.</span>
 <span class="sd">"""</span>
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>  <span class="c1"># type: ignore</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
@@ -267,13 +270,15 @@
     <span class="n">debug</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="n">NON_SERIALIZABLE_FIELDS</span> <span class="o">=</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">PLUGINS</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">]</span>
+    <span class="n">lock</span><span class="p">:</span> <span class="n">Lock</span>
+    <span class="n">NON_SERIALIZABLE_FIELDS</span> <span class="o">=</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">PLUGINS</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">LOCK</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__attrs_post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Post init hook.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_io</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Workflow.set_io"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.set_io">[docs]</a>    <span class="k">def</span> <span class="nf">set_io</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -339,10 +344,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (`Any`): This function can return any arbitrary value. Subclasses may enforce a stronger check.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">input_</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">input_</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
 <div class="viewcode-block" id="Workflow.flush"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

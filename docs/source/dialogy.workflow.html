@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="dialogy.utils package" href="dialogy.utils.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.workflow package - dialogy 0.8.1 documentation</title>
+        <title>dialogy.workflow package - dialogy 0.8.2 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.8.2 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.1 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -115,6 +115,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.plugins.html">dialogy.plugins package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -127,6 +128,7 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -136,6 +138,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -242,7 +245,7 @@ here could use more arguments, say, <cite>load_model()</cite> requires <cite>pat
 </dl>
 <dl class="py attribute">
 <dt id="dialogy.workflow.workflow.Workflow.NON_SERIALIZABLE_FIELDS">
-<code class="sig-name descname"><span class="pre">NON_SERIALIZABLE_FIELDS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['plugins',</span> <span class="pre">'debug']</span></em><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.NON_SERIALIZABLE_FIELDS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">NON_SERIALIZABLE_FIELDS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['plugins',</span> <span class="pre">'debug',</span> <span class="pre">'lock']</span></em><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.NON_SERIALIZABLE_FIELDS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt id="dialogy.workflow.workflow.Workflow.execute">
@@ -277,6 +280,10 @@ would modify the input, and post-processing functions would modify the output.</
 </dd>
 </dl>
 </dd></dl>
+<dl class="py attribute">
+<dt id="dialogy.workflow.workflow.Workflow.lock">
+<code class="sig-name descname"><span class="pre">lock</span></code><em class="property"><span class="pre">:</span> <span class="pre">_thread.allocate_lock</span></em><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.lock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt id="dialogy.workflow.workflow.Workflow.output">
 <code class="sig-name descname"><span class="pre">output</span></code><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.workflow.workflow.Workflow.output" title="Permalink to this definition">¶</a></dt>
