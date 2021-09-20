@@ -38,7 +38,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
         cux = sqlite3.connect(fname)
         return pd.read_sql_query("SELECT * FROM DATA", cux)
 
-    def fit(self, df: pd.DataFrame, y=None):
+    def fit(self, df: pd.DataFrame, y: Any = None) -> Any:
         texts = []
         for _, row in tqdm(df.iterrows()):
             real_transcript = json.loads(row["tag"])["text"]
@@ -53,7 +53,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
         self.vectorizer.fit(texts)
         return self
 
-    def features(self, alternatives: List[Dict]) -> List:
+    def features(self, alternatives: List[Dict[str, Any]]) -> np.ndarray[Any, Any]:
         features = []
         for alt in alternatives:
             try:
@@ -76,7 +76,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
 
         return np.array(features)
 
-    def transform(self, df: pd.DataFrame) -> Tuple[np.ndarray, List]:
+    def transform(self, df: pd.DataFrame) -> Tuple[Any, Any]:
         features, targets = [], []
         for _, row in tqdm(df.iterrows()):
             real_transcript = json.loads(row["tag"])["text"]
@@ -108,7 +108,7 @@ class CalibrationModel(Plugin):
         self.clf.fit(X, y)
         self.save(model_name)
 
-    def filter_asr_output(self, asr_output: dict) -> dict:
+    def filter_asr_output(self, asr_output: Dict[str, Any]) -> Dict[str, Any]:
         alternatives = asr_output["alternatives"]
         filtered_alternatives = []
         for alternative, wer in zip(alternatives[0], self.inference(alternatives[0])):
@@ -143,7 +143,7 @@ class CalibrationModel(Plugin):
             )
         return training_data_
 
-    def inference(self, alternatives: List[Dict]) -> np.ndarray:
+    def inference(self, alternatives: List[Dict[str, Any]]) -> np.ndarray[Any, Any]:
         return self.clf.predict(self.extraction_pipeline.features(alternatives))
 
     def save(self, fname: str) -> None:
