@@ -10,8 +10,8 @@ import pickle
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-import pandas as pd  # type: ignore
-from sklearn import preprocessing  # type: ignore
+import pandas as pd
+from sklearn import preprocessing
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn

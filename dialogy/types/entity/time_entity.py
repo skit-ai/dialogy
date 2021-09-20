@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Any, Dict, Optional
 
 import attr
-import pydash as py_  # type: ignore
+import pydash as py_
 
 from dialogy import constants as const
 from dialogy.types.entity.numerical_entity import NumericalEntity

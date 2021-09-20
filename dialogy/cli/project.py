@@ -2,7 +2,7 @@ import argparse
 import os
 import shutil
 
-from copier import copy  # type: ignore
+from copier import copy
 
 import dialogy.constants as const
 

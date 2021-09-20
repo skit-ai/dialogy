@@ -21,7 +21,7 @@ import json
 import traceback
 from typing import Any, List, Optional
 
-import pandas as pd  # type: ignore
+import pandas as pd
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
