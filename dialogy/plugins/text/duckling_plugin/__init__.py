@@ -53,12 +53,12 @@ import traceback
 from pprint import pformat
 from typing import Any, Dict, List, Optional
 
-import pandas as pd  # type: ignore
-import pydash as py_  # type: ignore
+import pandas as pd
+import pydash as py_
 import pytz
 import requests
-from pytz.tzinfo import BaseTzInfo  # type: ignore
-from tqdm import tqdm  # type: ignore
+from pytz.tzinfo import BaseTzInfo
+from tqdm import tqdm
 
 from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityExtractor

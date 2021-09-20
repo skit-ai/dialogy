@@ -2,7 +2,7 @@ import re
 from typing import List, Union
 
 
-def _lang_detect(text: str):
+def _lang_detect(text: str) -> str:
     text = re.sub(r"[^a-z\u0900-\u0c7f]+", " ", text.lower())
     maxchar = max(text)
     if "\u0c00" <= maxchar <= "\u0c7f":

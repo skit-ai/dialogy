@@ -2,8 +2,8 @@ import argparse
 import importlib
 from typing import Any
 
-import pandas as pd  # type: ignore
-from sklearn.metrics import classification_report  # type: ignore
+import pandas as pd
+from sklearn.metrics import classification_report
 
 import dialogy.constants as const
 from dialogy.utils import create_timestamps_path, logger

@@ -1,8 +1,8 @@
 import traceback
 from typing import Any, Callable, List, Optional
 
-import pandas as pd  # type: ignore
-from tqdm import tqdm  # type: ignore
+import pandas as pd
+from tqdm import tqdm
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin

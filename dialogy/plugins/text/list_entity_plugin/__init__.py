@@ -13,8 +13,8 @@ import json
 from pprint import pformat
 from typing import Any, Dict, List, Optional, Tuple
 
-import pandas as pd # type: ignore
-import pydash as py_  # type: ignore
+import pandas as pd
+import pydash as py_
 from tqdm import tqdm
 
 from dialogy import constants as const

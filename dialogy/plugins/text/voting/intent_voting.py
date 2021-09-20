@@ -5,7 +5,7 @@ alternative from the ASR.
 from typing import Any, List, Optional
 
 import numpy as np
-import pydash as py_  # type: ignore
+import pydash as py_
 
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin
