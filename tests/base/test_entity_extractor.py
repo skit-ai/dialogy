@@ -1,8 +1,8 @@
 import json
 
+import pandas as pd
 import pydash as py_
 import pytest
-import pandas as pd
 
 from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.plugins import DucklingPlugin
