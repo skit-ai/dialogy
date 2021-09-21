@@ -11,7 +11,7 @@ from dialogy.utils import logger
 
 
 def get_entity_type(entity: BaseEntity) -> str:
-    return entity.type
+    return f"<{entity.type}>"
 
 
 class CanonicalizationPlugin(Plugin):

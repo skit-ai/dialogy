@@ -46,10 +46,10 @@ means to connect from the implementation here.
     # as per line 4.
 
 """
-from datetime import datetime
 import json
 import operator
 import traceback
+from datetime import datetime
 from pprint import pformat
 from typing import Any, Dict, List, Optional
 
@@ -65,7 +65,7 @@ from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.base.plugin import PluginFn
 from dialogy.constants import EntityKeys
 from dialogy.types.entity import BaseEntity, dimension_entity_map
-from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
+from dialogy.utils import dt2timestamp, lang_detect_from_text, logger, normalize
 
 
 class DucklingPlugin(EntityExtractor):
@@ -125,7 +125,7 @@ class DucklingPlugin(EntityExtractor):
         mutate: Optional[PluginFn] = None,
         entity_map: Optional[Dict[str, Any]] = None,
         reference_time_column: str = const.REFERENCE_TIME,
-        input_column: Optional[str] = None,
+        input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
         debug: bool = False,
