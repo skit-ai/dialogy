@@ -1,3 +1,6 @@
+import copy
+import json
+import re
 import traceback
 from typing import Any, Callable, List, Optional
 
@@ -7,7 +10,7 @@ from tqdm import tqdm
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin
 from dialogy.types import BaseEntity, plugin
-from dialogy.utils import logger
+from dialogy.utils import logger, normalize
 
 
 def get_entity_type(entity: BaseEntity) -> str:
@@ -30,6 +33,7 @@ class CanonicalizationPlugin(Plugin):
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
+        threshold: float = 0.0,
         debug: bool = False,
     ) -> None:
         super().__init__(
@@ -42,19 +46,34 @@ class CanonicalizationPlugin(Plugin):
         )
         self.mask = mask
         self.mask_tokens = mask_tokens or []
+        self._mask_patterns: List[re.Pattern[str]] = [
+            re.compile(r"\b%s\b" % token, re.I | re.U) for token in self.mask_tokens
+        ]
         self.serializer = serializer
+        self.threshold = threshold
         self.entity_column = entity_column
 
     def mask_transcript(
         self, entities: List[BaseEntity], transcripts: List[str]
     ) -> List[str]:
-        canonicalized_transcripts = []
-        for transcript in transcripts:
-            for entity in entities:
-                transcript = transcript.replace(entity.body, self.serializer(entity))
-            for token in self.mask_tokens:
-                transcript = transcript.replace(token, self.mask)
-            canonicalized_transcripts.append(transcript)
+        canonicalized_transcripts = copy.copy(transcripts)
+        for entity in entities:
+            if entity.score is not None and entity.score < self.threshold:
+                continue
+            if entity.alternative_index is None or not entity.alternative_indices:
+                entity
+                continue
+            start = entity.range[const.EntityKeys.START]
+            end = entity.range[const.EntityKeys.END]
+            transcript = transcripts[entity.alternative_index]
+            canon = f"{transcript[:start]}{get_entity_type(entity)}{transcript[end:]}"
+            for idx in entity.alternative_indices:
+                canonicalized_transcripts[idx] = canon
+
+        for i, transcript in enumerate(canonicalized_transcripts):
+            for pattern in self._mask_patterns:
+                canonicalized_transcripts[i] = pattern.sub(self.mask, transcript)
+
         return canonicalized_transcripts
 
     def utility(self, *args: Any) -> Any:
