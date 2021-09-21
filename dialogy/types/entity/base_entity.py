@@ -73,6 +73,7 @@ class BaseEntity:
     # is the index of transcript within the ASR output: `List[Utterances]`
     # from which this entity was picked up. This may be None.
     alternative_index = attr.ib(type=Optional[int], default=None)
+    alternative_indices = attr.ib(type=Optional[List[int]], default=None)
 
     # **latent**
     #
