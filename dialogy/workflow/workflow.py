@@ -54,8 +54,7 @@ from threading import Lock
 from typing import Any, Dict, List
 
 import attr
-import pandas as pd  # type: ignore
-from tqdm import tqdm  # type: ignore
+import pandas as pd
 
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin
