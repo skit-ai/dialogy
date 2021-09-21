@@ -9,7 +9,6 @@ intermediate structure that the DucklingPlugin expects. We need to prevent the i
 all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.
 """
 import re
-import json
 from pprint import pformat
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -21,7 +20,7 @@ from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.base.plugin import PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
-from dialogy.utils import logger, normalize
+from dialogy.utils import logger
 
 Text = str
 Label = str
