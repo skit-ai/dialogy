@@ -1,7 +1,7 @@
 import operator
 from typing import Any, Dict, List, Optional, Tuple
 
-from pydash import py_  # type: ignore
+from pydash import py_
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
