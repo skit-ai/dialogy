@@ -37,6 +37,8 @@ class EntityKeys:
     ORIGIN = "origin"
     NORMALIZED = "normalized"
     SLOT_NAMES = "slot_names"
+    ALTERNATIVE_INDEX = "alternative_index"
+    ALTERNATIVE_INDICES = "alternative_indices"
 
 
 SKIP_ENTITY_ATTRS = [
@@ -45,6 +47,7 @@ SKIP_ENTITY_ATTRS = [
     EntityKeys.LATENT,
     EntityKeys.ORIGIN,
     EntityKeys.SLOT_NAMES,
+    EntityKeys.ALTERNATIVE_INDICES,
 ]
 
 # This section is needed for dialogy.types.entities.*
