@@ -1,3 +1,4 @@
+import json
 import operator
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -6,6 +7,7 @@ from pydash import py_
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity
+from dialogy.utils import normalize
 
 
 class EntityExtractor(Plugin):
@@ -127,3 +129,18 @@ class EntityExtractor(Plugin):
             entity_type_value_group, input_size
         )
         return self.apply_filters(aggregate_entities)
+
+    def _make_transform_values(self, transcript: Any) -> List[str]:
+        """
+        Make transcripts from a string/json-string.
+
+        :param transcript: A string to search entities within.
+        :type transcript: str
+        :return: List of transcripts.
+        :rtype: List[str]
+        """
+        try:
+            transcript = json.loads(transcript)
+            return normalize(transcript)
+        except (json.JSONDecodeError, TypeError):
+            return normalize(transcript)
