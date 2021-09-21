@@ -78,10 +78,15 @@ class EntityExtractor(Plugin):
         """
         aggregated_entities = []
         for entities in entity_type_value_group.values():
-            indices = [entity.alternative_index for entity in entities]
-            min_alternative_index = py_.min_(indices)
+            indices = [
+                entity.alternative_index
+                for entity in entities
+                if isinstance(entity.alternative_index, int)
+            ]
+            min_alternative_index = py_.min_(indices) if indices else None
             representative = entities[0]
             representative.alternative_index = min_alternative_index
+            representative.alternative_indices = indices
             representative.score = EntityExtractor.entity_scoring(
                 len(py_.uniq(indices)), input_size
             )
