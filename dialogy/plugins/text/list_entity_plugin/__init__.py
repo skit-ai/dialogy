@@ -297,21 +297,6 @@ class ListEntityPlugin(EntityExtractor):
         logger.debug(entity_tokens)
         return entity_tokens
 
-    def _make_transform_values(self, transcript: Any) -> List[str]:
-        """
-        Make transcripts from a string/json-string.
-
-        :param transcript: A string to search entities within.
-        :type transcript: str
-        :return: List of transcripts.
-        :rtype: List[str]
-        """
-        try:
-            transcript = json.loads(transcript)
-            return normalize(transcript)
-        except (json.JSONDecodeError, TypeError):
-            return normalize(transcript)
-
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         """
         Transform training data.
@@ -321,15 +306,28 @@ class ListEntityPlugin(EntityExtractor):
         :return: Transformed training data.
         :rtype: pd.DataFrame
         """
+        if not self.use_transform:
+            return training_data
+
+        logger.debug(f"Transforming dataset via {self.__class__.__name__}")
         training_data = training_data.copy()
         if self.output_column not in training_data.columns:
             training_data[self.output_column] = None
 
+        logger.disable("dialogy")
         for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             transcripts = self._make_transform_values(row[self.input_column])
             entities = self.utility(transcripts)
-            if row[self.output_column] is None or pd.isnull(row[self.output_column]):
+            is_empty_series = isinstance(row[self.output_column], pd.Series) and (
+                row[self.output_column].isnull()
+            )
+            is_row_nonetype = row[self.output_column] is None
+            is_row_nan = pd.isna(row[self.output_column])
+            if is_empty_series or is_row_nonetype or is_row_nan:
                 training_data.at[i, self.output_column] = entities
             else:
-                training_data.at[i, self.output_column] = row[self.output_column] + entities
+                training_data.at[i, self.output_column] = (
+                    row[self.output_column] + entities
+                )
+        logger.enable("dialogy")
         return training_data
