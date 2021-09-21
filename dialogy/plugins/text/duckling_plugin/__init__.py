@@ -439,6 +439,11 @@ class DucklingPlugin(EntityExtractor):
         :return: Transformed training data.
         :rtype: pd.DataFrame
         """
+        if not self.use_transform:
+            return training_data
+
+        logger.debug(f"Transforming dataset via {self.__class__.__name__}")
+        logger.disable("dialogy")
         training_data = training_data.copy()
         if self.output_column not in training_data.columns:
             training_data[self.output_column] = None
@@ -446,16 +451,26 @@ class DucklingPlugin(EntityExtractor):
         for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             reference_time = row[self.reference_time_column]
             if isinstance(reference_time, str):
-                reference_time = int(datetime.fromisoformat(reference_time).timestamp() * 1000)
+                reference_time = int(
+                    datetime.fromisoformat(reference_time).timestamp() * 1000
+                )
+            elif pd.isna(reference_time):
+                continue
             elif not isinstance(reference_time, int):
-                raise TypeError(f"{reference_time=} should be isoformat date or unix timestamp integer.")
+                raise TypeError(
+                    f"{reference_time=} should be isoformat date or unix timestamp integer."
+                )
+            transcripts = self._make_transform_values(row[self.input_column])
             entities = self.utility(
-                row[self.input_column],
+                transcripts,
                 reference_time,
                 lang_detect_from_text(self.input_column),
             )
             if row[self.output_column] is None or pd.isnull(row[self.output_column]):
                 training_data.at[i, self.output_column] = entities
             else:
-                training_data.at[i, self.output_column] = row[self.output_column] + entities
+                training_data.at[i, self.output_column] = (
+                    row[self.output_column] + entities
+                )
+        logger.enable("dialogy")
         return training_data

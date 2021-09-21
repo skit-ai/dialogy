@@ -62,12 +62,20 @@ class CanonicalizationPlugin(Plugin):
         return self.mask_transcript(entities, transcripts)
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+        if not self.use_transform:
+            return training_data
+
+        logger.debug(f"Transforming dataset via {self.__class__.__name__}")
+
         for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             try:
                 canonicalized_transcripts = self.utility(
-                    row[self.entity_column], row[self.input_column]
+                    row[self.entity_column],
+                    normalize(json.loads(row[self.input_column])),
                 )
-                training_data.loc[i, self.output_column] = canonicalized_transcripts
+                training_data.loc[i, self.output_column] = json.dumps(
+                    canonicalized_transcripts
+                )
             except Exception as error:  # pylint: disable=broad-except
                 logger.error(
                     f"{error} -- {row[self.input_column]}\n{traceback.format_exc()}"
