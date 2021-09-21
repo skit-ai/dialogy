@@ -22,6 +22,7 @@ import traceback
 from typing import Any, List, Optional
 
 import pandas as pd
+from tqdm import tqdm
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
@@ -115,8 +116,8 @@ class MergeASROutputPlugin(Plugin):
             return training_data
 
         training_data["use"] = True
-        logger.debug("Transforming training data.")
-        for i, row in training_data.iterrows():
+        logger.debug(f"Transforming dataset via {self.__class__.__name__}")
+        for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             asr_output = None
             try:
                 asr_output = json.loads(row[self.input_column])
