@@ -34,11 +34,11 @@ def test_workflow_postprocessors_not_list_error() -> None:
     postprocessrors should be of type [`PluginFn`](../../plugin/test_plugins.html).
     """
     with pytest.raises(TypeError):
-        _ = Workflow(10)  # type: ignore
+        _ = Workflow(10)
 
 
 def test_not_callable_pre_post_processors_type_error() -> None:
-    workflow = Workflow([2, 3])  # type: ignore
+    workflow = Workflow([2, 3])
 
     with pytest.raises(TypeError):
         workflow.execute()
