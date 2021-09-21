@@ -1,4 +1,5 @@
 import pytest
+
 from dialogy.utils import lang_detect_from_text
 
 
