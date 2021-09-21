@@ -3,10 +3,9 @@ import importlib
 from typing import Any
 
 import pandas as pd
-from sklearn.metrics import classification_report
 
 import dialogy.constants as const
-from dialogy.utils import create_timestamps_path, logger
+from dialogy.utils import logger
 from dialogy.workflow import Workflow
 
 
