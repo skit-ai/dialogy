@@ -61,7 +61,7 @@ class CanonicalizationPlugin(Plugin):
             if entity.score is not None and entity.score < self.threshold:
                 continue
             if entity.alternative_index is None or not entity.alternative_indices:
-                entity
+                entity # pylint: disable=pointless-statement
                 continue
             start = entity.range[const.EntityKeys.START]
             end = entity.range[const.EntityKeys.END]
