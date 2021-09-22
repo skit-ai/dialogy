@@ -5,7 +5,7 @@ os:
 python:
   - "3.8"
   - "3.9"
-  install:
+install:
   - pip install poetry coveralls
   - poetry install
 script:
