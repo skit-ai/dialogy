@@ -65,7 +65,7 @@ from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.base.plugin import PluginFn
 from dialogy.constants import EntityKeys
 from dialogy.types.entity import BaseEntity, dimension_entity_map
-from dialogy.utils import dt2timestamp, lang_detect_from_text, logger, normalize
+from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
 
 
 class DucklingPlugin(EntityExtractor):
@@ -460,7 +460,7 @@ class DucklingPlugin(EntityExtractor):
                 raise TypeError(
                     f"{reference_time=} should be isoformat date or unix timestamp integer."
                 )
-            transcripts = self._make_transform_values(row[self.input_column])
+            transcripts = self.make_transform_values(row[self.input_column])
             entities = self.utility(
                 transcripts,
                 reference_time,

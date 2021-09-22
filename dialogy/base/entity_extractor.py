@@ -130,7 +130,8 @@ class EntityExtractor(Plugin):
         )
         return self.apply_filters(aggregate_entities)
 
-    def _make_transform_values(self, transcript: Any) -> List[str]:
+    @staticmethod
+    def make_transform_values(transcript: Any) -> List[str]:
         """
         Make transcripts from a string/json-string.
 
