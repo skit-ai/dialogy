@@ -45,7 +45,7 @@
           - "delhi"
 
 
-- description: "Test location entities using regex, for guarding against candidate re-write bugs"
+- description: "Test location entities using regex for guarding against candidate re-write bugs"
   input:
     - text: "bhadrak"
   expected:
@@ -56,11 +56,11 @@
     style: regex
     candidates:
       constituency_name:
-        bhadrak: 
+        bhadrak:
         - bhadrak
-        bakshi_kaa_talab: 
+        bakshi_kaa_talab:
         - बक्शी का तालाब
-        lucknow_cantt: 
+        lucknow_cantt:
         - 'लखनऊ कैंट'
 
 - description: "Test spacy restricted on labels"
@@ -112,3 +112,54 @@
   exception: "ValueError"
   config:
     style: "unknown"
+
+- description: "Bug found on 23rd September 2021 double aggregation deletes entities."
+  input:
+    - text: "I have paid online"
+      entities:
+        - type: "payment"
+          value: "online"
+    - text: "I have read online"
+      entities:
+        - type: "payment"
+          value: "online"
+    - text: "I had paid online"
+      entities:
+        - type: "payment"
+          value: "online"
+    - text: "I have to read online"
+      entities:
+        - type: "payment"
+          value: "online"
+    - text: "I have did online"
+      entities:
+        - type: "payment"
+          value: "online"
+    - text: "I have bed online"
+      entities:
+        - type: "payment"
+          value: "online"
+    - text: "I have dead online"
+      entities:
+        - type: "payment"
+          value: "online"
+    - text: "I have date online"
+      entities:
+        - type: "payment"
+          value: "online"
+    - text: "I have paid on line"
+    - text: "I have trade online"
+      entities:
+        - type: "payment"
+          value: "online"
+  config:
+    style: "regex"
+    candidates:
+      payment:
+        online:
+        - online|debit card|credit card|bhim upi|upi|amazon pay
+        - ऑनलाइन|डेबिट वार्ड|क्रेडिट कार्ड|भीम उपआयी|उपआयी|अमेज़न पे
+  expected:
+    - type: "payment"
+      value: "online"
+      score: 0.9

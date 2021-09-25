@@ -187,6 +187,8 @@ def test_get_list_entities(payload):
         for i, entity in enumerate(entities):
             assert entity.value == expected[i]["value"]
             assert entity.type == expected[i]["type"]
+            if "score" in expected[i]:
+                assert entity.score == expected[i]["score"]
     else:
         with pytest.raises(EXCEPTIONS.get(exception)):
             list_entity_plugin = ListEntityPlugin(
