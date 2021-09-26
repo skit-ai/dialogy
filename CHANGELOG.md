@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.4 (Unreleased)
+
+- [ ] feat: WER calibration plugin.
+
 ## 0.8.3
 
 - [x] fix: ListEntityPlugin performed aggregation over entities twice leading to lesser than actual scores.
@@ -8,7 +12,6 @@
 
 - [x] **fix: Workflow is thread safe.**
 - [x] fix: Merge asr plugin on non-json inputs crashes workflow runs.
-- [x] feat: WER calibration plugin.
 - [x] feat: Canonicalization plugin.
 - [x] update: DucklingPlugin, ListEntityPlugin have transform methods.
 - [x] docs: Explain plugins in terms of workflow lifecycle.
