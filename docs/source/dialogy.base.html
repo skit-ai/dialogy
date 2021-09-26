@@ -257,6 +257,22 @@ depending on the number of transcripts that contain same body.</p>
 <em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">entity_scoring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">presence</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <span class="pre">float</span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.entity_scoring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.entity_scoring" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
+<dt id="dialogy.base.entity_extractor.EntityExtractor.make_transform_values">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">make_transform_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcript</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.make_transform_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.make_transform_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make transcripts from a string/json-string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transcript</strong> (<em>str</em>) – A string to search entities within.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of transcripts.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
 <dt id="dialogy.base.entity_extractor.EntityExtractor.remove_low_scoring_entities">
 <code class="sig-name descname"><span class="pre">remove_low_scoring_entities</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.remove_low_scoring_entities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.remove_low_scoring_entities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove entities with a lower score than the threshold.</p>
