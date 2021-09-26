@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.3
+
+- [x] fix: ListEntityPlugin performed aggregation over entities twice leading to lesser than actual scores.
+
 ## 0.8.2
 
 - [x] **fix: Workflow is thread safe.**
