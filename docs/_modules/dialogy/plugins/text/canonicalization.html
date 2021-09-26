@@ -240,7 +240,7 @@
             <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">score</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">alternative_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">entity</span><span class="o">.</span><span class="n">alternative_indices</span><span class="p">:</span>
-                <span class="n">entity</span>
+                <span class="n">entity</span> <span class="c1"># pylint: disable=pointless-statement</span>
                 <span class="k">continue</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
             <span class="n">end</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>

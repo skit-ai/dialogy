@@ -244,7 +244,7 @@
 <span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.constants</span> <span class="kn">import</span> <span class="n">EntityKeys</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">dimension_entity_map</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">dt2timestamp</span><span class="p">,</span> <span class="n">lang_detect_from_text</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">normalize</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">dt2timestamp</span><span class="p">,</span> <span class="n">lang_detect_from_text</span><span class="p">,</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="DucklingPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.duckling_plugin.html#dialogy.plugins.text.duckling_plugin.DucklingPlugin">[docs]</a><span class="k">class</span> <span class="nc">DucklingPlugin</span><span class="p">(</span><span class="n">EntityExtractor</span><span class="p">):</span>
@@ -639,7 +639,7 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">reference_time</span><span class="si">=}</span><span class="s2"> should be isoformat date or unix timestamp integer."</span>
                 <span class="p">)</span>
-            <span class="n">transcripts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_transform_values</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">])</span>
+            <span class="n">transcripts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_transform_values</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">])</span>
             <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utility</span><span class="p">(</span>
                 <span class="n">transcripts</span><span class="p">,</span>
                 <span class="n">reference_time</span><span class="p">,</span>
