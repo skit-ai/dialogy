@@ -9,7 +9,7 @@ import math
 import pickle
 import sqlite3
 import traceback
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import jiwer
 import numpy as np
@@ -21,6 +21,9 @@ from xgboost import XGBRegressor
 
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.utils import logger
+from dialogy import constants as const
+from dialogy.utils import normalize
+from dialogy.types import Transcript, Utterance
 
 
 class FeatureExtractor(BaseEstimator, TransformerMixin):
@@ -28,22 +31,15 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
         super().__init__()
         self.vectorizer = TfidfVectorizer()
 
-    def read_data(self, fname: Any) -> pd.DataFrame:
-        if isinstance(fname, pd.DataFrame):
-            return fname
-        cux = sqlite3.connect(fname)
-        return pd.read_sql_query("SELECT * FROM DATA", cux)
-
     def fit(self, df: pd.DataFrame, y: Any = None) -> Any:
         texts = []
         for _, row in tqdm(df.iterrows()):
             real_transcript = json.loads(row["tag"])["text"]
             texts.append(real_transcript)
             alts = json.loads(row["data"])["alternatives"]
-            if alts in [[], [None]]:
-                continue
-            for alt in alts[0]:
-                texts.append(alt["transcript"])
+            if alts not in [[], [None]]:
+                for alt in alts[0]:
+                    texts.append(alt["transcript"])
 
         logger.debug("Step 1/2: Training vectorizer model")
         self.vectorizer.fit(texts)
@@ -77,10 +73,11 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
         for _, row in tqdm(df.iterrows()):
             real_transcript = json.loads(row["tag"])["text"]
             alts = json.loads(row["data"])["alternatives"][0]
-            if alts in [[], [None]]:
-                continue
-            features.append(self.features(alts))
-            targets += [jiwer.wer(real_transcript, alt["transcript"]) for alt in alts]
+            if alts not in [[], [None]]:
+                features.append(self.features(alts))
+                targets += [
+                    jiwer.wer(real_transcript, alt["transcript"]) for alt in alts
+                ]
         return np.squeeze(np.array(features)), targets
 
 
@@ -119,6 +116,11 @@ class CalibrationModel(Plugin):
         self.clf.fit(X, y)
         self.save(model_name)
 
+    def predict(self, alternatives: List[Dict[str, Any]]):  # -> np.ndarray[Any, Any]:
+        return self.clf.predict(
+            np.array(self.extraction_pipeline.features(alternatives))
+        )
+
     def filter_asr_output(self, asr_output: Dict[str, Any]) -> Dict[str, Any]:
         """
         Filters outputs from ASR based on calibration model prediction.
@@ -129,15 +131,15 @@ class CalibrationModel(Plugin):
         :return: Filtered alternatives, in the same format as input.
         :rtype: Dict[str, Any]
         """
-        alternatives = asr_output["alternatives"]
+        alternatives = asr_output["alternatives"][0]
         filtered_alternatives = []
-        for alternative, wer in zip(alternatives[0], self.inference(alternatives[0])):
+        prediction = self.predict(alternatives)
+        for alternative, wer in zip(alternatives, prediction):
             if wer < self.threshold:
                 filtered_alternatives.append(alternative)
         return {"alternatives": [filtered_alternatives]}
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
-        """ """
         # filters df alternatives and feeds into merge_asr_output,
         # doesn't change training_data schema
         training_data["use"] = True
@@ -164,14 +166,34 @@ class CalibrationModel(Plugin):
             )
         return training_data_
 
-    def inference(self, alternatives: List[Dict[str, Any]]) -> np.ndarray:
-        return self.clf.predict(self.extraction_pipeline.features(alternatives))
+    def inference(self, utterances: List[Utterance]) -> List[str]:
+        transcripts: List[Transcript] = normalize(utterances)
+        transcript_lengths: List[int] = [
+            len(transcript.split()) for transcript in transcripts
+        ]
+        average_word_count: float = (
+            sum(transcript_lengths) / len(transcript_lengths) if transcripts else 0.0
+        )
+
+        # We want to run this plugin if transcripts have more than WORD_THRESHOLD words
+        # below that count, WER is mostly high. We expect this plugin to override
+        # a classifier's prediction to a fallback label.
+        # If the transcripts have less than WORD_THRESHOLD words, we will always predict the fallback label.
+        if average_word_count <= const.WORD_THRESHOLD:
+            return normalize(utterances)
+
+        return normalize(
+            [
+                self.filter_asr_output({"alternatives": utterance})
+                for utterance in utterances
+            ]
+        )
 
     def save(self, fname: str) -> None:
         pickle.dump(self, open(fname, "wb"))
 
     def utility(self, *args: Any) -> Any:
-        return self.inference(*args)  # pylint: disable=no-value-for-parameter
+        return self.inference(list(args))  # pylint: disable=no-value-for-parameter
 
     def validate(self, df: pd.DataFrame) -> bool:
         """

@@ -45,13 +45,17 @@ class MyClassifier(object):
 vectorizer = MyVectorizer()
 classifier = MyClassifier()
 
-calibration_model = CalibrationModel(access=access, mutate=mutate, threshold=1.0)
+calibration_model = CalibrationModel(
+    access=access, mutate=mutate, threshold=float("inf")
+)
 calibration_model.train(df, "temp.pkl")
 
 
-def test_calibration_model_inference():
+def test_calibration_model_predict():
     alternatives = json.loads(df.iloc[0]["data"])["alternatives"][0]
-    assert calibration_model.inference(alternatives) == pytest.approx(0.14)
+    assert np.allclose(
+        calibration_model.predict(alternatives), np.array([0.14196964]), atol=1e-5
+    )
 
 
 def test_calibration_model_filter_asr_output():
@@ -62,12 +66,11 @@ def test_calibration_model_filter_asr_output():
 
 
 def test_calibration_model_transform():
-    # load intent tagging data here.
     assert calibration_model.transform(df).equals(df.drop("use", axis=1))
 
 
 def test_calibration_model_validation():
-    assert calibration_model.validate(df.iloc[0])
+    assert calibration_model.validate(df)
     json_data[0][2] = '[{"type": "_cancel_", "value": true}]'
     assert not calibration_model.validate(
         pd.DataFrame(json_data, columns=["conv_id", "data", "tag", "value", "time"])
