@@ -6,8 +6,10 @@ import numpy as np
 import pandas as pd
 
 from dialogy.plugins.text.calibration.xgb import FeatureExtractor
+from tests import load_tests
 
-mock_data = json.load(open("test_df.json"))
+
+mock_data = load_tests("df", __file__, ext=".json")
 df = pd.DataFrame(mock_data, columns=["conv_id", "data", "tag", "value", "time"])
 
 feature_extractor = FeatureExtractor()
@@ -37,7 +39,7 @@ def test_feature_extractor_features():
         64.44939052806247,
         -124.90347396521894,
         -124.90347396521894,
-    ]
+    ]]
 
 
 def test_feature_extractor_transform():
