@@ -49,7 +49,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
         self.vectorizer.fit(texts)
         return self
 
-    def features(self, alternatives: List[Dict[str, Any]]) -> np.ndarray[Any, Any]:
+    def features(self, alternatives: List[Dict[str, Any]]) -> List[List[float]]:
         features = []
         for alt in alternatives:
             try:
@@ -70,7 +70,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
             except Exception as error:
                 logger.error(f"{error}\n{traceback.format_exc()}")
 
-        return np.array(features)
+        return features
 
     def transform(self, df: pd.DataFrame) -> Tuple[Any, Any]:
         features, targets = [], []
@@ -164,7 +164,7 @@ class CalibrationModel(Plugin):
             )
         return training_data_
 
-    def inference(self, alternatives: List[Dict[str, Any]]) -> np.ndarray[Any, Any]:
+    def inference(self, alternatives: List[Dict[str, Any]]) -> np.ndarray:
         return self.clf.predict(self.extraction_pipeline.features(alternatives))
 
     def save(self, fname: str) -> None:
