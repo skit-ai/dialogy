@@ -15,11 +15,14 @@ EXCEPTIONS = {
 }
 
 
-def load_tests(test_type, current_path):
+def load_tests(test_type, current_path, ext=".yaml"):
     test_dir = pathlib.Path(current_path).parent
-    test_cases_path = os.path.join(test_dir, f"test_{test_type}.yaml")
+    test_cases_path = os.path.join(test_dir, f"test_{test_type}{ext}")
     with open(test_cases_path, "r") as handle:
-        test_cases = yaml.load(handle, Loader=yaml.FullLoader)
+        if ext == ".yaml":
+            test_cases = yaml.load(handle, Loader=yaml.FullLoader)
+        elif ext == ".json":
+            test_cases = json.load(handle)
         # make any suitable modifications here
     return test_cases
 
