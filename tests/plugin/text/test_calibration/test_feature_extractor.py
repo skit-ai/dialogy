@@ -19,8 +19,8 @@ def test_feature_extractor_fit():
 
 # pre-calculated values
 def test_feature_extractor_features():
-    alternative = json.loads(df.iloc[0]["data"])["alternatives"][0][0]
-    assert feature_extractor.features(alternative) == [
+    alternative = json.loads(df.iloc[0]["data"])["alternatives"][0]
+    assert feature_extractor.features(alternative) == [[
         0.3889910975917115,
         0.3889910975917115,
         0.3889910975917115,
