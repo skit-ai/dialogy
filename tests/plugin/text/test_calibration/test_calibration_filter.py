@@ -13,7 +13,7 @@ from dialogy.plugins.text.calibration.xgb import CalibrationModel
 from dialogy.workflow.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 
-json_data = json.load(open("test_df.json"))
+json_data = load_tests("df", __file__, ext=".json")
 df = pd.DataFrame(json_data, columns=["conv_id", "data", "tag", "value", "time"])
 
 
