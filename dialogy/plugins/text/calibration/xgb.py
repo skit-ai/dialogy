@@ -19,11 +19,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from tqdm import tqdm
 from xgboost import XGBRegressor
 
-from dialogy.base.plugin import Plugin, PluginFn
-from dialogy.utils import logger
 from dialogy import constants as const
-from dialogy.utils import normalize
+from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import Transcript, Utterance
+from dialogy.utils import logger, normalize
 
 
 class FeatureExtractor(BaseEstimator, TransformerMixin):

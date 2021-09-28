@@ -1,13 +1,13 @@
 # type : ignore
 
 import json
+from copy import copy
 
 import numpy as np
 import pandas as pd
-from copy import copy
+
 from dialogy.plugins.text.calibration.xgb import FeatureExtractor
 from tests import load_tests
-
 
 mock_data = load_tests("df", __file__, ext=".json")
 df = pd.DataFrame(mock_data, columns=["conv_id", "data", "tag", "value", "time"])
