@@ -121,7 +121,7 @@ class CalibrationModel(Plugin):
             np.array(self.extraction_pipeline.features(alternatives))
         )
 
-    def filter_asr_output(self, asr_output: Dict[str, Any]) -> Dict[str, Any]:
+    def filter_asr_output(self, asr_output: Dict[str, Any]) -> List[Any]:
         """
         Filters outputs from ASR based on calibration model prediction.
 
@@ -137,7 +137,7 @@ class CalibrationModel(Plugin):
         for alternative, wer in zip(alternatives, prediction):
             if wer < self.threshold:
                 filtered_alternatives.append(alternative)
-        return {"alternatives": [filtered_alternatives]}
+        return filtered_alternatives
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         # filters df alternatives and feeds into merge_asr_output,
@@ -149,7 +149,9 @@ class CalibrationModel(Plugin):
             try:
                 asr_output = json.loads(row[self.data_column])
                 if asr_output:
-                    filtered_asr_output = self.filter_asr_output(asr_output)
+                    filtered_asr_output = {
+                        "alternatives": self.filter_asr_output(asr_output)
+                    }
                     training_data.iloc[i][self.data_column] = filtered_asr_output
                 else:
                     training_data.loc[i, "use"] = False
@@ -184,7 +186,7 @@ class CalibrationModel(Plugin):
 
         return normalize(
             [
-                self.filter_asr_output({"alternatives": utterance})
+                self.filter_asr_output({"alternatives": [utterance]})
                 for utterance in utterances
             ]
         )
@@ -193,7 +195,7 @@ class CalibrationModel(Plugin):
         pickle.dump(self, open(fname, "wb"))
 
     def utility(self, *args: Any) -> Any:
-        return self.inference(list(args))  # pylint: disable=no-value-for-parameter
+        return self.inference(*args)  # pylint: disable=no-value-for-parameter
 
     def validate(self, df: pd.DataFrame) -> bool:
         """

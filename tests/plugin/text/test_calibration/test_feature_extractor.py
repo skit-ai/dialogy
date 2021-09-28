@@ -4,7 +4,7 @@ import json
 
 import numpy as np
 import pandas as pd
-
+from copy import copy
 from dialogy.plugins.text.calibration.xgb import FeatureExtractor
 from tests import load_tests
 
@@ -42,6 +42,20 @@ def test_feature_extractor_features():
             -124.90347396521894,
         ]
     ]
+    mock_data_null_alternatives = copy(mock_data)
+    mock_data_null_alternatives[0][1] = json.dumps([[{"transcript": "hello"}]])
+    mock_data_df_null_alternatives = pd.DataFrame(
+        mock_data, columns=["conv_id", "data", "tag", "value", "time"]
+    )
+    try:
+        assert feature_extractor.features(
+            json.loads(mock_data_df_null_alternatives.iloc[0]["data"])["alternatives"][
+                0
+            ]
+        )
+        assert False
+    except Exception:
+        assert True
 
 
 def test_feature_extractor_transform():

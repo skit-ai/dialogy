@@ -60,9 +60,12 @@ def test_calibration_model_predict():
 
 def test_calibration_model_filter_asr_output():
     alternatives = json.loads(df.iloc[0]["data"])
-    assert calibration_model.filter_asr_output(alternatives) == alternatives
+    assert (
+        calibration_model.filter_asr_output(alternatives)
+        == alternatives["alternatives"][0]
+    )
     calibration_model.threshold = float("-inf")
-    assert calibration_model.filter_asr_output(alternatives) == {"alternatives": [[]]}
+    assert calibration_model.filter_asr_output(alternatives) == []
 
 
 def test_calibration_model_transform():
@@ -74,4 +77,25 @@ def test_calibration_model_validation():
     json_data[0][2] = '[{"type": "_cancel_", "value": true}]'
     assert not calibration_model.validate(
         pd.DataFrame(json_data, columns=["conv_id", "data", "tag", "value", "time"])
+    )
+
+
+def test_calibration_model_utility():
+    assert calibration_model.utility(
+        [[{"transcript": "hello", "am_score": -100, "lm_score": -200}]]
+    ) == ["hello"]
+    calibration_model.threshold = float("inf")
+    assert (
+        calibration_model.utility(
+            [
+                [
+                    {
+                        "transcript": "hello world hello world",
+                        "am_score": -100,
+                        "lm_score": -200,
+                    }
+                ]
+            ]
+        )
+        == ["hello world hello world"]
     )
