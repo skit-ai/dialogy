@@ -116,7 +116,7 @@ class CalibrationModel(Plugin):
         self.clf.fit(X, y)
         self.save(model_name)
 
-    def predict(self, alternatives: List[Dict[str, Any]]):  # -> np.ndarray[Any, Any]:
+    def predict(self, alternatives: List[Dict[str, Any]]) -> Any:
         return self.clf.predict(
             np.array(self.extraction_pipeline.features(alternatives))
         )
