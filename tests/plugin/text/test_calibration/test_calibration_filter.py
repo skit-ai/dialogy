@@ -1,6 +1,7 @@
 # type : ignore
 
 import json
+from copy import copy
 from typing import ValuesView
 
 import numpy as np
@@ -70,6 +71,25 @@ def test_calibration_model_filter_asr_output():
 
 def test_calibration_model_transform():
     assert calibration_model.transform(df).equals(df.drop("use", axis=1))
+    json_data_no_scores = copy(json_data)
+    json_data_no_scores[0][1] = json.dumps({"alternatives": [[{"transcript": "yes"}]]})
+    df_no_scores = pd.DataFrame(
+        json_data_no_scores, columns=["conv_id", "data", "tag", "value", "time"]
+    )
+    assert (calibration_model.transform(df_no_scores).iloc[0]).equals(
+        df_no_scores.drop("use", axis=1).iloc[1]
+    )
+
+    json_data_empty_asr_output = copy(json_data)
+    json_data_empty_asr_output[0][1] = "[]"
+    df_empty_asr_output = pd.DataFrame(
+        json_data_empty_asr_output, columns=["conv_id", "data", "tag", "value", "time"]
+    )
+    assert (
+        calibration_model.transform(df_empty_asr_output)
+        .iloc[0]
+        .equals(df_empty_asr_output.drop("use", axis=1).iloc[1])
+    )
 
 
 def test_calibration_model_validation():

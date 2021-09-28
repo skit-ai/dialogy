@@ -45,10 +45,10 @@ def test_feature_extractor_features():
     mock_data_null_alternatives = copy(mock_data)
     mock_data_null_alternatives[0][1] = json.dumps([[{"transcript": "hello"}]])
     mock_data_df_null_alternatives = pd.DataFrame(
-        mock_data, columns=["conv_id", "data", "tag", "value", "time"]
+        mock_data_null_alternatives, columns=["conv_id", "data", "tag", "value", "time"]
     )
     try:
-        assert feature_extractor.features(
+        feature_extractor.features(
             json.loads(mock_data_df_null_alternatives.iloc[0]["data"])["alternatives"][
                 0
             ]
