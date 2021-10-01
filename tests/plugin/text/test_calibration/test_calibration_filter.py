@@ -53,7 +53,7 @@ calibration_model.train(df, "temp.pkl")
 
 
 def test_calibration_model_predict():
-    alternatives = json.loads(df.iloc[0]["data"])["alternatives"][0]
+    alternatives = json.loads(df.iloc[0]["data"])[0]
     assert np.allclose(
         calibration_model.predict(alternatives), np.array([0.14196964]), atol=1e-5
     )
@@ -63,10 +63,10 @@ def test_calibration_model_filter_asr_output():
     alternatives = json.loads(df.iloc[0]["data"])
     assert (
         calibration_model.filter_asr_output(alternatives)
-        == alternatives["alternatives"][0]
+        == alternatives
     )
     calibration_model.threshold = float("-inf")
-    assert calibration_model.filter_asr_output(alternatives) == []
+    assert calibration_model.filter_asr_output(alternatives) == [[]]
 
 
 def test_calibration_model_transform():

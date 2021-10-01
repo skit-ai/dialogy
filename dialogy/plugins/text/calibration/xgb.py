@@ -34,7 +34,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
         for _, row in tqdm(df.iterrows()):
             real_transcript = json.loads(row["tag"])["text"]
             texts.append(real_transcript)
-            alts = json.loads(row["data"])["alternatives"]
+            alts = json.loads(row["data"])
             if alts not in [[], [None]]:
                 for alt in alts[0]:
                     texts.append(alt["transcript"])
@@ -70,12 +70,13 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
         features, targets = [], []
         for _, row in tqdm(df.iterrows()):
             real_transcript = json.loads(row["tag"])["text"]
-            alts = json.loads(row["data"])["alternatives"][0]
-            if alts not in [[], [None]]:
-                features.append(self.features(alts))
-                targets += [
-                    jiwer.wer(real_transcript, alt["transcript"]) for alt in alts
-                ]
+            utterances: List[Utterance] = json.loads(row["data"])
+            if utterances not in [[], [None]]:
+                for utterance in utterances:
+                    features.append(self.features(utterance))
+                    targets += [
+                        jiwer.wer(real_transcript, alternative["transcript"]) for alternative in utterance
+                    ]
         return np.squeeze(np.array(features)), targets
 
 
@@ -93,12 +94,21 @@ class CalibrationModel(Plugin):
         mutate: Optional[PluginFn],
         threshold: float,
         debug: bool = False,
+        input_column: str = const.ALTERNATIVES,
+        output_column: Optional[str] = const.ALTERNATIVES,
+        use_transform: bool = False,
     ) -> None:
-        super().__init__(access, mutate, debug=debug)
+        super().__init__(
+            access,
+            mutate,
+            debug=debug,
+            input_column=input_column,
+            output_column=output_column,
+            use_transform=use_transform,
+        )
         self.extraction_pipeline = FeatureExtractor()
         self.clf = XGBRegressor(n_jobs=1)
-        self.data_column = "data"
-        self.threshold = threshold  # Todo : make configurable
+        self.threshold = threshold
 
     def train(self, df: pd.DataFrame, model_name: str = "calibration.pkl") -> None:
         """
@@ -114,28 +124,30 @@ class CalibrationModel(Plugin):
         self.clf.fit(X, y)
         self.save(model_name)
 
-    def predict(self, alternatives: List[Dict[str, Any]]) -> Any:
+    def predict(self, alternatives: Utterance) -> Any:
         return self.clf.predict(
             np.array(self.extraction_pipeline.features(alternatives))
         )
 
-    def filter_asr_output(self, asr_output: Dict[str, Any]) -> List[Any]:
+    def filter_asr_output(self, utterances: List[Utterance]) -> List[Utterance]:
         """
         Filters outputs from ASR based on calibration model prediction.
 
         :param asr_output: output dictionary from ASR. Should have an _alternatives_
                             key.
-        :type asr_output: Dict[str, Any]
+        :type utterances: List[Utterance]
         :return: Filtered alternatives, in the same format as input.
         :rtype: Dict[str, Any]
         """
-        alternatives = asr_output["alternatives"][0]
-        filtered_alternatives = []
-        prediction = self.predict(alternatives)
-        for alternative, wer in zip(alternatives, prediction):
-            if wer < self.threshold:
-                filtered_alternatives.append(alternative)
-        return filtered_alternatives
+        filtered_utterances = []
+        for utterance in utterances:
+            filtered_alternatives = []
+            prediction = self.predict(utterance)
+            for alternative, wer in zip(utterance, prediction):
+                if wer < self.threshold:
+                    filtered_alternatives.append(alternative)
+            filtered_utterances.append(filtered_alternatives)
+        return filtered_utterances
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         # filters df alternatives and feeds into merge_asr_output,
@@ -145,12 +157,10 @@ class CalibrationModel(Plugin):
         for i, row in training_data.iterrows():
             asr_output = None
             try:
-                asr_output = json.loads(row[self.data_column])
+                asr_output = json.loads(row[self.input_column])
                 if asr_output:
-                    filtered_asr_output = {
-                        "alternatives": self.filter_asr_output(asr_output)
-                    }
-                    training_data.iloc[i][self.data_column] = filtered_asr_output
+                    filtered_asr_output = self.filter_asr_output(asr_output)
+                    training_data.iloc[i][self.input_column] = filtered_asr_output
                 else:
                     training_data.loc[i, "use"] = False
             except Exception as error:  # pylint: disable=broad-except
