@@ -5,7 +5,7 @@ description = "Language understanding for human dialog."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<3.10"
 attrs = "^20.3.0"
 requests = "^2.25.1"
 pytz = "^2020.4"
