@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.8.4 (Unreleased)
+## 0.8.4
 
-- [ ] feat: WER calibration plugin.
+- [x] feat: WER calibration plugin.
 
 ## 0.8.3
 
