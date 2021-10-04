@@ -97,6 +97,7 @@ class CalibrationModel(Plugin):
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = const.ALTERNATIVES,
         use_transform: bool = False,
+        model_name: str = "calibration.pkl"
     ) -> None:
         super().__init__(
             access,
@@ -109,8 +110,9 @@ class CalibrationModel(Plugin):
         self.extraction_pipeline = FeatureExtractor()
         self.clf = XGBRegressor(n_jobs=1)
         self.threshold = threshold
+        self.model_name = model_name
 
-    def train(self, df: pd.DataFrame, model_name: str = "calibration.pkl") -> None:
+    def train(self, df: pd.DataFrame) -> None:
         """
         Trains the calibration pipeline.
 
@@ -122,7 +124,7 @@ class CalibrationModel(Plugin):
         X, y = self.extraction_pipeline.fit_transform(df)
         logger.debug("Step 2/2: Training regressor model")
         self.clf.fit(X, y)
-        self.save(model_name)
+        self.save(self.model_name)
 
     def predict(self, alternatives: Utterance) -> Any:
         return self.clf.predict(
@@ -204,7 +206,7 @@ class CalibrationModel(Plugin):
         """
         Return if `df` is a valid trascription tagging job
         should return `False` for intent tagging jobs.
-        example : ` '{"text": "I want to change and set my <INAUDIBLE>", "type": "TRANSCRIPT"}'`
+        example : `'{"text": "I want to change and set my <INAUDIBLE>", "type": "TRANSCRIPT"}'`
 
         Sharp bits:
         - All rows in df should have same format. We just consider

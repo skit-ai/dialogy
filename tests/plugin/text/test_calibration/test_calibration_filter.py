@@ -47,9 +47,9 @@ vectorizer = MyVectorizer()
 classifier = MyClassifier()
 
 calibration_model = CalibrationModel(
-    access=access, mutate=mutate, threshold=float("inf"), input_column="data"
+    access=access, mutate=mutate, threshold=float("inf"), input_column="data", model_name="temp.pkl"
 )
-calibration_model.train(df, "temp.pkl")
+calibration_model.train(df)
 
 
 def test_calibration_model_predict():
