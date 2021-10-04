@@ -8,6 +8,7 @@ exclude_paths:
   - "dialogy/types/entity/__init__.py"
   - "dialogy/types/intent/__init__.py"
   - "dialogy/plugin/plugin.py"
+  - "dialogy/plugins/text/calibration/xgb.py"
   - "dialogy/parser/text/entity/duckling_parser/__init__.py"
   - "dialogy/parser/text/entity/__init__.py"
   - "dialogy/parser/text/__init__.py"
