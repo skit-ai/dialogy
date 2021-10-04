@@ -192,12 +192,7 @@ class CalibrationModel(Plugin):
         if average_word_count <= const.WORD_THRESHOLD:
             return normalize(utterances)
 
-        return normalize(
-            [
-                self.filter_asr_output({"alternatives": [utterance]})
-                for utterance in utterances
-            ]
-        )
+        return normalize(self.filter_asr_output(utterances))
 
     def save(self, fname: str) -> None:
         pickle.dump(self, open(fname, "wb"))
