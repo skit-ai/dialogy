@@ -1,4 +1,4 @@
-from dialogy.plugins.text.calibration import WERCalibrationConfig, WERCalibrationPlugin
+from dialogy.plugins.text.calibration.xgb import CalibrationModel
 from dialogy.plugins.text.canonicalization import CanonicalizationPlugin
 from dialogy.plugins.text.classification.xlmr import XLMRMultiClass
 from dialogy.plugins.text.duckling_plugin import DucklingPlugin

@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "dialogy"
-version = "0.8.3"
+version = "0.8.4"
 description = "Language understanding for human dialog."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<3.10"
 attrs = "^20.3.0"
 requests = "^2.25.1"
 pytz = "^2020.4"
@@ -20,6 +20,8 @@ pandas = "^1.3.2"
 sklearn = "^0.0"
 tqdm = "^4.62.2"
 attr = "^0.3.1"
+xgboost = "^1.4.2"
+jiwer = "^2.2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
