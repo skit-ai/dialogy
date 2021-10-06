@@ -15,6 +15,10 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 from tqdm import tqdm
 
+import yaml
+import stanza
+from thefuzz import fuzz
+
 from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityExtractor
 from dialogy.base.plugin import PluginFn
@@ -70,6 +74,7 @@ class ListEntityPlugin(EntityExtractor):
         use_transform: bool = True,
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
+        search_config_path = None # adding path to load config for search
     ):
         super().__init__(
             access=access,
@@ -85,15 +90,38 @@ class ListEntityPlugin(EntityExtractor):
             const.REGEX: self.regex_search,
         }
 
-        self.style = style or const.REGEX
+        self.style = style or const.REGEX # which search algo will be used: [regex, spacy, fuzzy]
         self.labels = labels
         self.keywords = None
         self.spacy_nlp = spacy_nlp
         self.compiled_patterns: Dict[str, Dict[str, List[Any]]] = {}
         self.flags = flags
+        '''
+        Parameters for Fuzzy Dependency Parser defined below
+        '''
+        self.file_path = search_config_path
+        self.entity_dict = {}
+        self.entities = {}
+        self.nlp = {}
 
         if self.style == const.REGEX:
             self._parse(candidates)
+
+        if self.style == 'fuzzy_dp_search':
+            self.fuzzy_init()
+
+    def fuzzy_init(self):
+        """
+        Initializing the parameters for fuzzy dp search with their values 
+
+        """
+        with open(self.file_path) as entity_file:
+            parsed_file =  yaml.load(entity_file, Loader=yaml.SafeLoader)
+        for i in parsed_file.keys():
+            self.entity_dict[i] = parsed_file[i]
+            self.entities[i] = list(self.entity_dict[i].keys())
+            self.nlp[i] = stanza.Pipeline(lang=i, tokenize_pretokenized=True)
+        
 
     def _parse(self, candidates: Optional[Dict[str, Dict[str, List[Any]]]]) -> None:
         """
@@ -170,6 +198,42 @@ class ListEntityPlugin(EntityExtractor):
             )
         token_list = [search_fn(transcript) for transcript in transcripts]
         return token_list
+    
+
+    # new method based on experiments done during development of channel parser
+    def get_fuzzy_dp_search(self, transcripts: List[str], lang: str) -> List[BaseEntity]:
+        """
+
+
+        """
+        valid_langs = ['hi', 'en']
+        if lang not in valid_langs:
+            raise ValueError(
+                f'Provided language {lang} is not supported by this method at present'
+            )
+        match_dict = {}
+        pos_tags = ["PROPN", "NOUN"]
+        query = '\n'.join(transcripts)
+
+        sentences = self.nlp[lang](query).sentences
+        for sentence in sentences:
+            value = ""
+            for word in sentence.words:
+                if word.upos in pos_tags:
+                    value = value + str(word.text) + " "
+                if value == "":
+                    continue
+            for entity in self.entities[lang]:
+                val = fuzz.ratio(entity, value)/100
+                if val > 0.1 :
+                    match_value = self.entity_dict[lang][entity]
+                    if match_value in match_dict.keys():
+                        if val > match_dict[match_value]:
+                            match_dict[match_value] = val
+                    else:
+                        match_dict[match_value] = val
+
+        match_dict = dict(sorted(match_dict.items(), key=lambda item: item[1], reverse=True)) 
 
     def get_entities(self, transcripts: List[str]) -> List[BaseEntity]:
         """
