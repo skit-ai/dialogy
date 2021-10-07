@@ -188,40 +188,14 @@
 <span class="sd">between a :ref:`Plugin &lt;plugin&gt;` and a :ref:`Workflow &lt;workflow&gt;` is a **convention** to ensure that neither the :ref:`Plugin &lt;plugin&gt;` creation or its *utility* is constrained</span>
 <span class="sd">by their author's choices.</span>
 
-<span class="sd">We will cover the following topics in this section:</span>
-
-<span class="sd">- Plugin types</span>
-<span class="sd">    5. Are plugins trainable? if yes, how are they different from un-trained plugins?</span>
-<span class="sd">    - Base plugins.</span>
-
-<span class="sd">        - The methods that one needs to implement to build a plugin.</span>
-<span class="sd">            7. Are there any conventions around methods/APIs?</span>
-<span class="sd">        - Getting inputs from a workflow.</span>
-<span class="sd">            1. [Data access](https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L148)</span>
-<span class="sd">        - Updating the workflow with the plugin output.</span>
-<span class="sd">            2. Who calls a plugin (API, invocation)?</span>
-<span class="sd">            2. [Workflow update](https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L151)</span>
-<span class="sd">            10. How do plugins interact with the workflow</span>
-<span class="sd">        - Integrating plugins with a workflow.</span>
-<span class="sd">            3. https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/workflow/workflow.py#L151</span>
-<span class="sd">        - Workflows and plugin order of invocation</span>
-
-<span class="sd">    - Transformer plugins.</span>
-<span class="sd">    - Trainable plugins.</span>
-<span class="sd">            1. How to ensure continuous training/testing happens for a plugin?</span>
-<span class="sd">            2. How do I read and write my artifacts/configs?</span>
-<span class="sd">    - Workflow and plugin lifecycles.</span>
-<span class="sd">    - Testing the built plugin</span>
-<span class="sd">        4. How can I test my plugin?</span>
-
 <span class="sd">Plugin Types</span>
 <span class="sd">*************</span>
 
 <span class="sd">There are three types of plugins:</span>
 
-<span class="sd">1. SolitaryPlugin</span>
-<span class="sd">2. TransformerPlugin</span>
-<span class="sd">3. TrainablePlugin</span>
+<span class="sd">1. Solitary</span>
+<span class="sd">2. Transformer</span>
+<span class="sd">3. Trainable</span>
 
 <span class="sd">Solitary</span>
 <span class="sd">========</span>
@@ -436,15 +410,10 @@
 
 <span class="sd">        In [12]: w.run({"transcripts": ["yes"]})</span>
 
+<span class="sd">Notes:</span>
 
-
-<span class="sd">8. What is not a plugin?</span>
-<span class="sd">    1. Can a plugin have multiple models or is there a restriction?</span>
-<span class="sd">    2. If there are multiple models</span>
-<span class="sd">    3. If there are multiple plugins</span>
-<span class="sd">    4. Can I control the order of invocation as a plugin author?</span>
-<span class="sd">    5. Can plugins be parallelized? if the inputs are independent of other plugin outputs.</span>
-
+<span class="sd">- If your plugin needs a model but it need not be trained frequently or is just an off the shelf pre-trained model, then you must go for a Solitary plugin.</span>
+<span class="sd">- A trainable plugin can also have transform methods if it must modify a dataframe for other plugins in place.</span>
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
@@ -567,8 +536,7 @@
 
 <span class="sd">        :return: A value that will be passed to the next plugin (if any).</span>
 <span class="sd">        :rtype: Any</span>
-<span class="sd">        """</span>
-        <span class="o">...</span></div>
+<span class="sd">        """</span></div>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>

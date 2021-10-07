@@ -184,24 +184,25 @@
 <div class="section" id="module-dialogy.base.entity_extractor">
 <span id="dialogy-base-entity-extractor-module"></span><h2>dialogy.base.entity_extractor module<a class="headerlink" href="#module-dialogy.base.entity_extractor" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="dialogy.base.entity_extractor.EntityExtractor">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.base.entity_extractor.</span></code><code class="sig-name descname"><span class="pre">EntityExtractor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.base.entity_extractor.</span></code><code class="sig-name descname"><span class="pre">EntityScoringMixin</span></code><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityScoringMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mixin class for scoring entities acquired over a set of transcripts.</p>
 <dl class="py attribute">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.DATETIME_OPERATION_ALIAS">
-<code class="sig-name descname"><span class="pre">DATETIME_OPERATION_ALIAS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'future':</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">ge&gt;,</span> <span class="pre">'past':</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">le&gt;}</span></em><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.DATETIME_OPERATION_ALIAS" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.DATETIME_OPERATION_ALIAS">
+<code class="sig-name descname"><span class="pre">DATETIME_OPERATION_ALIAS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'future':</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">ge&gt;,</span> <span class="pre">'past':</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">le&gt;}</span></em><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.DATETIME_OPERATION_ALIAS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.FUTURE">
-<code class="sig-name descname"><span class="pre">FUTURE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'future'</span></em><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.FUTURE" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.FUTURE">
+<code class="sig-name descname"><span class="pre">FUTURE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'future'</span></em><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.FUTURE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.PAST">
-<code class="sig-name descname"><span class="pre">PAST</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'past'</span></em><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.PAST" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.PAST">
+<code class="sig-name descname"><span class="pre">PAST</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'past'</span></em><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.PAST" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.aggregate_entities">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">aggregate_entities</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_type_value_group</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.aggregate_entities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.aggregate_entities" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.aggregate_entities">
+<code class="sig-name descname"><span class="pre">aggregate_entities</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_type_value_group</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityScoringMixin.aggregate_entities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.aggregate_entities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduce entities sharing same type and value.</p>
 <p>Entities with same type and value are considered identical even if other metadata is same.</p>
 <dl class="field-list simple">
@@ -217,8 +218,8 @@
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.apply_filters">
-<code class="sig-name descname"><span class="pre">apply_filters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.apply_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.apply_filters" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.apply_filters">
+<code class="sig-name descname"><span class="pre">apply_filters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityScoringMixin.apply_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.apply_filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conditionally remove entities.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -233,8 +234,8 @@
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.entity_consensus">
-<code class="sig-name descname"><span class="pre">entity_consensus</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.entity_consensus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.entity_consensus" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.entity_consensus">
+<code class="sig-name descname"><span class="pre">entity_consensus</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityScoringMixin.entity_consensus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.entity_consensus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combine entities by type and value.</p>
 <p>This issue:
 <a class="reference external" href="https://github.com/Vernacular-ai/dialogy/issues/52">https://github.com/Vernacular-ai/dialogy/issues/52</a>
@@ -253,12 +254,8 @@ depending on the number of transcripts that contain same body.</p>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.entity_scoring">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">entity_scoring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">presence</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <span class="pre">float</span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.entity_scoring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.entity_scoring" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.make_transform_values">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">make_transform_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcript</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.make_transform_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.make_transform_values" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.make_transform_values">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">make_transform_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcript</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityScoringMixin.make_transform_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.make_transform_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make transcripts from a string/json-string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -273,8 +270,8 @@ depending on the number of transcripts that contain same body.</p>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt id="dialogy.base.entity_extractor.EntityExtractor.remove_low_scoring_entities">
-<code class="sig-name descname"><span class="pre">remove_low_scoring_entities</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityExtractor.remove_low_scoring_entities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityExtractor.remove_low_scoring_entities" title="Permalink to this definition">¶</a></dt>
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.remove_low_scoring_entities">
+<code class="sig-name descname"><span class="pre">remove_low_scoring_entities</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#EntityScoringMixin.remove_low_scoring_entities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.remove_low_scoring_entities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove entities with a lower score than the threshold.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -288,7 +285,15 @@ depending on the number of transcripts that contain same body.</p>
 </dd>
 </dl>
 </dd></dl>
+<dl class="py attribute">
+<dt id="dialogy.base.entity_extractor.EntityScoringMixin.threshold">
+<code class="sig-name descname"><span class="pre">threshold</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#dialogy.base.entity_extractor.EntityScoringMixin.threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 </dd></dl>
+<dl class="py function">
+<dt id="dialogy.base.entity_extractor.entity_scoring">
+<code class="sig-prename descclassname"><span class="pre">dialogy.base.entity_extractor.</span></code><code class="sig-name descname"><span class="pre">entity_scoring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">presence</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> → <span class="pre">float</span><a class="reference internal" href="../_modules/dialogy/base/entity_extractor.html#entity_scoring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.entity_extractor.entity_scoring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 </div>
 <div class="section" id="module-dialogy.base.plugin">
 <span id="dialogy-base-plugin-module"></span><h2>dialogy.base.plugin module<a class="headerlink" href="#module-dialogy.base.plugin" title="Permalink to this headline">¶</a></h2>
@@ -298,74 +303,13 @@ depending on the number of transcripts that contain same body.</p>
 A discussion about plugins requires a bit of background about <span class="xref std std-ref">Worfklows</span>, a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> is an ephemeral datastore. This distinction of roles
 between a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> and a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> is a <strong>convention</strong> to ensure that neither the <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> creation or its <em>utility</em> is constrained
 by their author’s choices.</p>
-<p>We will cover the following topics in this section:</p>
-<ul>
-<li><dl>
-<dt>Plugin types</dt><dd><p>5. Are plugins trainable? if yes, how are they different from un-trained plugins?
-- Base plugins.</p>
-<blockquote>
-<div><ul class="simple">
-<li><dl class="simple">
-<dt>The methods that one needs to implement to build a plugin.</dt><dd><ol class="arabic simple" start="7">
-<li><p>Are there any conventions around methods/APIs?</p></li>
-</ol>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Getting inputs from a workflow.</dt><dd><ol class="arabic simple">
-<li><p>[Data access](<a class="reference external" href="https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L148">https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L148</a>)</p></li>
-</ol>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Updating the workflow with the plugin output.</dt><dd><p>2. Who calls a plugin (API, invocation)?
-2. [Workflow update](<a class="reference external" href="https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L151">https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L151</a>)
-10. How do plugins interact with the workflow</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Integrating plugins with a workflow.</dt><dd><ol class="arabic simple" start="3">
-<li><p><a class="reference external" href="https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/workflow/workflow.py#L151">https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/workflow/workflow.py#L151</a></p></li>
-</ol>
-</dd>
-</dl>
-</li>
-<li><p>Workflows and plugin order of invocation</p></li>
-</ul>
-</div></blockquote>
-<ul class="simple">
-<li><p>Transformer plugins.</p></li>
-<li><dl class="simple">
-<dt>Trainable plugins.</dt><dd><ol class="arabic simple">
-<li><p>How to ensure continuous training/testing happens for a plugin?</p></li>
-<li><p>How do I read and write my artifacts/configs?</p></li>
-</ol>
-</dd>
-</dl>
-</li>
-<li><p>Workflow and plugin lifecycles.</p></li>
-<li><dl class="simple">
-<dt>Testing the built plugin</dt><dd><ol class="arabic simple" start="4">
-<li><p>How can I test my plugin?</p></li>
-</ol>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
 <div class="section" id="plugin-types">
 <h4>Plugin Types<a class="headerlink" href="#plugin-types" title="Permalink to this headline">¶</a></h4>
 <p>There are three types of plugins:</p>
 <ol class="arabic simple">
-<li><p>SolitaryPlugin</p></li>
-<li><p>TransformerPlugin</p></li>
-<li><p>TrainablePlugin</p></li>
+<li><p>Solitary</p></li>
+<li><p>Transformer</p></li>
+<li><p>Trainable</p></li>
 </ol>
 <div class="section" id="solitary">
 <h5>Solitary<a class="headerlink" href="#solitary" title="Permalink to this headline">¶</a></h5>
@@ -590,19 +534,11 @@ Now we will build a new demo plugin that will train a classifier on a dataframe.
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
-<li><dl class="simple">
-<dt>What is not a plugin?</dt><dd><ol class="arabic simple">
-<li><p>Can a plugin have multiple models or is there a restriction?</p></li>
-<li><p>If there are multiple models</p></li>
-<li><p>If there are multiple plugins</p></li>
-<li><p>Can I control the order of invocation as a plugin author?</p></li>
-<li><p>Can plugins be parallelized? if the inputs are independent of other plugin outputs.</p></li>
-</ol>
-</dd>
-</dl>
-</li>
-</ol>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>If your plugin needs a model but it need not be trained frequently or is just an off the shelf pre-trained model, then you must go for a Solitary plugin.</p></li>
+<li><p>A trainable plugin can also have transform methods if it must modify a dataframe for other plugins in place.</p></li>
+</ul>
 <dl class="py class">
 <dt id="dialogy.base.plugin.Plugin">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.base.plugin.</span></code><code class="sig-name descname"><span class="pre">Plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>

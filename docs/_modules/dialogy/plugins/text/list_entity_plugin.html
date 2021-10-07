@@ -195,8 +195,8 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.entity_extractor</span> <span class="kn">import</span> <span class="n">EntityExtractor</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.base.entity_extractor</span> <span class="kn">import</span> <span class="n">EntityScoringMixin</span>
+<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">PluginFn</span><span class="p">,</span> <span class="n">Plugin</span>
 <span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">KeywordEntity</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">logger</span>
 
@@ -207,7 +207,7 @@
 <span class="n">MatchType</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Label</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Span</span><span class="p">]]</span>
 
 
-<div class="viewcode-block" id="ListEntityPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin">[docs]</a><span class="k">class</span> <span class="nc">ListEntityPlugin</span><span class="p">(</span><span class="n">EntityExtractor</span><span class="p">):</span>
+<div class="viewcode-block" id="ListEntityPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin">[docs]</a><span class="k">class</span> <span class="nc">ListEntityPlugin</span><span class="p">(</span><span class="n">EntityScoringMixin</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">     A :ref:`Plugin&lt;plugin&gt;` for extracting entities using spacy or a list of regex patterns.</span>
 
@@ -254,7 +254,6 @@
             <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span>
             <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span>
             <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
-            <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
             <span class="n">input_column</span><span class="o">=</span><span class="n">input_column</span><span class="p">,</span>
             <span class="n">output_column</span><span class="o">=</span><span class="n">output_column</span><span class="p">,</span>
             <span class="n">use_transform</span><span class="o">=</span><span class="n">use_transform</span><span class="p">,</span>
@@ -266,6 +265,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">style</span> <span class="ow">or</span> <span class="n">const</span><span class="o">.</span><span class="n">REGEX</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spacy_nlp</span> <span class="o">=</span> <span class="n">spacy_nlp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>

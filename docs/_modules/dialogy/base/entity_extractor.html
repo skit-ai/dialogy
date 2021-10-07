@@ -183,38 +183,24 @@
 
 <span class="kn">from</span> <span class="nn">pydash</span> <span class="kn">import</span> <span class="n">py_</span>
 
-<span class="kn">import</span> <span class="nn">dialogy.constants</span> <span class="k">as</span> <span class="nn">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">normalize</span>
 
 
-<div class="viewcode-block" id="EntityExtractor"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityExtractor">[docs]</a><span class="k">class</span> <span class="nc">EntityExtractor</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<div class="viewcode-block" id="entity_scoring"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.entity_scoring">[docs]</a><span class="k">def</span> <span class="nf">entity_scoring</span><span class="p">(</span><span class="n">presence</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">presence</span> <span class="o">/</span> <span class="n">input_size</span></div>
+
+
+<div class="viewcode-block" id="EntityScoringMixin"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityScoringMixin">[docs]</a><span class="k">class</span> <span class="nc">EntityScoringMixin</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Mixin class for scoring entities acquired over a set of transcripts.</span>
+<span class="sd">    """</span>
     <span class="n">FUTURE</span> <span class="o">=</span> <span class="s2">"future"</span>
     <span class="n">PAST</span> <span class="o">=</span> <span class="s2">"past"</span>
     <span class="n">DATETIME_OPERATION_ALIAS</span> <span class="o">=</span> <span class="p">{</span><span class="n">FUTURE</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">,</span> <span class="n">PAST</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">}</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">input_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVES</span><span class="p">,</span>
-        <span class="n">output_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">use_transform</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span>
-            <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span>
-            <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
-            <span class="n">input_column</span><span class="o">=</span><span class="n">input_column</span><span class="p">,</span>
-            <span class="n">output_column</span><span class="o">=</span><span class="n">output_column</span><span class="p">,</span>
-            <span class="n">use_transform</span><span class="o">=</span><span class="n">use_transform</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
-
-<div class="viewcode-block" id="EntityExtractor.remove_low_scoring_entities"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityExtractor.remove_low_scoring_entities">[docs]</a>    <span class="k">def</span> <span class="nf">remove_low_scoring_entities</span><span class="p">(</span>
+<div class="viewcode-block" id="EntityScoringMixin.remove_low_scoring_entities"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityScoringMixin.remove_low_scoring_entities">[docs]</a>    <span class="k">def</span> <span class="nf">remove_low_scoring_entities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="sd">"""</span>
@@ -238,12 +224,8 @@
 
         <span class="k">return</span> <span class="n">high_scoring_entities</span></div>
 
-<div class="viewcode-block" id="EntityExtractor.entity_scoring"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityExtractor.entity_scoring">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">entity_scoring</span><span class="p">(</span><span class="n">presence</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">presence</span> <span class="o">/</span> <span class="n">input_size</span></div>
-
-<div class="viewcode-block" id="EntityExtractor.aggregate_entities"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityExtractor.aggregate_entities">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">aggregate_entities</span><span class="p">(</span>
+<div class="viewcode-block" id="EntityScoringMixin.aggregate_entities"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityScoringMixin.aggregate_entities">[docs]</a>    <span class="k">def</span> <span class="nf">aggregate_entities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
         <span class="n">entity_type_value_group</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]],</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
@@ -268,13 +250,13 @@
             <span class="n">representative</span> <span class="o">=</span> <span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">representative</span><span class="o">.</span><span class="n">alternative_index</span> <span class="o">=</span> <span class="n">min_alternative_index</span>
             <span class="n">representative</span><span class="o">.</span><span class="n">alternative_indices</span> <span class="o">=</span> <span class="n">indices</span>
-            <span class="n">representative</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">EntityExtractor</span><span class="o">.</span><span class="n">entity_scoring</span><span class="p">(</span>
+            <span class="n">representative</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">entity_scoring</span><span class="p">(</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">py_</span><span class="o">.</span><span class="n">uniq</span><span class="p">(</span><span class="n">indices</span><span class="p">)),</span> <span class="n">input_size</span>
             <span class="p">)</span>
             <span class="n">aggregated_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">representative</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">aggregated_entities</span></div>
 
-<div class="viewcode-block" id="EntityExtractor.apply_filters"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityExtractor.apply_filters">[docs]</a>    <span class="k">def</span> <span class="nf">apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
+<div class="viewcode-block" id="EntityScoringMixin.apply_filters"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityScoringMixin.apply_filters">[docs]</a>    <span class="k">def</span> <span class="nf">apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Conditionally remove entities.</span>
 
@@ -285,7 +267,7 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_low_scoring_entities</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EntityExtractor.entity_consensus"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityExtractor.entity_consensus">[docs]</a>    <span class="k">def</span> <span class="nf">entity_consensus</span><span class="p">(</span>
+<div class="viewcode-block" id="EntityScoringMixin.entity_consensus"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityScoringMixin.entity_consensus">[docs]</a>    <span class="k">def</span> <span class="nf">entity_consensus</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">],</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="sd">"""</span>
@@ -304,12 +286,12 @@
         <span class="n">entity_type_value_group</span> <span class="o">=</span> <span class="n">py_</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span>
             <span class="n">entities</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">entity</span><span class="p">:</span> <span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_value</span><span class="p">())</span>
         <span class="p">)</span>
-        <span class="n">aggregate_entities</span> <span class="o">=</span> <span class="n">EntityExtractor</span><span class="o">.</span><span class="n">aggregate_entities</span><span class="p">(</span>
+        <span class="n">aggregate_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_entities</span><span class="p">(</span>
             <span class="n">entity_type_value_group</span><span class="p">,</span> <span class="n">input_size</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">aggregate_entities</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EntityExtractor.make_transform_values"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityExtractor.make_transform_values">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="EntityScoringMixin.make_transform_values"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.entity_extractor.EntityScoringMixin.make_transform_values">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">make_transform_values</span><span class="p">(</span><span class="n">transcript</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Make transcripts from a string/json-string.</span>
