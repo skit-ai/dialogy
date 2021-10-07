@@ -4,7 +4,7 @@ import pandas as pd
 import pydash as py_
 import pytest
 
-from dialogy.base.entity_extractor import EntityExtractor
+from dialogy.base.entity_extractor import EntityScoringMixin
 from dialogy.plugins import DucklingPlugin
 from dialogy.types import KeywordEntity
 from tests import EXCEPTIONS, load_tests
@@ -43,9 +43,8 @@ def test_entity_extractor_for_thresholding(payload) -> None:
     :param payload: Test case body.
     :type payload: Dict[str, Any]
     """
-    entity_extractor = EntityExtractor(
-        access=lambda x: x, mutate=lambda y: y, threshold=payload["threshold"]
-    )
+    entity_extractor = EntityScoringMixin()
+    entity_extractor.threshold = payload["threshold"]
     input_size = payload["input_size"]
     expected = payload["expected"]
 

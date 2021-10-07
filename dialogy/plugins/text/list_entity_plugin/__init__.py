@@ -16,8 +16,8 @@ import pandas as pd
 from tqdm import tqdm
 
 from dialogy import constants as const
-from dialogy.base.entity_extractor import EntityExtractor
-from dialogy.base.plugin import PluginFn
+from dialogy.base.entity_extractor import EntityScoringMixin
+from dialogy.base.plugin import PluginFn, Plugin
 from dialogy.types import BaseEntity, KeywordEntity
 from dialogy.utils import logger
 
@@ -28,7 +28,7 @@ Value = str
 MatchType = List[Tuple[Text, Label, Value, Span]]
 
 
-class ListEntityPlugin(EntityExtractor):
+class ListEntityPlugin(EntityScoringMixin, Plugin):
     """
      A :ref:`Plugin<plugin>` for extracting entities using spacy or a list of regex patterns.
 
@@ -75,7 +75,6 @@ class ListEntityPlugin(EntityExtractor):
             access=access,
             mutate=mutate,
             debug=debug,
-            threshold=threshold,
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
@@ -87,6 +86,7 @@ class ListEntityPlugin(EntityExtractor):
 
         self.style = style or const.REGEX
         self.labels = labels
+        self.threshold = threshold
         self.keywords = None
         self.spacy_nlp = spacy_nlp
         self.compiled_patterns: Dict[str, Dict[str, List[Any]]] = {}

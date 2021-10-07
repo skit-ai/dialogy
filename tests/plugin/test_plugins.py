@@ -128,11 +128,6 @@ def test_arbitrary_plugin_with_debug_mode() -> None:
     assert words == ["hello world", "hi world"]
 
 
-def test_raw_plugin() -> None:
-    plugin = Plugin(access=access, mutate=mutate)
-    assert plugin.utility() is None
-
-
 def test_plugin_train() -> None:
     arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate, debug=True)
     assert arbitrary_plugin.train([]) is None
