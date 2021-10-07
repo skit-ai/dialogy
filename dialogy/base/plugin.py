@@ -40,10 +40,11 @@ Plugin Types
 
 There are three types of plugins:
 
-1. BasePlugin
-2. DataFramePlugin
+1. SolitaryPlugin
+2. TransformerPlugin
+3. TrainablePlugin
 
-Base
+Solitary
 ========
 
 A plugin that only interacts during the runtime of a :ref:`workflow <workflow>` is called a *Base plugin*.
@@ -64,7 +65,7 @@ by a plugin, it should be available within the :code:`*args`.
            ...: from dialogy.types import PluginFn
            ...: from dialogy.workflow import Workflow
            ...:
-           ...: class ABasePlugin(BasePlugin):
+           ...: class ASolitaryPlugin(Plugin):
            ...:     def __init__(
            ...:         self,
            ...:         access: Optional[PluginFn] = None,
@@ -120,6 +121,8 @@ Output
 Once the plugin produces an output, we may want to keep it somwhere in the workflow. In this case we rely on mutator functions to send
 the plugin output back to the workflow. These are also written by workflow creators and hence any updates are plugin agnostic.
 
+    .. ipython::
+
         In [5]: def set_classifier_input(workflow: Workflow, value: str) -> None:
            ...:     '''
            ...:     We would normally overwrite the input but since a workflow
@@ -138,12 +141,55 @@ Now we fit the pieces together and can visualize the interactions between a work
         In [7]: w.output
         In [8]: w.run({"transcripts": ["hello world", "hello worlds", "hello word"]})
 
-Estimator
+Transformer
 ===========
 
-An Estimator plugin is a Base plugin that can additionally transform dataframes by taking in a set of feature columns and, producing or updating an existing column.
+Transformer plugins are solitary plugins that can additionally transform dataframes. These can be used for producing new features or modify existing ones.
+If we remember the MergeASRPlugin plugin we have built so far, it does perform its transformation on a single data point expected at runtime but transformations
+happen during the training phase of a workflow.
 
+Let's try to build a transformer plugin that will add a new column to a dataframe.
 
+    .. ipython::
+
+        In [9]: import json
+           ...: import pandas as pd
+           ...:
+           ...: class MergeASRPlugin(Plugin):
+           ...:     def __init__(
+           ...:         self,
+           ...:         start_token: str = "<s>",
+           ...:         end_token: str = "</s>",
+           ...:         access: Optional[PluginFn] = None,
+           ...:         mutate: Optional[PluginFn] = None,
+           ...:         input_column: str = "alternatives",
+           ...:         output_column: Optional[str] = "concat_alternatives",
+           ...:         use_transform: bool = True,
+           ...:         debug: bool = False
+           ...:     ):
+           ...:         super().__init__(access=access, mutate=mutate, input_column=input_column, output_column=output_column, use_transform=use_transform, debug=debug)
+           ...:         self.start_token = start_token
+           ...:         self.end_token = start_token
+           ...:
+           ...:     def utility(self, *args: List[str]) -> Any:
+           ...:         transcripts = args[0]
+           ...:         return self.start_token + f"{self.end_token} {self.start_token}".join(transcripts) + self.end_token
+           ...:
+           ...:     def parse_value(self, value):
+           ...:         return self.utility(json.loads(value))
+           ...:
+           ...:     def transform(self, training_data: pd.DataFrame):
+           ...:         if not self.use_transform:
+           ...:             return training_data
+           ...:
+           ...:         training_data["use"] = True
+           ...:         training_data[self.output_column] = training_data[self.input_column].apply(self.parse_value)
+           ...:         return training_data
+           ...:
+
+        In [10]: df = pd.DataFrame({"alternatives": [json.dumps(["hello world", "helo world"]), json.dumps(["today only", "today"])]})
+
+        In [11]: MergeASRPlugin(input_column="alternatives", output_column="updated_alternatives").transform(df)
 
 
 8. What is not a plugin?
@@ -155,13 +201,14 @@ An Estimator plugin is a Base plugin that can additionally transform dataframes 
 
 """
 from typing import Any, Optional
+from abc import ABC, abstractmethod
 
 import dialogy.constants as const
 from dialogy.types import PluginFn
 from dialogy.utils.logger import logger
 
 
-class Plugin:
+class Plugin(ABC):
     """
     A :ref:`Plugin <plugin>` object provides utilities that perform a transformation. A :ref:`Plugin <plugin>` object differs
     in behaviour depending on it's purpose. Purpose defines stages in a :ref:`Workflow <workflow>`'s lifecycle.
@@ -261,6 +308,9 @@ class Plugin:
         self.access = access
         self.mutate = mutate
         self.debug = debug
+        self.input_column = input_column
+        self.output_column = output_column or input_column
+        self.use_transform = use_transform
 
     @abstractmethod
     def utility(self, *args: Any) -> Any:
@@ -295,19 +345,6 @@ class Plugin:
             raise TypeError(
                 "Expected access to be functions" f" but {type(self.access)} was found."
             )
-
-    def __call__(self) -> PluginFn:
-        """
-        Build a plugin.
-
-        This method returns a function. Since any functionality can be built into a plugin by
-        extending the `Plugin` class but they are expected to work uniformly within a `workflow`,
-        all plugins must have a standard API. The `__call__` method exists just for this abstraction.
-
-        A plugin can be designed to do anything, while the `workflow` will expect all plugins
-        to have a `__call__()` method.
-        """
-        return self.plugin
 
     def train(
         self, _: Any
