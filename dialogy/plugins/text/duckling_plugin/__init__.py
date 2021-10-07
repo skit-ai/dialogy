@@ -51,7 +51,7 @@ import operator
 import traceback
 from datetime import datetime
 from pprint import pformat
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import pandas as pd
 import pydash as py_
