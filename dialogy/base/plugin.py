@@ -261,10 +261,8 @@ class Plugin:
         self.access = access
         self.mutate = mutate
         self.debug = debug
-        self.use_transform = use_transform
-        self.input_column = input_column
-        self.output_column = output_column or input_column
 
+    @abstractmethod
     def utility(self, *args: Any) -> Any:
         """
         Transform X -> y.
@@ -274,9 +272,9 @@ class Plugin:
         :return: A value that will be passed to the next plugin (if any).
         :rtype: Any
         """
-        return None
+        ...
 
-    def plugin(self, workflow: Any) -> None:
+    def __call__(self, workflow: Any) -> None:
         """
         Abstraction for plugin io.
 
