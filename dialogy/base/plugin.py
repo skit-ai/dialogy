@@ -9,40 +9,14 @@ A discussion about plugins requires a bit of background about :ref:`Worfklows <w
 between a :ref:`Plugin <plugin>` and a :ref:`Workflow <workflow>` is a **convention** to ensure that neither the :ref:`Plugin <plugin>` creation or its *utility* is constrained
 by their author's choices.
 
-We will cover the following topics in this section:
-
-- Plugin types
-    5. Are plugins trainable? if yes, how are they different from un-trained plugins?
-    - Base plugins.
-
-        - The methods that one needs to implement to build a plugin.
-            7. Are there any conventions around methods/APIs?
-        - Getting inputs from a workflow.
-            1. [Data access](https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L148)
-        - Updating the workflow with the plugin output.
-            2. Who calls a plugin (API, invocation)?
-            2. [Workflow update](https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L151)
-            10. How do plugins interact with the workflow
-        - Integrating plugins with a workflow.
-            3. https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/workflow/workflow.py#L151
-        - Workflows and plugin order of invocation
-
-    - Transformer plugins.
-    - Trainable plugins.
-            1. How to ensure continuous training/testing happens for a plugin?
-            2. How do I read and write my artifacts/configs?
-    - Workflow and plugin lifecycles.
-    - Testing the built plugin
-        4. How can I test my plugin?
-
 Plugin Types
 *************
 
 There are three types of plugins:
 
-1. SolitaryPlugin
-2. TransformerPlugin
-3. TrainablePlugin
+1. Solitary
+2. Transformer
+3. Trainable
 
 Solitary
 ========
@@ -137,9 +111,12 @@ Integrations
 
 Now we fit the pieces together and can visualize the interactions between a workflow and a plugin.
 
+    .. ipython::
+
         In [6]: w = Workflow([MergeASRPlugin(access=get_classifier_input, mutate=set_classifier_input)])
-        In [7]: w.output
-        In [8]: w.run({"transcripts": ["hello world", "hello worlds", "hello word"]})
+           ...: w.output
+           ...: w.run({"transcripts": ["hello world", "hello worlds", "hello word"]})
+           ...:
 
 Transformer
 ===========
@@ -152,7 +129,7 @@ Let's try to build a transformer plugin that will add a new column to a datafram
 
     .. ipython::
 
-        In [9]: import json
+        In [7]: import json
            ...: import pandas as pd
            ...:
            ...: class MergeASRPlugin(Plugin):
@@ -182,23 +159,82 @@ Let's try to build a transformer plugin that will add a new column to a datafram
            ...:         if not self.use_transform:
            ...:             return training_data
            ...:
-           ...:         training_data["use"] = True
            ...:         training_data[self.output_column] = training_data[self.input_column].apply(self.parse_value)
            ...:         return training_data
            ...:
+           ...: df = pd.DataFrame({"alternatives": [json.dumps(["hello world", "helo world"]), json.dumps(["today only", "today"])]})
+           ...: MergeASRPlugin(input_column="alternatives", output_column="updated_alternatives").transform(df)
 
-        In [10]: df = pd.DataFrame({"alternatives": [json.dumps(["hello world", "helo world"]), json.dumps(["today only", "today"])]})
+and the lifecycle of its demo will be covered in a later section once we have an understanding of a trainable plugin.
 
-        In [11]: MergeASRPlugin(input_column="alternatives", output_column="updated_alternatives").transform(df)
+Trainable
+=========
 
+Trainable plugins are solitary plugins that can additionally train dataframes. A trainable plugin may optionally be able to transform dataframes as well.
+Now we will build a new demo plugin that will train a classifier on a dataframe.
 
-8. What is not a plugin?
-    1. Can a plugin have multiple models or is there a restriction?
-    2. If there are multiple models
-    3. If there are multiple plugins
-    4. Can I control the order of invocation as a plugin author?
-    5. Can plugins be parallelized? if the inputs are independent of other plugin outputs.
+    .. ipython::
 
+        In [8]: import pickle
+           ...: from sklearn.tree import DecisionTreeClassifier
+           ...: from sklearn.pipeline import Pipeline
+           ...: from sklearn.feature_extraction.text import TfidfTransformer
+           ...: from sklearn.feature_extraction.text import CountVectorizer
+           ...:
+
+        In [9]: class TreeClassifierPlugin(Plugin):
+           ...:     def __init__(
+           ...:         self,
+           ...:         access: Optional[PluginFn] = None,
+           ...:         mutate: Optional[PluginFn] = None,
+           ...:         random_state: int = 0,
+           ...:         x_col: str = "alternatives",
+           ...:         y_col: str = "intents",
+           ...:         debug: bool = False
+           ...:     ):
+           ...:         super().__init__(access=access, mutate=mutate, debug=debug)
+           ...:         self.model = Pipeline([
+           ...:             ('vect', CountVectorizer()),
+           ...:             ('tfidf', TfidfTransformer()),
+           ...:             ('clf', DecisionTreeClassifier(random_state=random_state))
+           ...:         ])
+           ...:         self.x_col = x_col
+           ...:         self.y_col = y_col
+           ...:
+           ...:     def train(self, training_data: pd.DataFrame):
+           ...:         X = training_data[self.x_col]
+           ...:         y = training_data[self.y_col]
+           ...:         self.model.fit(X, y)
+           ...:
+           ...:     def save(self):
+           ...:         with open(self.save_path, "wb") as handle:
+           ...:             pickle.dump(self.model, handle)
+           ...:
+           ...:     def load(self):
+           ...:         with open(self.save_path, "rb") as handle:
+           ...:             self.model = pickle.load(handle)
+           ...:
+           ...:     def utility(self, *args):
+           ...:         return self.model.predict(args)
+           ...:
+           ...: df = pd.DataFrame({"alternatives": [json.dumps(["yes", "yea"]), json.dumps(["no", "nope"])], "intents": ["affirmative", "negative"]})
+           ...:
+           ...: def set_classifier_output(workflow, value):
+           ...:    workflow.output["intents"] = value
+           ...:
+           ...: def set_classifier_input(workflow, value):
+           ...:    workflow.input["transcripts"] = value
+
+        In [10]: w = Workflow([MergeASRPlugin(access=get_classifier_input, mutate=set_classifier_input, input_column="alternatives", use_transform=True), TreeClassifierPlugin(access=get_classifier_input, mutate=set_classifier_output, x_col="concat_alternatives", y_col="intents")])
+
+        In [11]: w.train(df)
+
+        In [12]: w.run({"transcripts": ["yes"]})
+
+Notes:
+
+- If your plugin needs a model but it need not be trained frequently or is just an off the shelf pre-trained model, then you must go for a Solitary plugin.
+- A trainable plugin can also have transform methods if it must modify a dataframe for other plugins in place.
 """
 from typing import Any, Optional
 from abc import ABC, abstractmethod
