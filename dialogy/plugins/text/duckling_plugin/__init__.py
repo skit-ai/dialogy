@@ -124,6 +124,7 @@ class DucklingPlugin(EntityExtractor):
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
         entity_map: Optional[Dict[str, Any]] = None,
+        activate_latent_entities: Union[Callable[..., bool], bool] = False,
         reference_time_column: str = const.REFERENCE_TIME,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
@@ -150,6 +151,7 @@ class DucklingPlugin(EntityExtractor):
         self.reference_time: Optional[int] = None
         self.reference_time_column = reference_time_column
         self.datetime_filters = datetime_filters
+        self.activate_latent_entities = activate_latent_entities
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
@@ -202,6 +204,11 @@ class DucklingPlugin(EntityExtractor):
         :rtype: Dict[str, Any]
         """
         dimensions = self.dimensions
+        activate_latent_entities = (
+            self.activate_latent_entities
+            if isinstance(self.activate_latent_entities, bool)
+            else self.activate_latent_entities()
+        )
 
         payload = {
             "text": text,
@@ -209,6 +216,7 @@ class DucklingPlugin(EntityExtractor):
             "tz": self.__set_timezone(),
             "dims": json.dumps(dimensions),
             "reftime": reference_time,
+            "latent": activate_latent_entities,
         }
         logger.debug("Duckling API payload:")
         logger.debug(pformat(payload))
