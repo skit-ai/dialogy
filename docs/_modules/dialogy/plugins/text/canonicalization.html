@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.plugins.text.canonicalization - dialogy 0.8.2 documentation</title>
+        <title>dialogy.plugins.text.canonicalization - dialogy 0.8.4 documentation</title>
       <link rel="stylesheet" href="../../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.8.2 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.8.4 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -240,7 +240,7 @@
             <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">score</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">alternative_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">entity</span><span class="o">.</span><span class="n">alternative_indices</span><span class="p">:</span>
-                <span class="n">entity</span> <span class="c1"># pylint: disable=pointless-statement</span>
+                <span class="n">entity</span>  <span class="c1"># pylint: disable=pointless-statement</span>
                 <span class="k">continue</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
             <span class="n">end</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>

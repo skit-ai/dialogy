@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.base.plugin - dialogy 0.8.2 documentation</title>
+        <title>dialogy.base.plugin - dialogy 0.8.4 documentation</title>
       <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.8.2 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.8.4 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.2 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -180,23 +180,281 @@
 <span></span><span class="sd">"""</span>
 <span class="sd">.. _plugin:</span>
 
-<span class="sd">Module provides access to a plugin class.</span>
+<span class="sd">Writing Plugins</span>
+<span class="sd">################</span>
 
-<span class="sd">We will summarize a few key points for creating plugins:</span>
+<span class="sd">Plugins are an abstraction over procedures that offer a specific functionality. A plugin abstracts out the way it is fed an input, and the way its output is pushed out.</span>
+<span class="sd">A discussion about plugins requires a bit of background about :ref:`Worfklows &lt;worfklow&gt;`, a :ref:`workflow &lt;workflow&gt;` is an ephemeral datastore. This distinction of roles</span>
+<span class="sd">between a :ref:`Plugin &lt;plugin&gt;` and a :ref:`Workflow &lt;workflow&gt;` is a **convention** to ensure that neither the :ref:`Plugin &lt;plugin&gt;` creation or its *utility* is constrained</span>
+<span class="sd">by their author's choices.</span>
 
-<span class="sd">-   Don't interact with the workflow directly, use functions to access and mutate.</span>
-<span class="sd">-   The convention for workflow access is `access(workflow)`.</span>
-<span class="sd">-   The convention for insertion is `mutate(workflow, value)`.</span>
-<span class="sd">-   Plugin names must end with Plugin for classes.</span>
+<span class="sd">We will cover the following topics in this section:</span>
+
+<span class="sd">- Plugin types</span>
+<span class="sd">    5. Are plugins trainable? if yes, how are they different from un-trained plugins?</span>
+<span class="sd">    - Base plugins.</span>
+
+<span class="sd">        - The methods that one needs to implement to build a plugin.</span>
+<span class="sd">            7. Are there any conventions around methods/APIs?</span>
+<span class="sd">        - Getting inputs from a workflow.</span>
+<span class="sd">            1. [Data access](https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L148)</span>
+<span class="sd">        - Updating the workflow with the plugin output.</span>
+<span class="sd">            2. Who calls a plugin (API, invocation)?</span>
+<span class="sd">            2. [Workflow update](https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L151)</span>
+<span class="sd">            10. How do plugins interact with the workflow</span>
+<span class="sd">        - Integrating plugins with a workflow.</span>
+<span class="sd">            3. https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/workflow/workflow.py#L151</span>
+<span class="sd">        - Workflows and plugin order of invocation</span>
+
+<span class="sd">    - Transformer plugins.</span>
+<span class="sd">    - Trainable plugins.</span>
+<span class="sd">            1. How to ensure continuous training/testing happens for a plugin?</span>
+<span class="sd">            2. How do I read and write my artifacts/configs?</span>
+<span class="sd">    - Workflow and plugin lifecycles.</span>
+<span class="sd">    - Testing the built plugin</span>
+<span class="sd">        4. How can I test my plugin?</span>
+
+<span class="sd">Plugin Types</span>
+<span class="sd">*************</span>
+
+<span class="sd">There are three types of plugins:</span>
+
+<span class="sd">1. SolitaryPlugin</span>
+<span class="sd">2. TransformerPlugin</span>
+<span class="sd">3. TrainablePlugin</span>
+
+<span class="sd">Solitary</span>
+<span class="sd">========</span>
+
+<span class="sd">A plugin that only interacts during the runtime of a :ref:`workflow &lt;workflow&gt;` is called a *Base plugin*.</span>
+<span class="sd">We can create a Base plugin like so:</span>
+
+<span class="sd">Methods</span>
+<span class="sd">-------</span>
+
+<span class="sd">The **utility** method describes the feature implemented by the plugin, this is the only required method for Base plugins. This method is called</span>
+<span class="sd">during a workflow's run. If a plugin produces a value, it can also be updated within workflow. Any kind of file reading, config parsing, model loading</span>
+<span class="sd">should be done during the plugin's initialization. **utility** methods must have fast execution times. This also means if there is any dynamic input required</span>
+<span class="sd">by a plugin, it should be available within the :code:`*args`.</span>
+
+<span class="sd">    .. ipython::</span>
+
+<span class="sd">        In [1]: from typing import Any, Optional, List</span>
+<span class="sd">           ...: from dialogy.base.plugin import Plugin</span>
+<span class="sd">           ...: from dialogy.types import PluginFn</span>
+<span class="sd">           ...: from dialogy.workflow import Workflow</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...: class ASolitaryPlugin(Plugin):</span>
+<span class="sd">           ...:     def __init__(</span>
+<span class="sd">           ...:         self,</span>
+<span class="sd">           ...:         access: Optional[PluginFn] = None,</span>
+<span class="sd">           ...:         mutate: Optional[PluginFn] = None,</span>
+<span class="sd">           ...:         debug: bool = False</span>
+<span class="sd">           ...:     ):</span>
+<span class="sd">           ...:         super().__init__(access=access, mutate=mutate, debug=debug)</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def utility(self, *args: Any) -&gt; Any:</span>
+<span class="sd">           ...:         return None</span>
+
+<span class="sd">Let's take an example of a plugin that concatenates the transcripts from an ASR to a :code:`str`.</span>
+
+<span class="sd">    .. ipython::</span>
+
+<span class="sd">        In [2]: class MergeASRPlugin(Plugin):</span>
+<span class="sd">           ...:     def __init__(</span>
+<span class="sd">           ...:         self,</span>
+<span class="sd">           ...:         start_token: str = "&lt;s&gt;",</span>
+<span class="sd">           ...:         end_token: str = "&lt;/s&gt;",</span>
+<span class="sd">           ...:         access: Optional[PluginFn] = None,</span>
+<span class="sd">           ...:         mutate: Optional[PluginFn] = None,</span>
+<span class="sd">           ...:         debug: bool = False</span>
+<span class="sd">           ...:     ):</span>
+<span class="sd">           ...:         super().__init__(access=access, mutate=mutate, debug=debug)</span>
+<span class="sd">           ...:         # Always validate the input.</span>
+<span class="sd">           ...:         self.start_token = start_token</span>
+<span class="sd">           ...:         self.end_token = start_token</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def utility(self, *args: List[str]) -&gt; Any:</span>
+<span class="sd">           ...:         # Always validate the input.</span>
+<span class="sd">           ...:         transcripts = args[0]</span>
+<span class="sd">           ...:         return self.start_token + f"{self.end_token} {self.start_token}".join(transcripts) + self.end_token</span>
+
+<span class="sd">        In [3]: MergeASRPlugin().utility(["hello world", "hello worlds", "hello word"])</span>
+
+<span class="sd">Input</span>
+<span class="sd">-----</span>
+
+<span class="sd">Previously we saw that the utility method produces results on expected inputs. We will now see how to get the same from a workflow.</span>
+
+<span class="sd">    .. ipython::</span>
+
+<span class="sd">        In [4]: def get_classifier_input(workflow: Workflow) -&gt; List[str]:</span>
+<span class="sd">           ...:     return (workflow.input["transcripts"],)</span>
+
+<span class="sd">This is an accessor function, these expect a workflow instance as their only argument and can return anything currently available.</span>
+<span class="sd">These accessor functions are written by workflow creators and allow someone to use core plugins as long as plugins specify the input, output types.</span>
+
+<span class="sd">Output</span>
+<span class="sd">-------</span>
+
+<span class="sd">Once the plugin produces an output, we may want to keep it somwhere in the workflow. In this case we rely on mutator functions to send</span>
+<span class="sd">the plugin output back to the workflow. These are also written by workflow creators and hence any updates are plugin agnostic.</span>
+
+<span class="sd">    .. ipython::</span>
+
+<span class="sd">        In [5]: def set_classifier_input(workflow: Workflow, value: str) -&gt; None:</span>
+<span class="sd">           ...:     '''</span>
+<span class="sd">           ...:     We would normally overwrite the input but since a workflow</span>
+<span class="sd">           ...:     loses inputs once run; and returns only a copy of the output,</span>
+<span class="sd">           ...:     we are creating a new key within the output.</span>
+<span class="sd">           ...:     '''</span>
+<span class="sd">           ...:     workflow.output["transcripts"] = value</span>
+
+
+<span class="sd">Integrations</span>
+<span class="sd">------------</span>
+
+<span class="sd">Now we fit the pieces together and can visualize the interactions between a workflow and a plugin.</span>
+
+<span class="sd">    .. ipython::</span>
+
+<span class="sd">        In [6]: w = Workflow([MergeASRPlugin(access=get_classifier_input, mutate=set_classifier_input)])</span>
+<span class="sd">           ...: w.output</span>
+<span class="sd">           ...: w.run({"transcripts": ["hello world", "hello worlds", "hello word"]})</span>
+<span class="sd">           ...:</span>
+
+<span class="sd">Transformer</span>
+<span class="sd">===========</span>
+
+<span class="sd">Transformer plugins are solitary plugins that can additionally transform dataframes. These can be used for producing new features or modify existing ones.</span>
+<span class="sd">If we remember the MergeASRPlugin plugin we have built so far, it does perform its transformation on a single data point expected at runtime but transformations</span>
+<span class="sd">happen during the training phase of a workflow.</span>
+
+<span class="sd">Let's try to build a transformer plugin that will add a new column to a dataframe.</span>
+
+<span class="sd">    .. ipython::</span>
+
+<span class="sd">        In [7]: import json</span>
+<span class="sd">           ...: import pandas as pd</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...: class MergeASRPlugin(Plugin):</span>
+<span class="sd">           ...:     def __init__(</span>
+<span class="sd">           ...:         self,</span>
+<span class="sd">           ...:         start_token: str = "&lt;s&gt;",</span>
+<span class="sd">           ...:         end_token: str = "&lt;/s&gt;",</span>
+<span class="sd">           ...:         access: Optional[PluginFn] = None,</span>
+<span class="sd">           ...:         mutate: Optional[PluginFn] = None,</span>
+<span class="sd">           ...:         input_column: str = "alternatives",</span>
+<span class="sd">           ...:         output_column: Optional[str] = "concat_alternatives",</span>
+<span class="sd">           ...:         use_transform: bool = True,</span>
+<span class="sd">           ...:         debug: bool = False</span>
+<span class="sd">           ...:     ):</span>
+<span class="sd">           ...:         super().__init__(access=access, mutate=mutate, input_column=input_column, output_column=output_column, use_transform=use_transform, debug=debug)</span>
+<span class="sd">           ...:         self.start_token = start_token</span>
+<span class="sd">           ...:         self.end_token = start_token</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def utility(self, *args: List[str]) -&gt; Any:</span>
+<span class="sd">           ...:         transcripts = args[0]</span>
+<span class="sd">           ...:         return self.start_token + f"{self.end_token} {self.start_token}".join(transcripts) + self.end_token</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def parse_value(self, value):</span>
+<span class="sd">           ...:         return self.utility(json.loads(value))</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def transform(self, training_data: pd.DataFrame):</span>
+<span class="sd">           ...:         if not self.use_transform:</span>
+<span class="sd">           ...:             return training_data</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:         training_data[self.output_column] = training_data[self.input_column].apply(self.parse_value)</span>
+<span class="sd">           ...:         return training_data</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...: df = pd.DataFrame({"alternatives": [json.dumps(["hello world", "helo world"]), json.dumps(["today only", "today"])]})</span>
+<span class="sd">           ...: MergeASRPlugin(input_column="alternatives", output_column="updated_alternatives").transform(df)</span>
+
+<span class="sd">and the lifecycle of its demo will be covered in a later section once we have an understanding of a trainable plugin.</span>
+
+<span class="sd">Trainable</span>
+<span class="sd">=========</span>
+
+<span class="sd">Trainable plugins are solitary plugins that can additionally train dataframes. A trainable plugin may optionally be able to transform dataframes as well.</span>
+<span class="sd">Now we will build a new demo plugin that will train a classifier on a dataframe.</span>
+
+<span class="sd">    .. ipython::</span>
+
+<span class="sd">        In [8]: import pickle</span>
+<span class="sd">           ...: from sklearn.tree import DecisionTreeClassifier</span>
+<span class="sd">           ...: from sklearn.pipeline import Pipeline</span>
+<span class="sd">           ...: from sklearn.feature_extraction.text import TfidfTransformer</span>
+<span class="sd">           ...: from sklearn.feature_extraction.text import CountVectorizer</span>
+<span class="sd">           ...:</span>
+
+<span class="sd">        In [9]: class TreeClassifierPlugin(Plugin):</span>
+<span class="sd">           ...:     def __init__(</span>
+<span class="sd">           ...:         self,</span>
+<span class="sd">           ...:         access: Optional[PluginFn] = None,</span>
+<span class="sd">           ...:         mutate: Optional[PluginFn] = None,</span>
+<span class="sd">           ...:         random_state: int = 0,</span>
+<span class="sd">           ...:         x_col: str = "alternatives",</span>
+<span class="sd">           ...:         y_col: str = "intents",</span>
+<span class="sd">           ...:         debug: bool = False</span>
+<span class="sd">           ...:     ):</span>
+<span class="sd">           ...:         super().__init__(access=access, mutate=mutate, debug=debug)</span>
+<span class="sd">           ...:         self.model = Pipeline([</span>
+<span class="sd">           ...:             ('vect', CountVectorizer()),</span>
+<span class="sd">           ...:             ('tfidf', TfidfTransformer()),</span>
+<span class="sd">           ...:             ('clf', DecisionTreeClassifier(random_state=random_state))</span>
+<span class="sd">           ...:         ])</span>
+<span class="sd">           ...:         self.x_col = x_col</span>
+<span class="sd">           ...:         self.y_col = y_col</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def train(self, training_data: pd.DataFrame):</span>
+<span class="sd">           ...:         X = training_data[self.x_col]</span>
+<span class="sd">           ...:         y = training_data[self.y_col]</span>
+<span class="sd">           ...:         self.model.fit(X, y)</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def save(self):</span>
+<span class="sd">           ...:         with open(self.save_path, "wb") as handle:</span>
+<span class="sd">           ...:             pickle.dump(self.model, handle)</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def load(self):</span>
+<span class="sd">           ...:         with open(self.save_path, "rb") as handle:</span>
+<span class="sd">           ...:             self.model = pickle.load(handle)</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def utility(self, *args):</span>
+<span class="sd">           ...:         return self.model.predict(args)</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...: df = pd.DataFrame({"alternatives": [json.dumps(["yes", "yea"]), json.dumps(["no", "nope"])], "intents": ["affirmative", "negative"]})</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...: def set_classifier_output(workflow, value):</span>
+<span class="sd">           ...:    workflow.output["intents"] = value</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...: def set_classifier_input(workflow, value):</span>
+<span class="sd">           ...:    workflow.input["transcripts"] = value</span>
+
+<span class="sd">        In [10]: w = Workflow([MergeASRPlugin(access=get_classifier_input, mutate=set_classifier_input, input_column="alternatives", use_transform=True), TreeClassifierPlugin(access=get_classifier_input, mutate=set_classifier_output, x_col="concat_alternatives", y_col="intents")])</span>
+
+<span class="sd">        In [11]: w.train(df)</span>
+
+<span class="sd">        In [12]: w.run({"transcripts": ["yes"]})</span>
+
+
+
+<span class="sd">8. What is not a plugin?</span>
+<span class="sd">    1. Can a plugin have multiple models or is there a restriction?</span>
+<span class="sd">    2. If there are multiple models</span>
+<span class="sd">    3. If there are multiple plugins</span>
+<span class="sd">    4. Can I control the order of invocation as a plugin author?</span>
+<span class="sd">    5. Can plugins be parallelized? if the inputs are independent of other plugin outputs.</span>
+
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
 <span class="kn">import</span> <span class="nn">dialogy.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">logger</span>
 
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">:</span>
+<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">    A :ref:`Plugin &lt;plugin&gt;` object provides utilities that perform a transformation. A :ref:`Plugin &lt;plugin&gt;` object differs</span>
 <span class="sd">    in behaviour depending on it's purpose. Purpose defines stages in a :ref:`Workflow &lt;workflow&gt;`'s lifecycle.</span>
@@ -296,11 +554,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">access</span> <span class="o">=</span> <span class="n">access</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mutate</span> <span class="o">=</span> <span class="n">mutate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">use_transform</span> <span class="o">=</span> <span class="n">use_transform</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_column</span> <span class="o">=</span> <span class="n">input_column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_column</span> <span class="o">=</span> <span class="n">output_column</span> <span class="ow">or</span> <span class="n">input_column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_transform</span> <span class="o">=</span> <span class="n">use_transform</span>
 
-<div class="viewcode-block" id="Plugin.utility"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="Plugin.utility"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.utility">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Transform X -&gt; y.</span>
 
@@ -309,9 +568,9 @@
 <span class="sd">        :return: A value that will be passed to the next plugin (if any).</span>
 <span class="sd">        :rtype: Any</span>
 <span class="sd">        """</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="o">...</span></div>
 
-<div class="viewcode-block" id="Plugin.plugin"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.plugin">[docs]</a>    <span class="k">def</span> <span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Abstraction for plugin io.</span>
 
@@ -331,20 +590,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s2">"Expected access to be functions"</span> <span class="sa">f</span><span class="s2">" but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">access</span><span class="p">)</span><span class="si">}</span><span class="s2"> was found."</span>
-            <span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PluginFn</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Build a plugin.</span>
-
-<span class="sd">        This method returns a function. Since any functionality can be built into a plugin by</span>
-<span class="sd">        extending the `Plugin` class but they are expected to work uniformly within a `workflow`,</span>
-<span class="sd">        all plugins must have a standard API. The `__call__` method exists just for this abstraction.</span>
-
-<span class="sd">        A plugin can be designed to do anything, while the `workflow` will expect all plugins</span>
-<span class="sd">        to have a `__call__()` method.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span>
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="Plugin.train"><a class="viewcode-back" href="../../../source/dialogy.base.html#dialogy.base.plugin.Plugin.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Any</span>
