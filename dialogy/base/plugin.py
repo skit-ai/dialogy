@@ -1,14 +1,158 @@
 """
 .. _plugin:
 
-Module provides access to a plugin class.
+Writing Plugins
+################
 
-We will summarize a few key points for creating plugins:
+Plugins are an abstraction over procedures that offer a specific functionality. A plugin abstracts out the way it is fed an input, and the way its output is pushed out.
+A discussion about plugins requires a bit of background about :ref:`Worfklows <worfklow>`, a :ref:`workflow <workflow>` is an ephemeral datastore. This distinction of roles
+between a :ref:`Plugin <plugin>` and a :ref:`Workflow <workflow>` is a **convention** to ensure that neither the :ref:`Plugin <plugin>` creation or its *utility* is constrained
+by their author's choices.
 
--   Don't interact with the workflow directly, use functions to access and mutate.
--   The convention for workflow access is `access(workflow)`.
--   The convention for insertion is `mutate(workflow, value)`.
--   Plugin names must end with Plugin for classes.
+We will cover the following topics in this section:
+
+- Plugin types
+    5. Are plugins trainable? if yes, how are they different from un-trained plugins?
+    - Base plugins.
+
+        - The methods that one needs to implement to build a plugin.
+            7. Are there any conventions around methods/APIs?
+        - Getting inputs from a workflow.
+            1. [Data access](https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L148)
+        - Updating the workflow with the plugin output.
+            2. Who calls a plugin (API, invocation)?
+            2. [Workflow update](https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/base/plugin.py#L151)
+            10. How do plugins interact with the workflow
+        - Integrating plugins with a workflow.
+            3. https://github.com/skit-ai/dialogy/blob/d688d7896226aedc7719e9b8cd2fc6b1d215ed46/dialogy/workflow/workflow.py#L151
+        - Workflows and plugin order of invocation
+
+    - Transformer plugins.
+    - Trainable plugins.
+            1. How to ensure continuous training/testing happens for a plugin?
+            2. How do I read and write my artifacts/configs?
+    - Workflow and plugin lifecycles.
+    - Testing the built plugin
+        4. How can I test my plugin?
+
+Plugin Types
+*************
+
+There are three types of plugins:
+
+1. BasePlugin
+2. DataFramePlugin
+
+Base
+========
+
+A plugin that only interacts during the runtime of a :ref:`workflow <workflow>` is called a *Base plugin*.
+We can create a Base plugin like so:
+
+Methods
+-------
+
+The **utility** method describes the feature implemented by the plugin, this is the only required method for Base plugins. This method is called
+during a workflow's run. If a plugin produces a value, it can also be updated within workflow. Any kind of file reading, config parsing, model loading
+should be done during the plugin's initialization. **utility** methods must have fast execution times. This also means if there is any dynamic input required
+by a plugin, it should be available within the :code:`*args`.
+
+    .. ipython::
+
+        In [1]: from typing import Any, Optional, List
+           ...: from dialogy.base.plugin import Plugin
+           ...: from dialogy.types import PluginFn
+           ...: from dialogy.workflow import Workflow
+           ...:
+           ...: class ABasePlugin(BasePlugin):
+           ...:     def __init__(
+           ...:         self,
+           ...:         access: Optional[PluginFn] = None,
+           ...:         mutate: Optional[PluginFn] = None,
+           ...:         debug: bool = False
+           ...:     ):
+           ...:         super().__init__(access=access, mutate=mutate, debug=debug)
+           ...:
+           ...:     def utility(self, *args: Any) -> Any:
+           ...:         return None
+
+Let's take an example of a plugin that concatenates the transcripts from an ASR to a :code:`str`.
+
+    .. ipython::
+
+        In [2]: class MergeASRPlugin(Plugin):
+           ...:     def __init__(
+           ...:         self,
+           ...:         start_token: str = "<s>",
+           ...:         end_token: str = "</s>",
+           ...:         access: Optional[PluginFn] = None,
+           ...:         mutate: Optional[PluginFn] = None,
+           ...:         debug: bool = False
+           ...:     ):
+           ...:         super().__init__(access=access, mutate=mutate, debug=debug)
+           ...:         # Always validate the input.
+           ...:         self.start_token = start_token
+           ...:         self.end_token = start_token
+           ...:
+           ...:     def utility(self, *args: List[str]) -> Any:
+           ...:         # Always validate the input.
+           ...:         transcripts = args[0]
+           ...:         return self.start_token + f"{self.end_token} {self.start_token}".join(transcripts) + self.end_token
+
+        In [3]: MergeASRPlugin().utility(["hello world", "hello worlds", "hello word"])
+
+Input
+-----
+
+Previously we saw that the utility method produces results on expected inputs. We will now see how to get the same from a workflow.
+
+    .. ipython::
+
+        In [4]: def get_classifier_input(workflow: Workflow) -> List[str]:
+           ...:     return (workflow.input["transcripts"],)
+
+This is an accessor function, these expect a workflow instance as their only argument and can return anything currently available.
+These accessor functions are written by workflow creators and allow someone to use core plugins as long as plugins specify the input, output types.
+
+Output
+-------
+
+Once the plugin produces an output, we may want to keep it somwhere in the workflow. In this case we rely on mutator functions to send
+the plugin output back to the workflow. These are also written by workflow creators and hence any updates are plugin agnostic.
+
+        In [5]: def set_classifier_input(workflow: Workflow, value: str) -> None:
+           ...:     '''
+           ...:     We would normally overwrite the input but since a workflow
+           ...:     loses inputs once run; and returns only a copy of the output,
+           ...:     we are creating a new key within the output.
+           ...:     '''
+           ...:     workflow.output["transcripts"] = value
+
+
+Integrations
+------------
+
+Now we fit the pieces together and can visualize the interactions between a workflow and a plugin.
+
+        In [6]: w = Workflow([MergeASRPlugin(access=get_classifier_input, mutate=set_classifier_input)])
+        In [7]: w.output
+        In [8]: w.run({"transcripts": ["hello world", "hello worlds", "hello word"]})
+
+Estimator
+===========
+
+An Estimator plugin is a Base plugin that can additionally transform dataframes by taking in a set of feature columns and, producing or updating an existing column.
+
+
+
+
+8. What is not a plugin?
+    1. Can a plugin have multiple models or is there a restriction?
+    2. If there are multiple models
+    3. If there are multiple plugins
+    4. Can I control the order of invocation as a plugin author?
+    5. Can plugins be parallelized? if the inputs are independent of other plugin outputs.
+
 """
 from typing import Any, Optional
 
