@@ -4,36 +4,22 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from pydash import py_
 
-import dialogy.constants as const
-from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types.entity import BaseEntity
 from dialogy.utils import normalize
 
 
-class EntityExtractor(Plugin):
+def entity_scoring(presence: int, input_size: int) -> float:
+    return presence / input_size
+
+
+class EntityScoringMixin:
+    """
+    Mixin class for scoring entities acquired over a set of transcripts.
+    """
     FUTURE = "future"
     PAST = "past"
     DATETIME_OPERATION_ALIAS = {FUTURE: operator.ge, PAST: operator.le}
-
-    def __init__(
-        self,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
-        debug: bool = False,
-        input_column: str = const.ALTERNATIVES,
-        output_column: Optional[str] = None,
-        use_transform: bool = False,
-        threshold: Optional[float] = None,
-    ) -> None:
-        super().__init__(
-            access=access,
-            mutate=mutate,
-            debug=debug,
-            input_column=input_column,
-            output_column=output_column,
-            use_transform=use_transform,
-        )
-        self.threshold = threshold
+    threshold: Optional[float] = None
 
     def remove_low_scoring_entities(
         self, entities: List[BaseEntity]
@@ -59,12 +45,8 @@ class EntityExtractor(Plugin):
 
         return high_scoring_entities
 
-    @staticmethod
-    def entity_scoring(presence: int, input_size: int) -> float:
-        return presence / input_size
-
-    @staticmethod
     def aggregate_entities(
+        self,
         entity_type_value_group: Dict[Tuple[str, Any], List[BaseEntity]],
         input_size: int,
     ) -> List[BaseEntity]:
@@ -89,7 +71,7 @@ class EntityExtractor(Plugin):
             representative = entities[0]
             representative.alternative_index = min_alternative_index
             representative.alternative_indices = indices
-            representative.score = EntityExtractor.entity_scoring(
+            representative.score = entity_scoring(
                 len(py_.uniq(indices)), input_size
             )
             aggregated_entities.append(representative)
@@ -125,7 +107,7 @@ class EntityExtractor(Plugin):
         entity_type_value_group = py_.group_by(
             entities, lambda entity: (entity.type, entity.get_value())
         )
-        aggregate_entities = EntityExtractor.aggregate_entities(
+        aggregate_entities = self.aggregate_entities(
             entity_type_value_group, input_size
         )
         return self.apply_filters(aggregate_entities)

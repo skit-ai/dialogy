@@ -358,7 +358,6 @@ class Plugin(ABC):
         :return: A value that will be passed to the next plugin (if any).
         :rtype: Any
         """
-        ...
 
     def __call__(self, workflow: Any) -> None:
         """

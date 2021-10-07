@@ -61,14 +61,15 @@ from pytz.tzinfo import BaseTzInfo
 from tqdm import tqdm
 
 from dialogy import constants as const
-from dialogy.base.entity_extractor import EntityExtractor
+from dialogy.base.entity_extractor import EntityScoringMixin
+from dialogy.base.plugin import Plugin
 from dialogy.base.plugin import PluginFn
 from dialogy.constants import EntityKeys
 from dialogy.types.entity import BaseEntity, dimension_entity_map
 from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
 
 
-class DucklingPlugin(EntityExtractor):
+class DucklingPlugin(EntityScoringMixin, Plugin):
     """
     A :ref:`Plugin<plugin>` for extracting entities using `Duckling <https://github.com/facebook/duckling>`_. Once
     instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling
@@ -138,7 +139,6 @@ class DucklingPlugin(EntityExtractor):
             access=access,
             mutate=mutate,
             debug=debug,
-            threshold=threshold,
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
@@ -147,6 +147,7 @@ class DucklingPlugin(EntityExtractor):
         self.locale = locale
         self.timezone = timezone
         self.timeout = timeout
+        self.threshold = threshold
         self.url = url
         self.reference_time: Optional[int] = None
         self.reference_time_column = reference_time_column
