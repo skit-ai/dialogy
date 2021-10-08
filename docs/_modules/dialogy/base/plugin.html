@@ -184,9 +184,10 @@
 <span class="sd">################</span>
 
 <span class="sd">Plugins are an abstraction over procedures that offer a specific functionality. A plugin abstracts out the way it is fed an input, and the way its output is pushed out.</span>
-<span class="sd">A discussion about plugins requires a bit of background about :ref:`Worfklows &lt;worfklow&gt;`, a :ref:`workflow &lt;workflow&gt;` is an ephemeral datastore. This distinction of roles</span>
-<span class="sd">between a :ref:`Plugin &lt;plugin&gt;` and a :ref:`Workflow &lt;workflow&gt;` is a **convention** to ensure that neither the :ref:`Plugin &lt;plugin&gt;` creation or its *utility* is constrained</span>
-<span class="sd">by their author's choices.</span>
+
+<span class="sd">A discussion about plugins requires a bit of background about worfklows, a :ref:`workflow &lt;workflow&gt;` is an ephemeral datastore. This distinction of roles</span>
+<span class="sd">between a :ref:`Plugin &lt;plugin&gt;` and a :ref:`Workflow &lt;workflow&gt;` is a **convention** to ensure that :ref:`plugins &lt;plugin&gt;` have some common structure.</span>
+
 
 <span class="sd">Plugin Types</span>
 <span class="sd">*************</span>
@@ -200,20 +201,25 @@
 <span class="sd">Solitary</span>
 <span class="sd">========</span>
 
-<span class="sd">A plugin that only interacts during the runtime of a :ref:`workflow &lt;workflow&gt;` is called a *Base plugin*.</span>
-<span class="sd">We can create a Base plugin like so:</span>
+<span class="sd">A plugin that only interacts during the runtime of a :ref:`workflow &lt;workflow&gt;` is called a *Solitary plugin*.</span>
+<span class="sd">We can create a Solitary plugin like so:</span>
 
 <span class="sd">Methods</span>
 <span class="sd">-------</span>
 
-<span class="sd">The **utility** method describes the feature implemented by the plugin, this is the only required method for Base plugins. This method is called</span>
+<span class="sd">The **utility** method describes the feature implemented by the plugin, this is the only required method for Solitary plugins. This method is called</span>
 <span class="sd">during a workflow's run. If a plugin produces a value, it can also be updated within workflow. Any kind of file reading, config parsing, model loading</span>
-<span class="sd">should be done during the plugin's initialization. **utility** methods must have fast execution times. This also means if there is any dynamic input required</span>
-<span class="sd">by a plugin, it should be available within the :code:`*args`.</span>
+<span class="sd">should be done during the plugin's initialization. If there are any dynamic inputs required by a plugin, it should be available within the :code:`*args`.</span>
+
+<span class="sd">The workflow at runtime needs a common method to invoke to execute plugins. The *nargs* are just to specify a structure,</span>
+<span class="sd">it is advisable to not house entire logic withing the utility method. Instead just validate inputs and call a separate method for core plugin logic.</span>
+
+
+<span class="sd">**utility** methods must have fast execution times.</span>
 
 <span class="sd">    .. ipython::</span>
 
-<span class="sd">        In [1]: from typing import Any, Optional, List</span>
+<span class="sd">        In [1]: from typing import Any, Optional, List, Tuple</span>
 <span class="sd">           ...: from dialogy.base.plugin import Plugin</span>
 <span class="sd">           ...: from dialogy.types import PluginFn</span>
 <span class="sd">           ...: from dialogy.workflow import Workflow</span>
@@ -246,12 +252,14 @@
 <span class="sd">           ...:         super().__init__(access=access, mutate=mutate, debug=debug)</span>
 <span class="sd">           ...:         # Always validate the input.</span>
 <span class="sd">           ...:         self.start_token = start_token</span>
-<span class="sd">           ...:         self.end_token = start_token</span>
+<span class="sd">           ...:         self.end_token = end_token</span>
 <span class="sd">           ...:</span>
-<span class="sd">           ...:     def utility(self, *args: List[str]) -&gt; Any:</span>
-<span class="sd">           ...:         # Always validate the input.</span>
-<span class="sd">           ...:         transcripts = args[0]</span>
+<span class="sd">           ...:     def concat(self, transcripts: List[str]) -&gt; str:</span>
 <span class="sd">           ...:         return self.start_token + f"{self.end_token} {self.start_token}".join(transcripts) + self.end_token</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def utility(self, *args: List[str]) -&gt; str:</span>
+<span class="sd">           ...:         # Always validate the input.</span>
+<span class="sd">           ...:         return self.concat(args[0])</span>
 
 <span class="sd">        In [3]: MergeASRPlugin().utility(["hello world", "hello worlds", "hello word"])</span>
 
@@ -262,7 +270,7 @@
 
 <span class="sd">    .. ipython::</span>
 
-<span class="sd">        In [4]: def get_classifier_input(workflow: Workflow) -&gt; List[str]:</span>
+<span class="sd">        In [4]: def get_classifier_input(workflow: Workflow) -&gt; Tuple[List[str]]:</span>
 <span class="sd">           ...:     return (workflow.input["transcripts"],)</span>
 
 <span class="sd">This is an accessor function, these expect a workflow instance as their only argument and can return anything currently available.</span>
@@ -271,8 +279,8 @@
 <span class="sd">Output</span>
 <span class="sd">-------</span>
 
-<span class="sd">Once the plugin produces an output, we may want to keep it somwhere in the workflow. In this case we rely on mutator functions to send</span>
-<span class="sd">the plugin output back to the workflow. These are also written by workflow creators and hence any updates are plugin agnostic.</span>
+<span class="sd">Once the plugin produces an output, we may want to store it in the workflow. We rely on mutator functions to send</span>
+<span class="sd">the plugin output back to the workflow. These are also written by workflow creators.</span>
 
 <span class="sd">    .. ipython::</span>
 
@@ -283,7 +291,6 @@
 <span class="sd">           ...:     we are creating a new key within the output.</span>
 <span class="sd">           ...:     '''</span>
 <span class="sd">           ...:     workflow.output["transcripts"] = value</span>
-
 
 <span class="sd">Integrations</span>
 <span class="sd">------------</span>
@@ -301,8 +308,9 @@
 <span class="sd">===========</span>
 
 <span class="sd">Transformer plugins are solitary plugins that can additionally transform dataframes. These can be used for producing new features or modify existing ones.</span>
-<span class="sd">If we remember the MergeASRPlugin plugin we have built so far, it does perform its transformation on a single data point expected at runtime but transformations</span>
-<span class="sd">happen during the training phase of a workflow.</span>
+
+<span class="sd">Remember the MergeASRPlugin plugin we have built? it transforms a single data point at runtime. To transform during the training phase of a workflow we need</span>
+<span class="sd">a **transform** method.</span>
 
 <span class="sd">Let's try to build a transformer plugin that will add a new column to a dataframe.</span>
 
@@ -325,11 +333,14 @@
 <span class="sd">           ...:     ):</span>
 <span class="sd">           ...:         super().__init__(access=access, mutate=mutate, input_column=input_column, output_column=output_column, use_transform=use_transform, debug=debug)</span>
 <span class="sd">           ...:         self.start_token = start_token</span>
-<span class="sd">           ...:         self.end_token = start_token</span>
+<span class="sd">           ...:         self.end_token = end_token</span>
 <span class="sd">           ...:</span>
-<span class="sd">           ...:     def utility(self, *args: List[str]) -&gt; Any:</span>
-<span class="sd">           ...:         transcripts = args[0]</span>
+<span class="sd">           ...:     def concat(self, transcripts: List[str]) -&gt; str:</span>
 <span class="sd">           ...:         return self.start_token + f"{self.end_token} {self.start_token}".join(transcripts) + self.end_token</span>
+<span class="sd">           ...:</span>
+<span class="sd">           ...:     def utility(self, *args: List[str]) -&gt; str:</span>
+<span class="sd">           ...:         # Always validate the input.</span>
+<span class="sd">           ...:         return self.concat(args[0])</span>
 <span class="sd">           ...:</span>
 <span class="sd">           ...:     def parse_value(self, value):</span>
 <span class="sd">           ...:         return self.utility(json.loads(value))</span>
@@ -344,7 +355,7 @@
 <span class="sd">           ...: df = pd.DataFrame({"alternatives": [json.dumps(["hello world", "helo world"]), json.dumps(["today only", "today"])]})</span>
 <span class="sd">           ...: MergeASRPlugin(input_column="alternatives", output_column="updated_alternatives").transform(df)</span>
 
-<span class="sd">and the lifecycle of its demo will be covered in a later section once we have an understanding of a trainable plugin.</span>
+<span class="sd">and the lifecycle of this plugin during the training phase will be covered in a later section once we have an understanding of a trainable plugin.</span>
 
 <span class="sd">Trainable</span>
 <span class="sd">=========</span>
@@ -410,10 +421,31 @@
 
 <span class="sd">        In [12]: w.run({"transcripts": ["yes"]})</span>
 
-<span class="sd">Notes:</span>
+<span class="sd">The following code-snippet will help us understand the **train** method of a workflow.</span>
 
-<span class="sd">- If your plugin needs a model but it need not be trained frequently or is just an off the shelf pre-trained model, then you must go for a Solitary plugin.</span>
-<span class="sd">- A trainable plugin can also have transform methods if it must modify a dataframe for other plugins in place.</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        def train(self, training_data: pd.DataFrame)</span>
+<span class="sd">            for plugin in self.plugins:</span>
+<span class="sd">                # if a plugin is not trainable, the dataframe is expected to have no side effects.</span>
+<span class="sd">                plugin.train(training_data)</span>
+
+<span class="sd">                # Only if a plugin is a transformer, the dataframe is expected to have side effects.</span>
+<span class="sd">                transformed_data = plugin.transform(training_data)</span>
+
+<span class="sd">                # We update the training dataframe with the transformed data.</span>
+<span class="sd">                # This behaviour may need changes in the future for handling multi-modal features.</span>
+<span class="sd">                # Currently this serves the purpose of training plugins with similar data requirements at once.</span>
+<span class="sd">                if transformed_data is not None:</span>
+<span class="sd">                    training_data = transformed_data</span>
+
+
+<span class="sd">Notes</span>
+<span class="sd">*****</span>
+
+<span class="sd">- If your plugin needs a model but it need not be trained frequently or uses an off the shelf pre-trained model, then you must build a Solitary plugin.</span>
+<span class="sd">- A trainable plugin can also have transform methods if it needs to modify a dataframe for other plugins in place.</span>
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
@@ -504,7 +536,7 @@
 <span class="sd">    2. ``utility(...) -&gt; Any``</span>
 <span class="sd">    3. ``validate(x: pd.DataFrame) -&gt; bool``</span>
 
-<span class="sd">    **Base Plugins**</span>
+<span class="sd">    **Solitary Plugins**</span>
 
 <span class="sd">    If a :ref:`Plugin &lt;plugin&gt;` is expected to transform isolated data points (no-training, no feature generation):</span>
 

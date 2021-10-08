@@ -299,10 +299,9 @@ depending on the number of transcripts that contain same body.</p>
 <span id="dialogy-base-plugin-module"></span><h2>dialogy.base.plugin module<a class="headerlink" href="#module-dialogy.base.plugin" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="writing-plugins">
 <span id="plugin"></span><h3>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Permalink to this headline">¶</a></h3>
-<p>Plugins are an abstraction over procedures that offer a specific functionality. A plugin abstracts out the way it is fed an input, and the way its output is pushed out.
-A discussion about plugins requires a bit of background about <span class="xref std std-ref">Worfklows</span>, a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> is an ephemeral datastore. This distinction of roles
-between a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> and a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> is a <strong>convention</strong> to ensure that neither the <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> creation or its <em>utility</em> is constrained
-by their author’s choices.</p>
+<p>Plugins are an abstraction over procedures that offer a specific functionality. A plugin abstracts out the way it is fed an input, and the way its output is pushed out.</p>
+<p>A discussion about plugins requires a bit of background about worfklows, a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> is an ephemeral datastore. This distinction of roles
+between a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> and a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> is a <strong>convention</strong> to ensure that <a class="reference internal" href="#plugin"><span class="std std-ref">plugins</span></a> have some common structure.</p>
 <div class="section" id="plugin-types">
 <h4>Plugin Types<a class="headerlink" href="#plugin-types" title="Permalink to this headline">¶</a></h4>
 <p>There are three types of plugins:</p>
@@ -313,16 +312,18 @@ by their author’s choices.</p>
 </ol>
 <div class="section" id="solitary">
 <h5>Solitary<a class="headerlink" href="#solitary" title="Permalink to this headline">¶</a></h5>
-<p>A plugin that only interacts during the runtime of a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> is called a <em>Base plugin</em>.
-We can create a Base plugin like so:</p>
+<p>A plugin that only interacts during the runtime of a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> is called a <em>Solitary plugin</em>.
+We can create a Solitary plugin like so:</p>
 <div class="section" id="methods">
 <h6>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h6>
-<p>The <strong>utility</strong> method describes the feature implemented by the plugin, this is the only required method for Base plugins. This method is called
+<p>The <strong>utility</strong> method describes the feature implemented by the plugin, this is the only required method for Solitary plugins. This method is called
 during a workflow’s run. If a plugin produces a value, it can also be updated within workflow. Any kind of file reading, config parsing, model loading
-should be done during the plugin’s initialization. <strong>utility</strong> methods must have fast execution times. This also means if there is any dynamic input required
-by a plugin, it should be available within the <code class="code docutils literal notranslate"><span class="pre">*args</span></code>.</p>
+should be done during the plugin’s initialization. If there are any dynamic inputs required by a plugin, it should be available within the <code class="code docutils literal notranslate"><span class="pre">*args</span></code>.</p>
+<p>The workflow at runtime needs a common method to invoke to execute plugins. The <em>nargs</em> are just to specify a structure,
+it is advisable to not house entire logic withing the utility method. Instead just validate inputs and call a separate method for core plugin logic.</p>
+<p><strong>utility</strong> methods must have fast execution times.</p>
 <blockquote>
-<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">PluginFn</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
@@ -356,16 +357,18 @@ by a plugin, it should be available within the <code class="code docutils litera
 <span class="gp">   ...: </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
 <span class="gp">   ...: </span>        <span class="c1"># Always validate the input.</span>
 <span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">start_token</span> <span class="o">=</span> <span class="n">start_token</span>
-<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span> <span class="o">=</span> <span class="n">start_token</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span> <span class="o">=</span> <span class="n">end_token</span>
 <span class="gp">   ...: </span>
-<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="gp">   ...: </span>        <span class="c1"># Always validate the input.</span>
-<span class="gp">   ...: </span>        <span class="n">transcripts</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_token</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_token</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_token</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="gp">   ...: </span>        <span class="c1"># Always validate the input.</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">MergeASRPlugin</span><span class="p">()</span><span class="o">.</span><span class="n">utility</span><span class="p">([</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="s2">"hello worlds"</span><span class="p">,</span> <span class="s2">"hello word"</span><span class="p">])</span>
-<span class="gh">Out[3]: </span><span class="go">'&lt;s&gt;hello world&lt;s&gt; &lt;s&gt;hello worlds&lt;s&gt; &lt;s&gt;hello word&lt;s&gt;'</span>
+<span class="gh">Out[3]: </span><span class="go">'&lt;s&gt;hello world&lt;/s&gt; &lt;s&gt;hello worlds&lt;/s&gt; &lt;s&gt;hello word&lt;/s&gt;'</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -374,7 +377,7 @@ by a plugin, it should be available within the <code class="code docutils litera
 <h6>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h6>
 <p>Previously we saw that the utility method produces results on expected inputs. We will now see how to get the same from a workflow.</p>
 <blockquote>
-<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="k">def</span> <span class="nf">get_classifier_input</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="k">def</span> <span class="nf">get_classifier_input</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="gp">   ...: </span>    <span class="k">return</span> <span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"transcripts"</span><span class="p">],)</span>
 <span class="gp">   ...: </span>
 </pre></div>
@@ -385,8 +388,8 @@ These accessor functions are written by workflow creators and allow someone to u
 </div>
 <div class="section" id="output">
 <h6>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h6>
-<p>Once the plugin produces an output, we may want to keep it somwhere in the workflow. In this case we rely on mutator functions to send
-the plugin output back to the workflow. These are also written by workflow creators and hence any updates are plugin agnostic.</p>
+<p>Once the plugin produces an output, we may want to store it in the workflow. We rely on mutator functions to send
+the plugin output back to the workflow. These are also written by workflow creators.</p>
 <blockquote>
 <div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="k">def</span> <span class="nf">set_classifier_input</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="gp">   ...: </span>    <span class="sd">'''</span>
@@ -411,7 +414,7 @@ the plugin output back to the workflow. These are also written by workflow creat
 <span class="gh">Out[6]: </span><span class="go"></span>
 <span class="go">{'intents': [],</span>
 <span class="go"> 'entities': [],</span>
-<span class="go"> 'transcripts': '&lt;s&gt;hello world&lt;s&gt; &lt;s&gt;hello worlds&lt;s&gt; &lt;s&gt;hello word&lt;s&gt;'}</span>
+<span class="go"> 'transcripts': '&lt;s&gt;hello world&lt;/s&gt; &lt;s&gt;hello worlds&lt;/s&gt; &lt;s&gt;hello word&lt;/s&gt;'}</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -419,9 +422,9 @@ the plugin output back to the workflow. These are also written by workflow creat
 </div>
 <div class="section" id="transformer">
 <h5>Transformer<a class="headerlink" href="#transformer" title="Permalink to this headline">¶</a></h5>
-<p>Transformer plugins are solitary plugins that can additionally transform dataframes. These can be used for producing new features or modify existing ones.
-If we remember the MergeASRPlugin plugin we have built so far, it does perform its transformation on a single data point expected at runtime but transformations
-happen during the training phase of a workflow.</p>
+<p>Transformer plugins are solitary plugins that can additionally transform dataframes. These can be used for producing new features or modify existing ones.</p>
+<p>Remember the MergeASRPlugin plugin we have built? it transforms a single data point at runtime. To transform during the training phase of a workflow we need
+a <strong>transform</strong> method.</p>
 <p>Let’s try to build a transformer plugin that will add a new column to a dataframe.</p>
 <blockquote>
 <div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="kn">import</span> <span class="nn">json</span>
@@ -441,11 +444,14 @@ happen during the training phase of a workflow.</p>
 <span class="gp">   ...: </span>    <span class="p">):</span>
 <span class="gp">   ...: </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">input_column</span><span class="o">=</span><span class="n">input_column</span><span class="p">,</span> <span class="n">output_column</span><span class="o">=</span><span class="n">output_column</span><span class="p">,</span> <span class="n">use_transform</span><span class="o">=</span><span class="n">use_transform</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
 <span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">start_token</span> <span class="o">=</span> <span class="n">start_token</span>
-<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span> <span class="o">=</span> <span class="n">start_token</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span> <span class="o">=</span> <span class="n">end_token</span>
 <span class="gp">   ...: </span>
-<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="gp">   ...: </span>        <span class="n">transcripts</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_token</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_token</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_token</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="gp">   ...: </span>        <span class="c1"># Always validate the input.</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="gp">   ...: </span>
 <span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">parse_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">utility</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
@@ -461,13 +467,13 @@ happen during the training phase of a workflow.</p>
 <span class="gp">   ...: </span><span class="n">MergeASRPlugin</span><span class="p">(</span><span class="n">input_column</span><span class="o">=</span><span class="s2">"alternatives"</span><span class="p">,</span> <span class="n">output_column</span><span class="o">=</span><span class="s2">"updated_alternatives"</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[7]: </span><span class="go"></span>
-<span class="go">                    alternatives                updated_alternatives</span>
-<span class="go">0  ["hello world", "helo world"]  &lt;s&gt;hello world&lt;s&gt; &lt;s&gt;helo world&lt;s&gt;</span>
-<span class="go">1        ["today only", "today"]        &lt;s&gt;today only&lt;s&gt; &lt;s&gt;today&lt;s&gt;</span>
+<span class="go">                    alternatives                  updated_alternatives</span>
+<span class="go">0  ["hello world", "helo world"]  &lt;s&gt;hello world&lt;/s&gt; &lt;s&gt;helo world&lt;/s&gt;</span>
+<span class="go">1        ["today only", "today"]        &lt;s&gt;today only&lt;/s&gt; &lt;s&gt;today&lt;/s&gt;</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p>and the lifecycle of its demo will be covered in a later section once we have an understanding of a trainable plugin.</p>
+<p>and the lifecycle of this plugin during the training phase will be covered in a later section once we have an understanding of a trainable plugin.</p>
 </div>
 <div class="section" id="trainable">
 <h5>Trainable<a class="headerlink" href="#trainable" title="Permalink to this headline">¶</a></h5>
@@ -534,10 +540,43 @@ Now we will build a new demo plugin that will train a classifier on a dataframe.
 </pre></div>
 </div>
 </div></blockquote>
-<p>Notes:</p>
+<p>The following code-snippet will help us understand the <strong>train</strong> method of a workflow.</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">:</span>
+        <span class="c1"># if a plugin is not trainable, the dataframe is expected to have no side effects.</span>
+        <span class="n">plugin</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
+
+        <span class="c1"># Only if a plugin is a transformer, the dataframe is expected to have side effects.</span>
+        <span class="n">transformed_data</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
+
+        <span class="c1"># We update the training dataframe with the transformed data.</span>
+        <span class="c1"># This behaviour may need changes in the future for handling multi-modal features.</span>
+        <span class="c1"># Currently this serves the purpose of training plugins with similar data requirements at once.</span>
+        <span class="k">if</span> <span class="n">transformed_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">training_data</span> <span class="o">=</span> <span class="n">transformed_data</span>
+</pre></div>
+</td></tr></table></div></div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="notes">
+<h4>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p>If your plugin needs a model but it need not be trained frequently or is just an off the shelf pre-trained model, then you must go for a Solitary plugin.</p></li>
-<li><p>A trainable plugin can also have transform methods if it must modify a dataframe for other plugins in place.</p></li>
+<li><p>If your plugin needs a model but it need not be trained frequently or uses an off the shelf pre-trained model, then you must build a Solitary plugin.</p></li>
+<li><p>A trainable plugin can also have transform methods if it needs to modify a dataframe for other plugins in place.</p></li>
 </ul>
 <dl class="py class">
 <dt id="dialogy.base.plugin.Plugin">
@@ -617,7 +656,7 @@ everything to the <a class="reference internal" href="dialogy.workflow.html#work
 <li><p><code class="docutils literal notranslate"><span class="pre">utility(...)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">validate(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></li>
 </ol>
-<p><strong>Base Plugins</strong></p>
+<p><strong>Solitary Plugins</strong></p>
 <p>If a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is expected to transform isolated data points (no-training, no feature generation):</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">utility(...)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code></p></li>
@@ -647,7 +686,6 @@ everything to the <a class="reference internal" href="dialogy.workflow.html#work
 </dl>
 </dd></dl>
 </dd></dl>
-</div>
 </div>
 </div>
 </div>
@@ -727,6 +765,7 @@ everything to the <a class="reference internal" href="dialogy.workflow.html#work
 <li><a class="reference internal" href="#trainable">Trainable</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
 </ul>
 </li>
 </ul>

@@ -5,9 +5,10 @@ Writing Plugins
 ################
 
 Plugins are an abstraction over procedures that offer a specific functionality. A plugin abstracts out the way it is fed an input, and the way its output is pushed out.
-A discussion about plugins requires a bit of background about :ref:`Worfklows <worfklow>`, a :ref:`workflow <workflow>` is an ephemeral datastore. This distinction of roles
-between a :ref:`Plugin <plugin>` and a :ref:`Workflow <workflow>` is a **convention** to ensure that neither the :ref:`Plugin <plugin>` creation or its *utility* is constrained
-by their author's choices.
+
+A discussion about plugins requires a bit of background about worfklows, a :ref:`workflow <workflow>` is an ephemeral datastore. This distinction of roles
+between a :ref:`Plugin <plugin>` and a :ref:`Workflow <workflow>` is a **convention** to ensure that :ref:`plugins <plugin>` have some common structure.
+
 
 Plugin Types
 *************
@@ -21,20 +22,25 @@ There are three types of plugins:
 Solitary
 ========
 
-A plugin that only interacts during the runtime of a :ref:`workflow <workflow>` is called a *Base plugin*.
-We can create a Base plugin like so:
+A plugin that only interacts during the runtime of a :ref:`workflow <workflow>` is called a *Solitary plugin*.
+We can create a Solitary plugin like so:
 
 Methods
 -------
 
-The **utility** method describes the feature implemented by the plugin, this is the only required method for Base plugins. This method is called
+The **utility** method describes the feature implemented by the plugin, this is the only required method for Solitary plugins. This method is called
 during a workflow's run. If a plugin produces a value, it can also be updated within workflow. Any kind of file reading, config parsing, model loading
-should be done during the plugin's initialization. **utility** methods must have fast execution times. This also means if there is any dynamic input required
-by a plugin, it should be available within the :code:`*args`.
+should be done during the plugin's initialization. If there are any dynamic inputs required by a plugin, it should be available within the :code:`*args`.
+
+The workflow at runtime needs a common method to invoke to execute plugins. The *nargs* are just to specify a structure,
+it is advisable to not house entire logic withing the utility method. Instead just validate inputs and call a separate method for core plugin logic.
+
+
+**utility** methods must have fast execution times.
 
     .. ipython::
 
-        In [1]: from typing import Any, Optional, List
+        In [1]: from typing import Any, Optional, List, Tuple
            ...: from dialogy.base.plugin import Plugin
            ...: from dialogy.types import PluginFn
            ...: from dialogy.workflow import Workflow
@@ -67,12 +73,14 @@ Let's take an example of a plugin that concatenates the transcripts from an ASR 
            ...:         super().__init__(access=access, mutate=mutate, debug=debug)
            ...:         # Always validate the input.
            ...:         self.start_token = start_token
-           ...:         self.end_token = start_token
+           ...:         self.end_token = end_token
            ...:
-           ...:     def utility(self, *args: List[str]) -> Any:
-           ...:         # Always validate the input.
-           ...:         transcripts = args[0]
+           ...:     def concat(self, transcripts: List[str]) -> str:
            ...:         return self.start_token + f"{self.end_token} {self.start_token}".join(transcripts) + self.end_token
+           ...:
+           ...:     def utility(self, *args: List[str]) -> str:
+           ...:         # Always validate the input.
+           ...:         return self.concat(args[0])
 
         In [3]: MergeASRPlugin().utility(["hello world", "hello worlds", "hello word"])
 
@@ -83,7 +91,7 @@ Previously we saw that the utility method produces results on expected inputs. W
 
     .. ipython::
 
-        In [4]: def get_classifier_input(workflow: Workflow) -> List[str]:
+        In [4]: def get_classifier_input(workflow: Workflow) -> Tuple[List[str]]:
            ...:     return (workflow.input["transcripts"],)
 
 This is an accessor function, these expect a workflow instance as their only argument and can return anything currently available.
@@ -92,8 +100,8 @@ These accessor functions are written by workflow creators and allow someone to u
 Output
 -------
 
-Once the plugin produces an output, we may want to keep it somwhere in the workflow. In this case we rely on mutator functions to send
-the plugin output back to the workflow. These are also written by workflow creators and hence any updates are plugin agnostic.
+Once the plugin produces an output, we may want to store it in the workflow. We rely on mutator functions to send
+the plugin output back to the workflow. These are also written by workflow creators.
 
     .. ipython::
 
@@ -104,7 +112,6 @@ the plugin output back to the workflow. These are also written by workflow creat
            ...:     we are creating a new key within the output.
            ...:     '''
            ...:     workflow.output["transcripts"] = value
-
 
 Integrations
 ------------
@@ -122,8 +129,9 @@ Transformer
 ===========
 
 Transformer plugins are solitary plugins that can additionally transform dataframes. These can be used for producing new features or modify existing ones.
-If we remember the MergeASRPlugin plugin we have built so far, it does perform its transformation on a single data point expected at runtime but transformations
-happen during the training phase of a workflow.
+
+Remember the MergeASRPlugin plugin we have built? it transforms a single data point at runtime. To transform during the training phase of a workflow we need
+a **transform** method.
 
 Let's try to build a transformer plugin that will add a new column to a dataframe.
 
@@ -146,11 +154,14 @@ Let's try to build a transformer plugin that will add a new column to a datafram
            ...:     ):
            ...:         super().__init__(access=access, mutate=mutate, input_column=input_column, output_column=output_column, use_transform=use_transform, debug=debug)
            ...:         self.start_token = start_token
-           ...:         self.end_token = start_token
+           ...:         self.end_token = end_token
            ...:
-           ...:     def utility(self, *args: List[str]) -> Any:
-           ...:         transcripts = args[0]
+           ...:     def concat(self, transcripts: List[str]) -> str:
            ...:         return self.start_token + f"{self.end_token} {self.start_token}".join(transcripts) + self.end_token
+           ...:
+           ...:     def utility(self, *args: List[str]) -> str:
+           ...:         # Always validate the input.
+           ...:         return self.concat(args[0])
            ...:
            ...:     def parse_value(self, value):
            ...:         return self.utility(json.loads(value))
@@ -165,7 +176,7 @@ Let's try to build a transformer plugin that will add a new column to a datafram
            ...: df = pd.DataFrame({"alternatives": [json.dumps(["hello world", "helo world"]), json.dumps(["today only", "today"])]})
            ...: MergeASRPlugin(input_column="alternatives", output_column="updated_alternatives").transform(df)
 
-and the lifecycle of its demo will be covered in a later section once we have an understanding of a trainable plugin.
+and the lifecycle of this plugin during the training phase will be covered in a later section once we have an understanding of a trainable plugin.
 
 Trainable
 =========
@@ -231,10 +242,31 @@ Now we will build a new demo plugin that will train a classifier on a dataframe.
 
         In [12]: w.run({"transcripts": ["yes"]})
 
-Notes:
+The following code-snippet will help us understand the **train** method of a workflow.
 
-- If your plugin needs a model but it need not be trained frequently or is just an off the shelf pre-trained model, then you must go for a Solitary plugin.
-- A trainable plugin can also have transform methods if it must modify a dataframe for other plugins in place.
+    .. code-block:: python
+        :linenos:
+
+        def train(self, training_data: pd.DataFrame)
+            for plugin in self.plugins:
+                # if a plugin is not trainable, the dataframe is expected to have no side effects.
+                plugin.train(training_data)
+
+                # Only if a plugin is a transformer, the dataframe is expected to have side effects.
+                transformed_data = plugin.transform(training_data)
+
+                # We update the training dataframe with the transformed data.
+                # This behaviour may need changes in the future for handling multi-modal features.
+                # Currently this serves the purpose of training plugins with similar data requirements at once.
+                if transformed_data is not None:
+                    training_data = transformed_data
+
+
+Notes
+*****
+
+- If your plugin needs a model but it need not be trained frequently or uses an off the shelf pre-trained model, then you must build a Solitary plugin.
+- A trainable plugin can also have transform methods if it needs to modify a dataframe for other plugins in place.
 """
 from abc import ABC, abstractmethod
 from typing import Any, Optional
@@ -325,7 +357,7 @@ class Plugin(ABC):
     2. ``utility(...) -> Any``
     3. ``validate(x: pd.DataFrame) -> bool``
 
-    **Base Plugins**
+    **Solitary Plugins**
 
     If a :ref:`Plugin <plugin>` is expected to transform isolated data points (no-training, no feature generation):
 
