@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.5
+
+- [x] feat: conditional latent entities.
+
 ## 0.8.4
 
 - [x] feat: WER calibration plugin.
