@@ -739,9 +739,9 @@
   'dim': 'time',
   'latent': False}]
   reference_time: 1622640071000
-  expected: [{"entity": "NumericalEntity"}, 
-  {"entity": "TimeEntity"}, 
-  {"entity": "TimeEntity"}, 
+  expected: [{"entity": "NumericalEntity"},
+  {"entity": "TimeEntity"},
+  {"entity": "TimeEntity"},
   {"entity": "TimeEntity"}]
 
 - description: "Testing currency entity."
@@ -759,3 +759,29 @@
   'latent': False}]
   reference_time: 1622640071000
   expected: [{"entity": "CurrencyEntity"}]
+
+- description: "Latent entity present"
+  input: "on 2nd"
+  duckling:
+    dimensions: ["number", "date", "time", "duration", "amount-of-money"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+    activate_latent_entities: false
+  mock_entity_json: [{'body': 'on 2nd',
+  'start': 0,
+  'value': {'values': [{'value': '2021-11-02T00:00:00.000+05:30',
+     'grain': 'day',
+     'type': 'value'},
+    {'value': '2021-12-02T00:00:00.000+05:30',
+     'grain': 'day',
+     'type': 'value'},
+    {'value': '2022-01-02T00:00:00.000+05:30',
+     'grain': 'day',
+     'type': 'value'}],
+   'value': '2021-11-02T00:00:00.000+05:30',
+   'grain': 'day',
+   'type': 'value'},
+  'end': 6,
+  'dim': 'time',
+  'latent': True}]
+  expected: [{"entity": "TimeEntity"}]
