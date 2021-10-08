@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>dialogy.base.entity_extractor - dialogy 0.8.4 documentation</title>
+        <title>dialogy.base.entity_extractor - dialogy 0.8.6 documentation</title>
       <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../../../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../_static/pygments_dark.css">
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.8.4 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.8.6 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.4 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -195,6 +195,7 @@
     <span class="sd">"""</span>
 <span class="sd">    Mixin class for scoring entities acquired over a set of transcripts.</span>
 <span class="sd">    """</span>
+
     <span class="n">FUTURE</span> <span class="o">=</span> <span class="s2">"future"</span>
     <span class="n">PAST</span> <span class="o">=</span> <span class="s2">"past"</span>
     <span class="n">DATETIME_OPERATION_ALIAS</span> <span class="o">=</span> <span class="p">{</span><span class="n">FUTURE</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">,</span> <span class="n">PAST</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">}</span>
@@ -250,9 +251,7 @@
             <span class="n">representative</span> <span class="o">=</span> <span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">representative</span><span class="o">.</span><span class="n">alternative_index</span> <span class="o">=</span> <span class="n">min_alternative_index</span>
             <span class="n">representative</span><span class="o">.</span><span class="n">alternative_indices</span> <span class="o">=</span> <span class="n">indices</span>
-            <span class="n">representative</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">entity_scoring</span><span class="p">(</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">py_</span><span class="o">.</span><span class="n">uniq</span><span class="p">(</span><span class="n">indices</span><span class="p">)),</span> <span class="n">input_size</span>
-            <span class="p">)</span>
+            <span class="n">representative</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">entity_scoring</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">py_</span><span class="o">.</span><span class="n">uniq</span><span class="p">(</span><span class="n">indices</span><span class="p">)),</span> <span class="n">input_size</span><span class="p">)</span>
             <span class="n">aggregated_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">representative</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">aggregated_entities</span></div>
 
