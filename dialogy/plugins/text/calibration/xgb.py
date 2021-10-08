@@ -75,7 +75,8 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
                 for utterance in utterances:
                     features.append(self.features(utterance))
                     targets += [
-                        jiwer.wer(real_transcript, alternative["transcript"]) for alternative in utterance
+                        jiwer.wer(real_transcript, alternative["transcript"])
+                        for alternative in utterance
                     ]
         return np.squeeze(np.array(features)), targets
 
@@ -97,7 +98,7 @@ class CalibrationModel(Plugin):
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = const.ALTERNATIVES,
         use_transform: bool = False,
-        model_name: str = "calibration.pkl"
+        model_name: str = "calibration.pkl",
     ) -> None:
         super().__init__(
             access,

@@ -47,7 +47,11 @@ vectorizer = MyVectorizer()
 classifier = MyClassifier()
 
 calibration_model = CalibrationModel(
-    access=access, mutate=mutate, threshold=float("inf"), input_column="data", model_name="temp.pkl"
+    access=access,
+    mutate=mutate,
+    threshold=float("inf"),
+    input_column="data",
+    model_name="temp.pkl",
 )
 calibration_model.train(df)
 
@@ -61,10 +65,7 @@ def test_calibration_model_predict():
 
 def test_calibration_model_filter_asr_output():
     alternatives = json.loads(df.iloc[0]["data"])
-    assert (
-        calibration_model.filter_asr_output(alternatives)
-        == alternatives
-    )
+    assert calibration_model.filter_asr_output(alternatives) == alternatives
     calibration_model.threshold = float("-inf")
     assert calibration_model.filter_asr_output(alternatives) == [[]]
 

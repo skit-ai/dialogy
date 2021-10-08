@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.base.plugin import PluginFn, Plugin
+from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
 from dialogy.utils import logger
 

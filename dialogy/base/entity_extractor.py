@@ -16,6 +16,7 @@ class EntityScoringMixin:
     """
     Mixin class for scoring entities acquired over a set of transcripts.
     """
+
     FUTURE = "future"
     PAST = "past"
     DATETIME_OPERATION_ALIAS = {FUTURE: operator.ge, PAST: operator.le}
@@ -71,9 +72,7 @@ class EntityScoringMixin:
             representative = entities[0]
             representative.alternative_index = min_alternative_index
             representative.alternative_indices = indices
-            representative.score = entity_scoring(
-                len(py_.uniq(indices)), input_size
-            )
+            representative.score = entity_scoring(len(py_.uniq(indices)), input_size)
             aggregated_entities.append(representative)
         return aggregated_entities
 

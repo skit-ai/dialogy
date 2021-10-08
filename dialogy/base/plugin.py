@@ -236,8 +236,8 @@ Notes:
 - If your plugin needs a model but it need not be trained frequently or is just an off the shelf pre-trained model, then you must go for a Solitary plugin.
 - A trainable plugin can also have transform methods if it must modify a dataframe for other plugins in place.
 """
-from typing import Any, Optional
 from abc import ABC, abstractmethod
+from typing import Any, Optional
 
 import dialogy.constants as const
 from dialogy.types import PluginFn
