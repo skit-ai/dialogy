@@ -392,8 +392,8 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         """
         Produces Duckling entities, runs with a :ref:`Workflow's run<workflow_run>` method.
 
-        :param args: Expects a tuple of :code:`Tuple[natural language for parsing entities, reference time in seconds, locale]`
-        :type args: Tuple(str, int, str)
+        :param args: Expects a tuple of :code:`Tuple[natural language for parsing entities, reference time in milliseconds, locale]`
+        :type args: Tuple(Union[str, List[str]], int, str)
         :return: A list of duckling entities.
         :rtype: List[BaseEntity]
         """
