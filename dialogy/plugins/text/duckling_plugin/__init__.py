@@ -185,7 +185,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             ) from unknown_timezone_error
 
     def __create_req_body(
-        self, text: str, reference_time: Optional[int], locale: str = "en_IN"
+        self, text: str, reference_time: Optional[int] = None, locale: str = "en_IN", use_latent: bool = False
     ) -> Dict[str, Any]:
         """
         create request body for entity parsing
@@ -205,6 +205,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :rtype: Dict[str, Any]
         """
         dimensions = self.dimensions
+        self.activate_latent_entities = use_latent or self.activate_latent_entities
         activate_latent_entities = (
             self.activate_latent_entities
             if isinstance(self.activate_latent_entities, bool)
@@ -344,7 +345,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         return entity_object_list
 
     def _get_entities(
-        self, text: str, locale: str = "en_IN", reference_time: Optional[int] = None
+        self, text: str, locale: str = "en_IN", reference_time: Optional[int] = None, use_latent: bool = False
     ) -> List[Dict[str, Any]]:
         """
         Get entities from duckling-server.
@@ -362,7 +363,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :return: Duckling entities as python :code:`dicts`.
         :rtype: List[Dict[str, Any]]
         """
-        body = self.__create_req_body(text, reference_time, locale)
+        body = self.__create_req_body(text, reference_time=reference_time, locale=locale, use_latent=use_latent)
 
         try:
             response = requests.post(
@@ -400,7 +401,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         list_of_entities: List[List[Dict[str, Any]]] = []
         shaped_entities: List[List[BaseEntity]] = []
 
-        input_, reference_time, locale = args
+        input_, reference_time, locale, use_latent = args
         if not isinstance(reference_time, int) and self.datetime_filters:
             raise TypeError(
                 "Duckling requires reference_time to be a unix timestamp (int) but"
@@ -414,7 +415,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         try:
             if isinstance(input_, str):
                 list_of_entities.append(
-                    self._get_entities(input_, locale, reference_time=reference_time)
+                    self._get_entities(input_, locale, reference_time=reference_time, use_latent=use_latent)
                 )
             elif isinstance(input_, list) and all(
                 isinstance(text, str) for text in input_
@@ -422,7 +423,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 input_size = len(input_)
                 for text in input_:
                     entities = self._get_entities(
-                        text, locale, reference_time=reference_time
+                        text, locale, reference_time=reference_time, use_latent=use_latent
                     )
                     list_of_entities.append(entities)
             else:
@@ -474,6 +475,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 transcripts,
                 reference_time,
                 lang_detect_from_text(self.input_column),
+                self.activate_latent_entities
             )
             if row[self.output_column] is None or pd.isnull(row[self.output_column]):
                 training_data.at[i, self.output_column] = entities

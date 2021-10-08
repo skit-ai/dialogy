@@ -430,7 +430,7 @@ def test_entity_type(payload) -> None:
     exception = payload.get("exception")
 
     def access(workflow):
-        return workflow.input, None, None
+        return workflow.input, None, None, False
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}

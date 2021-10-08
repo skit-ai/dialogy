@@ -136,7 +136,7 @@ def test_duckling_timeout() -> None:
         return 200, headers, "received"
 
     def access(workflow):
-        return workflow.input, None, locale
+        return workflow.input, None, locale, False
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
@@ -170,7 +170,7 @@ def test_duckling_connection_error() -> None:
     locale = "en_IN"
 
     def access(workflow):
-        return workflow.input, None, locale
+        return workflow.input, None, locale, False
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
@@ -205,9 +205,10 @@ def test_plugin_working_cases(payload) -> None:
     response_code = payload.get("response_code", 200)
     locale = payload.get("locale")
     reference_time = payload.get("reference_time")
+    use_latent = payload.get("use_latent")
 
     def access(workflow):
-        return workflow.input, reference_time, locale
+        return workflow.input, reference_time, locale, use_latent
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
@@ -265,7 +266,7 @@ def test_plugin_no_transform():
     )
 
     def access(workflow):
-        return workflow.input, None, "en_IN"
+        return workflow.input, None, "en_IN", False
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
@@ -343,7 +344,7 @@ def test_plugin_transform():
     )
 
     def access(workflow):
-        return workflow.input, None, "en_IN"
+        return workflow.input, None, "en_IN", False
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
@@ -483,8 +484,8 @@ def test_plugin_transform_existing_entity():
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    def access(workflow):
-        return workflow.input, None, "en_IN"
+    def access_fn(workflow):
+        return workflow.input, None, "en_IN", False
 
     def mutate(workflow, entities):
         workflow.output = {"entities": entities}
@@ -527,7 +528,7 @@ def test_plugin_transform_existing_entity():
         locale="en_IN",
         dimensions=["time"],
         timezone="Asia/Kolkata",
-        access=access,
+        access=access_fn,
         mutate=mutate,
         threshold=0.2,
         timeout=0.01,

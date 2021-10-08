@@ -762,6 +762,7 @@
 
 - description: "Latent entity present"
   input: "on 2nd"
+  use_latent: True
   duckling:
     dimensions: ["number", "date", "time", "duration", "amount-of-money"]
     locale: "en_IN"
