@@ -28,7 +28,8 @@ Text = str
 Label = str
 Span = Tuple[int, int]
 Value = str
-MatchType = List[Tuple[Text, Label, Value, Span]]
+Score = float
+MatchType = List[Tuple[Text, Label, Value, Span, Score]]  # adding score for each entity
 
 
 class ListEntityPlugin(EntityExtractor):
@@ -73,7 +74,7 @@ class ListEntityPlugin(EntityExtractor):
         use_transform: bool = True,
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
-        search_config_path=None,  # adding path to load config for search
+        fuzzy_dp_config=None,  # adding path to load config for search
         fuzzy_threshold: Optional[float] = 0.1,
     ):
         super().__init__(
@@ -88,6 +89,7 @@ class ListEntityPlugin(EntityExtractor):
         self.__style_search_map = {
             const.SPACY: self.ner_search,
             const.REGEX: self.regex_search,
+            const.FUZZY_DP: self.get_fuzzy_dp_search,
         }
 
         self.style = (
@@ -101,15 +103,15 @@ class ListEntityPlugin(EntityExtractor):
         """
         Parameters for Fuzzy Dependency Parser defined below
         """
-        self.file_path = search_config_path
+        self.fuzzy_dp_config = fuzzy_dp_config
         self.entity_dict = {}
-        self.entities = {}
+        self.entity_patterns = {}
         self.nlp = {}
         self.fuzzy_threshold = fuzzy_threshold
         if self.style == const.REGEX:
             self._parse(candidates)
 
-        if self.style == "fuzzy_dp_search":
+        if self.style == const.FUZZY_DP:
             self.fuzzy_init()
 
     def fuzzy_init(self):
@@ -117,16 +119,14 @@ class ListEntityPlugin(EntityExtractor):
         Initializing the parameters for fuzzy dp search with their values
 
         """
-        with open(self.file_path) as entity_file:
-            parsed_file = yaml.load(entity_file, Loader=yaml.SafeLoader)
         valid_langs = ["hi", "en"]
-        for lang_code in parsed_file.keys():
+        for lang_code in self.fuzzy_dp_config.keys():
             if lang_code not in valid_langs:
                 raise ValueError(
                     f"Provided language {lang_code} is not supported by this method at present"
                 )
-            self.entity_dict[lang_code] = parsed_file[lang_code]
-            self.entities[lang_code] = list(self.entity_dict[lang_code].keys())
+            self.entity_dict[lang_code] = self.fuzzy_dp_config[lang_code]
+            self.entity_patterns[lang_code] = list(self.entity_dict[lang_code].keys())
             self.nlp[lang_code] = stanza.Pipeline(
                 lang=lang_code, tokenize_pretokenized=True
             )
@@ -186,7 +186,7 @@ class ListEntityPlugin(EntityExtractor):
         logger.debug("compiled patterns")
         logger.debug(self.compiled_patterns)
 
-    def _search(self, transcripts: List[str]) -> List[MatchType]:
+    def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:
         """
         Search for tokens in a list of strings.
 
@@ -204,13 +204,11 @@ class ListEntityPlugin(EntityExtractor):
                 f"Expected style to be one of {list(self.__style_search_map.keys())}"
                 f' but "{self.style}" was found.'
             )
-        token_list = [search_fn(transcript) for transcript in transcripts]
+        token_list = [search_fn(transcript, lang=lang) for transcript in transcripts]
         return token_list
 
     # new method based on experiments done during development of channel parser
-    def get_fuzzy_dp_search(
-        self, transcripts: List[str], lang: str
-    ) -> List[BaseEntity]:
+    def get_fuzzy_dp_search(self, transcript: str, lang: str = None) -> MatchType:
         """
         Search for Entity in transcript from a defined List Search space
         :param transcripts : A list of transcripts, :code:`List[str]`.
@@ -221,31 +219,65 @@ class ListEntityPlugin(EntityExtractor):
         """
         match_dict = {}
         pos_tags = ["PROPN", "NOUN"]
-        query = "\n".join(transcripts)
+        query = transcript
+        # regex variables
+        max_length = 0
+        final_match = None
 
-        sentences = self.nlp[lang](query).sentences
-        for sentence in sentences:
-            value = ""
-            for word in sentence.words:
-                if word.upos in pos_tags:
-                    value = value + str(word.text) + " "
+        """
+        Regex match first
+        if we get a match using simple regex we return it 
+        """
+        for pattern in self.entity_patterns[lang]:
+            result = re.search(pattern, query)
+            if result:
+
+                match_value = self.entity_dict[lang][result[0]]
+                match_length = len(match_value)
+                if match_length > max_length:
+                    match_text = result[0]
+                    max_length = match_length
+                    final_match = match_value
+                    match_span = result.span()
+
+        # MatchType = List[Tuple[Text, Label, Value, Span]]
+
+        if final_match:
+            return [(match_text, "listParser", final_match, match_span, float(0))]
+        """
+        Dependency Parser + Fuzzy Matching 
+        if regex fails we use this method 
+        """
+        sentence = self.nlp[lang](query).sentences[0]
+        value = ""
+        for word in sentence.words:
+            if word.upos in pos_tags:
                 if value == "":
-                    continue
-            for entity in self.entities[lang]:
-                val = fuzz.ratio(entity, value) / 100
-                if val > self.fuzzy_threshold:
-                    match_value = self.entity_dict[lang][entity]
-                    if match_value in match_dict.keys():
-                        if val > match_dict[match_value]:
-                            match_dict[match_value] = val
-                    else:
-                        match_dict[match_value] = val
+                    span_start = word.start_char
+                span_end = word.end_char
 
-        match_dict = dict(
-            sorted(match_dict.items(), key=lambda item: item[1], reverse=True)
-        )
+                """
+                joining individual tokens that together are the real entity,
+                Since we are dealing with Multi-Word entities here
 
-    def get_entities(self, transcripts: List[str]) -> List[BaseEntity]:
+                """
+                value = value + str(word.text) + " "
+        if value == "":
+            return
+        for pattern in self.entity_patterns[lang]:
+            val = fuzz.ratio(pattern, value) / 100
+            if val > self.fuzzy_threshold:
+                match_value = self.entity_dict[lang][pattern]
+                match_dict[match_value] = val
+
+        match_output = max(match_dict, key=match_dict.get)
+        match_score = match_dict[match_output]
+
+        return [
+            (value, "ListParser", match_output, (span_start, span_end), match_score)
+        ]
+
+    def get_entities(self, transcripts: List[str], lang: str) -> List[BaseEntity]:
         """
         Parse entities using regex and spacy ner.
 
@@ -254,7 +286,7 @@ class ListEntityPlugin(EntityExtractor):
         :return: List of entities from regex matches or spacy ner.
         :rtype: List[KeywordEntity]
         """
-        matches_on_transcripts = self._search(transcripts)
+        matches_on_transcripts = self._search(transcripts, lang)
         logger.debug(matches_on_transcripts)
         entities: List[BaseEntity] = []
 
@@ -291,7 +323,7 @@ class ListEntityPlugin(EntityExtractor):
     def utility(self, *args: Any) -> Any:
         return self.get_entities(*args)  # pylint: disable=no-value-for-parameter
 
-    def ner_search(self, transcript: str) -> MatchType:
+    def ner_search(self, transcript: str, lang: str = None) -> MatchType:
         """
         Wrapper over spacy's ner search.
 
@@ -317,6 +349,7 @@ class ListEntityPlugin(EntityExtractor):
                         transcript.index(token.text),
                         transcript.index(token.text) + len(token.text),
                     ),
+                    float(0),
                 )
                 for token in parsed_transcript.ents
                 if token.label_ in self.labels
@@ -331,11 +364,12 @@ class ListEntityPlugin(EntityExtractor):
                         transcript.index(token.text),
                         transcript.index(token.text) + len(token.text),
                     ),
+                    float(0),
                 )
                 for token in parsed_transcript.ents
             ]
 
-    def regex_search(self, transcript: str) -> MatchType:
+    def regex_search(self, transcript: str, lang: str = None) -> MatchType:
         """
         Wrapper over regex searches.
 
@@ -357,7 +391,13 @@ class ListEntityPlugin(EntityExtractor):
                     matches = pattern.search(transcript)
                     if matches:
                         entity_tokens.append(
-                            (matches.group(), entity_type, entity_value, matches.span())
+                            (
+                                matches.group(),
+                                entity_type,
+                                entity_value,
+                                matches.span(),
+                                float(0),
+                            )
                         )
         logger.debug(entity_tokens)
         return entity_tokens
