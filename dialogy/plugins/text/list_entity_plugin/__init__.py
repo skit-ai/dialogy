@@ -74,6 +74,7 @@ class ListEntityPlugin(EntityExtractor):
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
         search_config_path=None,  # adding path to load config for search
+        fuzzy_threshold: Optional[float] = 0.1,
     ):
         super().__init__(
             access=access,
@@ -104,7 +105,7 @@ class ListEntityPlugin(EntityExtractor):
         self.entity_dict = {}
         self.entities = {}
         self.nlp = {}
-
+        self.fuzzy_threshold = fuzzy_threshold
         if self.style == const.REGEX:
             self._parse(candidates)
 
@@ -210,12 +211,14 @@ class ListEntityPlugin(EntityExtractor):
     def get_fuzzy_dp_search(
         self, transcripts: List[str], lang: str
     ) -> List[BaseEntity]:
-        """ """
-        valid_langs = ["hi", "en"]
-        if lang not in valid_langs:
-            raise ValueError(
-                f"Provided language {lang} is not supported by this method at present"
-            )
+        """
+        Search for Entity in transcript from a defined List Search space
+        :param transcripts : A list of transcripts, :code:`List[str]`.
+        :param lang : Language code of the transcript :code str
+        :return: Token matches with the transcript.
+        :rtype: List[MatchType]
+
+        """
         match_dict = {}
         pos_tags = ["PROPN", "NOUN"]
         query = "\n".join(transcripts)
@@ -230,7 +233,7 @@ class ListEntityPlugin(EntityExtractor):
                     continue
             for entity in self.entities[lang]:
                 val = fuzz.ratio(entity, value) / 100
-                if val > 0.1:
+                if val > self.fuzzy_threshold:
                     match_value = self.entity_dict[lang][entity]
                     if match_value in match_dict.keys():
                         if val > match_dict[match_value]:
