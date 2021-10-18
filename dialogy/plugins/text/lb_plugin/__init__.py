@@ -1,8 +1,9 @@
 from typing import Any, Dict, List, Optional
-from dialogy.plugins import DucklingPlugin
-from dialogy.base.plugin import PluginFn
-from dialogy.types.entity import BaseEntity
+
 from dialogy import constants as const
+from dialogy.base.plugin import PluginFn
+from dialogy.plugins import DucklingPlugin
+from dialogy.types.entity import BaseEntity
 
 
 class DucklingPluginLB(DucklingPlugin):
@@ -25,22 +26,23 @@ class DucklingPluginLB(DucklingPlugin):
         use_transform: bool = False,
         debug: bool = False,
     ):
-        super().__init__(dimensions,
-                         timezone,
-                         timeout=timeout,
-                         url=url,
-                         locale=locale,
-                         datetime_filters=datetime_filters,
-                         threshold=0,
-                         access=access,
-                         mutate=mutate,
-                         entity_map=entity_map,
-                         reference_time_column=reference_time_column,
-                         input_column=input_column,
-                         output_column=output_column,
-                         use_transform=use_transform,
-                         debug=debug)
-
+        super().__init__(
+            dimensions,
+            timezone,
+            timeout=timeout,
+            url=url,
+            locale=locale,
+            datetime_filters=datetime_filters,
+            threshold=0,
+            access=access,
+            mutate=mutate,
+            entity_map=entity_map,
+            reference_time_column=reference_time_column,
+            input_column=input_column,
+            output_column=output_column,
+            use_transform=use_transform,
+            debug=debug,
+        )
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         entity_list = super().utility(*args)
