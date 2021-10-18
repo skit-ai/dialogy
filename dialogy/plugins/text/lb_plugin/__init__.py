@@ -48,4 +48,3 @@ class DucklingPluginLB(DucklingPlugin):
             return [entity_list[0]]
         else:
             return []
-

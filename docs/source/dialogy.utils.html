@@ -118,6 +118,7 @@
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
@@ -131,6 +132,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
@@ -141,6 +143,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
@@ -321,14 +324,14 @@ Missing properties will lead to KeyErrors.</p>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">556</span><span class="n">a11057179</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
 
-<span class="nn">~/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
+<span class="nn">~/anaconda3/envs/slu-service/lib/python3.8/site-packages/dialogy/utils/misc.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
 <span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">"""</span>
 <span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd">     try:</span>
 <span class="ne">---&gt; </span><span class="mi">53</span><span class="sd">         return reduce(lambda o, k: o[k], properties, obj)</span>
 <span class="g g-Whitespace">     </span><span class="mi">54</span><span class="sd">     except KeyError as key_error:</span>
 <span class="g g-Whitespace">     </span><span class="mi">55</span><span class="sd">         raise KeyError(</span>
 
-<span class="nn">~/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
+<span class="nn">~/anaconda3/envs/slu-service/lib/python3.8/site-packages/dialogy/utils/misc.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
 <span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd">     """</span>
 <span class="g g-Whitespace">     </span><span class="mi">52</span>     <span class="k">try</span><span class="p">:</span>
 <span class="ne">---&gt; </span><span class="mi">53</span>         <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>

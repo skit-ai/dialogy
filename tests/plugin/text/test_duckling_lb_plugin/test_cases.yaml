@@ -1,0 +1,28 @@
+- description: "test time entity."
+  input: "27th next month"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': '27th next month',
+  'start': 0,
+  'value': {'values': [{'value': '2021-05-27T00:00:00.000+05:30',
+     'grain': 'day',
+     'type': 'value'}],
+   'value': '2021-05-27T00:00:00.000+05:30',
+   'grain': 'day',
+   'type': 'value'},
+  'end': 15,
+  'dim': 'time',
+  'latent': False}]
+  expected: [{"entity": "TimeEntity"}]
+
+- description: "test time entity."
+  input: ""
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: []
+  expected: []
+
