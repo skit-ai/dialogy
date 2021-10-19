@@ -49,6 +49,7 @@ means to connect from the implementation here.
 import json
 import operator
 import traceback
+from concurrent import futures
 from datetime import datetime
 from pprint import pformat
 from typing import Any, Callable, Dict, List, Optional, Union
@@ -152,6 +153,13 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.reference_time_column = reference_time_column
         self.datetime_filters = datetime_filters
         self.activate_latent_entities = activate_latent_entities
+        self.session = requests.Session()
+        self.session.mount(
+            "http://",
+            requests.adapters.HTTPAdapter(
+                max_retries=1, pool_maxsize=10, pool_block=True
+            ),
+        )
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
@@ -367,7 +375,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                                 to parse the values into usable dates/times, defaults to None
         :type reference_time: Optional[int], optional
         :raises ValueError: Duckling API call failure leading to no json response.
-        :return: Duckling entities as python :code:`dicts`.
+        :return: Duckling entities as :code:`dicts`.
         :rtype: List[Dict[str, Any]]
         """
         body = self.__create_req_body(
@@ -375,7 +383,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         )
 
         try:
-            response = requests.post(
+            response = self.session.post(
                 self.url, data=body, headers=self.headers, timeout=self.timeout
             )
 
@@ -397,6 +405,44 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         raise ValueError(
             f"Duckling API call failed | [{response.status_code}]: {response.text}"
         )
+
+    def _get_entities_concurrent(
+        self,
+        texts: List[str],
+        locale: str = "en_IN",
+        reference_time: Optional[int] = None,
+        use_latent: bool = False,
+    ) -> List[List[Dict[str, Any]]]:
+        """
+        Make multiple-parallel API calls to duckling-server .
+
+        :param texts: A list of strings to be parsed concurrently via duckling.
+        :type texts: List[str]
+        :param locale: Defined in __init__, defaults to "en_IN"
+        :type locale: str, optional
+        :param reference_time: Cases where relative units of time are mentioned,
+                                like "today", "now", etc. We need to know the current time
+                                to parse the values into usable dates/times, defaults to None
+        :type reference_time: Optional[int], optional
+        :param use_latent: True returns latent entities, defaults to False
+        :type use_latent: bool, optional
+        :return: Duckling entities as :code:`dicts`.
+        :rtype: List[List[Dict[str, Any]]]
+        """
+        futures_ = []
+        workers = min(10, len(texts))
+        with futures.ThreadPoolExecutor(max_workers=workers) as executor:
+            futures_ = [
+                executor.submit(
+                    self._get_entities,
+                    text,
+                    locale,
+                    reference_time=reference_time,
+                    use_latent=use_latent,
+                )
+                for text in texts
+            ]
+        return [future.result() for future in futures.as_completed(futures_)]
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         """
@@ -420,29 +466,20 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
 
         self.reference_time = reference_time
         input_size = 1
+        args = (input_, locale)
+        kwargs = {"reference_time": reference_time, "use_latent": use_latent}
+
+        input_is_str = isinstance(input_, str)
+        inputs_are_list_of_strings = isinstance(input_, list) and all(
+            isinstance(text, str) for text in input_
+        )
 
         try:
-            if isinstance(input_, str):
-                list_of_entities.append(
-                    self._get_entities(
-                        input_,
-                        locale,
-                        reference_time=reference_time,
-                        use_latent=use_latent,
-                    )
-                )
-            elif isinstance(input_, list) and all(
-                isinstance(text, str) for text in input_
-            ):
+            if input_is_str:
+                list_of_entities.append(self._get_entities(*args, **kwargs))
+            elif inputs_are_list_of_strings:
                 input_size = len(input_)
-                for text in input_:
-                    entities = self._get_entities(
-                        text,
-                        locale,
-                        reference_time=reference_time,
-                        use_latent=use_latent,
-                    )
-                    list_of_entities.append(entities)
+                list_of_entities = self._get_entities_concurrent(*args, **kwargs)
             else:
                 raise TypeError(f"Expected {input_} to be a List[str] or str.")
 
