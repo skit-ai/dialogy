@@ -35,8 +35,10 @@ class XLMRMultiClass(Plugin):
         score_round_off: int = 5,
         purpose: str = const.TRAIN,
         fallback_label: str = const.ERROR_LABEL,
+        use_state: bool = False,
         data_column: str = const.DATA,
         label_column: str = const.LABELS,
+        state_column: str = const.STATE,
         args_map: Optional[Dict[str, Any]] = None,
         skip_labels: Optional[List[str]] = None,
         kwargs: Optional[Dict[str, Any]] = None,
@@ -58,7 +60,9 @@ class XLMRMultiClass(Plugin):
         self.fallback_label = fallback_label
         self.data_column = data_column
         self.label_column = label_column
+        self.state_column = state_column
         self.use_cuda = use_cuda
+        self.use_state = use_state
         self.labelencoder_file_path = os.path.join(
             self.model_dir, const.LABELENCODER_FILE
         )
@@ -149,7 +153,14 @@ class XLMRMultiClass(Plugin):
         if self.model is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
             return [fallback_output]
-
+        if self.use_state:
+            for text in texts:
+                if "<st>" not in text:
+                    logger.error(
+                        f"use_state = True but {text} doesn't contain <st> </st> tags, \
+                        which means that training data is different from this data. This can lead to anomalous results"
+                    )
+                    return [fallback_output]
         if not self.valid_labelencoder:
             raise AttributeError(
                 "Seems like you forgot to "
@@ -180,6 +191,7 @@ class XLMRMultiClass(Plugin):
         Validate the training data is in the appropriate format
 
         :param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
+            Should also contain a state key if use_state = True while initializing object.
         :type training_data: pd.DataFrame
         :return: True if the dataframe is valid, False otherwise.
         :rtype: bool
@@ -187,8 +199,10 @@ class XLMRMultiClass(Plugin):
         if training_data.empty:
             logger.error("Training dataframe is empty.")
             return False
-
-        for column in [self.data_column, self.label_column]:
+        expected_columns = [self.data_column, self.label_column]
+        if self.use_state:
+            expected_columns.append(self.state_column)
+        for column in expected_columns:
             if column not in training_data.columns:
                 logger.warning(f"Column {column} not found in training data")
                 return False
@@ -220,6 +234,9 @@ class XLMRMultiClass(Plugin):
         training_data.loc[:, const.LABELS] = encoder.transform(
             training_data[const.LABELS]
         )
+        # Add state as an additonal field to text
+        if self.use_state:
+            training_data[const.TEXT] += "<st> " + training_data["state"] + " </st>"
         training_data = training_data[[const.TEXT, const.LABELS]]
         self.init_model(len(encoder.classes_))
         logger.debug(
