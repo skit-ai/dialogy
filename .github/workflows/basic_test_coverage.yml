@@ -1,0 +1,43 @@
+name: Dialogy Testing CI
+
+on:
+  push:
+    branches: [ master, feat/migrate_to_ghactions ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: false
+        virtualenvs-in-project: false
+        installer-parallel: false
+
+    - name: Install dependencies
+      run: |
+        python -m pip install coveralls black mypy pytest types-pytz types-requests
+        if [ -f pyproject.toml ]; then poetry run pip install 'setuptools==57.5.0'; poetry install --no-root; fi
+    - name: Lint with black and static type check with mypy
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        black .
+        mypy dialogy --install-types
+    - name: Test with pytest
+      run: |
+        poetry run pytest --cov=dialogy
+        coverage report
+        
