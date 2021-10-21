@@ -2,7 +2,7 @@ name: Dialogy Testing CI
 
 on:
   push:
-    branches: [ master, feat/migrate_to_ghactions ]
+    branches: [ master, feat/migrate_to_gh_actions ]
   pull_request:
     branches: [ master ]
 
