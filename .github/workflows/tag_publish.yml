@@ -1,18 +1,16 @@
-name: Dialogy Testing CI
+name: Dialogy Tag Publish CI
 
 on:
   push:
-    branches: [ master, feat/migrate_to_gh_actions ]
-  pull_request:
-    branches: [ master ]
-
+     tags:
+     - '*'
 jobs:
-  build:
+  build-n-publish:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.8]
 
     steps:
     - uses: actions/checkout@v2
@@ -47,3 +45,13 @@ jobs:
          flags: unittests
          fail_ci_if_error: true
          verbose: true
+    - name: Build and Publish to PYPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        poetry version $(git describe --tags --abbrev=0)
+        pip install setuptools wheel twine
+        python -m pip install build --user
+        python -m build --sdist --wheel --outdir dist/
+        twine upload dist/*
