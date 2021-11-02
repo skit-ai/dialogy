@@ -125,3 +125,5 @@ TEXT = "text"
 CANONICALIZED_TRANSCRIPTS = "canonicalized_transcripts"
 REFERENCE_TIME = "reftime"
 ENTITY_COLUMN = "entities"
+
+FUZZY_DP = "fuzzy_dp"
