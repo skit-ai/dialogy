@@ -39,10 +39,17 @@ jobs:
     - name: Test with pytest and get Coverage
       run: |
         poetry run pytest --cov=dialogy --cov-report=xml tests/
-        coverage report
+        coverage report | tee cov.out
+        echo "covpercentage=$(cat cov.out | tail -n1 | awk -F ' ' '{print $4}' | sed 's/.$//')" >> "$GITHUB_ENV"
     - name: Upload coverage data to coverage
       uses: codecov/codecov-action@v2
       with:
          flags: unittests
          fail_ci_if_error: true
          verbose: true
+    - name: Check if coverage less than 100%
+      if: env.covpercentage != '100'
+      uses: actions/github-script@v3
+      with:
+        script: |
+            core.setFailed('Code Coverage is not 100%')
