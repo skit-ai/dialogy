@@ -19,8 +19,8 @@ from thefuzz import fuzz
 from tqdm import tqdm
 
 from dialogy import constants as const
-from dialogy.base.entity_extractor import EntityExtractor
-from dialogy.base.plugin import PluginFn
+from dialogy.base.entity_extractor import EntityScoringMixin
+from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
 from dialogy.utils import logger
 
@@ -32,7 +32,7 @@ Score = float
 MatchType = List[Tuple[Text, Label, Value, Span, Score]]  # adding score for each entity
 
 
-class ListEntityPlugin(EntityExtractor):
+class ListSearchPlugin(EntityScoringMixin, Plugin):
     """
      A :ref:`Plugin<plugin>` for extracting entities using spacy or a list of regex patterns.
 
@@ -62,6 +62,7 @@ class ListEntityPlugin(EntityExtractor):
 
     def __init__(
         self,
+        fuzzy_dp_config: Dict,  # parsed yaml file
         threshold: Optional[float] = None,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
@@ -70,16 +71,13 @@ class ListEntityPlugin(EntityExtractor):
         use_transform: bool = True,
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
-        fuzzy_dp_config=None,  # parsed yaml file
+        entity_type: str = "",  # entity_type passed as an argument
         fuzzy_threshold: Optional[float] = 0.1,
-        entity_type: str = None, # entity_type passed as an argument
-
     ):
         super().__init__(
             access=access,
             mutate=mutate,
             debug=debug,
-            threshold=threshold,
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
@@ -93,25 +91,26 @@ class ListEntityPlugin(EntityExtractor):
         )  # which search algo will be used: [regex, spacy, fuzzy]
         self.keywords = None
         self.flags = flags
+        self.threshold = threshold
         """
         Parameters for Fuzzy Dependency Parser defined below
         """
 
         # ensuring stanza models are downloaded
-        stanza.download('en')
-        stanza.download('hi')
+        stanza.download("en")
+        stanza.download("hi")
 
         self.entity_type = entity_type
         self.fuzzy_dp_config = fuzzy_dp_config[self.entity_type]
-        self.entity_dict = {}
-        self.entity_patterns = {}
-        self.nlp = {}
+        self.entity_dict: Dict = {}
+        self.entity_patterns: Dict = {}
+        self.nlp: Dict = {}
         self.fuzzy_threshold = fuzzy_threshold
 
         if self.style == const.FUZZY_DP:
             self.fuzzy_init()
 
-    def fuzzy_init(self):
+    def fuzzy_init(self) -> None:
         """
         Initializing the parameters for fuzzy dp search with their values
 
@@ -128,6 +127,7 @@ class ListEntityPlugin(EntityExtractor):
                 lang=lang_code, tokenize_pretokenized=True
             )
 
+    '''
     def _parse(self, candidates: Optional[Dict[str, Dict[str, List[Any]]]]) -> None:
         """
         Pre compile regex patterns to speed up runtime evaluation.
@@ -167,6 +167,7 @@ class ListEntityPlugin(EntityExtractor):
 
         logger.debug("compiled patterns")
         logger.debug(self.compiled_patterns)
+    '''
 
     def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:
         """
@@ -200,7 +201,7 @@ class ListEntityPlugin(EntityExtractor):
 
         """
         match_dict = {}
-        pos_tags = ["PROPN", "NOUN"]
+        pos_tags = ["PROPN", "NOUN", "ADP"]
         query = transcript
         # regex variables
         max_length = 0
@@ -245,7 +246,7 @@ class ListEntityPlugin(EntityExtractor):
                 """
                 value = value + str(word.text) + " "
         if value == "":
-            return
+            return None
         for pattern in self.entity_patterns[lang]:
             val = fuzz.ratio(pattern, value) / 100
             if val > self.fuzzy_threshold:
@@ -304,7 +305,6 @@ class ListEntityPlugin(EntityExtractor):
 
     def utility(self, *args: Any) -> Any:
         return self.get_entities(*args)  # pylint: disable=no-value-for-parameter
-
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         """
