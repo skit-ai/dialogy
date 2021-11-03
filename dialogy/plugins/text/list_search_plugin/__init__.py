@@ -14,7 +14,6 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 import stanza
-import yaml
 from thefuzz import fuzz
 from tqdm import tqdm
 
@@ -62,7 +61,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
 
     def __init__(
         self,
-        fuzzy_dp_config: Dict,  # parsed yaml file
+        fuzzy_dp_config: Dict[Any, Any],  # parsed yaml file
         threshold: Optional[float] = None,
         access: Optional[PluginFn] = None,
         mutate: Optional[PluginFn] = None,
@@ -102,9 +101,9 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
 
         self.entity_type = entity_type
         self.fuzzy_dp_config = fuzzy_dp_config[self.entity_type]
-        self.entity_dict: Dict = {}
-        self.entity_patterns: Dict = {}
-        self.nlp: Dict = {}
+        self.entity_dict: Dict[Any, Any] = {}
+        self.entity_patterns: Dict[Any, Any] = {}
+        self.nlp: Dict[Any, Any] = {}
         self.fuzzy_threshold = fuzzy_threshold
 
         if self.style == const.FUZZY_DP:
@@ -191,7 +190,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         return token_list
 
     # new method based on experiments done during development of channel parser
-    def get_fuzzy_dp_search(self, transcript: str, lang: str = None) -> MatchType:
+    def get_fuzzy_dp_search(self, transcript: str, lang: str = "") -> MatchType:
         """
         Search for Entity in transcript from a defined List Search space
         :param transcripts : A list of transcripts, :code:`List[str]`.
@@ -245,20 +244,26 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
 
                 """
                 value = value + str(word.text) + " "
-        if value == "":
-            return None
-        for pattern in self.entity_patterns[lang]:
-            val = fuzz.ratio(pattern, value) / 100
-            if val > self.fuzzy_threshold:
-                match_value = self.entity_dict[lang][pattern]
-                match_dict[match_value] = val
+        if value != "":
+            for pattern in self.entity_patterns[lang]:
+                val = fuzz.ratio(pattern, value) / 100
+                if val > self.fuzzy_threshold:
+                    match_value = self.entity_dict[lang][pattern]
+                    match_dict[match_value] = val
 
-        match_output = max(match_dict, key=match_dict.get)
-        match_score = match_dict[match_output]
+            match_output = max(match_dict, key=lambda x: match_dict[x])
+            match_score = match_dict[match_output]
 
-        return [
-            (value, self.entity_type, match_output, (span_start, span_end), match_score)
-        ]
+            return [
+                (
+                    value,
+                    self.entity_type,
+                    match_output,
+                    (span_start, span_end),
+                    match_score,
+                )
+            ]
+        return [(value, self.entity_type, "", (0, 0), float(0))]
 
     def get_entities(self, transcripts: List[str], lang: str) -> List[BaseEntity]:
         """
