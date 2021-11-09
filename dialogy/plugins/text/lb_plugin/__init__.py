@@ -46,7 +46,13 @@ class DucklingPluginLB(DucklingPlugin):
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         entity_list = super().utility(*args)
+        limit = 1 # pick only the first datetime entity
+        new_list = []
         if len(entity_list) > 0:
-            return [entity_list[0]]
-        else:
-            return []
+            for entity in entity_list:
+                if entity.type == "datetime" and limit != 0:
+                    new_list.append(entity)
+                    limit -= 1
+                elif entity.type != "datetime":
+                    new_list.append(entity)
+        return new_list
