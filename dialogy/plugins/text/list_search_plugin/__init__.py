@@ -279,14 +279,14 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         entities: List[BaseEntity] = []
 
         for i, matches_on_transcript in enumerate(matches_on_transcripts):
-            for text, label, value, span in matches_on_transcript:
+            for text, label, value, span, Score in matches_on_transcript:
                 entity_dict = {
                     "start": span[0],
                     "end": span[1],
                     "body": text,
                     "dim": label,
                     "parsers": [self.__class__.__name__],
-                    "score": 0,
+                    "score": Score,
                     "alternative_index": i,
                     "latent": False,
                     "__group": f"{label}_{text}",
