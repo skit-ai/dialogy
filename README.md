@@ -1,7 +1,7 @@
 # Dialogy
 
-[![Build Status](https://app.travis-ci.com/skit-ai/dialogy.svg?branch=master)](https://app.travis-ci.com/skit-ai/dialogy)
-[![Coverage Status](https://coveralls.io/repos/github/skit-ai/dialogy/badge.svg?branch=master)](https://coveralls.io/github/skit-ai/dialogy?branch=master)
+[![Build Status](https://github.com/skit-ai/dialogy/actions/workflows/basic_test_coverage.yml/badge.svg?branch=master)](https://github.com/skit-ai/dialogy/actions/workflows/basic_test_coverage.yml)
+[![Coverage Status](https://codecov.io/gh/skit-ai/dialogy/branch/master/graph/badge.svg?token=WAJ4LUTC76)](https://codecov.io/gh/skit-ai/dialogy)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c)](https://www.codacy.com/gh/skit-ai/dialogy/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Vernacular-ai/dialogy&amp;utm_campaign=Badge_Grade)
 [![PyPI version](https://badge.fury.io/py/dialogy.svg)](https://badge.fury.io/py/dialogy)
 
