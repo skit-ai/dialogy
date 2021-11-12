@@ -223,7 +223,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         sentence = nlp(query).sentences[0]
         value = ""
         pos_tags = ["PROPN", "NOUN", "ADP"]
-
+        result_dict = {}
         for word in sentence.words:
             if word.upos in pos_tags:
                 if value == "":
@@ -241,18 +241,18 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                 val = fuzz.ratio(pattern, value) / 100
                 if val > self.fuzzy_threshold:
                     match_value = match_dict[pattern]
-                    match_dict[match_value] = val
+                    result_dict[match_value] = val
+            if result_dict:
+                match_output = max(result_dict, key=lambda x: result_dict[x])
+                match_score = result_dict[match_output]
 
-            match_output = max(match_dict, key=lambda x: match_dict[x])
-            match_score = match_dict[match_output]
-
-            return (
-                value,
-                entity_type,
-                match_output,
-                (span_start, span_end),
-                match_score,
-            )
+                return (
+                    value,
+                    entity_type,
+                    match_output,
+                    (span_start, span_end),
+                    match_score,
+                )
         return (value, entity_type, "", (0, 0), float(0))
 
     # new method based on experiments done during development of channel parser

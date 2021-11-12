@@ -27,6 +27,7 @@ def mutate(w, v):
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_get_list_entities(payload):
     input_ = payload.get("input")
+    lang_ = payload.get("lang")
     expected = payload.get("expected")
     exception = payload.get("exception")
     config = payload.get("config")
@@ -34,11 +35,13 @@ def test_get_list_entities(payload):
 
     if expected:
         list_entity_plugin = ListSearchPlugin(
-            access=lambda w: (w.input,), mutate=mutate, **config
+            access=lambda w: (w.input["alternatives"], w.input["lang"]),
+            mutate=mutate,
+            **config
         )
 
         workflow = Workflow([list_entity_plugin])
-        output = workflow.run(input_=transcripts)
+        output = workflow.run(input_={"alternatives": transcripts, "lang": lang_})
         entities = output
 
         if not entities and expected:
