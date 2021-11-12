@@ -70,7 +70,6 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         use_transform: bool = True,
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
-        entity_type: str = "",  # entity_type passed as an argument
         fuzzy_threshold: Optional[float] = 0.1,
     ):
         super().__init__(
@@ -99,10 +98,9 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         stanza.download("en")
         stanza.download("hi")
 
-        self.entity_type = entity_type
-        self.fuzzy_dp_config = fuzzy_dp_config[self.entity_type]
+        self.fuzzy_dp_config = fuzzy_dp_config
         self.entity_dict: Dict[Any, Any] = {}
-        self.entity_patterns: Dict[Any, Any] = {}
+        self.entity_types: Dict[Any, Any] = {}
         self.nlp: Dict[Any, Any] = {}
         self.fuzzy_threshold = fuzzy_threshold
 
@@ -121,7 +119,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                     f"Provided language {lang_code} is not supported by this method at present"
                 )
             self.entity_dict[lang_code] = self.fuzzy_dp_config[lang_code]
-            self.entity_patterns[lang_code] = list(self.entity_dict[lang_code].keys())
+            self.entity_types[lang_code] = list(self.entity_dict[lang_code].keys())
             self.nlp[lang_code] = stanza.Pipeline(
                 lang=lang_code, tokenize_pretokenized=True
             )
@@ -189,49 +187,43 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         token_list = [search_fn(transcript, lang=lang) for transcript in transcripts]
         return token_list
 
-    # new method based on experiments done during development of channel parser
-    def get_fuzzy_dp_search(self, transcript: str, lang: str = "") -> MatchType:
-        """
-        Search for Entity in transcript from a defined List Search space
-        :param transcripts : A list of transcripts, :code:`List[str]`.
-        :param lang : Language code of the transcript :code str
-        :return: Token matches with the transcript.
-        :rtype: List[MatchType]
-
-        """
-        match_dict = {}
-        pos_tags = ["PROPN", "NOUN", "ADP"]
-        query = transcript
-        # regex variables
+    def search_regex(
+        self,
+        query: str,
+        entity_type: str = "",
+        entity_patterns: List[str] = [""],
+        match_dict: Dict[Any, Any] = {},
+    ) -> Tuple[Text, Label, Value, Span, Score]:
         max_length = 0
         final_match = None
 
-        """
-        Regex match first
-        if we get a match using simple regex we return it 
-        """
-        for pattern in self.entity_patterns[lang]:
+        for pattern in entity_patterns:
             result = re.search(pattern, query)
             if result:
-
-                match_value = self.entity_dict[lang][result[0]]
-                match_length = len(match_value)
-                if match_length > max_length:
-                    match_text = result[0]
-                    max_length = match_length
+                match_value = match_dict[result.group()]
+                match_len = len(match_value)
+                if match_len > max_length:
+                    match_text = result.group()
+                    max_length = match_len
                     final_match = match_value
                     match_span = result.span()
-
-        # MatchType = List[Tuple[Text, Label, Value, Span]]
-
         if final_match:
-            return [(match_text, self.entity_type, final_match, match_span, float(0))]
-        """
-        Dependency Parser + Fuzzy Matching 
-        if regex fails we use this method 
-        """
-        sentence = self.nlp[lang](query).sentences[0]
+            return (match_text, entity_type, final_match, match_span, float(0))
+        return ("", entity_type, "", (0, 0), float(0))
+
+    def dp_search(
+        self,
+        query: str,
+        nlp: Any,
+        entity_type: str = "",
+        entity_patterns: List[str] = [""],
+        match_dict: Dict[Any, Any] = {},
+    ) -> Tuple[Text, Label, Value, Span, Score]:
+
+        sentence = nlp(query).sentences[0]
         value = ""
+        pos_tags = ["PROPN", "NOUN", "ADP"]
+
         for word in sentence.words:
             if word.upos in pos_tags:
                 if value == "":
@@ -245,25 +237,65 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                 """
                 value = value + str(word.text) + " "
         if value != "":
-            for pattern in self.entity_patterns[lang]:
+            for pattern in entity_patterns:
                 val = fuzz.ratio(pattern, value) / 100
                 if val > self.fuzzy_threshold:
-                    match_value = self.entity_dict[lang][pattern]
+                    match_value = match_dict[pattern]
                     match_dict[match_value] = val
 
             match_output = max(match_dict, key=lambda x: match_dict[x])
             match_score = match_dict[match_output]
 
-            return [
-                (
-                    value,
-                    self.entity_type,
-                    match_output,
-                    (span_start, span_end),
-                    match_score,
+            return (
+                value,
+                entity_type,
+                match_output,
+                (span_start, span_end),
+                match_score,
+            )
+        return (value, entity_type, "", (0, 0), float(0))
+
+    # new method based on experiments done during development of channel parser
+    def get_fuzzy_dp_search(self, transcript: str, lang: str = "") -> MatchType:
+        """
+        Search for Entity in transcript from a defined List Search space
+        :param transcripts : A list of transcripts, :code:`List[str]`.
+        :param lang : Language code of the transcript :code str
+        :return: Token matches with the transcript.
+        :rtype: List[MatchType]
+
+        """
+        match = []
+        query = transcript
+        # regex variables
+
+        entity_patterns = {}
+        entity_match_dict = {}
+        for entity_type in self.entity_types[lang]:
+            entity_patterns[entity_type] = list(
+                self.entity_dict[lang][entity_type].keys()
+            )
+            entity_match_dict[entity_type] = self.entity_dict[lang][entity_type]
+            match_entity = self.search_regex(
+                query,
+                entity_type,
+                entity_patterns[entity_type],
+                entity_match_dict[entity_type],
+            )
+
+            if match_entity[0] == "":
+                match_entity = self.dp_search(
+                    query,
+                    self.nlp[lang],
+                    entity_type,
+                    entity_patterns[entity_type],
+                    entity_match_dict[entity_type],
                 )
-            ]
-        return [(value, self.entity_type, "", (0, 0), float(0))]
+            match.append(match_entity)
+
+        return match
+
+        # return [(value, self.entity_type, "", (0, 0), float(0))]
 
     def get_entities(self, transcripts: List[str], lang: str) -> List[BaseEntity]:
         """

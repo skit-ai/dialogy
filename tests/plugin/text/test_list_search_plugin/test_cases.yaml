@@ -1,0 +1,19 @@
+
+
+- description: "Test location entities using regex"
+  input:
+    - text: "i want to parse a token in delhi"
+  expected:
+    - type: "location"
+      value: "Delhi"
+  config:
+    debug: false
+    
+    fuzzy_dp_config:
+      en:
+        location:
+          New Delhi: Delhi
+          new deli: Delhi
+          delhi: Delhi
+
+
