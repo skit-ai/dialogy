@@ -361,7 +361,8 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         locale: str = "en_IN",
         reference_time: Optional[int] = None,
         use_latent: bool = False,
-    ) -> List[Dict[str, Any]]:
+        sort_idx: int = 0,
+    ) -> Dict[str, Any]:
         """
         Get entities from duckling-server.
 
@@ -390,15 +391,15 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             if response.status_code == 200:
                 # The API call was successful, expect the following to contain entities.
                 # A list of dicts or an empty list.
-                return response.json()
+                return {const.IDX: sort_idx, const.VALUE: response.json()}
         except requests.exceptions.Timeout as timeout_exception:
             logger.error(f"Duckling timed out: {timeout_exception}")
             logger.error(pformat(body))
-            return []
+            return {const.IDX: sort_idx, const.VALUE: []}
         except requests.exceptions.ConnectionError as connection_error:
             logger.error(f"Duckling server is turned off?: {connection_error}")
             logger.error(pformat(body))
-            return []
+            return {const.IDX: sort_idx, const.VALUE: []}
 
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
@@ -408,7 +409,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
 
     def _get_entities_concurrent(
         self,
-        texts: List[str],
+        texts: Union[str, List[str]],
         locale: str = "en_IN",
         reference_time: Optional[int] = None,
         use_latent: bool = False,
@@ -431,18 +432,37 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         """
         futures_ = []
         workers = min(10, len(texts))
-        with futures.ThreadPoolExecutor(max_workers=workers) as executor:
-            futures_ = [
-                executor.submit(
-                    self._get_entities,
-                    text,
+        if isinstance(texts, str):
+            entities_list = [
+                self._get_entities(
+                    texts,
                     locale,
                     reference_time=reference_time,
                     use_latent=use_latent,
                 )
-                for text in texts
             ]
-        return [future.result() for future in futures.as_completed(futures_)]
+        else:
+            with futures.ThreadPoolExecutor(max_workers=workers) as executor:
+                futures_ = [
+                    executor.submit(
+                        self._get_entities,
+                        text,
+                        locale,
+                        reference_time=reference_time,
+                        use_latent=use_latent,
+                        sort_idx=i,
+                    )
+                    for i, text in enumerate(texts)
+                ]
+            entities_list = [
+                future.result() for future in futures.as_completed(futures_)
+            ]
+        return [
+            entities[const.VALUE]
+            for entities in sorted(
+                entities_list, key=lambda entities: entities[const.IDX]
+            )
+        ]
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         """
@@ -473,12 +493,11 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         inputs_are_list_of_strings = isinstance(input_, list) and all(
             isinstance(text, str) for text in input_
         )
+        if inputs_are_list_of_strings:
+            input_size = len(input_)
 
         try:
-            if input_is_str:
-                list_of_entities.append(self._get_entities(*args, **kwargs))
-            elif inputs_are_list_of_strings:
-                input_size = len(input_)
+            if input_is_str or inputs_are_list_of_strings:
                 list_of_entities = self._get_entities_concurrent(*args, **kwargs)
             else:
                 raise TypeError(f"Expected {input_} to be a List[str] or str.")
