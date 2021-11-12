@@ -40,13 +40,13 @@ def test_plugin_working_cases(payload) -> None:
     workflow = Workflow([duckling_plugin])
 
     if expected_types is not None:
-        workflow.run(body)
+        output = workflow.run(body)
         module = importlib.import_module("dialogy.types.entity")
 
-        if not workflow.output["entities"]:
-            assert workflow.output["entities"] == []
+        if not output["entities"]:
+            assert output["entities"] == []
 
-        for i, entity in enumerate(workflow.output["entities"]):
+        for i, entity in enumerate(output["entities"]):
             class_name = expected_types[i]["entity"]
             assert isinstance(entity, getattr(module, class_name))
     else:
