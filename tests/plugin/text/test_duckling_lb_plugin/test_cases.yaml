@@ -18,6 +18,36 @@
   expected: [{"entity": "TimeEntity"}]
 
 - description: "test time entity."
+  input: ["27th next month", "28th next month"]
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': '27th next month',
+  'start': 0,
+  'value': {'values': [{'value': '2021-05-27T00:00:00.000+05:30',
+     'grain': 'day',
+     'type': 'value'}],
+   'value': '2021-05-27T00:00:00.000+05:30',
+   'grain': 'day',
+   'type': 'value'},
+  'end': 15,
+  'dim': 'time',
+  'latent': False},
+  {'body': '28th next month',
+  'start': 0,
+  'value': {'values': [{'value': '2021-05-28T00:00:00.000+05:30',
+     'grain': 'day',
+     'type': 'value'}],
+   'value': '2021-05-28T00:00:00.000+05:30',
+   'grain': 'day',
+   'type': 'value'},
+  'end': 15,
+  'dim': 'time',
+  'latent': False}]
+  expected: [{"entity": "TimeEntity"}]
+
+- description: "test time entity."
   input: ""
   duckling:
     dimensions: ["people", "time", "date", "duration"]
@@ -26,3 +56,58 @@
   mock_entity_json: []
   expected: []
 
+- description: "test people, date and time entities."
+  input: "I need 4 people on 27th next month. Can I have it at 5 am"
+  mock_entity_json: [{'body': '4 people',
+    'start': 7,
+    'value': {'value': 4, 'type': 'value', 'unit': 'person'},
+    'end': 15,
+    'dim': 'people',
+    'latent': False},
+     {'body': 'on 27th next month',
+      'start': 16,
+      'value': {'values': [{'value': '2021-05-27T00:00:00.000+05:30',
+         'grain': 'day',
+         'type': 'value'}],
+       'value': '2021-05-27T00:00:00.000+05:30',
+       'grain': 'day',
+       'type': 'value'},
+      'end': 34,
+      'dim': 'time',
+      'latent': False},
+     {'body': 'at 5 am',
+      'start': 50,
+      'value': {'values': [{'value': '2021-04-16T05:00:00.000+05:30',
+         'grain': 'hour',
+         'type': 'value'},
+        {'value': '2021-04-17T05:00:00.000+05:30',
+         'grain': 'hour',
+         'type': 'value'},
+        {'value': '2021-04-18T05:00:00.000+05:30',
+         'grain': 'hour',
+         'type': 'value'}],
+       'value': '2021-04-16T05:00:00.000+05:30',
+       'grain': 'hour',
+       'type': 'value'},
+      'end': 57,
+      'dim': 'time',
+      'latent': False}]
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  expected: [{"entity": "PeopleEntity"}, {"entity": "TimeEntity"}, {"entity": "TimeEntity"}]
+
+- description: "numerical entity test"
+  input: "4 items"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': 'four',
+  'start': 0,
+  'value': {'value': 4, 'type': 'value'},
+  'end': 4,
+  'dim': 'number',
+  'latent': False}]
+  expected: [{"entity": "NumericalEntity"}]
