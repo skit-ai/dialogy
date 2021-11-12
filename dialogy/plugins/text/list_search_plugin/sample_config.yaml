@@ -1,5 +1,5 @@
-channels:
-   en :
+en:
+  channels:
       star plus : star_plus
       gubbare : gubbare
       dd kisan : dd_kisan
@@ -51,60 +51,7 @@ channels:
       zee anmol : zee_anmol
       et now : et_now
 
-   hi: 
-      स्टार प्लस : star_plus
-      गुब्बारे : gubbare
-      डी डी किसान : dd_kisan
-      स्टार गोल्ड : star_gold
-      इंसिनक : insync
-      ज़ी कॉफी : zee_cafe
-      आ बी पी न्यूज़ : abp_news
-      स्टार उत्सव : star_utsav
-      स्टार  वर्ल्ड : star_world
-      दी क्यू : the_q
-      इन्वेस्टीगेशन डिस्कवरी : investigation_discovery 
-      मार्वल एच क्यू : marvel_hq
-      न्यूज़ एक्स : newsx
-      फ्रांस 24 : france_24
-      चैनल न्यूज़ एशिया : channel_news_asia
-      कलर्स इंफिनिटी : colors_infinity
-      सोनी तेन 1 : sony_ten_1
-      सी एन एन : cnn
-      इंडिया टीवी : india_tv
-      स्टार उत्सव मूवीज : star_utsav_movies
-      स्टार स्पोर्ट्स 2 : star_sports_2
-      स्टार गोल्ड 2 : star_gold_2
-      नेटवर्क 10 : network_10
-      बी बी सी वर्ल्ड : bbc_world
-      सोनी मैक्स 2 : sony_max_2
-      विऑन : wion
-      सिनेमा टीवी इंडिया : cinema_tv_india
-      इंडिया वौइस् : india_voice
-      लोक सभा टीवी : lok_sabha_tv
-      यु टीवी मूवीज : utv_movies 
-      बी 4 यु मुसिव : b4u_movies 
-      आर भारत : r_bharat
-      रिपब्लिक टीवी : republic_tv
-      डिज्नी : disney
-      1 स्पोर्ट्स : 1sports
-      ज़ी एक्शन : zee_action
-      आज तक तेज़ : aaj_tak_tez
-      डिस्कवरी किड्स : discovery_kids
-      कलर्स रिश्ते : colors_rishtey
-      स्टार गोल्ड सेलेक्ट : star_gold_select
-      डिज्नी जूनियर : disney_junior
-      ज़ूम : zoom
-      एंड पिक्टुरेस : and_pictures
-      जनतंत्र टीवी : jantantra_tv 
-      हंगामा टीवी : hungama_tv
-      दी दी न्यूज़ : dd_news
-      एन डी टीवी इंडिया : ndtv_india
-      इंडिया टुडे : india_today
-      ज़ी अनमोल : zee_anmol
-      इ टी नाउ : et_now 
-
-error_names:
-  en:
+  error_names:
     error 2: _error_02_
     error to: _error_02_
     digicard insertion problem : _error_02_
@@ -114,9 +61,62 @@ error_names:
     signal problem : _no_signal_ 
     weather issues : _no_signal_ 
     pairing error : _error_14_
-    wrong card : _error_14_ 
+    wrong card : _error_14_
 
-  hi: 
+hi:
+  channels:
+    स्टार प्लस : star_plus
+    गुब्बारे : gubbare
+    डी डी किसान : dd_kisan
+    स्टार गोल्ड : star_gold
+    इंसिनक : insync
+    ज़ी कॉफी : zee_cafe
+    आ बी पी न्यूज़ : abp_news
+    स्टार उत्सव : star_utsav
+    स्टार  वर्ल्ड : star_world
+    दी क्यू : the_q
+    इन्वेस्टीगेशन डिस्कवरी : investigation_discovery 
+    मार्वल एच क्यू : marvel_hq
+    न्यूज़ एक्स : newsx
+    फ्रांस 24 : france_24
+    चैनल न्यूज़ एशिया : channel_news_asia
+    कलर्स इंफिनिटी : colors_infinity
+    सोनी तेन 1 : sony_ten_1
+    सी एन एन : cnn
+    इंडिया टीवी : india_tv
+    स्टार उत्सव मूवीज : star_utsav_movies
+    स्टार स्पोर्ट्स 2 : star_sports_2
+    स्टार गोल्ड 2 : star_gold_2
+    नेटवर्क 10 : network_10
+    बी बी सी वर्ल्ड : bbc_world
+    सोनी मैक्स 2 : sony_max_2
+    विऑन : wion
+    सिनेमा टीवी इंडिया : cinema_tv_india
+    इंडिया वौइस् : india_voice
+    लोक सभा टीवी : lok_sabha_tv
+    यु टीवी मूवीज : utv_movies 
+    बी 4 यु मुसिव : b4u_movies 
+    आर भारत : r_bharat
+    रिपब्लिक टीवी : republic_tv
+    डिज्नी : disney
+    1 स्पोर्ट्स : 1sports
+    ज़ी एक्शन : zee_action
+    आज तक तेज़ : aaj_tak_tez
+    डिस्कवरी किड्स : discovery_kids
+    कलर्स रिश्ते : colors_rishtey
+    स्टार गोल्ड सेलेक्ट : star_gold_select
+    डिज्नी जूनियर : disney_junior
+    ज़ूम : zoom
+    एंड पिक्टुरेस : and_pictures
+    जनतंत्र टीवी : jantantra_tv 
+    हंगामा टीवी : hungama_tv
+    दी दी न्यूज़ : dd_news
+    एन डी टीवी इंडिया : ndtv_india
+    इंडिया टुडे : india_today
+    ज़ी अनमोल : zee_anmol
+    इ टी नाउ : et_now 
+
+  error_names:
     नो सिग्नल : _no_signal_
     सिग्नल प्रॉब्लम : _no_signal_
     मौसम की खराबी : _no_signal_
