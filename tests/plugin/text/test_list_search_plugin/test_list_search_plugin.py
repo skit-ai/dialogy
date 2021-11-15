@@ -24,6 +24,17 @@ def mutate(w, v):
     w.output = v
 
 
+def test_not_supported_lang():
+    with pytest.raises(ValueError):
+        l = ListSearchPlugin(
+            access=lambda w: (w.input,),
+            mutate=mutate,
+            fuzzy_threshold=0.3,
+            fuzzy_dp_config={"te": {"channel": {"hello": "hello"}}},
+        )
+        l.utility(".........", "te")
+
+
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_get_list_entities(payload):
     input_ = payload.get("input")
