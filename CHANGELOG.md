@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.8
+
+- [x] feat: ListSearchPlugin can find keyword entities via fuzzy search.
+
+## 0.8.7
+
+- [x] feat: LBPlugin a Duckling extension that has dedicated selection strategies for date, time and datetime.
+
 ## 0.8.6
 
 - [x] feat: conditional latent entities.
