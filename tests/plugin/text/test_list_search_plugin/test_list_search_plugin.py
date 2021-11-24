@@ -35,6 +35,16 @@ def test_not_supported_lang():
         l.utility(".........", "te")
 
 
+def test_entity_not_found():
+    l = ListSearchPlugin(
+        access=lambda w: (w.input,),
+        mutate=mutate,
+        fuzzy_threshold=0.4,
+        fuzzy_dp_config={"en": {"location": {"delhi": "Delhi"}}},
+    )
+    assert l.utility(["I live in punjab"], "en") == []
+
+
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_get_list_entities(payload):
     input_ = payload.get("input")
