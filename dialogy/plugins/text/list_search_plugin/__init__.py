@@ -204,8 +204,8 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                     final_match = match_value
                     match_span = result.span()
         if final_match:
-            return (match_text, entity_type, final_match, match_span, float(1))
-        return ("", entity_type, "", (0, 0), float(0))
+            return (match_text, entity_type, final_match, match_span, 1.0)
+        return ("", entity_type, "", (0, 0), 0.0)
 
     def dp_search(
         self,
@@ -249,7 +249,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                     (span_start, span_end),
                     match_score,
                 )
-        return (value, entity_type, "", (0, 0), float(0))
+        return (value, entity_type, "", (0, 0), 0.0)
 
     # new method based on experiments done during development of channel parser
     def get_fuzzy_dp_search(self, transcript: str, lang: str = "") -> MatchType:
@@ -308,7 +308,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
 
         for i, matches_on_transcript in enumerate(matches_on_transcripts):
             for text, label, value, span, score in matches_on_transcript:
-                if score == float(0):
+                if score == 0.0:
                     continue
                 entity_dict = {
                     "start": span[0],
