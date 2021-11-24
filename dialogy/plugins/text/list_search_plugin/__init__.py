@@ -204,7 +204,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                     final_match = match_value
                     match_span = result.span()
         if final_match:
-            return (match_text, entity_type, final_match, match_span, float(0))
+            return (match_text, entity_type, final_match, match_span, float(1))
         return ("", entity_type, "", (0, 0), float(0))
 
     def dp_search(
@@ -307,14 +307,16 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         entities: List[BaseEntity] = []
 
         for i, matches_on_transcript in enumerate(matches_on_transcripts):
-            for text, label, value, span, Score in matches_on_transcript:
+            for text, label, value, span, score in matches_on_transcript:
+                if score == float(0):
+                    continue
                 entity_dict = {
                     "start": span[0],
                     "end": span[1],
                     "body": text,
                     "dim": label,
                     "parsers": [self.__class__.__name__],
-                    "score": Score,
+                    "score": score,
                     "alternative_index": i,
                     "latent": False,
                     "__group": f"{label}_{text}",
@@ -328,11 +330,11 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                 del entity_dict["__group"]
                 entity_ = KeywordEntity.from_dict(entity_dict)
                 entity_.add_parser(self).set_value()
+
                 entities.append(entity_)
 
         logger.debug("Parsed entities")
         logger.debug(entities)
-
         aggregated_entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(aggregated_entities)
 
