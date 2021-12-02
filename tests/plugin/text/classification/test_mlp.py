@@ -276,7 +276,6 @@ def test_invalid_operations():
     assert mlp_clf.inference([])[0].name == "_error_"
 
     mlp_clf.model_pipeline = None
-    # with pytest.raises(AttributeError):
     assert mlp_clf.inference(["text"])[0].name == "_error_"
 
     if os.path.exists(file_path):
@@ -285,11 +284,6 @@ def test_invalid_operations():
 
 @pytest.mark.parametrize("payload", load_tests("mlp_cases", __file__))
 def test_inference(payload):
-    # save_module_name = const.XLMR_MODULE
-    # save_model_name = const.XLMR_MULTI_CLASS_MODEL
-    # const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
-    # const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
-
     directory = "/tmp"
     file_path = os.path.join(directory, const.MLPMODEL_FILE)
     if os.path.exists(file_path):
