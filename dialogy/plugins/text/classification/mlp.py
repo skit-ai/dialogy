@@ -1,0 +1,324 @@
+"""
+.. _mlp_classifier:
+
+This module provides a trainable MLP classifier.
+"""
+import os
+import joblib
+import ast
+from typing import Any, Dict, List, Optional
+from tqdm import tqdm
+import operator
+
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV
+from sklearn.neural_network import MLPClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import f1_score, make_scorer
+from sklearn.exceptions import NotFittedError
+
+tqdm.pandas()
+
+import dialogy.constants as const
+from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.types import Intent
+from dialogy.utils import load_file, logger, save_file
+
+from dialogy.plugins.text.classification.tokenizers import identity_tokenizer
+
+
+class MLPMultiClass(Plugin):
+    """
+    This plugin provides a classifier based on sklearn's MLPClassifier.
+    """
+
+    def __init__(
+        self,
+        model_dir: str,
+        access: Optional[PluginFn] = None,
+        mutate: Optional[PluginFn] = None,
+        debug: bool = False,
+        threshold: float = 0.1,
+        score_round_off: int = 5,
+        purpose: str = const.TRAIN,
+        fallback_label: str = const.ERROR_LABEL,
+        data_column: str = const.DATA,
+        label_column: str = const.LABELS,
+        args_map: Optional[Dict[str, Any]] = None,
+        skip_labels: Optional[List[str]] = None,
+        kwargs: Optional[Dict[str, Any]] = None,
+    ) -> None:
+
+        super().__init__(access, mutate, debug=debug)
+        self.model_pipeline: Any = None
+        self.fallback_label = fallback_label
+        self.data_column = data_column
+        self.label_column = label_column
+        self.mlp_model_path = os.path.join(model_dir, const.MLPMODEL_FILE)
+        self.threshold = threshold
+        self.skip_labels = set(skip_labels or set())
+        self.purpose = purpose
+        self.round = score_round_off
+        if args_map and (
+            const.TRAIN not in args_map
+            or const.TEST not in args_map
+            or const.PRODUCTION not in args_map
+        ):
+            raise ValueError(
+                f"Attempting to set invalid {args_map=}. "
+                "It is missing some of {const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
+            )
+        self.args_map = args_map
+        self.kwargs = kwargs or {}
+        try:
+            if os.path.exists(self.mlp_model_path):
+                self.init_model()
+        except EOFError:
+            logger.error(
+                f"Plugin {self.__class__.__name__} Failed to load MLPClassifier Model from {self.mlp_model_path}. "
+                "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
+            )
+
+    def init_model(self) -> None:
+        """
+        Initialize the model if artifacts are available.
+        """
+        if os.path.exists(self.mlp_model_path):
+            self.load()
+            return
+        args = (
+            self.args_map[self.purpose]
+            if self.args_map and self.purpose in self.args_map
+            else {}
+        )
+
+        self.model_pipeline = Pipeline(
+            [
+                (
+                    const.TFIDF,
+                    TfidfVectorizer(
+                        tokenizer=identity_tokenizer,
+                        stop_words=const.STOPWORDS,
+                        lowercase=const.TFIDF_LOWERCASE,
+                        ngram_range=const.DEFAULT_NGRAM,
+                    ),
+                ),
+                (
+                    const.MLP,
+                    MLPClassifier(
+                        random_state=const.MLP_RANDOMSTATE,
+                        max_iter=(
+                            args[const.NUM_TRAIN_EPOCHS]
+                            if args
+                            else const.MLP_DEFAULT_TRAIN_EPOCHS
+                        ),
+                        verbose=True,
+                    ),
+                ),
+            ]
+        )
+        USE = "use"
+        if args and args[const.USE_GRIDSEARCH][USE]:
+            GRID = self.get_gridsearch_grid(**args[const.USE_GRIDSEARCH][const.PARAMS])
+            self.model_pipeline = GridSearchCV(
+                estimator=self.model_pipeline,
+                param_grid=GRID,
+                cv=args[const.USE_GRIDSEARCH][const.CV],
+                n_jobs=const.GRIDSEARCH_WORKERS,
+                verbose=args[const.USE_GRIDSEARCH][const.VERBOSE_LEVEL],
+                scoring=make_scorer(f1_score, average=const.GRID_SCORETYPE),
+                return_train_score=True,
+            )
+
+        return args
+
+    def get_gridsearch_grid(self, **kwargs) -> List[Dict[str, Any]]:
+        """
+        Gets gridsearch hyperparameters for the model in proper grid params format.
+
+        Raises:
+            ValueError: If a gridsearch parameter doesn't exist in sklearns TFIDF and MLPClassifier modules.
+        """
+
+        grid_params: Dict[str, Any] = {}
+        for k, v in kwargs.items():
+            if (
+                k not in self.model_pipeline[const.TFIDF].get_params().keys()
+                and k not in self.model_pipeline[const.MLP].get_params().keys()
+            ):
+                raise ValueError(
+                    f"Hyperparam defined for gridsearch {k} doesn't exist,\nRefer: https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html\nand https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html"
+                )
+            if k != const.NGRAM_RANGE:
+                grid_params[f"{const.MLP}__{k}"] = self.get_formatted_gridparams(v)
+            else:
+                grid_params[f"{const.TFIDF}__{k}"] = self.get_formatted_gridparams(v)
+
+        return [grid_params]
+
+    @staticmethod
+    def get_formatted_gridparams(params: List[Any]) -> List[Any]:
+        """
+        Gets the valid parameters for the gridsearch.
+
+        Args:
+            values: The values to be validated.
+
+        Returns:
+            The valid parameters.
+        """
+        valid_params: List[Any] = []
+        for p in params:
+            try:
+                valid_params.append(ast.literal_eval(p))
+            except ValueError:
+                valid_params.append(p)
+        return valid_params
+
+    @property
+    def valid_mlpmodel(self) -> bool:
+        return hasattr(self.model_pipeline, "classes_")
+
+    def inference(self, texts: List[str]) -> List[Intent]:
+        """
+        Predict the intent of a list of texts.
+
+        :param texts: A list of strings, derived from ASR transcripts.
+        :type texts: List[str]
+        :raises AttributeError: In case the model isn't of sklearn pipeline or gridsearchcv.
+        :return: A list of intents corresponding to texts.
+        :rtype: List[Intent]
+        """
+        logger.debug(f"Classifier input:\n{texts}")
+        fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(
+            self.__class__
+        )
+
+        if self.model_pipeline is None:
+            logger.error(f"No model found for plugin {self.__class__.__name__}!")
+            return [fallback_output]
+
+        if not texts:
+            return [fallback_output]
+
+        if not isinstance(self.model_pipeline, Pipeline) and not isinstance(
+            self.model_pipeline, GridSearchCV
+        ):
+            raise AttributeError(
+                "Seems like you forgot to "
+                f"save the {self.__class__.__name__} plugin."
+            )
+
+        try:
+            probs_and_classes = sorted(
+                zip(
+                    self.model_pipeline.predict_proba(texts)[0],
+                    self.model_pipeline.classes_,
+                ),
+                key=operator.itemgetter(0),
+                reverse=True,
+            )
+        except NotFittedError:
+            logger.error(f"{self.__class__.__name__} model not trained yet!")
+            return [fallback_output]
+
+        return [
+            Intent(name=intent, score=round(score, self.round)).add_parser(
+                self.__class__
+            )
+            if score > self.threshold
+            else fallback_output
+            for score, intent in probs_and_classes
+        ]
+
+    def validate(self, training_data: pd.DataFrame) -> bool:
+        """
+        Validate the training data is in the appropriate format
+
+        :param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
+        :type training_data: pd.DataFrame
+        :return: True if the dataframe is valid, False otherwise.
+        :rtype: bool
+        """
+        if training_data.empty:
+            logger.error("Training dataframe is empty.")
+            return False
+
+        for column in [self.data_column, self.label_column]:
+            if column not in training_data.columns:
+                logger.warning(f"Column {column} not found in training data")
+                return False
+        return True
+
+    def train(self, training_data: pd.DataFrame) -> None:
+        """
+        Train an intent-classifier on the provided training data.
+
+        The training is skipped if the data-format is not valid.
+        :param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
+        :type training_data: pd.DataFrame
+        """
+        if not self.validate(training_data):
+            logger.warning(
+                f"Training dataframe is invalid, for {self.__class__.__name__} plugin."
+            )
+            return
+
+        if self.valid_mlpmodel:
+            logger.warning(f"Model already exists on {self.mlp_model_path}")
+            return
+
+        skip_labels_filter = training_data[self.label_column].isin(self.skip_labels)
+        training_data = training_data[~skip_labels_filter].copy()
+
+        self.labels_num = training_data[self.label_column].nunique()
+        sample_size = 5 if len(training_data) > 5 else len(training_data)
+        training_data.rename(
+            columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
+            inplace=True,
+        )
+        args = self.init_model()
+        logger.debug(
+            f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}\nLabels: {self.labels_num}."
+        )
+        self.model_pipeline.fit(training_data[const.TEXT], training_data[const.LABELS])
+        USE = "use"
+        if args and args[const.USE_GRIDSEARCH][USE]:
+            logger.debug(
+                "Best gridsearch params found:\n"
+                + str(
+                    "\n".join(
+                        str(items) for items in self.model_pipeline.best_params_.items()
+                    )
+                )
+            )
+        self.save()
+
+    def save(self) -> None:
+        """
+        Save the plugin artifacts.
+
+        :raises ValueError: In case the mlp model is not trained.
+        """
+        if not self.model_pipeline or not self.valid_mlpmodel:
+            raise ValueError(
+                f"Plugin {self.__class__.__name__} seems to be un-trained."
+            )
+        save_file(
+            self.mlp_model_path,
+            self.model_pipeline,
+            mode="wb",
+            writer=joblib.dump,
+        )
+
+    def load(self) -> None:
+        """
+        Load the plugin artifacts.
+        """
+        self.model_pipeline = load_file(
+            self.mlp_model_path, mode="rb", loader=joblib.load
+        )
+
+    def utility(self, *args: Any) -> Any:
+        return self.inference(*args)  # pylint: disable=no-value-for-parameter
