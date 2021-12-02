@@ -105,7 +105,7 @@ DATA = "data"
 CLASSIFICATION_INPUT = "classification_input"
 XLMR_MODULE = "simpletransformers.classification"
 XLMR_MULTI_CLASS_MODEL = "ClassificationModel"
-XLMR_MODEL = "xlmroberta" 
+XLMR_MODEL = "xlmroberta"
 XLMR_MODEL_TIER = "xlm-roberta-base"
 INTENT = "intent"
 INTENTS = f"{INTENT}s"
@@ -114,6 +114,27 @@ ENTITIES = "entities"
 SCORE = "score"
 LABELENCODER_FILE = "labelencoder.pkl"
 INVALID_TOKENS = ["<UNK>", "<PAD>", "<SOS>", "<EOS>"]
+
+# MLP
+MLPMODEL_FILE = "mlpmodelpipeline.joblib"
+NUM_TRAIN_EPOCHS = "num_train_epochs"
+MLP_DEFAULT_TRAIN_EPOCHS = 25
+DEFAULT_NGRAM = (1, 1)
+TFIDF_LOWERCASE = False
+STOPWORDS = None
+MLP_RANDOMSTATE = 1
+
+TFIDF = "tfidf"
+MLP = "mlp"
+
+# Hyperparams For MLP
+USE_GRIDSEARCH = "gridsearch_hyperparams"
+PARAMS = "params"
+GRID_SCORETYPE = "weighted"
+CV = "cv"
+VERBOSE_LEVEL = "verbose_level"
+NGRAM_RANGE = "ngram_range"
+GRIDSEARCH_WORKERS = -1  # -1 means use all available cores
 
 # CLI Commands
 TRAIN = "train"

@@ -1,0 +1,30 @@
+- input:
+    - "yes"
+  expected:
+    label: "_confirm_"
+    scores: 1
+
+- input:
+    - "no"
+  expected:
+    label: "_cancel_"
+    scores: 1
+
+- input:
+    - "yes"
+    - "ye"
+  expected:
+    label: "_confirm_"
+    scores: 1
+
+- input:
+    - "new"
+    - "no"
+  expected:
+    label: "_cancel_"
+    scores: 1
+
+- input: []
+  expected:
+    label: "_error_"
+    scores: 1
