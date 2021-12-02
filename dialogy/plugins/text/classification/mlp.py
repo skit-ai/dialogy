@@ -80,13 +80,13 @@ class MLPMultiClass(Plugin):
                 "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
             )
 
-    def init_model(self) -> None:
+    def init_model(self) -> Dict[str, Any]:
         """
         Initialize the model if artifacts are available.
         """
         if os.path.exists(self.mlp_model_path):
             self.load()
-            return
+            return {}
         args = (
             self.args_map[self.purpose]
             if self.args_map and self.purpose in self.args_map
@@ -133,15 +133,14 @@ class MLPMultiClass(Plugin):
 
         return args
 
-    def get_gridsearch_grid(self, **kwargs) -> List[Dict[str, Any]]:
+    def get_gridsearch_grid(self, **kwargs: Any) -> List[Dict[str, List[Any]]]:
         """
         Gets gridsearch hyperparameters for the model in proper grid params format.
 
         Raises:
             ValueError: If a gridsearch parameter doesn't exist in sklearns TFIDF and MLPClassifier modules.
         """
-
-        grid_params: Dict[str, Any] = {}
+        grid_params: Dict[str, List[Any]] = {}
         for k, v in kwargs.items():
             if (
                 k not in self.model_pipeline[const.TFIDF].get_params().keys()
