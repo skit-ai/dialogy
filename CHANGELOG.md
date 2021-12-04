@@ -1,5 +1,12 @@
 # Changelog
 
+
+## 0.8.10
+- [x] feat: Sklearn based MLP classifier added as a plugin with gridsearch.
+
+## 0.8.9
+- [x] fix: XLM classifier wasn't using xlmrobert, but bert instead.
+
 ## 0.8.8
 
 - [x] feat: ListSearchPlugin can find keyword entities via fuzzy search.
