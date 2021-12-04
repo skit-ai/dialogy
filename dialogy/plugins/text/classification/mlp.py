@@ -3,29 +3,28 @@
 
 This module provides a trainable MLP classifier.
 """
-import os
-import joblib
 import ast
-from typing import Any, Dict, List, Optional
-from tqdm import tqdm
 import operator
+import os
+from typing import Any, Dict, List, Optional
 
+import joblib
 import pandas as pd
-from sklearn.pipeline import Pipeline
-from sklearn.model_selection import GridSearchCV
-from sklearn.neural_network import MLPClassifier
+from sklearn.exceptions import NotFittedError
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import f1_score, make_scorer
-from sklearn.exceptions import NotFittedError
+from sklearn.model_selection import GridSearchCV
+from sklearn.neural_network import MLPClassifier
+from sklearn.pipeline import Pipeline
+from tqdm import tqdm
 
 tqdm.pandas()
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.plugins.text.classification.tokenizers import identity_tokenizer
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, save_file
-
-from dialogy.plugins.text.classification.tokenizers import identity_tokenizer
 
 
 class MLPMultiClass(Plugin):

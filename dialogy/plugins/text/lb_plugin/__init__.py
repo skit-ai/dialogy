@@ -1,10 +1,11 @@
 from typing import Any, Dict, List, Optional
 
+from pydash import partition
+
 from dialogy import constants as const
 from dialogy.base.plugin import PluginFn
 from dialogy.plugins import DucklingPlugin
 from dialogy.types.entity import BaseEntity
-from pydash import partition
 
 
 class DucklingPluginLB(DucklingPlugin):
@@ -47,7 +48,9 @@ class DucklingPluginLB(DucklingPlugin):
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         entity_list = super().utility(*args)
-        datetime_list, other_list = partition(entity_list, lambda x: x.type in ["datetime", "date", "time"])
+        datetime_list, other_list = partition(
+            entity_list, lambda x: x.type in ["datetime", "date", "time"]
+        )
         if datetime_list:
             other_list.append(min(datetime_list, key=lambda x: x.alternative_index))
 

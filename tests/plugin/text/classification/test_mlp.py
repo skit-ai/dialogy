@@ -3,10 +3,10 @@ import os
 import tempfile
 from typing import List
 
+import joblib
 import pandas as pd
 import pytest
 import sklearn
-import joblib
 
 import dialogy.constants as const
 from dialogy.plugins import MergeASROutputPlugin, MLPMultiClass
