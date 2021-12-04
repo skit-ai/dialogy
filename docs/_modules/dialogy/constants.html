@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.constants - dialogy 0.8.7a2 documentation</title>
+        <title>dialogy.constants - dialogy 0.8.8 documentation</title>
       <link rel="stylesheet" href="../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../_static/pygments.css">
     
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">dialogy 0.8.7a2 documentation</div></a>
+      <a href="../../index.html"><div class="brand">dialogy 0.8.8 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.7a2 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -120,6 +120,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../source/dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/dialogy.plugins.text.list_search_plugin.html">dialogy.plugins.text.list_search_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../source/dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../source/dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../source/dialogy.plugins.text.voting.html">dialogy.plugins.text.voting package</a></li>
@@ -134,6 +135,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/dialogy.plugins.text.list_search_plugin.html">dialogy.plugins.text.list_search_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../source/dialogy.plugins.text.voting.html">dialogy.plugins.text.voting package</a></li>
@@ -145,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.list_search_plugin.html">dialogy.plugins.text.list_search_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.voting.html">dialogy.plugins.text.voting package</a></li>
@@ -287,8 +290,8 @@
 <span class="n">CLASSIFICATION_INPUT</span> <span class="o">=</span> <span class="s2">"classification_input"</span>
 <span class="n">XLMR_MODULE</span> <span class="o">=</span> <span class="s2">"simpletransformers.classification"</span>
 <span class="n">XLMR_MULTI_CLASS_MODEL</span> <span class="o">=</span> <span class="s2">"ClassificationModel"</span>
-<span class="n">XLMR_MODEL</span> <span class="o">=</span> <span class="s2">"roberta"</span>
-<span class="n">XLMR_MODEL_TIER</span> <span class="o">=</span> <span class="s2">"roberta-base"</span>
+<span class="n">XLMR_MODEL</span> <span class="o">=</span> <span class="s2">"xlmroberta"</span>
+<span class="n">XLMR_MODEL_TIER</span> <span class="o">=</span> <span class="s2">"xlm-roberta-base"</span>
 <span class="n">INTENT</span> <span class="o">=</span> <span class="s2">"intent"</span>
 <span class="n">INTENTS</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">INTENT</span><span class="si">}</span><span class="s2">s"</span>
 <span class="n">LABELS</span> <span class="o">=</span> <span class="s2">"labels"</span>
@@ -296,6 +299,27 @@
 <span class="n">SCORE</span> <span class="o">=</span> <span class="s2">"score"</span>
 <span class="n">LABELENCODER_FILE</span> <span class="o">=</span> <span class="s2">"labelencoder.pkl"</span>
 <span class="n">INVALID_TOKENS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"&lt;UNK&gt;"</span><span class="p">,</span> <span class="s2">"&lt;PAD&gt;"</span><span class="p">,</span> <span class="s2">"&lt;SOS&gt;"</span><span class="p">,</span> <span class="s2">"&lt;EOS&gt;"</span><span class="p">]</span>
+
+<span class="c1"># MLP</span>
+<span class="n">MLPMODEL_FILE</span> <span class="o">=</span> <span class="s2">"mlpmodelpipeline.joblib"</span>
+<span class="n">NUM_TRAIN_EPOCHS</span> <span class="o">=</span> <span class="s2">"num_train_epochs"</span>
+<span class="n">MLP_DEFAULT_TRAIN_EPOCHS</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">DEFAULT_NGRAM</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">TFIDF_LOWERCASE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">STOPWORDS</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">MLP_RANDOMSTATE</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">TFIDF</span> <span class="o">=</span> <span class="s2">"tfidf"</span>
+<span class="n">MLP</span> <span class="o">=</span> <span class="s2">"mlp"</span>
+
+<span class="c1"># Hyperparams For MLP</span>
+<span class="n">USE_GRIDSEARCH</span> <span class="o">=</span> <span class="s2">"gridsearch_hyperparams"</span>
+<span class="n">PARAMS</span> <span class="o">=</span> <span class="s2">"params"</span>
+<span class="n">GRID_SCORETYPE</span> <span class="o">=</span> <span class="s2">"weighted"</span>
+<span class="n">CV</span> <span class="o">=</span> <span class="s2">"cv"</span>
+<span class="n">VERBOSE_LEVEL</span> <span class="o">=</span> <span class="s2">"verbose_level"</span>
+<span class="n">NGRAM_RANGE</span> <span class="o">=</span> <span class="s2">"ngram_range"</span>
+<span class="n">GRIDSEARCH_WORKERS</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># -1 means use all available cores</span>
 
 <span class="c1"># CLI Commands</span>
 <span class="n">TRAIN</span> <span class="o">=</span> <span class="s2">"train"</span>
@@ -308,6 +332,8 @@
 <span class="n">CANONICALIZED_TRANSCRIPTS</span> <span class="o">=</span> <span class="s2">"canonicalized_transcripts"</span>
 <span class="n">REFERENCE_TIME</span> <span class="o">=</span> <span class="s2">"reftime"</span>
 <span class="n">ENTITY_COLUMN</span> <span class="o">=</span> <span class="s2">"entities"</span>
+
+<span class="n">FUZZY_DP</span> <span class="o">=</span> <span class="s2">"fuzzy_dp"</span>
 </pre></div>
       </article>
       <footer>

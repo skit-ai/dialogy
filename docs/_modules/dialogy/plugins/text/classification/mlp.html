@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.plugins.text.classification.xlmr - dialogy 0.8.8 documentation</title>
+        <title>dialogy.plugins.text.classification.mlp - dialogy 0.8.8 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../../../../_static/pygments.css">
     
@@ -182,31 +182,39 @@
         <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <h1>Source code for dialogy.plugins.text.classification.xlmr</h1><div class="highlight"><pre>
+        <h1>Source code for dialogy.plugins.text.classification.mlp</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">.. _xlmr_classifier:</span>
+<span class="sd">.. _mlp_classifier:</span>
 
-<span class="sd">This module provides a trainable XLMR classifier.</span>
-<span class="sd">[read-more](https://arxiv.org/abs/1911.02116)</span>
+<span class="sd">This module provides a trainable MLP classifier.</span>
 <span class="sd">"""</span>
-<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">joblib</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
+<span class="kn">from</span> <span class="nn">sklearn.exceptions</span> <span class="kn">import</span> <span class="n">NotFittedError</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">make_scorer</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">tqdm</span><span class="o">.</span><span class="n">pandas</span><span class="p">()</span>
 
 <span class="kn">import</span> <span class="nn">dialogy.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
+<span class="kn">from</span> <span class="nn">dialogy.plugins.text.classification.tokenizers</span> <span class="kn">import</span> <span class="n">identity_tokenizer</span>
 <span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Intent</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">load_file</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">save_file</span>
 
 
-<div class="viewcode-block" id="XLMRMultiClass"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass">[docs]</a><span class="k">class</span> <span class="nc">XLMRMultiClass</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<div class="viewcode-block" id="MLPMultiClass"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass">[docs]</a><span class="k">class</span> <span class="nc">MLPMultiClass</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
-<span class="sd">    This plugin provides a classifier based on `XLM-Roberta &lt;https://arxiv.org/abs/1911.02116&gt;`.</span>
+<span class="sd">    This plugin provides a classifier based on sklearn's MLPClassifier.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -216,7 +224,6 @@
         <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
-        <span class="n">use_cuda</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">score_round_off</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">purpose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">,</span>
         <span class="n">fallback_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ERROR_LABEL</span><span class="p">,</span>
@@ -226,27 +233,13 @@
         <span class="n">skip_labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">classifer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-                <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">XLMR_MODULE</span><span class="p">),</span> <span class="n">const</span><span class="o">.</span><span class="n">XLMR_MULTI_CLASS_MODEL</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
-                <span class="s2">"Plugin requires simpletransformers -- https://simpletransformers.ai/docs/installation/"</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">LabelEncoder</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span> <span class="o">=</span> <span class="n">classifer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span> <span class="o">=</span> <span class="n">model_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fallback_label</span> <span class="o">=</span> <span class="n">fallback_label</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span> <span class="o">=</span> <span class="n">data_column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label_column</span> <span class="o">=</span> <span class="n">label_column</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span> <span class="o">=</span> <span class="n">use_cuda</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">LABELENCODER_FILE</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_dir</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">MLPMODEL_FILE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip_labels</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">skip_labels</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">purpose</span> <span class="o">=</span> <span class="n">purpose</span>
@@ -263,66 +256,120 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args_map</span> <span class="o">=</span> <span class="n">args_map</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> Failed to load labelencoder from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> Failed to load MLPClassifier Model from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="si">}</span><span class="s2">. "</span>
                 <span class="s2">"Ignore this message if you are training but if you are using this in production or testing, then this is serious!"</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="XLMRMultiClass.init_model"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.init_model">[docs]</a>    <span class="k">def</span> <span class="nf">init_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MLPMultiClass.init_model"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.init_model">[docs]</a>    <span class="k">def</span> <span class="nf">init_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Initialize the model if artifacts are available.</span>
-
-<span class="sd">        :param label_count: number of labels to train on or predict, defaults to None</span>
-<span class="sd">        :type label_count: Optional[int], optional</span>
-<span class="sd">        :raises ValueError: In case n is not provided or can't be calculated.</span>
 <span class="sd">        """</span>
-        <span class="n">model_dir</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">XLMR_MODEL_TIER</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-            <span class="n">label_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span>
-            <span class="n">model_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">label_count</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> needs either the training data or an existing labelencoder to initialize."</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="p">{}</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">args_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">purpose</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args_map</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">purpose</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args_map</span>
             <span class="k">else</span> <span class="p">{}</span>
         <span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span>
-                <span class="n">const</span><span class="o">.</span><span class="n">XLMR_MODEL</span><span class="p">,</span>
-                <span class="n">model_dir</span><span class="p">,</span>
-                <span class="n">num_labels</span><span class="o">=</span><span class="n">label_count</span><span class="p">,</span>
-                <span class="n">use_cuda</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">,</span>
-                <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
-                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">TFIDF</span><span class="p">,</span>
+                    <span class="n">TfidfVectorizer</span><span class="p">(</span>
+                        <span class="n">tokenizer</span><span class="o">=</span><span class="n">identity_tokenizer</span><span class="p">,</span>
+                        <span class="n">stop_words</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STOPWORDS</span><span class="p">,</span>
+                        <span class="n">lowercase</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">TFIDF_LOWERCASE</span><span class="p">,</span>
+                        <span class="n">ngram_range</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">DEFAULT_NGRAM</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">MLP</span><span class="p">,</span>
+                    <span class="n">MLPClassifier</span><span class="p">(</span>
+                        <span class="n">random_state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">MLP_RANDOMSTATE</span><span class="p">,</span>
+                        <span class="n">max_iter</span><span class="o">=</span><span class="p">(</span>
+                            <span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">NUM_TRAIN_EPOCHS</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">args</span>
+                            <span class="k">else</span> <span class="n">const</span><span class="o">.</span><span class="n">MLP_DEFAULT_TRAIN_EPOCHS</span>
+                        <span class="p">),</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">USE</span> <span class="o">=</span> <span class="s2">"use"</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">USE</span><span class="p">]:</span>
+            <span class="n">GRID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gridsearch_grid</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">PARAMS</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+                <span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">,</span>
+                <span class="n">param_grid</span><span class="o">=</span><span class="n">GRID</span><span class="p">,</span>
+                <span class="n">cv</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">CV</span><span class="p">],</span>
+                <span class="n">n_jobs</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">GRIDSEARCH_WORKERS</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VERBOSE_LEVEL</span><span class="p">],</span>
+                <span class="n">scoring</span><span class="o">=</span><span class="n">make_scorer</span><span class="p">(</span><span class="n">f1_score</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">GRID_SCORETYPE</span><span class="p">),</span>
+                <span class="n">return_train_score</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span>
-                <span class="n">const</span><span class="o">.</span><span class="n">XLMR_MODEL</span><span class="p">,</span>
-                <span class="n">const</span><span class="o">.</span><span class="n">XLMR_MODEL_TIER</span><span class="p">,</span>
-                <span class="n">num_labels</span><span class="o">=</span><span class="n">label_count</span><span class="p">,</span>
-                <span class="n">use_cuda</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">,</span>
-                <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
-                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
-            <span class="p">)</span></div>
+
+        <span class="k">return</span> <span class="n">args</span></div>
+
+<div class="viewcode-block" id="MLPMultiClass.get_gridsearch_grid"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid">[docs]</a>    <span class="k">def</span> <span class="nf">get_gridsearch_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Gets gridsearch hyperparameters for the model in proper grid params format.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If a gridsearch parameter doesn't exist in sklearns TFIDF and MLPClassifier modules.</span>
+<span class="sd">        """</span>
+        <span class="n">grid_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TFIDF</span><span class="p">]</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">MLP</span><span class="p">]</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Hyperparam defined for gridsearch </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> doesn't exist,</span><span class="se">\n</span><span class="s2">Refer: https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html</span><span class="se">\n</span><span class="s2">and https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html"</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">NGRAM_RANGE</span><span class="p">:</span>
+                <span class="n">grid_params</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">MLP</span><span class="si">}</span><span class="s2">__</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_formatted_gridparams</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">grid_params</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">TFIDF</span><span class="si">}</span><span class="s2">__</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_formatted_gridparams</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">grid_params</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="MLPMultiClass.get_formatted_gridparams"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_formatted_gridparams">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_formatted_gridparams</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Gets the valid parameters for the gridsearch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            values: The values to be validated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The valid parameters.</span>
+<span class="sd">        """</span>
+        <span class="n">valid_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">valid_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">valid_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">valid_params</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">valid_labelencoder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span><span class="p">,</span> <span class="s2">"classes_"</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">valid_mlpmodel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">,</span> <span class="s2">"classes_"</span><span class="p">)</span>
 
-<div class="viewcode-block" id="XLMRMultiClass.inference"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
+<div class="viewcode-block" id="MLPMultiClass.inference"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Predict the intent of a list of texts.</span>
 
 <span class="sd">        :param texts: A list of strings, derived from ASR transcripts.</span>
 <span class="sd">        :type texts: List[str]</span>
-<span class="sd">        :raises AttributeError: In case the labelencoder is not available.</span>
+<span class="sd">        :raises AttributeError: In case the model isn't of sklearn pipeline or gridsearchcv.</span>
 <span class="sd">        :return: A list of intents corresponding to texts.</span>
 <span class="sd">        :rtype: List[Intent]</span>
 <span class="sd">        """</span>
@@ -331,25 +378,33 @@
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No model found for plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">!"</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">fallback_output</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_labelencoder</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">texts</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">fallback_output</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">,</span> <span class="n">GridSearchCV</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
                 <span class="s2">"Seems like you forgot to "</span>
                 <span class="sa">f</span><span class="s2">"save the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> plugin."</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">texts</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">probs_and_classes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">texts</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">NotFittedError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> model not trained yet!"</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">fallback_output</span><span class="p">]</span>
-
-        <span class="n">predictions</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">predictions</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">fallback_output</span><span class="p">]</span>
-
-        <span class="n">confidence_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logit</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logit</span><span class="p">)))</span> <span class="k">for</span> <span class="n">logit</span> <span class="ow">in</span> <span class="n">logits</span><span class="p">]</span>
-        <span class="n">predicted_intents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">round</span><span class="p">))</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
@@ -357,10 +412,10 @@
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
             <span class="k">else</span> <span class="n">fallback_output</span>
-            <span class="k">for</span> <span class="n">intent</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">predicted_intents</span><span class="p">,</span> <span class="n">confidence_list</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">probs_and_classes</span>
         <span class="p">]</span></div>
 
-<div class="viewcode-block" id="XLMRMultiClass.validate"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="MLPMultiClass.validate"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Validate the training data is in the appropriate format</span>
 
@@ -379,7 +434,7 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="XLMRMultiClass.train"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MLPMultiClass.train"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Train an intent-classifier on the provided training data.</span>
 
@@ -393,52 +448,62 @@
             <span class="p">)</span>
             <span class="k">return</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_mlpmodel</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Model already exists on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span>
+
         <span class="n">skip_labels_filter</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_column</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_labels</span><span class="p">)</span>
         <span class="n">training_data</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="o">~</span><span class="n">skip_labels_filter</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_column</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_num</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_column</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
         <span class="n">sample_size</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
         <span class="n">training_data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_column</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">},</span>
             <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">training_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-            <span class="n">training_data</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">training_data</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[[</span><span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"Displaying a few samples (this goes into the model):</span><span class="se">\n</span><span class="si">{</span><span class="n">training_data</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">Labels: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
+            <span class="sa">f</span><span class="s2">"Displaying a few samples (this goes into the model):</span><span class="se">\n</span><span class="si">{</span><span class="n">training_data</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">Labels: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">labels_num</span><span class="si">}</span><span class="s2">."</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train_model</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training_data</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">],</span> <span class="n">training_data</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">])</span>
+        <span class="n">USE</span> <span class="o">=</span> <span class="s2">"use"</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">USE</span><span class="p">]:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">"Best gridsearch params found:</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                    <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="k">for</span> <span class="n">items</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="o">.</span><span class="n">best_params_</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="XLMRMultiClass.save"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MLPMultiClass.save"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Save the plugin artifacts.</span>
 
-<span class="sd">        :raises ValueError: In case the labelencoder is not trained.</span>
+<span class="sd">        :raises ValueError: In case the mlp model is not trained.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_labelencoder</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_mlpmodel</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> seems to be un-trained."</span>
             <span class="p">)</span>
         <span class="n">save_file</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">,</span>
             <span class="n">mode</span><span class="o">=</span><span class="s2">"wb"</span><span class="p">,</span>
-            <span class="n">writer</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">,</span>
+            <span class="n">writer</span><span class="o">=</span><span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="XLMRMultiClass.load"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MLPMultiClass.load"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Load the plugin artifacts.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"rb"</span><span class="p">,</span> <span class="n">loader</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">load</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"rb"</span><span class="p">,</span> <span class="n">loader</span><span class="o">=</span><span class="n">joblib</span><span class="o">.</span><span class="n">load</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="XLMRMultiClass.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="MLPMultiClass.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-value-for-parameter</span></div></div>
 </pre></div>
       </article>
