@@ -1,5 +1,7 @@
 # Changelog
 
+## 0.8.11
+- [ ] feat: plugin to merge previously tracked datetime entities with currently extracted datetime entities. 
 
 ## 0.8.10
 - [x] feat: Sklearn based MLP classifier added as a plugin with gridsearch.
