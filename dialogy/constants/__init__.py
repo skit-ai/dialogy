@@ -16,6 +16,8 @@ VALUE = "value"
 TO = "to"
 FROM = "from"
 LOCK = "lock"
+NAME = "name"
+SLOTS = "slots"
 
 
 class EntityKeys:

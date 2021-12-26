@@ -1,0 +1,245 @@
+- description: "combine current time with previous date"
+  inputs:
+    tracker:
+      - name: _callback_
+        slots:
+        - name: callback_datetime
+          type:
+          - time
+          - date
+          - datetime
+          values:
+          - alternative_index: 0
+            body: tomorrow
+            entity_type: date
+            grain: day
+            parsers:
+            - duckling
+            range:
+              end: 8
+              start: 0
+            score: null
+            type: value
+            value: '2021-10-15T00:00:00+05:30'
+    entities: 
+      - - body: at 3 pm
+          dim: time
+          end: 7
+          latent: false
+          start: 0
+          value:
+            grain: hour
+            type: value
+            value: '2021-10-14T15:00:00.000+05:30'
+            values:
+            - grain: hour
+              type: value
+              value: '2021-10-14T15:00:00.000+05:30'
+            - grain: hour
+              type: value
+              value: '2021-10-15T15:00:00.000+05:30'
+            - grain: hour
+              type: value
+              value: '2021-10-16T15:00:00.000+05:30'
+  expected: ['2021-10-15T15:00:00.000+05:30']
+
+- description: "combine current date with previous time"
+  inputs:
+    tracker:
+      - name: _callback_
+        slots:
+        - name: callback_datetime
+          type:
+          - time
+          - date
+          - datetime
+          values:
+          - alternative_index: 0
+            body: at 3 pm
+            entity_type: time
+            grain: hour
+            parsers:
+            - duckling
+            range:
+              end: 7
+              start: 0
+            score: null
+            type: value
+            value: '2021-10-14T15:00:00.000+05:30'
+    entities: 
+      - - body: tomorrow
+          dim: time
+          end: 8
+          latent: false
+          start: 0
+          value:
+            grain: day
+            type: value
+            value: '2021-10-15T00:00:00.000+05:30'
+            values:
+            - grain: day
+              type: value
+              value: '2021-10-15T00:00:00.000+05:30'
+            
+        - body: a couple
+          dim: number
+          end: 21
+          latent: false
+          start: 13
+          value:
+            type: value
+            value: 2
+  expected: ['2021-10-15T15:00:00.000+05:30', 2]
+
+- description: "doesn't combine current date with previous date"
+  inputs:
+    tracker:
+      - name: _callback_
+        slots:
+        - name: callback_datetime
+          type:
+          - time
+          - date
+          - datetime
+          values:
+          - alternative_index: 0
+            body: tomorrow
+            entity_type: date
+            grain: day
+            parsers:
+            - duckling
+            range:
+              end: 8
+              start: 0
+            score: null
+            type: value
+            value: '2021-10-15T00:00:00+05:30'
+    entities: 
+      - - body: tomorrow
+          dim: time
+          end: 8
+          latent: false
+          start: 0
+          value:
+            grain: day
+            type: value
+            value: '2021-10-15T00:00:00.000+05:30'
+            values:
+            - grain: day
+              type: value
+              value: '2021-10-15T00:00:00.000+05:30'
+  expected: ['2021-10-15T00:00:00.000+05:30']
+
+- description: "doesn't combine on missing trigger intent"
+  inputs:
+    tracker:
+      - name: not_a_trigger
+        slots:
+        - name: callback_datetime
+          type:
+          - time
+          - date
+          - datetime
+          values:
+          - alternative_index: 0
+            body: tomorrow
+            entity_type: date
+            grain: day
+            parsers:
+            - duckling
+            range:
+              end: 8
+              start: 0
+            score: null
+            type: value
+            value: '2021-10-15T00:00:00+05:30'
+    entities: 
+    - - body: tomorrow
+        dim: time
+        end: 8
+        latent: false
+        start: 0
+        value:
+          grain: day
+          type: value
+          value: '2021-10-15T00:00:00.000+05:30'
+          values:
+          - grain: day
+            type: value
+            value: '2021-10-15T00:00:00.000+05:30'
+  expected: ['2021-10-15T00:00:00.000+05:30']
+
+- description: "doesn't combine on missing entities in slot"
+  inputs:
+    tracker:
+      - name: _callback_
+        slots:
+        - name: callback_datetime
+          type:
+          - time
+          - date
+          - datetime
+          values: []
+    entities: 
+      - - body: tomorrow
+          dim: time
+          end: 8
+          latent: false
+          start: 0
+          value:
+            grain: day
+            type: value
+            value: '2021-10-15T00:00:00.000+05:30'
+            values:
+            - grain: day
+              type: value
+              value: '2021-10-15T00:00:00.000+05:30'
+  expected: ['2021-10-15T00:00:00.000+05:30']
+
+- description: "doesn't combine on invalid entities in slot"
+  inputs:
+    tracker:
+      - name: _callback_
+        slots:
+        - name: callback_datetime
+          type:
+          - time
+          - date
+          - datetime
+          values: 'invalid'
+    entities: 
+      - - body: tomorrow
+          dim: time
+          end: 8
+          latent: false
+          start: 0
+          value:
+            grain: day
+            type: value
+            value: '2021-10-15T00:00:00.000+05:30'
+            values:
+            - grain: day
+              type: value
+              value: '2021-10-15T00:00:00.000+05:30'
+  expected: ['2021-10-15T00:00:00.000+05:30']
+
+- description: "doesn't combine on missing slots"
+  inputs:
+    tracker:
+      - name: _callback_
+        slots: []
+    entities: 
+      - - body: tomorrow
+          dim: time
+          end: 8
+          latent: false
+          start: 0
+          value:
+            grain: day
+            type: value
+            value: '2021-10-15T00:00:00.000+05:30'
+            values:
+            - grain: day
+              type: value
+              value: '2021-10-15T00:00:00.000+05:30'
+  expected: ['2021-10-15T00:00:00.000+05:30']
