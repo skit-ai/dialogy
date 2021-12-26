@@ -10,6 +10,7 @@ Subpackages
    dialogy.plugins.text.calibration
    dialogy.plugins.text.canonicalization
    dialogy.plugins.text.classification
+   dialogy.plugins.text.combine_date_time
    dialogy.plugins.text.duckling_plugin
    dialogy.plugins.text.lb_plugin
    dialogy.plugins.text.list_entity_plugin
