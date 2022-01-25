@@ -10,7 +10,8 @@ from tqdm import tqdm
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin
 from dialogy.types import BaseEntity, plugin
-from dialogy.utils import logger, normalize
+from loguru import logger
+from dialogy.utils import normalize
 
 
 def get_entity_type(entity: BaseEntity) -> str:

@@ -21,7 +21,8 @@ from xgboost import XGBRegressor
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import Transcript, Utterance
-from dialogy.utils import logger, normalize
+from loguru import logger
+from dialogy.utils import normalize
 
 
 class FeatureExtractor(BaseEstimator, TransformerMixin):

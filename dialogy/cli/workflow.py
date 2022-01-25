@@ -5,7 +5,7 @@ from typing import Any
 import pandas as pd
 
 import dialogy.constants as const
-from dialogy.utils import logger
+from loguru import logger
 from dialogy.workflow import Workflow
 
 

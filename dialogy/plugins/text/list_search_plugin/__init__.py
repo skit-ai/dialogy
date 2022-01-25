@@ -21,7 +21,7 @@ from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityScoringMixin
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
-from dialogy.utils import logger
+from loguru import logger
 
 Text = str
 Label = str
