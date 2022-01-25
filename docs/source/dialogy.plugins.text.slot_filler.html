@@ -250,7 +250,7 @@ entities.</p>
 <span class="go"># ---------------------------------------------------------------------------------------------------</span>
 <span class="go"># ---------------------------------------------------------------------------------------------------</span>
 <span class="go"># Setting up the plugin</span>
-<span class="gp">In [9]: </span><span class="n">slot_filler</span> <span class="o">=</span> <span class="n">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">rules</span><span class="o">=</span><span class="n">slot_rules</span><span class="p">,</span> <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">w</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">In [9]: </span><span class="n">slot_filler</span> <span class="o">=</span> <span class="n">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">rules</span><span class="o">=</span><span class="n">slot_rules</span><span class="p">,</span> <span class="n">access</span><span class="o">=</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">w</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="go"># ---------------------------------------------------------------------------------------------------</span>
 <span class="go"># ---------------------------------------------------------------------------------------------------</span>
@@ -267,7 +267,7 @@ entities.</p>
 <span class="go"># ---------------------------------------------------------------------------------------------------</span>
 <span class="go"># ---------------------------------------------------------------------------------------------------</span>
 <span class="go"># setting up the workflow to use slot_filler</span>
-<span class="gp">In [14]: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">slot_filler</span><span class="p">],</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">In [14]: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">slot_filler</span><span class="p">],</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="go"># ---------------------------------------------------------------------------------------------------</span>
 <span class="go"># If you notice the instantiation of RuleBasedSlotFillerPlugin,</span>

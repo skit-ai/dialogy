@@ -251,7 +251,7 @@
 
 <span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
 <span class="s2">        # Setting up the plugin</span>
-<span class="s2">        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=True)()</span>
+<span class="s2">        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=False)()</span>
 <span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
 
 <span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
@@ -265,7 +265,7 @@
 
 <span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
 <span class="s2">        # setting up the workflow to use slot_filler</span>
-<span class="s2">        workflow = Workflow(preprocessors=[], postprocessors=[slot_filler], debug=True)</span>
+<span class="s2">        workflow = Workflow(preprocessors=[], postprocessors=[slot_filler], debug=False)</span>
 <span class="s2">        # ---------------------------------------------------------------------------------------------------</span>
 
 <span class="s2">        # If you notice the instantiation of RuleBasedSlotFillerPlugin,</span>

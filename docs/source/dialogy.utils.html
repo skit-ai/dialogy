@@ -264,12 +264,6 @@
 <span id="dialogy-utils-logger-module"></span><h2>dialogy.utils.logger module<a class="headerlink" href="#module-dialogy.utils.logger" title="Permalink to this headline">¶</a></h2>
 <p>Module provides access to logger.</p>
 <p>This needs to be used sparingly, prefer to raise specific exceptions instead.</p>
-<dl class="simple">
-<dt>Import functions:</dt><dd><ul class="simple">
-<li><p>change_log_level</p></li>
-</ul>
-</dd>
-</dl>
 </div>
 <div class="section" id="module-dialogy.utils.misc">
 <span id="dialogy-utils-misc-module"></span><h2>dialogy.utils.misc module<a class="headerlink" href="#module-dialogy.utils.misc" title="Permalink to this headline">¶</a></h2>
@@ -325,19 +319,19 @@ Missing properties will lead to KeyErrors.</p>
 
 <span class="go"># element with index 3 doesn't exist!</span>
 <span class="gp">In [4]: </span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
-<span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">IndexError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
+<span class="gt">---------------------------------------------------------------------</span>
+<span class="ne">IndexError</span><span class="g g-Whitespace">                          </span>Traceback (most recent call last)
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">556</span><span class="n">a11057179</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
 
-<span class="nn">~/Programs/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
+<span class="nn">~/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
 <span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">"""</span>
 <span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd">     try:</span>
 <span class="ne">---&gt; </span><span class="mi">53</span><span class="sd">         return reduce(lambda o, k: o[k], properties, obj)</span>
 <span class="g g-Whitespace">     </span><span class="mi">54</span><span class="sd">     except KeyError as key_error:</span>
 <span class="g g-Whitespace">     </span><span class="mi">55</span><span class="sd">         raise KeyError(</span>
 
-<span class="nn">~/Programs/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
+<span class="nn">~/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
 <span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd">     """</span>
 <span class="g g-Whitespace">     </span><span class="mi">52</span>     <span class="k">try</span><span class="p">:</span>
 <span class="ne">---&gt; </span><span class="mi">53</span>         <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>

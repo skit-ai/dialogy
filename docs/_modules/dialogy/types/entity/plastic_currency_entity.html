@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.types.entity.duration_entity - dialogy 0.8.10 documentation</title>
+        <title>dialogy.types.entity.plastic_currency_entity - dialogy 0.8.10 documentation</title>
       <link rel="stylesheet" href="../../../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../../../_static/pygments.css">
     
@@ -185,40 +185,54 @@
         <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <h1>Source code for dialogy.types.entity.duration_entity</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""</span>
-<span class="sd">.. _duration_entity:</span>
-<span class="sd">Module provides access to an entity type (class) to handle locations.</span>
-
-<span class="sd">Import classes:</span>
-<span class="sd">    - LocationEntity</span>
-<span class="sd">"""</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+        <h1>Source code for dialogy.types.entity.plastic_currency_entity</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">traverse_dict</span><span class="p">,</span> <span class="n">validate_type</span>
 
 
-<div class="viewcode-block" id="DurationEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.duration_entity.DurationEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
-<span class="k">class</span> <span class="nc">DurationEntity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    This entity type expects a normalized attribute. This provides the duration normalized to seconds.</span>
+<div class="viewcode-block" id="PlasticCurrencyEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.plastic_currency_entity.PlasticCurrencyEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">PlasticCurrencyEntity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">):</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
-<span class="sd">    Helpful in cases where we wish to operate on time like:</span>
-<span class="sd">    "I want a booking in 2 days."</span>
+    <span class="n">latent</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">parsers</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span>
+        <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">alternative_index</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">alternative_indices</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">entity_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="sd">    We can tell the time at which the sentence was said, but we need to make the booking after two days.</span>
+    <span class="n">__properties_map</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">PLASTIC_MONEY_PROPS</span>
 
-<span class="sd">    This entity parses this information and also provides us the number of seconds to add to the current timestamp</span>
-<span class="sd">    to get to a date that's 2 days ahead.</span>
-<span class="sd">    """</span>
+    <span class="k">def</span> <span class="nf">__attrs_post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span>
 
-    <span class="n">normalized</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">dict</span><span class="p">))</span>
-    <span class="n">_meta</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">dict</span><span class="p">))</span>
+<div class="viewcode-block" id="PlasticCurrencyEntity.validate"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.plastic_currency_entity.PlasticCurrencyEntity.validate">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Check attributes of instance match expected types.</span>
 
-<div class="viewcode-block" id="DurationEntity.reshape"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.duration_entity.DurationEntity.reshape">[docs]</a>    <span class="nd">@classmethod</span>
+<span class="sd">        :param dict_: A `Dict` where each key is an attribute of the instance and value is the expected type.</span>
+<span class="sd">        :type dict_: Dict[str, Any]</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        """</span>
+        <span class="k">for</span> <span class="n">prop</span><span class="p">,</span> <span class="n">prop_type</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__properties_map</span><span class="p">:</span>
+            <span class="n">validate_type</span><span class="p">(</span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">prop</span><span class="p">),</span> <span class="n">prop_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PlasticCurrencyEntity.reshape"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.plastic_currency_entity.PlasticCurrencyEntity.reshape">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        :type dict_: Dict[str, Any]</span>
@@ -232,21 +246,42 @@
         <span class="p">}</span>
         <span class="c1"># ['body', 'start', 'value', 'end', 'dim', 'latent']</span>
 
+        <span class="c1"># **type** of an entity is same as its **dimension**.</span>
         <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]</span>
-
-        <span class="c1"># This piece is a preparation for multiple entity values.</span>
-        <span class="c1"># So, even though we are confident of the value found, we are still keeping the</span>
-        <span class="c1"># structure.</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">NORMALIZED</span><span class="p">]</span>
-        <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
 
         <span class="k">del</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>
-        <span class="k">del</span> <span class="n">dict_</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">dict_</span></div>
 
-<div class="viewcode-block" id="DurationEntity.set_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.duration_entity.DurationEntity.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"BaseEntity"</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="PlasticCurrencyEntity.get_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.plastic_currency_entity.PlasticCurrencyEntity.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Get value of an entity.</span>
+
+<span class="sd">        The structure of an entity conceals the value in different data structures.</span>
+<span class="sd">        This is sugar for access.</span>
+
+<span class="sd">        :param reference: Picking value/values from a reference object.</span>
+<span class="sd">        :type reference: Any</span>
+<span class="sd">        :raises IndexError: If `values` is not a `list`.</span>
+<span class="sd">        :raises KeyError: If each element in `values` is not a `dict`.</span>
+<span class="sd">        :return: Arbitrary instance, subclasses should override and return specific types.</span>
+<span class="sd">        :rtype: BaseEntity</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">reference</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">reference</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PlasticCurrencyEntity.set_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.plastic_currency_entity.PlasticCurrencyEntity.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"BaseEntity"</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Set values and value attribute.</span>
+
+<span class="sd">        :param value: The parsed value of an entity token.</span>
+<span class="sd">        :type value: Any</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
       </article>
       <footer>

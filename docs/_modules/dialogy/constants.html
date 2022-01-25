@@ -225,10 +225,12 @@
     <span class="n">VALUE</span> <span class="o">=</span> <span class="s2">"value"</span>
     <span class="n">VALUES</span> <span class="o">=</span> <span class="s2">"values"</span>
     <span class="n">ORIGIN</span> <span class="o">=</span> <span class="s2">"origin"</span>
+    <span class="n">ISSUER</span> <span class="o">=</span> <span class="s2">"issuer"</span>
     <span class="n">NORMALIZED</span> <span class="o">=</span> <span class="s2">"normalized"</span>
     <span class="n">SLOT_NAMES</span> <span class="o">=</span> <span class="s2">"slot_names"</span>
     <span class="n">ALTERNATIVE_INDEX</span> <span class="o">=</span> <span class="s2">"alternative_index"</span>
-    <span class="n">ALTERNATIVE_INDICES</span> <span class="o">=</span> <span class="s2">"alternative_indices"</span></div>
+    <span class="n">ALTERNATIVE_INDICES</span> <span class="o">=</span> <span class="s2">"alternative_indices"</span>
+    <span class="n">CREDIT_CARD_NUMBER</span> <span class="o">=</span> <span class="s2">"credit-card-number"</span></div>
 
 
 <span class="n">SKIP_ENTITY_ATTRS</span> <span class="o">=</span> <span class="p">[</span>
@@ -254,6 +256,16 @@
     <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
     <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">BODY</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
     <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">],</span> <span class="nb">list</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">LATENT</span><span class="p">],</span> <span class="nb">bool</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">PLASTIC_MONEY_PROPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">],</span> <span class="nb">dict</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">BODY</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">],</span> <span class="nb">dict</span><span class="p">),</span>
     <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
     <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">LATENT</span><span class="p">],</span> <span class="nb">bool</span><span class="p">),</span>
 <span class="p">]</span>

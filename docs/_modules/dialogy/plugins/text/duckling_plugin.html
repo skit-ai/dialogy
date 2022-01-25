@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.plugins.text.duckling_plugin - dialogy 0.8.8 documentation</title>
+        <title>dialogy.plugins.text.duckling_plugin - dialogy 0.8.10 documentation</title>
       <link rel="stylesheet" href="../../../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../../../_static/pygments.css">
     
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.8.8 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.8.10 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.8 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.8.10 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -117,6 +117,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.plugins.text.combine_date_time.html">dialogy.plugins.text.combine_date_time package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -132,6 +133,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.plugins.text.combine_date_time.html">dialogy.plugins.text.combine_date_time package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -144,6 +146,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.combine_date_time.html">dialogy.plugins.text.combine_date_time package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
@@ -250,6 +253,7 @@
 <span class="kn">from</span> <span class="nn">dialogy.base.entity_extractor</span> <span class="kn">import</span> <span class="n">EntityScoringMixin</span>
 <span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.constants</span> <span class="kn">import</span> <span class="n">EntityKeys</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">entity</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">dimension_entity_map</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">dt2timestamp</span><span class="p">,</span> <span class="n">lang_detect_from_text</span><span class="p">,</span> <span class="n">logger</span>
 
@@ -349,10 +353,9 @@
             <span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded; charset=UTF-8"</span>
         <span class="p">}</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity_map</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">dimension_entity_map</span><span class="p">,</span> <span class="o">**</span><span class="n">entity_map</span><span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span> <span class="o">=</span> <span class="n">dimension_entity_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+        <span class="n">entity_map</span> <span class="o">=</span> <span class="n">entity_map</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">dimension_entity_map</span><span class="p">,</span> <span class="o">**</span><span class="n">entity_map</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__set_timezone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseTzInfo</span><span class="p">]:</span>
         <span class="sd">"""</span>
@@ -499,11 +502,22 @@
 <span class="sd">        :rtype: Optional[List[BaseEntity]]</span>
 <span class="sd">        """</span>
         <span class="n">entity_object_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
+        <span class="n">duckling_entity</span><span class="p">:</span> <span class="n">BaseEntity</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># For each entity dict:</span>
             <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities_json</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="k">if</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]</span> <span class="o">==</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">CREDIT_CARD_NUMBER</span><span class="p">:</span>
+                    <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span><span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]][</span>
+                        <span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span>
+                    <span class="p">]</span>
+                    <span class="n">duckling_entity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+                    <span class="n">duckling_entity</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                    <span class="c1"># Depending on the type of entity, the value is searched and filled.</span>
+                    <span class="n">duckling_entity</span><span class="o">.</span><span class="n">alternative_index</span> <span class="o">=</span> <span class="n">alternative_index</span>
+                    <span class="c1"># Collect the entity object in a list.</span>
+                    <span class="n">entity_object_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">duckling_entity</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
                     <span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">,</span>
                     <span class="n">EntityKeys</span><span class="o">.</span><span class="n">DURATION</span><span class="p">,</span>
                     <span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span><span class="p">,</span>
@@ -513,11 +527,15 @@
                     <span class="k">if</span> <span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span><span class="p">:</span>
                         <span class="c1"># Duckling entities with interval type have a different structure for value(s).</span>
                         <span class="c1"># They have a need to express units in "from", "to" format.</span>
-                        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span><span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+                        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span><span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]][</span>
+                            <span class="n">EntityKeys</span><span class="o">.</span><span class="n">INTERVAL</span>
+                        <span class="p">]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span><span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]][</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
-                    <span class="c1"># The most appropriate class is picked for making an object from the dict.</span>
-                    <span class="n">duckling_entity</span><span class="p">:</span> <span class="n">BaseEntity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+                        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension_entity_map</span><span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">]][</span>
+                            <span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUE</span>
+                        <span class="p">]</span>
+                        <span class="c1"># The most appropriate class is picked for making an object from the dict.</span>
+                    <span class="n">duckling_entity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
                     <span class="n">duckling_entity</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                     <span class="c1"># Depending on the type of entity, the value is searched and filled.</span>
                     <span class="n">duckling_entity</span><span class="o">.</span><span class="n">set_value</span><span class="p">()</span>

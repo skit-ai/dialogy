@@ -60,6 +60,14 @@ dialogy.types.entity.people\_entity module
    :undoc-members:
    :show-inheritance:
 
+dialogy.types.entity.plastic\_currency\_entity module
+-----------------------------------------------------
+
+.. automodule:: dialogy.types.entity.plastic_currency_entity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.types.entity.time\_entity module
 ----------------------------------------
 

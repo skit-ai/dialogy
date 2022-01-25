@@ -314,7 +314,7 @@
 <span class="sd">            def mutate(workflow, value):</span>
 <span class="sd">                workflow.input = value</span>
 <span class="sd">            config = {}</span>
-<span class="sd">            plugin = WERCalibrationPlugin(config, access=lambda _: (utterances, lang), mutate=mutate, debug=True)</span>
+<span class="sd">            plugin = WERCalibrationPlugin(config, access=lambda _: (utterances, lang), mutate=mutate, debug=False)</span>
 <span class="sd">            plugin.config[lang] = WERCalibrationConfig(</span>
 <span class="sd">                vectorizer=vectorizer, classifier=classifier, threshold=1.5</span>
 <span class="sd">            )</span>

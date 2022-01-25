@@ -307,7 +307,7 @@
 
 <span class="sd">        def update_intent(w, intent):</span>
 <span class="sd">            w.output[0] = intent</span>
-<span class="sd">        vote_plugin = VotePlugin(access=lambda w: (w.output, len(w.input[0])), mutate=update_intent, debug=True)()</span>
+<span class="sd">        vote_plugin = VotePlugin(access=lambda w: (w.output, len(w.input[0])), mutate=update_intent, debug=False)()</span>
 <span class="sd">        workflow = Workflow(preprocessors=[], postprocessors=[vote_plugin])</span>
 <span class="sd">        workflow.output = intents</span>
 <span class="sd">        workflow.run(input_=(transcripts,))</span>
