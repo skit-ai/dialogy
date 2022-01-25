@@ -142,9 +142,7 @@ class XLMRMultiClass(Plugin):
         :rtype: List[Intent]
         """
         logger.debug(f"Classifier input:\n{texts}")
-        fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(
-            self.__class__
-        )
+        fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
 
         if self.model is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
@@ -167,9 +165,7 @@ class XLMRMultiClass(Plugin):
         predicted_intents = self.labelencoder.inverse_transform(predictions)
 
         return [
-            Intent(name=intent, score=round(score, self.round)).add_parser(
-                self.__class__
-            )
+            Intent(name=intent, score=round(score, self.round)).add_parser(self)
             if score > self.threshold
             else fallback_output
             for intent, score in zip(predicted_intents, confidence_list)

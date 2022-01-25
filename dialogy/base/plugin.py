@@ -430,3 +430,6 @@ class Plugin(ABC):
         if not self.use_transform:
             return training_data
         return training_data
+
+    def __str__(self) -> str:
+        return self.__class__.__name__

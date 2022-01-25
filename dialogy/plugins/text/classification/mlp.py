@@ -189,9 +189,7 @@ class MLPMultiClass(Plugin):
         :rtype: List[Intent]
         """
         logger.debug(f"Classifier input:\n{texts}")
-        fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(
-            self.__class__
-        )
+        fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
 
         if self.model_pipeline is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
@@ -222,9 +220,7 @@ class MLPMultiClass(Plugin):
             return [fallback_output]
 
         return [
-            Intent(name=intent, score=round(score, self.round)).add_parser(
-                self.__class__
-            )
+            Intent(name=intent, score=round(score, self.round)).add_parser(self)
             if score > self.threshold
             else fallback_output
             for score, intent in probs_and_classes

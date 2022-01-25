@@ -179,8 +179,7 @@ class BaseEntity:
         :return: Calling instance with modifications to :code:`parsers` attribute.
         :rtype: BaseEntity
         """
-        plugin_name = plugin if isinstance(plugin, str) else plugin.__class__.__name__
-        self.parsers.append(plugin_name)
+        self.parsers.append(str(plugin))
         return self
 
     def get_value(self, reference: Any = None) -> Any:
