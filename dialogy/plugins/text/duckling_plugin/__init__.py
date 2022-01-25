@@ -165,9 +165,8 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         }
 
         self.dimension_entity_map: Dict[str, Dict[str, Any]]
-        if isinstance(entity_map, dict):
-            dimension_entity_map.update(entity_map)
-        self.dimension_entity_map = dimension_entity_map
+        entity_map = entity_map or {}
+        self.dimension_entity_map = {**dimension_entity_map, **entity_map}
 
     def __set_timezone(self) -> Optional[BaseTzInfo]:
         """
