@@ -70,7 +70,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
         # ---------------------------------------------------------------------------------------------------
         # Setting up the plugin
-        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=True)
+        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=False)
         # ---------------------------------------------------------------------------------------------------
 
         # ---------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
         # ---------------------------------------------------------------------------------------------------
         # setting up the workflow to use slot_filler
-        workflow = Workflow([slot_filler], debug=True)
+        workflow = Workflow([slot_filler], debug=False)
         # ---------------------------------------------------------------------------------------------------
 
         # If you notice the instantiation of RuleBasedSlotFillerPlugin,

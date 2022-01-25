@@ -53,8 +53,8 @@ def test_workflow_history_logs() -> None:
         w.output = v
 
     workflow = Workflow(
-        [MergeASROutputPlugin(access=lambda w: w.input, mutate=m, debug=True)],
-        debug=True,
+        [MergeASROutputPlugin(access=lambda w: w.input, mutate=m, debug=False)],
+        debug=False,
     )
     output = workflow.run(input_=["apples"])
     assert output == ["<s> apples </s>"], "workflow.output should == 'apples'."

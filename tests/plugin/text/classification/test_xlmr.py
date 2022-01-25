@@ -100,7 +100,7 @@ def test_xlmr_plugin_when_labelencoder_EOFError(capsys):
             model_dir=directory,
             access=lambda w: w.input[const.CLASSIFICATION_INPUT],
             mutate=write_intent_to_workflow,
-            debug=True,
+            debug=False,
         )
         assert xlmr_plugin.model is None
     os.remove(file_path)
@@ -254,7 +254,7 @@ def test_inference(payload):
         model_dir=directory,
         access=lambda w: (w.input[const.CLASSIFICATION_INPUT],),
         mutate=write_intent_to_workflow,
-        debug=True,
+        debug=False,
     )
 
     merge_asr_output_plugin = MergeASROutputPlugin(

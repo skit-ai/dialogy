@@ -22,11 +22,11 @@ import traceback
 from typing import Any, List, Optional
 
 import pandas as pd
+from loguru import logger
 from tqdm import tqdm
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin, PluginFn
-from loguru import logger
 from dialogy.utils import normalize
 
 

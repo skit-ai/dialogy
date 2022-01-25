@@ -13,13 +13,13 @@ from pprint import pformat
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
+from loguru import logger
 from tqdm import tqdm
 
 from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityScoringMixin
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
-from loguru import logger
 
 Text = str
 Label = str

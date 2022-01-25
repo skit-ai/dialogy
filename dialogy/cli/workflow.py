@@ -3,9 +3,9 @@ import importlib
 from typing import Any
 
 import pandas as pd
+from loguru import logger
 
 import dialogy.constants as const
-from loguru import logger
 from dialogy.workflow import Workflow
 
 

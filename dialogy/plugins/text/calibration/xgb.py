@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import jiwer
 import numpy as np
 import pandas as pd
+from loguru import logger
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import TfidfVectorizer
 from tqdm import tqdm
@@ -21,7 +22,6 @@ from xgboost import XGBRegressor
 from dialogy import constants as const
 from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import Transcript, Utterance
-from loguru import logger
 from dialogy.utils import normalize
 
 

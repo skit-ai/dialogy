@@ -58,7 +58,7 @@ def test_mlp_plugin_when_mlpmodel_EOFError(capsys):
             model_dir=directory,
             access=lambda w: w.input[const.CLASSIFICATION_INPUT],
             mutate=write_intent_to_workflow,
-            debug=True,
+            debug=False,
         )
         assert mlp_plugin.model_pipeline is None
     os.remove(file_path)
@@ -317,7 +317,7 @@ def test_inference(payload):
         access=lambda w: (w.input[const.CLASSIFICATION_INPUT],),
         mutate=write_intent_to_workflow,
         args_map=fake_args,
-        debug=True,
+        debug=False,
     )
 
     merge_asr_output_plugin = MergeASROutputPlugin(

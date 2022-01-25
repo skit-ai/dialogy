@@ -5,12 +5,12 @@ import traceback
 from typing import Any, Callable, List, Optional
 
 import pandas as pd
+from loguru import logger
 from tqdm import tqdm
 
 import dialogy.constants as const
 from dialogy.base.plugin import Plugin
 from dialogy.types import BaseEntity, plugin
-from loguru import logger
 from dialogy.utils import normalize
 
 

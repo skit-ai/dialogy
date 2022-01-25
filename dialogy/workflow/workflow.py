@@ -126,7 +126,7 @@ class Workflow:
             if not callable(plugin):
                 raise TypeError(f"{plugin=} is not a callable")
 
-            # logs are available only when debug=True during class initialization
+            # logs are available only when debug=False during class initialization
             if self.debug:
                 history = {
                     "plugin": plugin,
@@ -138,7 +138,7 @@ class Workflow:
             start = time.perf_counter()
             plugin(self)
             end = time.perf_counter()
-            # logs are available only when debug=True during class initialization
+            # logs are available only when debug=False during class initialization
             if self.debug:
                 history["after"] = {
                     "input": self.input,

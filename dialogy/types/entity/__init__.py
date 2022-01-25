@@ -17,7 +17,6 @@ from dialogy.types.entity.plastic_currency_entity import PlasticCurrencyEntity
 from dialogy.types.entity.time_entity import TimeEntity
 from dialogy.types.entity.time_interval_entity import TimeIntervalEntity
 
-
 dimension_entity_map: Dict[str, Dict[str, Any]] = {
     "number": {"value": NumericalEntity},
     "people": {"value": PeopleEntity},

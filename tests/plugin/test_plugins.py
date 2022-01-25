@@ -111,7 +111,7 @@ def test_arbitrary_plugin_with_debug_mode() -> None:
     We will test how an arbitrary-class-based plugin works with a workflow.
     """
     # create an instance of `ArbitraryPlugin`.
-    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate, debug=True)
+    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate, debug=False)
 
     # create an instance of a `Workflow`.
     # we are calling the `arbitrary_plugin` to get the `plugin` de method.
@@ -129,19 +129,19 @@ def test_arbitrary_plugin_with_debug_mode() -> None:
 
 
 def test_plugin_train() -> None:
-    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate, debug=True)
+    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate, debug=False)
     assert arbitrary_plugin.train([]) is None
 
 
 def test_plugin_transform_not_use_transform() -> None:
     arbitrary_plugin = ArbitraryPlugin(
-        access=access, mutate=mutate, debug=True, use_transform=False
+        access=access, mutate=mutate, debug=False, use_transform=False
     )
     assert arbitrary_plugin.transform([]) == []
 
 
 def test_plugin_transform() -> None:
     arbitrary_plugin = ArbitraryPlugin(
-        access=access, mutate=mutate, debug=True, use_transform=True
+        access=access, mutate=mutate, debug=False, use_transform=True
     )
     assert arbitrary_plugin.transform([{"a": 1}]) == [{"a": 1}]
