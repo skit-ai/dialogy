@@ -1,9 +1,9 @@
-from typing import Dict, List, Optional, Any, Union
+from typing import Any, Dict, List, Optional, Union
 
 import attr
 
-from dialogy.types.entity import BaseEntity
 from dialogy import constants as const
+from dialogy.types.entity import BaseEntity
 from dialogy.utils import traverse_dict, validate_type
 
 
@@ -65,38 +65,6 @@ class PlasticCurrencyEntity(BaseEntity):
         del dict_[const.EntityKeys.END]
         return dict_
 
-    @classmethod
-    def from_dict(cls, dict_: Dict[str, Any]) -> "BaseEntity":
-        """
-        Create an instance of a given class `cls` from a `dict` that complies
-        with attributes of `cls` through its keys and values.
-        Compliance is verified using the `__validate` method. It is expected that each subclass
-        will implement their own flavor of `__validate` to check their respective inputs.
-
-        :param dict_: A dict that provides all the attributes necessary for instantiating this class
-        :type dict_: Dict[str, Any]
-        :return: Instance of class
-        :rtype: BaseEntity
-        """
-        dict_ = cls.reshape(dict_)
-        cls.validate(dict_)
-        return cls(**dict_)
-
-    def add_parser(self, plugin: type) -> "BaseEntity":
-        """
-        Update parsers with the postprocessor function name
-
-        This is to identify the progression in which the plugins were applied to an entity.
-        This only helps in debugging and has no production utility.
-
-        :param plugin: The class that modifies this instance. Preferably should be a plugin.
-        :type plugin: Plugin
-        :return: Calling instance with modifications to :code:`parsers` attribute.
-        :rtype: BaseEntity
-        """
-        self.parsers.append(plugin.__name__)
-        return self
-
     def get_value(self, reference: Any = None) -> Any:
         """
         Get value of an entity.
@@ -114,30 +82,6 @@ class PlasticCurrencyEntity(BaseEntity):
         if reference:
             return reference.get(const.VALUE)
         return self.value.get(const.VALUE)
-
-    def json(
-        self, skip: Optional[List[str]] = None, add: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
-        """
-        Convert the object to a dictionary.
-
-        Applies some expected filters to prevent information bloat.
-
-        Add section for skipping more properties using const.SKIP_ENTITY_ATTRS + [""]
-
-        :param skip: Names of attributes that should not be included while converting to a dict.
-            Defaults to None.
-        :type skip: Optional[List[str]]
-        :param add: Names of attributes that should be included while converting to a dict.
-            Defaults to None.
-        :type add: Optional[List[str]]
-        :return: Dictionary representation of the object
-        :rtype: Dict[str, Any]
-        """
-        skip_ = skip or const.SKIP_ENTITY_ATTRS
-        if add and isinstance(add, list):
-            skip_ = [name for name in const.SKIP_ENTITY_ATTRS if name not in add]
-        return attr.asdict(self, filter=lambda attr, _: attr.name not in skip_)
 
     def set_value(self, value: Any = None) -> "BaseEntity":
         """
