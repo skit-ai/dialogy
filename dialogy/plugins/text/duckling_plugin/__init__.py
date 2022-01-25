@@ -318,7 +318,16 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         try:
             # For each entity dict:
             for entity in entities_json:
-                if entity[EntityKeys.VALUE][EntityKeys.TYPE] in [
+                if entity[EntityKeys.DIM] == EntityKeys.CREDIT_CARD_NUMBER:
+                    cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]
+                    duckling_entity: BaseEntity = cls.from_dict(entity)
+                    duckling_entity.add_parser(self)
+                    # Depending on the type of entity, the value is searched and filled.
+                    duckling_entity.alternative_index = alternative_index
+                    # Collect the entity object in a list.
+                    entity_object_list.append(duckling_entity)
+
+                elif entity[EntityKeys.VALUE][EntityKeys.TYPE] in [
                     EntityKeys.VALUE,
                     EntityKeys.DURATION,
                     EntityKeys.INTERVAL,
@@ -331,14 +340,14 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                         cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.INTERVAL]  # type: ignore
                     else:
                         cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
-                    # The most appropriate class is picked for making an object from the dict.
+                        # The most appropriate class is picked for making an object from the dict.
                     duckling_entity: BaseEntity = cls.from_dict(entity)
                     duckling_entity.add_parser(self)
                     # Depending on the type of entity, the value is searched and filled.
                     duckling_entity.set_value()
                     duckling_entity.alternative_index = alternative_index
                     # Collect the entity object in a list.
-                    entity_object_list.append(duckling_entity)
+                    entity_object_list.append(duckling_entity)             
                 else:
                     # Raised only if an unsupported `dimension` is used.
                     raise NotImplementedError(

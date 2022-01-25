@@ -37,10 +37,12 @@ class EntityKeys:
     VALUE = "value"
     VALUES = "values"
     ORIGIN = "origin"
+    ISSUER = "issuer"
     NORMALIZED = "normalized"
     SLOT_NAMES = "slot_names"
     ALTERNATIVE_INDEX = "alternative_index"
     ALTERNATIVE_INDICES = "alternative_indices"
+    CREDIT_CARD_NUMBER = "credit-card-number"
 
 
 SKIP_ENTITY_ATTRS = [
@@ -66,6 +68,16 @@ BASE_ENTITY_PROPS = [
     ([EntityKeys.RANGE, EntityKeys.END], int),
     ([EntityKeys.BODY], str),
     ([EntityKeys.VALUES], list),
+    ([EntityKeys.DIM], str),
+    ([EntityKeys.LATENT], bool),
+]
+
+PLASTIC_MONEY_PROPS = [
+    ([EntityKeys.RANGE], dict),
+    ([EntityKeys.RANGE, EntityKeys.START], int),
+    ([EntityKeys.RANGE, EntityKeys.END], int),
+    ([EntityKeys.BODY], str),
+    ([EntityKeys.VALUE], dict),
     ([EntityKeys.DIM], str),
     ([EntityKeys.LATENT], bool),
 ]

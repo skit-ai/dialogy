@@ -14,6 +14,7 @@ from dialogy.types.entity.numerical_entity import NumericalEntity
 from dialogy.types.entity.people_entity import PeopleEntity
 from dialogy.types.entity.time_entity import TimeEntity
 from dialogy.types.entity.time_interval_entity import TimeIntervalEntity
+from dialogy.types.entity.plastic_currency_entity import PlasticCurrencyEntity
 
 dimension_entity_map = {
     "number": {"value": NumericalEntity},
@@ -21,4 +22,5 @@ dimension_entity_map = {
     "time": {"value": TimeEntity, "interval": TimeIntervalEntity},
     "duration": {"value": DurationEntity},
     "amount-of-money": {"value": CurrencyEntity},
+    "credit-card-number": {"value": PlasticCurrencyEntity},
 }
