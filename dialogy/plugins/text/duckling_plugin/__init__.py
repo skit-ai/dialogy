@@ -164,10 +164,10 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
 
+        self.dimension_entity_map: Dict[str, Dict[str, Any]]
         if isinstance(entity_map, dict):
-            self.dimension_entity_map = {**dimension_entity_map, **entity_map}
-        else:
-            self.dimension_entity_map = dimension_entity_map
+            dimension_entity_map.update(entity_map)
+        self.dimension_entity_map = dimension_entity_map
 
     def __set_timezone(self) -> Optional[BaseTzInfo]:
         """
@@ -314,13 +314,15 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :rtype: Optional[List[BaseEntity]]
         """
         entity_object_list: List[BaseEntity] = []
-
+        duckling_entity: BaseEntity
         try:
             # For each entity dict:
             for entity in entities_json:
                 if entity[EntityKeys.DIM] == EntityKeys.CREDIT_CARD_NUMBER:
-                    cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]
-                    duckling_entity: BaseEntity = cls.from_dict(entity)
+                    cls = self.dimension_entity_map[entity[EntityKeys.DIM]][
+                        EntityKeys.VALUE
+                    ]
+                    duckling_entity = cls.from_dict(entity)
                     duckling_entity.add_parser(self)
                     # Depending on the type of entity, the value is searched and filled.
                     duckling_entity.alternative_index = alternative_index
@@ -337,17 +339,21 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                     if entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.INTERVAL:
                         # Duckling entities with interval type have a different structure for value(s).
                         # They have a need to express units in "from", "to" format.
-                        cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.INTERVAL]  # type: ignore
+                        cls = self.dimension_entity_map[entity[EntityKeys.DIM]][
+                            EntityKeys.INTERVAL
+                        ]
                     else:
-                        cls = self.dimension_entity_map[entity[EntityKeys.DIM]][EntityKeys.VALUE]  # type: ignore
+                        cls = self.dimension_entity_map[entity[EntityKeys.DIM]][
+                            EntityKeys.VALUE
+                        ]
                         # The most appropriate class is picked for making an object from the dict.
-                    duckling_entity: BaseEntity = cls.from_dict(entity)
+                    duckling_entity = cls.from_dict(entity)
                     duckling_entity.add_parser(self)
                     # Depending on the type of entity, the value is searched and filled.
                     duckling_entity.set_value()
                     duckling_entity.alternative_index = alternative_index
                     # Collect the entity object in a list.
-                    entity_object_list.append(duckling_entity)             
+                    entity_object_list.append(duckling_entity)
                 else:
                     # Raised only if an unsupported `dimension` is used.
                     raise NotImplementedError(
