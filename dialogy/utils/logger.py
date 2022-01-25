@@ -2,9 +2,6 @@
 Module provides access to logger.
 
 This needs to be used sparingly, prefer to raise specific exceptions instead.
-
-Import functions:
-    - change_log_level
 """
 import sys
 
@@ -35,3 +32,4 @@ FILE: {name}:L{line} <blue>{function}(...)</blue>
 }
 
 logger.configure(**config)
+logger.enable(__name__)
