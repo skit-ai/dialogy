@@ -11,7 +11,9 @@ from dialogy.utils import traverse_dict, validate_type
 class PlasticCurrencyEntity(BaseEntity):
     body = attr.ib(type=str, validator=attr.validators.instance_of(str), default=None)
     range = attr.ib(type=Dict[str, int], repr=False, default=None)
-    type = attr.ib(type=str, validator=attr.validators.instance_of(str), default="plastic-money")
+    type = attr.ib(
+        type=str, validator=attr.validators.instance_of(str), default="plastic-money"
+    )
     value: Any = attr.ib(default=None)
 
     latent = attr.ib(type=bool, default=False)
@@ -79,7 +81,9 @@ class PlasticCurrencyEntity(BaseEntity):
         :return: Arbitrary instance, subclasses should override and return specific types.
         :rtype: BaseEntity
         """
-        return self.value.get(const.VALUE) if not reference else reference.get(const.VALUE)
+        return (
+            self.value.get(const.VALUE) if not reference else reference.get(const.VALUE)
+        )
 
     def set_value(self, value: Any = None) -> BaseEntity:
         """
