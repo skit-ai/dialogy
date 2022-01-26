@@ -11,7 +11,7 @@ from dialogy.utils import traverse_dict, validate_type
 class PlasticCurrencyEntity(BaseEntity):
     body = attr.ib(type=str, validator=attr.validators.instance_of(str), default=None)
     range = attr.ib(type=Dict[str, int], repr=False, default=None)
-    type = attr.ib(type=str, validator=attr.validators.instance_of(str), default=None)
+    type = attr.ib(type=str, validator=attr.validators.instance_of(str), default="plastic-money")
     value: Any = attr.ib(default=None)
 
     latent = attr.ib(type=bool, default=False)
@@ -24,7 +24,7 @@ class PlasticCurrencyEntity(BaseEntity):
     )
     alternative_index = attr.ib(type=Optional[int], default=None)
     alternative_indices = attr.ib(type=Optional[List[int]], default=None)
-    entity_type: Optional[str] = attr.ib(default=None, repr=False)
+    entity_type: Optional[str] = attr.ib(repr=False, default="plastic-money")
 
     __properties_map = const.PLASTIC_MONEY_PROPS
 
@@ -79,11 +79,9 @@ class PlasticCurrencyEntity(BaseEntity):
         :return: Arbitrary instance, subclasses should override and return specific types.
         :rtype: BaseEntity
         """
-        if reference:
-            return reference.get(const.VALUE)
-        return self.value.get(const.VALUE)
+        return self.value.get(const.VALUE) if not reference else reference.get(const.VALUE)
 
-    def set_value(self, value: Any = None) -> "BaseEntity":
+    def set_value(self, value: Any = None) -> BaseEntity:
         """
         Set values and value attribute.
 
@@ -92,5 +90,11 @@ class PlasticCurrencyEntity(BaseEntity):
         :return: None
         :rtype: None
         """
+        if not isinstance(value, dict):
+            raise TypeError(f"{value} is not a dict.")
+        if const.VALUE not in value:
+            raise KeyError(f"{const.VALUE} is not in {value}.")
+        if const.EntityKeys.ISSUER not in value:
+            raise KeyError(f"{const.EntityKeys.ISSUER} is not in {value}.")
         self.value = value
         return self

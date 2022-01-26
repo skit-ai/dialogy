@@ -399,10 +399,7 @@ class Plugin(ABC):
         :type workflow: Workflow
         :raises TypeError: If access method is missing, we can't get inputs for transformation.
         """
-        if self.debug:
-            logger.enable("dialogy")
-        else:
-            logger.disable("dialogy")
+        logger.enable(str(self)) if self.debug else logger.disable(str(self))
         if self.access:
             args = self.access(workflow)
             value = self.utility(*args)  # pylint: disable=assignment-from-none

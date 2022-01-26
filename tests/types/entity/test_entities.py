@@ -16,6 +16,7 @@ from dialogy.types.entity import (
     PeopleEntity,
     TimeEntity,
     TimeIntervalEntity,
+    PlasticCurrencyEntity,
     entity_synthesis,
 )
 from dialogy.workflow import Workflow
@@ -363,7 +364,7 @@ def test_bad_time_entity_no_value() -> None:
         )
 
 
-def test_time_interval_entity_value_neither_from_nor_to() -> None:
+def test_time_interval_entity_value_without_range() -> None:
     body = "to 4 am"
     value = {
         "to": {"value": "2021-04-17T04:00:00.000+05:30", "grain": "hour"},
@@ -380,6 +381,40 @@ def test_time_interval_entity_value_neither_from_nor_to() -> None:
     del entity.value["to"]
     with pytest.raises(TypeError):
         entity.set_value(value)
+
+
+def test_plastic_currency_set_invalid_value():
+    with pytest.raises(TypeError):
+        PlasticCurrencyEntity(range={
+            "from": 0,
+            "to": 1},
+        body="").set_value(None)
+
+
+def test_plastic_currency_set_no_number():
+    with pytest.raises(KeyError):
+        PlasticCurrencyEntity(range={
+            "from": 0,
+            "to": 1},
+        body="").set_value({"issuer": "visa"})
+
+
+def test_plastic_currency_set_no_issuer():
+    with pytest.raises(KeyError):
+        PlasticCurrencyEntity(range={
+            "from": 0,
+            "to": 1},
+        body="").set_value({"value": "1234-5678-9012-3456"})
+
+
+def test_plastic_currency_get_value():
+    body = "My card number is 1234-5678-9012-3456"
+    value = {"value": "1234-5678-9012-3456", "issuer": "visa"}
+    entity = PlasticCurrencyEntity(range={
+        "from": body.index("1"),
+        "to": len(body) - 1
+    }, body=body).set_value(value)
+    assert entity.get_value() == value["value"]
 
 
 def test_time_interval_entity_get_value() -> None:
