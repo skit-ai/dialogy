@@ -58,6 +58,7 @@ import pandas as pd
 import pydash as py_
 import pytz
 import requests
+from numpy import isin
 from pytz.tzinfo import BaseTzInfo
 from tqdm import tqdm
 
@@ -423,7 +424,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
 
     def _get_entities_concurrent(
         self,
-        texts: Union[str, List[str]],
+        texts: List[str],
         locale: str = "en_IN",
         reference_time: Optional[int] = None,
         use_latent: bool = False,
@@ -444,39 +445,78 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :return: Duckling entities as :code:`dicts`.
         :rtype: List[List[Dict[str, Any]]]
         """
-        futures_ = []
         workers = min(10, len(texts))
-        if isinstance(texts, str):
-            entities_list = [
-                self._get_entities(
-                    texts,
+        with futures.ThreadPoolExecutor(max_workers=workers) as executor:
+            futures_ = [
+                executor.submit(
+                    self._get_entities,
+                    text,
                     locale,
                     reference_time=reference_time,
                     use_latent=use_latent,
+                    sort_idx=i,
                 )
+                for i, text in enumerate(texts)
             ]
-        else:
-            with futures.ThreadPoolExecutor(max_workers=workers) as executor:
-                futures_ = [
-                    executor.submit(
-                        self._get_entities,
-                        text,
-                        locale,
-                        reference_time=reference_time,
-                        use_latent=use_latent,
-                        sort_idx=i,
-                    )
-                    for i, text in enumerate(texts)
-                ]
-            entities_list = [
-                future.result() for future in futures.as_completed(futures_)
-            ]
+        entities_list = [future.result() for future in futures.as_completed(futures_)]
         return [
             entities[const.VALUE]
             for entities in sorted(
                 entities_list, key=lambda entities: entities[const.IDX]
             )
         ]
+
+    def apply_entity_classes(
+        self, list_of_entities: List[List[Dict[str, Any]]]
+    ) -> List[BaseEntity]:
+        shaped_entities = []
+        for (alternative_index, entities) in enumerate(list_of_entities):
+            shaped_entities.append(self._reshape(entities, alternative_index))
+        return py_.flatten(shaped_entities)
+
+    def validate(
+        self, input_: Union[str, List[str]], reference_time: Optional[int]
+    ) -> "DucklingPlugin":
+        input_is_str = isinstance(input_, str)
+        inputs_are_list_of_strings = isinstance(input_, list) and all(
+            isinstance(text, str) for text in input_
+        )
+        if not isinstance(reference_time, int) and self.datetime_filters:
+            raise TypeError(
+                "Duckling requires reference_time to be a unix timestamp (int) but"
+                f" {type(reference_time)} was found"
+                "https://stackoverflow.com/questions/20822821/what-is-a-unix-timestamp-and-why-use-it\n"
+            )
+
+        if not input_is_str and not inputs_are_list_of_strings:
+            raise TypeError(f"Expected {input_} to be a List[str] or str.")
+        return self
+
+    def extract(
+        self,
+        input_: Union[str, List[str]],
+        locale: str,
+        reference_time: Optional[int] = None,
+        use_latent: bool = False,
+    ) -> List[BaseEntity]:
+        list_of_entities: List[List[Dict[str, Any]]] = []
+        entities: List[BaseEntity] = []
+
+        self.validate(input_, reference_time)
+        self.reference_time = reference_time
+
+        if isinstance(input_, str):
+            input_ = [input_]
+
+        try:
+            list_of_entities = self._get_entities_concurrent(
+                input_, locale, reference_time=reference_time, use_latent=use_latent
+            )
+            entities = self.apply_entity_classes(list_of_entities)
+            entities = self.entity_consensus(entities, len(input_))
+            return self.apply_filters(entities)
+        except ValueError as value_error:
+            raise ValueError(str(value_error)) from value_error
 
     def utility(self, *args: Any) -> List[BaseEntity]:
         """
@@ -487,45 +527,10 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :return: A list of duckling entities.
         :rtype: List[BaseEntity]
         """
-        list_of_entities: List[List[Dict[str, Any]]] = []
-        shaped_entities: List[List[BaseEntity]] = []
-
         input_, reference_time, locale, use_latent = args
-        if not isinstance(reference_time, int) and self.datetime_filters:
-            raise TypeError(
-                "Duckling requires reference_time to be a unix timestamp (int) but"
-                f" {type(reference_time)} was found"
-                "https://stackoverflow.com/questions/20822821/what-is-a-unix-timestamp-and-why-use-it\n"
-            )
-
-        self.reference_time = reference_time
-        input_size = 1
-        args = (input_, locale)
-        kwargs = {"reference_time": reference_time, "use_latent": use_latent}
-
-        input_is_str = isinstance(input_, str)
-        inputs_are_list_of_strings = isinstance(input_, list) and all(
-            isinstance(text, str) for text in input_
+        return self.extract(
+            input_, locale, reference_time=reference_time, use_latent=use_latent
         )
-        if inputs_are_list_of_strings:
-            input_size = len(input_)
-
-        try:
-            if input_is_str or inputs_are_list_of_strings:
-                list_of_entities = self._get_entities_concurrent(*args, **kwargs)
-            else:
-                raise TypeError(f"Expected {input_} to be a List[str] or str.")
-
-            for (alternative_index, entities) in enumerate(list_of_entities):
-                shaped_entities.append(self._reshape(entities, alternative_index))
-
-            shaped_entities_flattened = py_.flatten(shaped_entities)
-            aggregate_entities = self.entity_consensus(
-                shaped_entities_flattened, input_size
-            )
-            return self.apply_filters(aggregate_entities)
-        except ValueError as value_error:
-            raise ValueError(str(value_error)) from value_error
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         """
