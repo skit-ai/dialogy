@@ -445,7 +445,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :return: Duckling entities as :code:`dicts`.
         :rtype: List[List[Dict[str, Any]]]
         """
-        workers = min(10, len(texts))
+        workers = min(10, max(len(texts), 1))
         with futures.ThreadPoolExecutor(max_workers=workers) as executor:
             futures_ = [
                 executor.submit(

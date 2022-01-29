@@ -191,6 +191,39 @@ def test_duckling_connection_error() -> None:
     assert output["entities"] == []
 
 
+def test_max_workers_greater_than_zero() -> None:
+    """Checks that "ValueError: max_workers must be greater than 0" is not raised when there are no transcriptions
+
+    When we get an empty transcription from ASR in a production setup, FSM does not send the empty transcription to the SLU service.
+
+    Whereas in a development setup, when one tries to run `slu test` with atleast one data point that does not have any transcriptions(`[]`)
+    it will raise a `ValueError: max_workers must be greater than 0` exception.
+
+    The corresponding fix has been done and this test ensures that the exception is not raised when there are no transcriptions even in development setup
+
+    :return: None
+    :rtype: None
+    """
+    locale = "en_IN"
+
+    def access(workflow):
+        return workflow.input, None, locale, False
+
+    duckling_plugin = DucklingPlugin(
+        access=access,
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        url="https://duckling/parse",
+    )
+
+    workflow = Workflow([duckling_plugin])
+    alternatives = []  # When ASR returns empty transcriptions.
+    try:
+        workflow.run(alternatives)
+    except ValueError as exc:
+        pytest.fail(f"{exc}")
+
+
 @httpretty.activate
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_plugin_working_cases(payload) -> None:
