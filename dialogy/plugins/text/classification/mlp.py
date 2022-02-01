@@ -221,8 +221,6 @@ class MLPMultiClass(Plugin):
 
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(self)
-            if score > self.threshold
-            else fallback_output
             for score, intent in probs_and_classes
         ]
 
