@@ -171,15 +171,17 @@ class XLMRMultiClass(Plugin):
         predictions, logits = self.model.predict(texts)
         if not predictions:
             return [fallback_output]
-
-        confidence_list = [max(np.exp(logit) / sum(np.exp(logit))) for logit in logits]
-        predicted_intents = self.labelencoder.inverse_transform(predictions)
+        
+        confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
+        intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
+        predicted_intents = self.labelencoder.inverse_transform(intents_confidence_order)
+        ordered_confidence_scores = [confidence_scores[0][idx] for idx in intents_confidence_order]
 
         return [
-            Intent(name=intent, score=round(score, self.round)).add_parser(self)
-            if score > self.threshold
-            else fallback_output
-            for intent, score in zip(predicted_intents, confidence_list)
+            Intent(name=intent, score=round(score, self.round)).add_parser(
+                self.__class__.__name__
+            )
+            for intent, score in zip(predicted_intents, ordered_confidence_scores)
         ]
 
     def validate(self, training_data: pd.DataFrame) -> bool:
