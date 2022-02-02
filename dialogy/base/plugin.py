@@ -272,8 +272,9 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional, Callable, List, TYPE_CHECKING
 
 import dialogy.constants as const
-from dialogy.types import PluginFn
 from dialogy.utils.logger import logger
+from dialogy.base.input import Input
+from dialogy.base.output import Output
 
 if TYPE_CHECKING:
     from dialogy.workflow import Workflow
@@ -372,18 +373,16 @@ class Plugin(ABC):
 
     def __init__(
         self,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
+        dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
     ) -> None:
-        self.access = access
-        self.mutate = mutate
         self.debug = debug
         self.guards = guards
+        self.dest = dest
         self.input_column = input_column
         self.output_column = output_column or input_column
         self.use_transform = use_transform
@@ -410,6 +409,10 @@ class Plugin(ABC):
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
         if self.prevent(workflow):
             return
+
+        value = self.utility(workflow.input, workflow.output)
+        if value is not None and isinstance(self.dest, str):
+            workflow.set(self.dest, value)
 
     def prevent(self, workflow: Workflow) -> bool:
         """
