@@ -269,11 +269,16 @@ Notes
 - A trainable plugin can also have transform methods if it needs to modify a dataframe for other plugins in place.
 """
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any, Optional, Callable, List, TYPE_CHECKING
 
 import dialogy.constants as const
 from dialogy.types import PluginFn
 from dialogy.utils.logger import logger
+
+if TYPE_CHECKING:
+    from dialogy.workflow import Workflow
+
+
 Guard = Callable[[Input, Output], bool]
 
 
@@ -394,7 +399,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    def __call__(self, workflow: Any) -> None:
+    def __call__(self, workflow: Workflow) -> None:
         """
         Abstraction for plugin io.
 
