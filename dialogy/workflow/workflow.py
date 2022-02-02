@@ -58,9 +58,9 @@ import pandas as pd
 
 from dialogy import constants as const
 from dialogy.base import output
-from dialogy.base.plugin import Plugin
 from dialogy.base.input import Input
 from dialogy.base.output import Output
+from dialogy.base.plugin import Plugin
 from dialogy.utils.logger import logger
 
 
@@ -91,9 +91,7 @@ class Workflow:
     input: Optional[Input] = attr.ib(default=None, kw_only=True)
     output: Optional[Output] = attr.ib(default=None, kw_only=True)
     debug = attr.ib(
-        type=bool,
-        default=False,
-        validator=attr.validators.instance_of(bool)
+        type=bool, default=False, validator=attr.validators.instance_of(bool)
     )
     lock: Lock
     NON_SERIALIZABLE_FIELDS = [const.PLUGINS, const.DEBUG, const.LOCK]
@@ -124,7 +122,9 @@ class Workflow:
         :rtype: Workflow
         """
         if not self.input or not self.output:
-            raise RuntimeError(f"Unexpected state - Attmpted to set on {self.input=} {self.output=}.")
+            raise RuntimeError(
+                f"Unexpected state - Attmpted to set on {self.input=} {self.output=}."
+            )
 
         dest, attribute = path.split(".")
 
