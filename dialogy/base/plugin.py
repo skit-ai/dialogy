@@ -274,6 +274,7 @@ from typing import Any, Optional
 import dialogy.constants as const
 from dialogy.types import PluginFn
 from dialogy.utils.logger import logger
+Guard = Callable[[Input, Output], bool]
 
 
 class Plugin(ABC):
@@ -371,11 +372,13 @@ class Plugin(ABC):
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
+        guards: Optional[List[Guard]] = None,
         debug: bool = False,
     ) -> None:
         self.access = access
         self.mutate = mutate
         self.debug = debug
+        self.guards = guards
         self.input_column = input_column
         self.output_column = output_column or input_column
         self.use_transform = use_transform
@@ -400,15 +403,19 @@ class Plugin(ABC):
         :raises TypeError: If access method is missing, we can't get inputs for transformation.
         """
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
-        if self.access:
-            args = self.access(workflow)
-            value = self.utility(*args)  # pylint: disable=assignment-from-none
-            if value is not None and self.mutate:
-                self.mutate(workflow, value)
-        else:
-            raise TypeError(
-                "Expected access to be functions" f" but {type(self.access)} was found."
-            )
+        if self.prevent(workflow):
+            return
+
+    def prevent(self, workflow: Workflow) -> bool:
+        """
+        Decide if the plugin should execute.
+
+        :return: prevent plugin execution if True.
+        :rtype: bool
+        """
+        if not self.guards:
+            return False
+        return any(guard(workflow.input, workflow.output) for guard in self.guards)
 
     def train(
         self, _: Any
