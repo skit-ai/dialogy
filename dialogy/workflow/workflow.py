@@ -51,13 +51,16 @@ The aim of this project is to be largest supplier of plugins for SLU application
 import copy
 import time
 from threading import Lock
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Self, Union
 
 import attr
 import pandas as pd
 
 from dialogy import constants as const
+from dialogy.base import output
 from dialogy.base.plugin import Plugin
+from dialogy.base.input import Input
+from dialogy.base.output import Output
 from dialogy.utils.logger import logger
 
 
@@ -85,10 +88,12 @@ class Workflow:
         type=List[Plugin],
         validator=attr.validators.instance_of(list),
     )
-    input: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
-    output: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
+    input: Optional[Input] = attr.ib(default=None, kw_only=True)
+    output: Optional[Output] = attr.ib(default=None, kw_only=True)
     debug = attr.ib(
-        type=bool, default=False, validator=attr.validators.instance_of(bool)
+        type=bool,
+        default=False,
+        validator=attr.validators.instance_of(bool)
     )
     lock: Lock
     NON_SERIALIZABLE_FIELDS = [const.PLUGINS, const.DEBUG, const.LOCK]
@@ -97,15 +102,43 @@ class Workflow:
         """
         Post init hook.
         """
-        self.set_io()
+        self.__reset()
         self.lock = Lock()
 
-    def set_io(self) -> None:
+    def __reset(self) -> None:
         """
         Use this method to keep workflow-io in the same format as expected.
         """
-        self.input: Dict[str, Any] = {}
-        self.output: Dict[str, Any] = {const.INTENTS: [], const.ENTITIES: []}
+        self.input = None
+        self.output = None
+
+    def set(self, path: str, value: Any) -> Self:
+        """
+        Set attribute path with value.
+
+        :param path: A '.' separated attribute path.
+        :type path: str
+        :param value: A value to set.
+        :type value: Any
+        :return: This instance
+        :rtype: Workflow
+        """
+        if not self.input or not self.output:
+            raise RuntimeError(f"Unexpected state - Attmpted to set on {self.input=} {self.output=}.")
+
+        dest, attribute = path.split(".")
+        destination: Union[Input, Output] = getattr(self, dest)
+        params = destination.json()
+
+        if dest == "input":
+            destination = Input(**params, **{attribute: value})
+        elif dest == "output" and isinstance(value, list):
+            destination = Output(**output, **{attribute: value})
+        elif dest == "output":
+            raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
+        else:
+            raise ValueError(f"{path} is not a valid path.")
+        return self
 
     def execute(self) -> None:
         """
@@ -114,12 +147,6 @@ class Workflow:
         We iterate through pre/post processing functions and update the input and
         output attributes of the class. It is expected that pre-processing functions
         would modify the input, and post-processing functions would modify the output.
-
-        Args:
-            processors (`List`): The list of preprocess or postprocess functions.
-
-        Raises:
-            `TypeError`: If any element in processors list is not a Callable.
         """
         history = {}
         for plugin in self.plugins:
@@ -148,7 +175,7 @@ class Workflow:
             if history:
                 logger.debug(history)
 
-    def run(self, input_: Any) -> Any:
+    def run(self, input_: Input) -> Any:
         """
         .. _workflow_run:
 
@@ -156,26 +183,20 @@ class Workflow:
 
         The current workflow exhibits the following simple procedure:
         pre-processing -> inference -> post-processing.
-
-        Args:
-            input_ (`Any`): This function receives any arbitrary input. Subclasses may enforce
-            a stronger check.
-
-        Returns:
-            (`Any`): This function can return any arbitrary value. Subclasses may enforce a stronger check.
         """
         with self.lock:
             self.input = input_
             self.execute()
-            output = copy.copy(self.output)
+            input_ = copy.deepcopy(self.input.json())
+            output = copy.deecopy(self.output.json())
             self.flush()
-        return output
+        return input_, output
 
     def flush(self) -> None:
         """
         Reset :code:`workflow.input` and :code:`workflow.output`.
         """
-        self.set_io()
+        self.__reset()
 
     def json(self) -> Dict[str, Any]:
         """
