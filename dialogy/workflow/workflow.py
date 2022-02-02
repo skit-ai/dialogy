@@ -127,13 +127,11 @@ class Workflow:
             raise RuntimeError(f"Unexpected state - Attmpted to set on {self.input=} {self.output=}.")
 
         dest, attribute = path.split(".")
-        destination: Union[Input, Output] = getattr(self, dest)
-        params = destination.json()
 
         if dest == "input":
-            destination = Input(**params, **{attribute: value})
+            self.input = Input(**self.input.json(), **{attribute: value})
         elif dest == "output" and isinstance(value, list):
-            destination = Output(**output, **{attribute: value})
+            self.output = Output(**self.output.json(), **{attribute: value})
         elif dest == "output":
             raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
         else:
