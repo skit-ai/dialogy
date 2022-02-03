@@ -108,7 +108,7 @@ class Workflow:
         Use this method to keep workflow-io in the same format as expected.
         """
         self.input = None
-        self.output = None
+        self.output = Output()
 
     def set(self, path: str, value: Any) -> Workflow:
         """
@@ -121,9 +121,9 @@ class Workflow:
         :return: This instance
         :rtype: Workflow
         """
-        if not self.input or not self.output:
+        if not self.input:
             raise RuntimeError(
-                f"Unexpected state - Attmpted to set on {self.input=} {self.output=}."
+                f"Unexpected state - Attmpted to set on {self.input=}."
             )
 
         dest, attribute = path.split(".")
