@@ -129,7 +129,7 @@ class Workflow:
         dest, attribute = path.split(".")
 
         if dest == "input":
-            self.input = Input(**self.input.json(), **{attribute: value})
+            self.input = Input(**{**self.input.json(), attribute: value})
         elif dest == "output" and isinstance(value, list):
             self.output = Output(**{**self.output.json(), attribute: value})
         elif dest == "output":
