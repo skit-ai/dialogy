@@ -48,16 +48,16 @@ The aim of this project is to be largest supplier of plugins for SLU application
     abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden
     to offer flexibility of use.
 """
+from __future__ import annotations
 import copy
 import time
 from threading import Lock
-from typing import Any, Dict, List, Optional, Self, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 import attr
 import pandas as pd
 
 from dialogy import constants as const
-from dialogy.base import output
 from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.base.plugin import Plugin
@@ -110,7 +110,7 @@ class Workflow:
         self.input = None
         self.output = None
 
-    def set(self, path: str, value: Any) -> Self:
+    def set(self, path: str, value: Any) -> Workflow:
         """
         Set attribute path with value.
 
@@ -138,7 +138,7 @@ class Workflow:
             raise ValueError(f"{path} is not a valid path.")
         return self
 
-    def execute(self) -> None:
+    def execute(self) -> Workflow:
         """
         Update input, output attributes.
 
@@ -172,8 +172,9 @@ class Workflow:
                 history["perf"] = round(end - start, 4)
             if history:
                 logger.debug(history)
+        return self
 
-    def run(self, input_: Input) -> Any:
+    def run(self, input_: Input) -> Tuple[dict, dict]:
         """
         .. _workflow_run:
 
@@ -184,17 +185,16 @@ class Workflow:
         """
         with self.lock:
             self.input = input_
-            self.execute()
-            input_ = copy.deepcopy(self.input.json())
-            output = copy.deecopy(self.output.json())
-            self.flush()
-        return input_, output
+            return self.execute().self.flush()
 
-    def flush(self) -> None:
+    def flush(self) -> Workflow:
         """
         Reset :code:`workflow.input` and :code:`workflow.output`.
         """
+        input_ = copy.deepcopy(self.input.json())
+        output = copy.deecopy(self.output.json())
         self.__reset()
+        return input_, output
 
     def json(self) -> Dict[str, Any]:
         """
@@ -208,7 +208,7 @@ class Workflow:
             not in self.NON_SERIALIZABLE_FIELDS,
         )
 
-    def train(self, training_data: pd.DataFrame) -> None:
+    def train(self, training_data: pd.DataFrame) -> Workflow:
         """
         Train all the plugins in the workflow.
 
@@ -224,3 +224,4 @@ class Workflow:
             transformed_data = plugin.transform(training_data)
             if transformed_data is not None:
                 training_data = transformed_data
+        return self
