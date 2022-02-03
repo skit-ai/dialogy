@@ -185,7 +185,7 @@ class Workflow:
         """
         with self.lock:
             self.input = input_
-            return self.execute().self.flush()
+            return self.execute().flush()
 
     def flush(self) -> Workflow:
         """
