@@ -116,6 +116,7 @@ WORD_THRESHOLD = 2
 ID = "id"
 IDX = "idx"
 DATA = "data"
+STATE = "state"
 CLASSIFICATION_INPUT = "classification_input"
 XLMR_MODULE = "simpletransformers.classification"
 XLMR_MULTI_CLASS_MODEL = "ClassificationModel"

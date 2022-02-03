@@ -158,6 +158,13 @@ def test_train_xlmr_mock():
         mutate=write_intent_to_workflow,
     )
 
+    xlmr_clf_state = XLMRMultiClass(
+        model_dir=directory,
+        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
+        mutate=write_intent_to_workflow,
+        use_state=True,
+    )
+
     train_df = pd.DataFrame(
         [
             {"data": "yes", "labels": "_confirm_"},
@@ -167,7 +174,17 @@ def test_train_xlmr_mock():
         ]
     )
 
+    train_df_state = pd.DataFrame(
+        [
+            {"data": "yes", "labels": "_confirm_", "state": "state1"},
+            {"data": "yea", "labels": "_confirm_", "state": "state2"},
+            {"data": "no", "labels": "_cancel_", "state": "state3"},
+            {"data": "nope", "labels": "_cancel_", "state": "state4"},
+        ]
+    )
+
     xlmr_clf.train(train_df)
+    xlmr_clf_state.train(train_df_state)
 
     # This copy loads from the same directory that was trained previously.
     # So this instance would have read the labelencoder saved.
@@ -200,6 +217,12 @@ def test_invalid_operations():
         access=lambda w: w.input[const.CLASSIFICATION_INPUT],
         mutate=write_intent_to_workflow,
     )
+    xlmr_clf_state = XLMRMultiClass(
+        model_dir=directory,
+        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
+        mutate=write_intent_to_workflow,
+        use_state=True,
+    )
 
     with pytest.raises(ValueError):
         xlmr_clf.init_model(None)
@@ -218,10 +241,14 @@ def test_invalid_operations():
     xlmr_clf.train(train_df_empty)
     assert load_file(file_path, mode="rb", loader=pickle.load) is None
     assert xlmr_clf.validate(train_df_invalid) is False
+    assert xlmr_clf_state.validate(train_df_invalid) is False
 
     xlmr_clf.train(train_df_invalid)
     assert load_file(file_path, mode="rb", loader=pickle.load) is None
     assert xlmr_clf.inference(["text"])[0].name == "_error_"
+
+    xlmr_clf_state.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
+    assert xlmr_clf_state.inference(["text"])[0].name == "_error_"
 
     with pytest.raises(ValueError):
         xlmr_clf.save()

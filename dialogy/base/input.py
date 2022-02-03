@@ -1,22 +1,24 @@
-from typing import Optional
+from typing import Optional, List
 
 import attr
 
 from dialogy.types import Utterance
-from dialogy.utils import is_unix_ts, normalize
+from dialogy.utils import is_unix_ts, normalize, is_utterance
 
 
 @attr.frozen
 class Input:
-    utterance: Utterance = attr.ib(converter=normalize, kw_only=True)
+    utterances: List[Utterance] = attr.ib(kw_only=True)
+    reference_time: Optional[int] = attr.ib(kw_only=True)
+
+    latent_entities: bool = attr.ib(default=False, kw_only=True, converter=bool)
+    transcripts: List[str] = attr.ib(default=None)
     clf_feature: Optional[str] = attr.ib(
         kw_only=True,
         default=None,
         validator=attr.validators.optional(attr.validators.instance_of(str)),
     )
-    reference_time: int = attr.ib(
-        kw_only=True, validator=lambda _, __, x: is_unix_ts(x)
-    )
+    lang: str = attr.ib(default="en", kw_only=True, validator=attr.validators.instance_of(str))
     locale: str = attr.ib(
         default="en_IN",
         kw_only=True,
@@ -27,10 +29,10 @@ class Input:
         kw_only=True,
         validator=attr.validators.optional(attr.validators.instance_of(str)),
     )
-    tracked_slots: Optional[dict] = attr.ib(
+    slot_tracker: Optional[list] = attr.ib(
         default=None,
         kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(dict)),
+        validator=attr.validators.optional(attr.validators.instance_of(list)),
     )
     current_state: Optional[str] = attr.ib(
         default=None,
@@ -42,6 +44,16 @@ class Input:
         kw_only=True,
         validator=attr.validators.optional(attr.validators.instance_of(str)),
     )
+
+    def __attrs_post_init__(self):
+        object.__setattr__(self, "transcript", normalize(self.utterances))
+
+    @reference_time.validator
+    def _check_reference_time(self, attribute: attr.Attribute, reference_time: int):
+        if not isinstance(reference_time, int):
+            raise TypeError(f"{attribute.name} must be an integer.")
+        if not is_unix_ts(reference_time):
+            raise ValueError(f"{attribute.name} must be a unix timestamp but got {reference_time}.")
 
     def json(self):
         return attr.asdict(self)
