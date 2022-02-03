@@ -389,7 +389,7 @@ class Plugin(ABC):
         self.use_transform = use_transform
 
     @abstractmethod
-    def utility(self, *args: Any) -> Any:
+    def utility(self, input: Input, output: Output) -> Any:
         """
         Transform X -> y.
 
@@ -426,17 +426,13 @@ class Plugin(ABC):
             return False
         return any(guard(workflow.input, workflow.output) for guard in self.guards)
 
-    def train(
-        self, _: Any
-    ) -> Any:  # pylint: disable=unused-argument disable=no-self-use
+    def train(self, _: Any) -> Any:
         """
         Train a plugin.
         """
         return None
 
-    def transform(
-        self, training_data: Any
-    ) -> Any:  # pylint: disable=unused-argument disable=no-self-use
+    def transform(self, training_data: Any) -> Any:
         """
         Transform data for a plugin in the workflow.
         """
