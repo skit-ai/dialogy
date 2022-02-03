@@ -6,9 +6,9 @@ import pytest
 from sklearn.metrics import f1_score
 
 import dialogy.constants as const
-from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.base.plugin import Plugin
 from dialogy.plugins import MergeASROutputPlugin
-from dialogy.types import Intent
+from dialogy.types import Intent, PluginFn
 from dialogy.workflow import Workflow
 
 

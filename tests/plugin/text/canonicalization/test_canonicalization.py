@@ -21,8 +21,7 @@ canonicalization = CanonicalizationPlugin(
     input_column="data",
     use_transform=True,
     threshold=0.1,
-    access=canon_access,
-    mutate=canon_mutate,
+    dest="input.clf_feature"
 )
 
 
@@ -30,8 +29,7 @@ no_op_canonicalization = CanonicalizationPlugin(
     mask_tokens=["hello"],
     input_column="data",
     threshold=0.1,
-    access=canon_access,
-    mutate=canon_mutate,
+    dest="input.clf_feature",
     use_transform=False,
 )
 
@@ -47,8 +45,7 @@ def entity_mutate(w, v):
 list_entity_plugin = ListEntityPlugin(
     candidates={"fruits": {"apple": ["apple", "apples"]}},
     style="regex",
-    access=entity_access,
-    mutate=entity_mutate,
+    dest="output.entities"
 )
 
 workflow = Workflow([list_entity_plugin, canonicalization])

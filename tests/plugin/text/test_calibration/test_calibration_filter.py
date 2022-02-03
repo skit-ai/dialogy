@@ -47,8 +47,7 @@ vectorizer = MyVectorizer()
 classifier = MyClassifier()
 
 calibration_model = CalibrationModel(
-    access=access,
-    mutate=mutate,
+    dest="input.transcripts",
     threshold=float("inf"),
     input_column="data",
     model_name="temp.pkl",
