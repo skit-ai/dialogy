@@ -192,7 +192,7 @@ class Workflow:
         Reset :code:`workflow.input` and :code:`workflow.output`.
         """
         input_ = copy.deepcopy(self.input.json())
-        output = copy.deecopy(self.output.json())
+        output = copy.deepcopy(self.output.json())
         self.__reset()
         return input_, output
 
