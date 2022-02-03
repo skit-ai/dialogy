@@ -64,8 +64,9 @@ from tqdm import tqdm
 
 from dialogy import constants as const
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.base import Plugin, Input, Output, Guard
 from dialogy.constants import EntityKeys
+from dialogy.types import PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
 from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
 
@@ -121,10 +122,10 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         timeout: float = 0.5,
         url: str = "http://0.0.0.0:8000/parse",
         locale: str = "en_IN",
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         datetime_filters: Optional[str] = None,
         threshold: Optional[float] = None,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
         entity_map: Optional[Dict[str, Any]] = None,
         activate_latent_entities: Union[Callable[..., bool], bool] = False,
         reference_time_column: str = const.REFERENCE_TIME,
@@ -137,8 +138,8 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         constructor
         """
         super().__init__(
-            access=access,
-            mutate=mutate,
+            dest=dest,
+            guards=guards,
             debug=debug,
             input_column=input_column,
             output_column=output_column,
@@ -494,7 +495,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
 
     def extract(
         self,
-        input_: Union[str, List[str]],
+        transcripts: Union[str, List[str]],
         locale: str,
         reference_time: Optional[int] = None,
         use_latent: bool = False,
@@ -502,23 +503,23 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         list_of_entities: List[List[Dict[str, Any]]] = []
         entities: List[BaseEntity] = []
 
-        self.validate(input_, reference_time)
+        self.validate(transcripts, reference_time)
         self.reference_time = reference_time
 
-        if isinstance(input_, str):
-            input_ = [input_]
+        if isinstance(transcripts, str):
+            transcripts = [transcripts]
 
         try:
             list_of_entities = self._get_entities_concurrent(
-                input_, locale, reference_time=reference_time, use_latent=use_latent
+                transcripts, locale, reference_time=reference_time, use_latent=use_latent
             )
             entities = self.apply_entity_classes(list_of_entities)
-            entities = self.entity_consensus(entities, len(input_))
+            entities = self.entity_consensus(entities, len(transcripts))
             return self.apply_filters(entities)
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error
 
-    def utility(self, *args: Any) -> List[BaseEntity]:
+    def utility(self, input: Input, output: Output) -> List[BaseEntity]:
         """
         Produces Duckling entities, runs with a :ref:`Workflow's run<workflow_run>` method.
 
@@ -527,9 +528,12 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :return: A list of duckling entities.
         :rtype: List[BaseEntity]
         """
-        input_, reference_time, locale, use_latent = args
+        transcripts = input.transcripts
+        reference_time = input.reference_time
+        locale = input.locale
+        use_latent = input.latent_entities
         return self.extract(
-            input_, locale, reference_time=reference_time, use_latent=use_latent
+            transcripts, locale, reference_time=reference_time, use_latent=use_latent
         )
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:

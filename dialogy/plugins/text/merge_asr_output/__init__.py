@@ -26,7 +26,7 @@ from loguru import logger
 from tqdm import tqdm
 
 import dialogy.constants as const
-from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.base import Plugin, Guard, Input, Output
 from dialogy.utils import normalize
 
 
@@ -93,24 +93,24 @@ class MergeASROutputPlugin(Plugin):
 
     def __init__(
         self,
-        access: Optional[PluginFn],
-        mutate: Optional[PluginFn],
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         debug: bool = False,
     ) -> None:
         super().__init__(
-            access=access,
-            mutate=mutate,
-            debug=debug,
+            dest=dest,
+            guards=guards,
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
+            debug=debug,
         )
 
-    def utility(self, *args: Any) -> Any:
-        return merge_asr_output(*args)
+    def utility(self, input: Input, _: Output) -> Any:
+        return merge_asr_output(input.utterances)
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         if not self.use_transform:

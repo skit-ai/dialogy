@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn import preprocessing
 
 import dialogy.constants as const
-from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.base import Plugin, Input, Output, Guard
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, save_file
 
@@ -27,8 +27,8 @@ class XLMRMultiClass(Plugin):
     def __init__(
         self,
         model_dir: str,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         debug: bool = False,
         threshold: float = 0.1,
         use_cuda: bool = False,
@@ -52,7 +52,7 @@ class XLMRMultiClass(Plugin):
                 "Plugin requires simpletransformers -- https://simpletransformers.ai/docs/installation/"
             ) from error
 
-        super().__init__(access, mutate, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug)
         self.labelencoder = preprocessing.LabelEncoder()
         self.classifier = classifer
         self.model: Any = None
@@ -268,5 +268,5 @@ class XLMRMultiClass(Plugin):
             self.labelencoder_file_path, mode="rb", loader=pickle.load
         )
 
-    def utility(self, *args: Any) -> Any:
-        return self.inference(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, input: Input, _: Output) -> Any:
+        return self.inference(input.clf_feature)  # pylint: disable=no-value-for-parameter

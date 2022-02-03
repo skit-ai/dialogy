@@ -7,10 +7,10 @@ from typing import Any, Callable, List, Optional
 import pandas as pd
 from loguru import logger
 from tqdm import tqdm
+from dialogy.base import Input, Output, Plugin, Guard
 
 import dialogy.constants as const
-from dialogy.base.plugin import Plugin
-from dialogy.types import BaseEntity, plugin
+from dialogy.types import BaseEntity
 from dialogy.utils import normalize
 
 
@@ -28,8 +28,8 @@ class CanonicalizationPlugin(Plugin):
         serializer: Callable[[BaseEntity], str] = get_entity_type,
         mask: str = "MASK",
         mask_tokens: Optional[List[str]] = None,
-        access: Optional[plugin.PluginFn] = None,
-        mutate: Optional[plugin.PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         entity_column: str = const.ENTITY_COLUMN,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
@@ -38,8 +38,8 @@ class CanonicalizationPlugin(Plugin):
         debug: bool = False,
     ) -> None:
         super().__init__(
-            access,
-            mutate,
+            dest=dest,
+            guards=guards,
             debug=debug,
             use_transform=use_transform,
             input_column=input_column,
@@ -77,8 +77,9 @@ class CanonicalizationPlugin(Plugin):
 
         return canonicalized_transcripts
 
-    def utility(self, *args: Any) -> Any:
-        entities, transcripts = args
+    def utility(self, input: Input, output: Output) -> Any:
+        entities = output.entities
+        transcripts = input.transcripts
         return self.mask_transcript(entities, transcripts)
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from dialogy import constants as const
-from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.base import Plugin, Input, Output, Guard
 from dialogy.types import BaseEntity, TimeEntity
 
 
@@ -74,8 +74,8 @@ class CombineDateTimeOverSlots(Plugin):
 
     def __init__(
         self,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
@@ -83,8 +83,8 @@ class CombineDateTimeOverSlots(Plugin):
         debug: bool = False,
     ) -> None:
         super().__init__(
-            access=access,
-            mutate=mutate,
+            dest=dest,
+            guards=guards,
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
@@ -116,7 +116,7 @@ class CombineDateTimeOverSlots(Plugin):
         current_entity.value = combined_value.isoformat()
         current_entity.set_value(current_entity.value)
 
-    def utility(self, *args: Any) -> Any:
+    def utility(self, input: Input, output: Output) -> Any:
         """
         Combine the date and time entities collected across turns into a single entity.
         """
@@ -126,7 +126,7 @@ class CombineDateTimeOverSlots(Plugin):
         tracked_entity = None
         tracked_intent = None
 
-        tracker, entities = args
+        tracker, entities = input.slot_tracker, output.entities
 
         if not self.trigger_intents:
             return

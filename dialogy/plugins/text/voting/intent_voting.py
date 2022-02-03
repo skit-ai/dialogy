@@ -8,10 +8,9 @@ import numpy as np
 import pydash as py_
 
 from dialogy import constants as const
-from dialogy.base.plugin import Plugin
+from dialogy.base import Plugin, Guard, Input, Output
 from dialogy.types import Signal
 from dialogy.types.intent import Intent
-from dialogy.types.plugin import PluginFn
 from dialogy.utils.logger import logger
 
 
@@ -169,10 +168,10 @@ class VotePlugin(Plugin):
 
     def __init__(
         self,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
         threshold: float = 0.6,
         consensus: float = 0.2,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         representation: float = 0.3,
         fallback_intent: str = const.S_INTENT_OOS,
         aggregate_fn: Any = np.mean,
@@ -181,7 +180,7 @@ class VotePlugin(Plugin):
         """
         constructor
         """
-        super().__init__(access=access, mutate=mutate, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug)
         self.threshold: float = threshold
         self.consensus: float = consensus
         self.representation: float = representation
@@ -241,5 +240,5 @@ class VotePlugin(Plugin):
             )
         return Intent(name=self.fallback_intent, score=1)
 
-    def utility(self, *args: Any) -> Any:
-        return self.vote_signal(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, input: Input, output: Output) -> Any:
+        return self.vote_signal(output.intents, len(input.transcripts))

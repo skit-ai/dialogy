@@ -20,8 +20,8 @@ from tqdm import tqdm
 from xgboost import XGBRegressor
 
 from dialogy import constants as const
-from dialogy.base.plugin import Plugin, PluginFn
-from dialogy.types import Transcript, Utterance
+from dialogy.base import Plugin, Guard, Input, Output
+from dialogy.types import Transcript, Utterance, utterances
 from dialogy.utils import normalize
 
 
@@ -92,9 +92,9 @@ class CalibrationModel(Plugin):
 
     def __init__(
         self,
-        access: Optional[PluginFn],
-        mutate: Optional[PluginFn],
         threshold: float,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         debug: bool = False,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = const.ALTERNATIVES,
@@ -102,8 +102,8 @@ class CalibrationModel(Plugin):
         model_name: str = "calibration.pkl",
     ) -> None:
         super().__init__(
-            access,
-            mutate,
+            dest=dest,
+            guards=guards,
             debug=debug,
             input_column=input_column,
             output_column=output_column,
@@ -180,8 +180,7 @@ class CalibrationModel(Plugin):
             )
         return training_data_
 
-    def inference(self, utterances: List[Utterance]) -> List[str]:
-        transcripts: List[Transcript] = normalize(utterances)
+    def inference(self, transcripts: List[str], utterances: List[Utterance]) -> List[str]:
         transcript_lengths: List[int] = [
             len(transcript.split()) for transcript in transcripts
         ]
@@ -194,15 +193,17 @@ class CalibrationModel(Plugin):
         # a classifier's prediction to a fallback label.
         # If the transcripts have less than WORD_THRESHOLD words, we will always predict the fallback label.
         if average_word_count <= const.WORD_THRESHOLD:
-            return normalize(utterances)
+            return transcripts
 
         return normalize(self.filter_asr_output(utterances))
 
     def save(self, fname: str) -> None:
         pickle.dump(self, open(fname, "wb"))
 
-    def utility(self, *args: Any) -> Any:
-        return self.inference(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, input: Input, _) -> Any:
+        transcript = input.transcript
+        utterances = input.utterances
+        return self.inference(transcript, utterances)  # pylint: disable=no-value-for-parameter
 
     def validate(self, df: pd.DataFrame) -> bool:
         """

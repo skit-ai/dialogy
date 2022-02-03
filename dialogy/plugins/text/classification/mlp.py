@@ -21,7 +21,7 @@ from tqdm import tqdm
 tqdm.pandas()
 
 import dialogy.constants as const
-from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.base import Plugin, Input, Output, Guard
 from dialogy.plugins.text.classification.tokenizers import identity_tokenizer
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, save_file
@@ -35,8 +35,8 @@ class MLPMultiClass(Plugin):
     def __init__(
         self,
         model_dir: str,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         debug: bool = False,
         threshold: float = 0.1,
         score_round_off: int = 5,
@@ -49,7 +49,7 @@ class MLPMultiClass(Plugin):
         kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
 
-        super().__init__(access, mutate, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug)
         self.model_pipeline: Any = None
         self.fallback_label = fallback_label
         self.data_column = data_column
@@ -312,5 +312,5 @@ class MLPMultiClass(Plugin):
             self.mlp_model_path, mode="rb", loader=joblib.load
         )
 
-    def utility(self, *args: Any) -> Any:
-        return self.inference(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, input: Input, _: Output) -> Any:
+        return self.inference(input.clf_feature)  # pylint: disable=no-value-for-parameter
