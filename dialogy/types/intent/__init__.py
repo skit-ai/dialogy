@@ -6,7 +6,8 @@ Import classes:
 
     - Intent
 """
-
+from __future__ import annotations
+import attr
 from typing import Any, Dict, List, Optional
 
 from dialogy.types.entity import BaseEntity
@@ -14,49 +15,28 @@ from dialogy.types.slots import Rule, Slot
 from dialogy.utils.logger import logger
 
 
+@attr.s
 class Intent:
     """
     An instance of this class contains the name of the action associated with a body of text.
     """
+    # The name of the intent to be used.
+    name: str = attr.ib(kw_only=True, order=False)
 
-    def __init__(
-        self,
-        name: str,
-        score: float,
-        parsers: Optional[List[str]] = None,
-        alternative_index: Optional[int] = 0,
-        slots: Optional[Dict[str, Slot]] = None,
-    ) -> None:
-        """
+    # The confidence of this intent being present in the utterance.
+    score: float = attr.ib(kw_only=True, default=0.0, order=True)
 
-        :param name: The name of the intent. A class label
-        :type name: str
-        :param score: The confidence score from a model.
-        :type score: float
-        :param parsers: Items that alter the attributes.
-        :type parsers: Optional[List[str]]
-        :param alternative_index: Out of a list of transcripts, this points at the index which lead to prediction.
-        :type alternative_index: Optional[int]
-        :param slots: A map of slot names and :ref:`Slot<slot>`
-        :type slots: Optional[Dict[str, Slot]]
-        """
-        # The name of the intent to be used.
-        self.name = name
+    # In case of an ASR, `alternative_index` points at one of the nth
+    # alternatives that help in predictions.
+    alternative_index: Optional[int] = attr.ib(kw_only=True, default=None, order=False)
 
-        # The confidence of this intent being present in the utterance.
-        self.score = score
+    # Trail of functions that modify the attributes of an instance.
+    parsers: List[str] = attr.ib(kw_only=True, factory=list, order=False, repr=False)
 
-        # Trail of functions that modify the attributes of an instance.
-        self.parsers = parsers or []
+    # Container for holding `List[BaseEntity]`.
+    slots: Dict[str, Slot] = attr.ib(kw_only=True, factory=dict, order=False, repr=False)
 
-        # In case of an ASR, `alternative_index` points at one of the nth
-        # alternatives that help in predictions.
-        self.alternative_index = alternative_index
-
-        # Container for holding `List[BaseEntity]`.
-        self.slots: Dict[str, Slot] = slots or {}
-
-    def apply(self, rules: Rule) -> "Intent":
+    def apply(self, rules: Rule) -> Intent:
         """
         Create slots using :ref:`rules`.
 
@@ -91,7 +71,7 @@ class Intent:
 
         return self
 
-    def add_parser(self, plugin: Any) -> "Intent":
+    def add_parser(self, plugin: Any) -> Intent:
         """
         Update parsers with the plugin name
 
@@ -107,7 +87,7 @@ class Intent:
         self.parsers.append(plugin_name)
         return self
 
-    def fill_slot(self, entity: BaseEntity, fill_multiple: bool = False) -> "Intent":
+    def fill_slot(self, entity: BaseEntity, fill_multiple: bool = False) -> Intent:
         """
         Update :code:`slots[slot_type].values` with a single entity.
 
@@ -174,13 +154,4 @@ class Intent:
             intent = Intent(name="special", score=0.8)
             intent.json()
         """
-        return {
-            "name": self.name,
-            "score": self.score,
-            "alternative_index": self.alternative_index,
-            "slots": [slot.json() for slot in self.slots.values()],
-            "parsers": self.parsers,
-        }
-
-    def __repr__(self) -> str:
-        return f"Intent(name={self.name}, score={self.score}, slots={self.slots})"
+        return attr.asdict(self)
