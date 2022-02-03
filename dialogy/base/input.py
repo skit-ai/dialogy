@@ -13,10 +13,10 @@ class Input:
     reference_time: Optional[int] = attr.ib(default=None, kw_only=True)
     latent_entities: bool = attr.ib(default=False, kw_only=True, converter=bool)
     transcripts: List[str] = attr.ib(default=None)
-    clf_feature: Optional[str] = attr.ib(
+    clf_feature: Optional[List[str]] = attr.ib(
         kw_only=True,
-        default=None,
-        validator=attr.validators.optional(attr.validators.instance_of(str)),
+        factory=list,
+        validator=attr.validators.optional(attr.validators.instance_of(list)),
     )
     lang: str = attr.ib(default="en", kw_only=True, validator=attr.validators.instance_of(str))
     locale: str = attr.ib(
