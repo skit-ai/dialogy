@@ -9,8 +9,8 @@ from dialogy.utils import is_unix_ts, normalize, is_utterance
 @attr.frozen
 class Input:
     utterances: List[Utterance] = attr.ib(kw_only=True)
-    reference_time: Optional[int] = attr.ib(kw_only=True)
 
+    reference_time: Optional[int] = attr.ib(default=None, kw_only=True)
     latent_entities: bool = attr.ib(default=False, kw_only=True, converter=bool)
     transcripts: List[str] = attr.ib(default=None)
     clf_feature: Optional[str] = attr.ib(
@@ -46,10 +46,12 @@ class Input:
     )
 
     def __attrs_post_init__(self):
-        object.__setattr__(self, "transcript", normalize(self.utterances))
+        object.__setattr__(self, "transcripts", normalize(self.utterances))
 
     @reference_time.validator
     def _check_reference_time(self, attribute: attr.Attribute, reference_time: int):
+        if reference_time is None:
+            return
         if not isinstance(reference_time, int):
             raise TypeError(f"{attribute.name} must be an integer.")
         if not is_unix_ts(reference_time):
