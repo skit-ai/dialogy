@@ -268,6 +268,7 @@ Notes
 - If your plugin needs a model but it need not be trained frequently or uses an off the shelf pre-trained model, then you must build a Solitary plugin.
 - A trainable plugin can also have transform methods if it needs to modify a dataframe for other plugins in place.
 """
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
