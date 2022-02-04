@@ -90,7 +90,7 @@ class CanonicalizationPlugin(Plugin):
 
         for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             try:
-                canonicalized_transcripts = self.utility(
+                canonicalized_transcripts = self.mask_transcript(
                     row[self.entity_column],
                     normalize(json.loads(row[self.input_column])),
                 )
