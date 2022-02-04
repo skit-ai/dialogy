@@ -269,7 +269,7 @@ Notes
 - A trainable plugin can also have transform methods if it needs to modify a dataframe for other plugins in place.
 """
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 import dialogy.constants as const
 from dialogy.types import PluginFn
@@ -370,7 +370,7 @@ class Plugin(ABC):
         mutate: Optional[PluginFn] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
-        state_list: Optional[list] = [],
+        state_list: List[Any] = [],
         use_transform: bool = False,
         debug: bool = False,
     ) -> None:
@@ -393,7 +393,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    def guard(self, workflow: Any, args):
+    def guard(self, workflow: Any) -> bool:
         guard_flag = False
         state = ""
 
@@ -401,7 +401,7 @@ class Plugin(ABC):
             context = workflow.input.get(const.CONTEXT)
             state = workflow.input.get(const.CONTEXT)["current_state"]
 
-        if (state in self.state_list) or (state == "") or (self.state_list == []):
+        if (self.state_list == []) or (state in self.state_list) or (state == ""):
             guard_flag = True
 
         return guard_flag
@@ -418,7 +418,7 @@ class Plugin(ABC):
         if self.access:
             args = self.access(workflow)
 
-            if self.guard(workflow, args):
+            if self.guard(workflow):
                 value = self.utility(*args)  # pylint: disable=assignment-from-none
             else:
                 value = None
