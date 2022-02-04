@@ -396,7 +396,7 @@ class Plugin(ABC):
     def guard(self, workflow: Any, args):
         guard_flag = False
         state = ""
-        
+
         if (type(workflow.input) == dict) and "context" in workflow.input:
             context = workflow.input.get(const.CONTEXT)
             state = workflow.input.get(const.CONTEXT)["current_state"]
@@ -419,8 +419,7 @@ class Plugin(ABC):
             args = self.access(workflow)
 
             if self.guard(workflow, args):
-                value = self.utility(
-                    *args)  # pylint: disable=assignment-from-none
+                value = self.utility(*args)  # pylint: disable=assignment-from-none
             else:
                 value = None
 

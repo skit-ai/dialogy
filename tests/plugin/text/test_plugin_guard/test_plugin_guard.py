@@ -6,8 +6,8 @@ from typing import Any, Optional
 
 from dialogy.base.plugin import Plugin
 from dialogy.types.plugin import PluginFn
-from dialogy.workflow import Workflow
 from dialogy.utils.logger import logger
+from dialogy.workflow import Workflow
 
 
 def access(workflow: Workflow) -> Any:
@@ -16,6 +16,7 @@ def access(workflow: Workflow) -> Any:
     workflow implementer.
     """
     return workflow.input
+
 
 def mutate(workflow: Workflow, value: Any) -> Any:
     """
@@ -48,10 +49,14 @@ class ArbitraryPlugin(Plugin):
         mutate: Optional[PluginFn] = None,
         use_transform: bool = False,
         debug=False,
-        state_list: Optional[list] = []
+        state_list: Optional[list] = [],
     ):
         super().__init__(
-            access=access, mutate=mutate, debug=debug, use_transform=use_transform, state_list = state_list
+            access=access,
+            mutate=mutate,
+            debug=debug,
+            use_transform=use_transform,
+            state_list=state_list,
         )
 
     def utility(self, ctx, numbers, words) -> Any:
@@ -90,15 +95,20 @@ def test_guard_flag_true() -> None:
     Testing the guard on the ArbitartyPlugin, for the case where the guard is should be True.
     """
     # create an instance of `ArbitraryPlugin`.
-    arbitrary_plugin = ArbitraryPlugin(access=lambda w: (
-        w.input["context"], w.input["numbers"], w.input["words"]), mutate=mutate, state_list=["COF_LANG", "COF", "INIT"])
+    arbitrary_plugin = ArbitraryPlugin(
+        access=lambda w: (w.input["context"], w.input["numbers"], w.input["words"]),
+        mutate=mutate,
+        state_list=["COF_LANG", "COF", "INIT"],
+    )
     workflow = Workflow([arbitrary_plugin])
 
     ctx = {
         "current_state": "COF_LANG",
     }
-    
-    output = workflow.run(input_={"context": ctx, "numbers": [2, 5], "words": ["hello", "hi"]})
+
+    output = workflow.run(
+        input_={"context": ctx, "numbers": [2, 5], "words": ["hello", "hi"]}
+    )
     numbers, words = output  # pylint: disable=unpacking-non-sequence
 
     # This test would pass only if our plugin works correctly!
@@ -111,14 +121,19 @@ def test_guard_flag_false() -> None:
     Testing the guard on the ArbitartyPlugin, for the case where the guard is should be False.
     """
     # create an instance of `ArbitraryPlugin`.
-    arbitrary_plugin = ArbitraryPlugin(access=lambda w: (
-        w.input["context"], w.input["numbers"], w.input["words"]), mutate=mutate, state_list=["COF_LANG", "COF", "INIT"])
+    arbitrary_plugin = ArbitraryPlugin(
+        access=lambda w: (w.input["context"], w.input["numbers"], w.input["words"]),
+        mutate=mutate,
+        state_list=["COF_LANG", "COF", "INIT"],
+    )
     workflow = Workflow([arbitrary_plugin])
 
     ctx = {
         "current_state": "ABC",
     }
-    output = workflow.run(input_={"context": ctx, "numbers": [2, 5], "words": ["hello", "hi"]})
+    output = workflow.run(
+        input_={"context": ctx, "numbers": [2, 5], "words": ["hello", "hi"]}
+    )
 
     # # This test would pass only if our plugin works correctly!
     assert output["intents"] == []
@@ -130,17 +145,20 @@ def test_guard_flag_state_list_not_passed() -> None:
     Testing the guard on the ArbitartyPlugin, when state_list is not passed.
     """
     # create an instance of `ArbitraryPlugin`.
-    arbitrary_plugin = ArbitraryPlugin(access=lambda w: (
-        w.input["context"], w.input["numbers"], w.input["words"]), mutate=mutate)
+    arbitrary_plugin = ArbitraryPlugin(
+        access=lambda w: (w.input["context"], w.input["numbers"], w.input["words"]),
+        mutate=mutate,
+    )
     workflow = Workflow([arbitrary_plugin])
 
     ctx = {
         "current_state": "ABC",
     }
-    
-    output = workflow.run(input_={"context": ctx, "numbers": [2, 5], "words": ["hello", "hi"]})
+
+    output = workflow.run(
+        input_={"context": ctx, "numbers": [2, 5], "words": ["hello", "hi"]}
+    )
     numbers, words = output  # pylint: disable=unpacking-non-sequence
 
     assert numbers == [4, 7]
     assert words == ["hello world", "hi world"]
-
