@@ -9,13 +9,13 @@ from dialogy.types.plugin import PluginFn
 from dialogy.workflow import Workflow
 from dialogy.utils.logger import logger
 
+
 def access(workflow: Workflow) -> Any:
     """
     This function would be provided by the
     workflow implementer.
     """
     return workflow.input
-
 
 def mutate(workflow: Workflow, value: Any) -> Any:
     """
@@ -87,7 +87,7 @@ class ArbitraryPlugin(Plugin):
 # == Plugin as a class with workflow ==
 def test_guard_flag_true() -> None:
     """
-    We will test how an arbitrary-class-based plugin works with a workflow.
+    Testing the guard on the ArbitartyPlugin, for the case where the guard is should be True.
     """
     # create an instance of `ArbitraryPlugin`.
     arbitrary_plugin = ArbitraryPlugin(access=lambda w: (
@@ -98,7 +98,6 @@ def test_guard_flag_true() -> None:
         "current_state": "COF_LANG",
     }
     
-    #output = workflow.run(({"context": "ctx"}, [2, 5], ["hello", "hi"]))
     output = workflow.run(input_={"context": ctx, "numbers": [2, 5], "words": ["hello", "hi"]})
     numbers, words = output  # pylint: disable=unpacking-non-sequence
 
@@ -106,9 +105,10 @@ def test_guard_flag_true() -> None:
     assert numbers == [4, 7]
     assert words == ["hello world", "hi world"]
 
+
 def test_guard_flag_false() -> None:
     """
-    We will test how an arbitrary-class-based plugin works with a workflow.
+    Testing the guard on the ArbitartyPlugin, for the case where the guard is should be False.
     """
     # create an instance of `ArbitraryPlugin`.
     arbitrary_plugin = ArbitraryPlugin(access=lambda w: (
@@ -118,18 +118,16 @@ def test_guard_flag_false() -> None:
     ctx = {
         "current_state": "ABC",
     }
-    
-    #output = workflow.run(({"context": "ctx"}, [2, 5], ["hello", "hi"]))
     output = workflow.run(input_={"context": ctx, "numbers": [2, 5], "words": ["hello", "hi"]})
-    # intents, entities = output  # pylint: disable=unpacking-non-sequence
-    logger.info(output["intents"])
+
     # # This test would pass only if our plugin works correctly!
     assert output["intents"] == []
     assert output["entities"] == []
 
+
 def test_guard_flag_state_list_not_passed() -> None:
     """
-    We will test how an arbitrary-class-based plugin works with a workflow.
+    Testing the guard on the ArbitartyPlugin, when state_list is not passed.
     """
     # create an instance of `ArbitraryPlugin`.
     arbitrary_plugin = ArbitraryPlugin(access=lambda w: (
