@@ -370,6 +370,7 @@ class Plugin(ABC):
         mutate: Optional[PluginFn] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
+        state_list: Optional[list] = [],
         use_transform: bool = False,
         debug: bool = False,
     ) -> None:
@@ -377,6 +378,7 @@ class Plugin(ABC):
         self.mutate = mutate
         self.debug = debug
         self.input_column = input_column
+        self.state_list = state_list
         self.output_column = output_column or input_column
         self.use_transform = use_transform
 
@@ -391,6 +393,19 @@ class Plugin(ABC):
         :rtype: Any
         """
 
+    def guard(self, workflow: Any, args):
+        guard_flag = False
+        state = ""
+        
+        if (type(workflow.input) == dict) and "context" in workflow.input:
+            context = workflow.input.get(const.CONTEXT)
+            state = workflow.input.get(const.CONTEXT)["current_state"]
+
+        if (state in self.state_list) or (state == "") or (self.state_list == []):
+            guard_flag = True
+
+        return guard_flag
+
     def __call__(self, workflow: Any) -> None:
         """
         Abstraction for plugin io.
@@ -402,7 +417,13 @@ class Plugin(ABC):
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
         if self.access:
             args = self.access(workflow)
-            value = self.utility(*args)  # pylint: disable=assignment-from-none
+
+            if self.guard(workflow, args):
+                value = self.utility(
+                    *args)  # pylint: disable=assignment-from-none
+            else:
+                value = None
+
             if value is not None and self.mutate:
                 self.mutate(workflow, value)
         else:

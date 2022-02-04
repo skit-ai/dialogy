@@ -18,7 +18,7 @@ FROM = "from"
 LOCK = "lock"
 NAME = "name"
 SLOTS = "slots"
-
+CONTEXT = "context"
 
 class EntityKeys:
     BODY = "body"
