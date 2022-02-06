@@ -1,14 +1,8 @@
-import json
-from typing import Any, Optional
-
-import pandas as pd
 import pytest
-from sklearn.metrics import f1_score
 
 import dialogy.constants as const
-from dialogy.base.plugin import Plugin
+from dialogy.base import Input, Output
 from dialogy.plugins import MergeASROutputPlugin
-from dialogy.types import Intent, PluginFn
 from dialogy.workflow import Workflow
 
 
@@ -17,7 +11,7 @@ def test_workflow_get_input() -> None:
     Basic initialization.
     """
     workflow = Workflow([])
-    assert workflow.input == {}, "workflow.get_input() is a dict()."
+    assert workflow.input == None, "workflow is NoneType."
 
 
 def test_workflow_set_output() -> None:
@@ -48,19 +42,14 @@ def test_workflow_history_logs() -> None:
     """
     We can execute the workflow.
     """
-
-    def m(w, v):
-        w.output = v
-
     workflow = Workflow(
-        [MergeASROutputPlugin(access=lambda w: w.input, mutate=m, debug=True)],
+        [MergeASROutputPlugin(dest="input.clf_feature", debug=True)],
         debug=True,
     )
-    output = workflow.run(input_=["apples"])
-    assert output == ["<s> apples </s>"], "workflow.output should == 'apples'."
-    workflow.flush()
-    assert workflow.input == {}
-    assert workflow.output == {const.INTENTS: [], const.ENTITIES: []}
+    input_, _ = workflow.run(Input(utterances=["apples"]))
+    assert input_["clf_feature"] == ["<s> apples </s>"]
+    assert workflow.input == None
+    assert workflow.output == Output()
 
 
 def test_workflow_as_dict():
@@ -69,6 +58,6 @@ def test_workflow_as_dict():
     """
     workflow = Workflow()
     assert workflow.json() == {
-        "input": {},
+        "input": None,
         "output": {const.INTENTS: [], const.ENTITIES: []},
     }

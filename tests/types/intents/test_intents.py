@@ -113,7 +113,7 @@ def test_slot_filling_prop_removal() -> None:
     intent.fill_slot(entity)
 
     intent_json = intent.json()
-    assert "dim" not in intent_json["slots"][0]
+    assert "dim" not in intent_json["slots"]["basic_slot"]["values"][0]
 
 
 def test_rule_with_multiple_types() -> None:

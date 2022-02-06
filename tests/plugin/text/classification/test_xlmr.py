@@ -9,6 +9,7 @@ import pandas as pd
 import pytest
 
 import dialogy.constants as const
+from dialogy.base import Input
 from dialogy.plugins import MergeASROutputPlugin, XLMRMultiClass
 from dialogy.utils import load_file
 from dialogy.workflow import Workflow
@@ -63,8 +64,8 @@ def test_xlmr_plugin_no_module_error():
     with pytest.raises(ModuleNotFoundError):
         XLMRMultiClass(
             model_dir=".",
-            access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-            mutate=write_intent_to_workflow,
+            dest="output.intents",
+            debug=False
         )
     const.XLMR_MODULE = save_val
 
@@ -77,8 +78,8 @@ def test_xlmr_plugin_when_no_labelencoder_saved():
 
     xlmr_clf = XLMRMultiClass(
         model_dir=".",
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+            dest="output.intents",
+            debug=False
     )
     assert isinstance(xlmr_clf, XLMRMultiClass)
     assert xlmr_clf.model is None
@@ -98,8 +99,7 @@ def test_xlmr_plugin_when_labelencoder_EOFError(capsys):
     with capsys.disabled():
         xlmr_plugin = XLMRMultiClass(
             model_dir=directory,
-            access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-            mutate=write_intent_to_workflow,
+            dest="output.intents",
             debug=False,
         )
         assert xlmr_plugin.model is None
@@ -117,8 +117,8 @@ def test_xlmr_init_mock():
 
     xlmr_clf = XLMRMultiClass(
         model_dir=".",
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False
     )
     xlmr_clf.init_model(5)
     assert xlmr_clf.model is not None
@@ -136,8 +136,8 @@ def test_xlmr_init_mock():
     with pytest.raises(ValueError):
         XLMRMultiClass(
             model_dir=".",
-            access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-            mutate=write_intent_to_workflow,
+            dest="output.intents",
+            debug=False,
             args_map={"invalid": "value"},
         )
     const.XLMR_MODULE = save_module_name
@@ -154,14 +154,14 @@ def test_train_xlmr_mock():
 
     xlmr_clf = XLMRMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False
     )
 
     xlmr_clf_state = XLMRMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False,
         use_state=True,
     )
 
@@ -190,8 +190,8 @@ def test_train_xlmr_mock():
     # So this instance would have read the labelencoder saved.
     xlmr_clf_copy = XLMRMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False
     )
 
     assert len(xlmr_clf_copy.labelencoder.classes_) == 2
@@ -214,13 +214,13 @@ def test_invalid_operations():
 
     xlmr_clf = XLMRMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False
     )
     xlmr_clf_state = XLMRMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False,
         use_state=True,
     )
 
@@ -274,19 +274,18 @@ def test_inference(payload):
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    text = payload.get("input")
+    transcripts = payload.get("input")
     intent = payload["expected"]["label"]
 
     xlmr_clf = XLMRMultiClass(
         model_dir=directory,
-        access=lambda w: (w.input[const.CLASSIFICATION_INPUT],),
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
         debug=False,
     )
 
     merge_asr_output_plugin = MergeASROutputPlugin(
-        access=lambda w: (w.input[const.CLASSIFICATION_INPUT],),
-        mutate=update_input,
+        dest="input.clf_feature",
+        debug=False
     )
 
     workflow = Workflow([merge_asr_output_plugin, xlmr_clf])
@@ -317,9 +316,9 @@ def test_inference(payload):
         xlmr_clf.model, MockClassifier
     ), "model should be a MockClassifier after training."
 
-    output = workflow.run(input_={const.CLASSIFICATION_INPUT: text})
-    assert output[const.INTENTS][0].name == intent
-    assert output[const.INTENTS][0].score > 0.9
+    _, output = workflow.run(input_=Input(utterances=[[{"transcript": transcript} for transcript in transcripts]]))
+    assert output[const.INTENTS][0]["name"] == intent
+    assert output[const.INTENTS][0]["score"] > 0.9
 
     if os.path.exists(file_path):
         os.remove(file_path)

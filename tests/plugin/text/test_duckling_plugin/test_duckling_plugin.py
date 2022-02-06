@@ -7,6 +7,8 @@ import pytest
 import requests
 
 from dialogy.plugins import DucklingPlugin
+from dialogy.base import Input
+from dialogy.utils import make_unix_ts
 from dialogy.types import BaseEntity, KeywordEntity, TimeEntity
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
@@ -27,47 +29,47 @@ def test_plugin_with_custom_entity_map() -> None:
     assert duckling_plugin.dimension_entity_map["number"]["value"] == BaseEntity
 
 
-def test_plugin_io_missing() -> None:
-    """
-    Here we are checking if the plugin has access to workflow.
-    Since we haven't provided `access`, `mutate` to `DucklingPlugin`
-    we will receive a `TypeError`.
-    """
-    duckling_plugin = DucklingPlugin(
-        locale="en_IN", timezone="Asia/Kolkata", dimensions=["time"]
-    )
+# def test_plugin_io_missing() -> None:
+#     """
+#     Here we are checking if the plugin has access to workflow.
+#     Since we haven't provided `access`, `mutate` to `DucklingPlugin`
+#     we will receive a `TypeError`.
+#     """
+#     duckling_plugin = DucklingPlugin(
+#         locale="en_IN", timezone="Asia/Kolkata", dimensions=["time"]
+#     )
 
-    workflow = Workflow([duckling_plugin])
-    with pytest.raises(TypeError):
-        workflow.run("")
+#     workflow = Workflow([duckling_plugin])
+#     with pytest.raises(TypeError):
+#         workflow.run("")
 
 
-# == Test invalid i/o ==
-@pytest.mark.parametrize(
-    "access,mutate",
-    [
-        (1, 1),
-        (lambda x: x, 1),
-        (1, lambda x: x),
-    ],
-)
-def test_plugin_io_type_mismatch(access, mutate) -> None:
-    """
-    Here we are chcking if the plugin has access to workflow.
-    Since we have provided `access`, `mutate` of incorrect types to `DucklingPlugin`
-    we will receive a `TypeError`.
-    """
-    duckling_plugin = DucklingPlugin(
-        access=access,
-        mutate=mutate,
-        locale="en_IN",
-        dimensions=["time"],
-        timezone="Asia/Kolkata",
-    )
+# # == Test invalid i/o ==
+# @pytest.mark.parametrize(
+#     "access,mutate",
+#     [
+#         (1, 1),
+#         (lambda x: x, 1),
+#         (1, lambda x: x),
+#     ],
+# )
+# def test_plugin_io_type_mismatch(access, mutate) -> None:
+#     """
+#     Here we are chcking if the plugin has access to workflow.
+#     Since we have provided `access`, `mutate` of incorrect types to `DucklingPlugin`
+#     we will receive a `TypeError`.
+#     """
+#     duckling_plugin = DucklingPlugin(
+#         access=access,
+#         mutate=mutate,
+#         locale="en_IN",
+#         dimensions=["time"],
+#         timezone="Asia/Kolkata",
+#     )
 
-    workflow = Workflow([duckling_plugin])
-    with pytest.raises(TypeError):
-        workflow.run("")
+#     workflow = Workflow([duckling_plugin])
+#     with pytest.raises(TypeError):
+#         workflow.run("")
 
 
 def test_remove_low_scoring_entities_works_only_if_threshold_is_not_none():
@@ -104,6 +106,7 @@ def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
         type="basic",
         dim="default",
         values=[],
+        score=0.0
     )
     entity_B = BaseEntity(
         range={"from": 0, "to": len(body)},
@@ -115,7 +118,6 @@ def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
     )
 
     assert duckling_plugin.remove_low_scoring_entities([entity_A, entity_B]) == [
-        entity_A,
         entity_B,
     ]
 
@@ -135,29 +137,23 @@ def test_duckling_timeout() -> None:
         time.sleep(wait_time)
         return 200, headers, "received"
 
-    def access(workflow):
-        return workflow.input, None, locale, False
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
+    httpretty.register_uri(
+        httpretty.POST, "http://0.0.0.0:8000/parse", body=raise_timeout
+    )
 
     duckling_plugin = DucklingPlugin(
         locale=locale,
         dimensions=["time"],
         timezone="Asia/Kolkata",
-        access=access,
-        mutate=mutate,
         threshold=0.2,
         timeout=0.01,
+        dest="output.entities"
     )
 
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=raise_timeout
-    )
 
     workflow = Workflow([duckling_plugin])
-    workflow.run("test")
-    assert workflow.output["entities"] == []
+    _, output = workflow.run(Input(utterances="test"))
+    assert output["entities"] == []
 
 
 def test_duckling_connection_error() -> None:
@@ -169,25 +165,18 @@ def test_duckling_connection_error() -> None:
     """
     locale = "en_IN"
 
-    def access(workflow):
-        return workflow.input, None, locale, False
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     duckling_plugin = DucklingPlugin(
         locale=locale,
         dimensions=["time"],
         timezone="Asia/Kolkata",
-        access=access,
-        mutate=mutate,
+        dest="output.entities",
         threshold=0.2,
         timeout=0.01,
         url="https://duckling/parse",
     )
 
     workflow = Workflow([duckling_plugin])
-    output = workflow.run("test")
+    _, output = workflow.run(Input(utterances="test", locale=locale))
     assert output["entities"] == []
 
 
@@ -206,11 +195,8 @@ def test_max_workers_greater_than_zero() -> None:
     """
     locale = "en_IN"
 
-    def access(workflow):
-        return workflow.input, None, locale, False
-
     duckling_plugin = DucklingPlugin(
-        access=access,
+        dest="output.entities",
         dimensions=["time"],
         timezone="Asia/Kolkata",
         url="https://duckling/parse",
@@ -219,7 +205,7 @@ def test_max_workers_greater_than_zero() -> None:
     workflow = Workflow([duckling_plugin])
     alternatives = []  # When ASR returns empty transcriptions.
     try:
-        workflow.run(alternatives)
+        workflow.run(Input(utterances=alternatives, locale=locale))
     except ValueError as exc:
         pytest.fail(f"{exc}")
 
@@ -240,13 +226,7 @@ def test_plugin_working_cases(payload) -> None:
     reference_time = payload.get("reference_time")
     use_latent = payload.get("use_latent")
 
-    def access(workflow):
-        return workflow.input, reference_time, locale, use_latent
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
-    duckling_plugin = DucklingPlugin(access=access, mutate=mutate, **duckling_args)
+    duckling_plugin = DucklingPlugin(dest="output.entities", **duckling_args)
 
     request_callback = request_builder(mock_entity_json, response_code=response_code)
     httpretty.register_uri(
@@ -254,20 +234,23 @@ def test_plugin_working_cases(payload) -> None:
     )
 
     workflow = Workflow([duckling_plugin])
+    if isinstance(reference_time, str):
+        reference_time = make_unix_ts("Asia/Kolkata")(reference_time)
 
     if expected_types is not None:
-        output = workflow.run(body)
-        module = importlib.import_module("dialogy.types.entity")
+        input_ = Input(utterances=body, locale=locale, reference_time=reference_time, latent_entities=use_latent)
+        _, output = workflow.run(input_)
 
         if not output["entities"]:
             assert output["entities"] == []
 
         for i, entity in enumerate(output["entities"]):
-            class_name = expected_types[i]["entity"]
-            assert isinstance(entity, getattr(module, class_name))
+            expected_entity_type = expected_types[i]["entity_type"]
+            assert entity["entity_type"] == expected_entity_type
     else:
         with pytest.raises(EXCEPTIONS[exception]):
-            workflow.run(body)
+            input_ = Input(utterances=body, locale=locale, reference_time=reference_time, latent_entities=use_latent)
+            workflow.run(input_)
 
 
 @httpretty.activate
@@ -298,12 +281,6 @@ def test_plugin_no_transform():
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    def access(workflow):
-        return workflow.input, None, "en_IN", False
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     df = pd.DataFrame(
         [
             {
@@ -322,26 +299,12 @@ def test_plugin_no_transform():
         locale="en_IN",
         dimensions=["time"],
         timezone="Asia/Kolkata",
-        access=access,
-        mutate=mutate,
+        dest="output.entities",
         threshold=0.2,
         timeout=0.01,
         use_transform=False,
         input_column="data",
         output_column="entities",
-    )
-
-    today = TimeEntity(
-        type="date",
-        body="today",
-        parsers=["DucklingPlugin"],
-        range={"start": 0, "end": 5},
-        score=1.0,
-        alternative_index=0,
-        latent=False,
-        value="2021-09-14T00:00:00.000+05:30",
-        origin="value",
-        grain="day",
     )
 
     df_ = duckling_plugin.transform(df)
@@ -376,12 +339,6 @@ def test_plugin_transform():
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    def access(workflow):
-        return workflow.input, None, "en_IN", False
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     df = pd.DataFrame(
         [
             {
@@ -400,8 +357,7 @@ def test_plugin_transform():
         locale="en_IN",
         dimensions=["time"],
         timezone="Asia/Kolkata",
-        access=access,
-        mutate=mutate,
+        dest="output.entities",
         threshold=0.1,
         timeout=0.01,
         use_transform=True,
@@ -456,12 +412,6 @@ def test_plugin_transform_type_error():
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    def access(workflow):
-        return workflow.input, None, "en_IN"
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     df = pd.DataFrame(
         [
             {
@@ -476,8 +426,7 @@ def test_plugin_transform_type_error():
         locale="en_IN",
         dimensions=["time"],
         timezone="Asia/Kolkata",
-        access=access,
-        mutate=mutate,
+        dest="output.entities",
         threshold=0.2,
         timeout=0.01,
         use_transform=True,
@@ -517,12 +466,6 @@ def test_plugin_transform_existing_entity():
         httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
     )
 
-    def access_fn(workflow):
-        return workflow.input, None, "en_IN", False
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     df = pd.DataFrame(
         [
             {
@@ -561,8 +504,7 @@ def test_plugin_transform_existing_entity():
         locale="en_IN",
         dimensions=["time"],
         timezone="Asia/Kolkata",
-        access=access_fn,
-        mutate=mutate,
+        dest="output.entities",
         threshold=0.2,
         timeout=0.01,
         use_transform=True,

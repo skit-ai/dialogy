@@ -3,6 +3,7 @@ import importlib
 import httpretty
 import pytest
 
+from dialogy.base import Input, Output
 from dialogy.plugins import DucklingPluginLB
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
@@ -24,13 +25,7 @@ def test_plugin_working_cases(payload) -> None:
     reference_time = payload.get("reference_time")
     use_latent = payload.get("use_latent")
 
-    def access(workflow):
-        return workflow.input, reference_time, locale, use_latent
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
-    duckling_plugin = DucklingPluginLB(access=access, mutate=mutate, **duckling_args)
+    duckling_plugin = DucklingPluginLB(dest="output.entities", **duckling_args)
 
     request_callback = request_builder(mock_entity_json, response_code=response_code)
     httpretty.register_uri(
@@ -40,7 +35,7 @@ def test_plugin_working_cases(payload) -> None:
     workflow = Workflow([duckling_plugin])
 
     if expected_types is not None:
-        output = workflow.run(body)
+        _, output = workflow.run(Input(utterances=body, locale=locale, reference_time=reference_time, latent_entities=use_latent))
         module = importlib.import_module("dialogy.types.entity")
 
         if not output["entities"]:

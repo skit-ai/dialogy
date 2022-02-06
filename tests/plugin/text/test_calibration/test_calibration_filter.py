@@ -6,13 +6,13 @@ from typing import ValuesView
 
 import numpy as np
 import pandas as pd
-import pytest
 from scipy import sparse
 
-from dialogy import constants as const
+from dialogy.base import Input, Output
 from dialogy.plugins.text.calibration.xgb import CalibrationModel
-from dialogy.workflow.workflow import Workflow
-from tests import EXCEPTIONS, load_tests
+from dialogy.types import utterances
+from tests import load_tests
+
 
 json_data = load_tests("df", __file__, ext=".json")
 df = pd.DataFrame(json_data, columns=["conv_id", "data", "tag", "value", "time"])
@@ -101,13 +101,10 @@ def test_calibration_model_validation():
 
 
 def test_calibration_model_utility():
-    assert calibration_model.utility(
-        [[{"transcript": "hello", "am_score": -100, "lm_score": -200}]]
-    ) == ["hello"]
+    input_ = Input(utterances=[[{"transcript": "hello", "am_score": -100, "lm_score": -200}]])
+    assert calibration_model.utility(input_, Output()) == ["hello"]
     calibration_model.threshold = float("inf")
-    assert (
-        calibration_model.utility(
-            [
+    input_ = Input(utterances=[
                 [
                     {
                         "transcript": "hello world hello world",
@@ -117,5 +114,6 @@ def test_calibration_model_utility():
                 ]
             ]
         )
-        == ["hello world hello world"]
+    assert (
+        calibration_model.utility(input_, Output()) == ["hello world hello world"]
     )

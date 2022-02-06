@@ -11,17 +11,8 @@ from tests import EXCEPTIONS, load_tests
 
 
 def make_entity_object(entity_items):
-    reference_time = 1622640071000
-
-    def access(workflow):
-        return workflow.input, reference_time, "en_IN"
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     duckling_plugin = DucklingPlugin(
-        access=access,
-        mutate=mutate,
+        dest="output.entities",
         dimensions=["date", "time", "duration", "number", "people"],
         timezone="Asia/Kolkata",
         debug=False,

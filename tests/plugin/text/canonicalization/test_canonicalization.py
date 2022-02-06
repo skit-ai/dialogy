@@ -4,16 +4,9 @@ import pandas as pd
 
 from dialogy.plugins.text.canonicalization import CanonicalizationPlugin
 from dialogy.plugins.text.list_entity_plugin import ListEntityPlugin
+from dialogy.base import Input
 from dialogy.types import KeywordEntity
 from dialogy.workflow import Workflow
-
-
-def canon_access(w):
-    return w.output["entities"], w.input["classification_input"]
-
-
-def canon_mutate(w, v):
-    w.output["classification_input"] = v
 
 
 canonicalization = CanonicalizationPlugin(
@@ -21,6 +14,7 @@ canonicalization = CanonicalizationPlugin(
     input_column="data",
     use_transform=True,
     threshold=0.1,
+    debug=False,
     dest="input.clf_feature"
 )
 
@@ -30,22 +24,16 @@ no_op_canonicalization = CanonicalizationPlugin(
     input_column="data",
     threshold=0.1,
     dest="input.clf_feature",
+    debug=False,
     use_transform=False,
 )
-
-
-def entity_access(w):
-    return (w.input["ner_input"],)
-
-
-def entity_mutate(w, v):
-    w.output["entities"] = v
 
 
 list_entity_plugin = ListEntityPlugin(
     candidates={"fruits": {"apple": ["apple", "apples"]}},
     style="regex",
-    dest="output.entities"
+    dest="output.entities",
+    debug=False
 )
 
 workflow = Workflow([list_entity_plugin, canonicalization])
@@ -113,10 +101,9 @@ TEST_DATA_2 = pd.DataFrame(
 
 
 def test_canonicalization_utility():
-    output = workflow.run(
-        input_={"classification_input": ["hello apple"], "ner_input": ["hello apple"]}
-    )
-    assert output["classification_input"] == ["MASK <fruits>"]
+    input_ = Input(utterances=[[{"transcript": "hello apple"}]])
+    input_, _ = workflow.run(input_)
+    assert input_["clf_feature"] == ["MASK <fruits>"]
 
 
 def test_canonicalization_transform():

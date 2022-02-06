@@ -2,27 +2,11 @@
 This is a tutorial on creating and using Plugins with Workflows.
 """
 import re
-from typing import Any, Optional
+from typing import Any, Optional, List
 
-from dialogy.base.plugin import Plugin
-from dialogy.types.plugin import PluginFn
+from dialogy.base import Plugin, Guard, Input, Output
 from dialogy.workflow import Workflow
-
-
-def access(workflow: Workflow) -> Any:
-    """
-    This function would be provided by the
-    workflow implementer.
-    """
-    return workflow.input
-
-
-def mutate(workflow: Workflow, value: Any) -> Any:
-    """
-    This function would be provided by the
-    workflow implementer.
-    """
-    workflow.output = value
+from dialogy.types import Intent
 
 
 # == ArbitraryPlugin ==
@@ -44,43 +28,17 @@ class ArbitraryPlugin(Plugin):
 
     def __init__(
         self,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         use_transform: bool = False,
         debug=False,
     ):
         super().__init__(
-            access=access, mutate=mutate, debug=debug, use_transform=use_transform
+            dest=dest, guards=guards, debug=debug, use_transform=use_transform
         )
 
-    def utility(self, numbers, words) -> Any:
-        """
-        Expects a tuple from `access(workflow)` that contains numbers and words.
-
-        Where
-
-        - numbers: A list of numbers.
-        - words: A list of strings.
-
-        This plugin will:
-
-        - Increase each number in `numbers` by 2.
-        - Concatenate " world" after each word in `words`.
-
-        The plugin method is the place for implementing
-        plugin logic.
-
-        - If values need to be persisted? store them in class attributes.
-        - If A set of validation, API calls etc are dependencies to run the implementation?
-        create separate methods and call them here.
-
-        Args:
-
-        - workflow (Workflow): The workflow we possibly want to modify.
-        """
-        numbers = [number + 2 for number in numbers]
-        words = [word + " world" for word in words]
-        return numbers, words
+    def utility(self, _: Input, __: Output) -> Any:
+        return [Intent(name="_greeting_", score=.9)]
 
 
 # == Plugin as a class with workflow ==
@@ -89,59 +47,60 @@ def test_arbitrary_plugin() -> None:
     We will test how an arbitrary-class-based plugin works with a workflow.
     """
     # create an instance of `ArbitraryPlugin`.
-    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate)
+    arbitrary_plugin = ArbitraryPlugin(dest="output.intents")
 
     # create an instance of a `Workflow`.
     # we are calling the `arbitrary_plugin` to get the `plugin` de method.
     workflow = Workflow([arbitrary_plugin])
+    input_ = Input(utterances=[[{"transcript": "hello"}]])
 
     # This runs all the `preprocessors` and `postprocessors` provided previously.
     # we can expect our `arbitrary_plugin` will also be used.
-    output = workflow.run(([2, 5], ["hello", "hi"]))
-
-    numbers, words = output  # pylint: disable=unpacking-non-sequence
-
-    # This test would pass only if our plugin works correctly!
-    assert numbers == [4, 7]
-    assert words == ["hello world", "hi world"]
-
-
-def test_arbitrary_plugin_with_debug_mode() -> None:
-    """
-    We will test how an arbitrary-class-based plugin works with a workflow.
-    """
-    # create an instance of `ArbitraryPlugin`.
-    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate, debug=False)
-
-    # create an instance of a `Workflow`.
-    # we are calling the `arbitrary_plugin` to get the `plugin` de method.
-    workflow = Workflow([arbitrary_plugin])
-
-    # This runs all the `preprocessors` and `postprocessors` provided previously.
-    # we can expect our `arbitrary_plugin` will also be used.
-    output = workflow.run(([2, 5], ["hello", "hi"]))
-
-    numbers, words = output  # pylint: disable=unpacking-non-sequence
+    _, output = workflow.run(input_)
+    first_intent, *rest = output["intents"]
 
     # This test would pass only if our plugin works correctly!
-    assert numbers == [4, 7]
-    assert words == ["hello world", "hi world"]
+    assert first_intent["name"] == "_greeting_"
+    assert rest == []
+
+
+# def test_arbitrary_plugin_with_debug_mode() -> None:
+#     """
+#     We will test how an arbitrary-class-based plugin works with a workflow.
+#     """
+#     # create an instance of `ArbitraryPlugin`.
+#     arbitrary_plugin = ArbitraryPlugin(dest="output.intents", debug=False)
+
+#     # create an instance of a `Workflow`.
+#     # we are calling the `arbitrary_plugin` to get the `plugin` de method.
+#     workflow = Workflow([arbitrary_plugin])
+
+#     # This runs all the `preprocessors` and `postprocessors` provided previously.
+#     # we can expect our `arbitrary_plugin` will also be used.
+#     output = workflow.run(([2, 5], ["hello", "hi"]))
+
+#     numbers, words = output  # pylint: disable=unpacking-non-sequence
+
+#     # This test would pass only if our plugin works correctly!
+#     assert numbers == [4, 7]
+#     assert words == ["hello world", "hi world"]
 
 
 def test_plugin_train() -> None:
-    arbitrary_plugin = ArbitraryPlugin(access=access, mutate=mutate, debug=False)
+    arbitrary_plugin = ArbitraryPlugin(dest="output.intents")
     assert arbitrary_plugin.train([]) is None
 
 
 def test_plugin_transform_not_use_transform() -> None:
     arbitrary_plugin = ArbitraryPlugin(
-        access=access, mutate=mutate, debug=False, use_transform=False
+        dest="output.intents",
+        use_transform=False
     )
     assert arbitrary_plugin.transform([]) == []
 
 
 def test_plugin_transform() -> None:
     arbitrary_plugin = ArbitraryPlugin(
-        access=access, mutate=mutate, debug=False, use_transform=True
+        dest="output.intents", debug=False, use_transform=True
     )
     assert arbitrary_plugin.transform([{"a": 1}]) == [{"a": 1}]

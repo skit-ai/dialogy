@@ -7,7 +7,7 @@ from datetime import datetime
 import httpretty
 import pytest
 
-from dialogy.base.plugin import Plugin
+from dialogy.base import Plugin, Input
 from dialogy.plugins import DucklingPlugin
 from dialogy.types.entity import (
     BaseEntity,
@@ -460,15 +460,8 @@ def test_entity_type(payload) -> None:
     expected = payload.get("expected")
     exception = payload.get("exception")
 
-    def access(workflow):
-        return workflow.input, None, None, False
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     duckling_plugin = DucklingPlugin(
-        access=access,
-        mutate=mutate,
+        dest="output.entities",
         dimensions=["people", "time", "date", "duration"],
         locale="en_IN",
         timezone="Asia/Kolkata",
@@ -482,14 +475,11 @@ def test_entity_type(payload) -> None:
     workflow = Workflow([duckling_plugin])
 
     if expected:
-        workflow.run(body)
-        module = importlib.import_module("dialogy.types.entity")
-
-        for i, entity in enumerate(workflow.output["entities"]):
-            class_name = expected[i]["entity"]
-            assert entity.type == expected[i]["type"]
-            assert entity.entity_type == expected[i]["type"]
-            assert isinstance(entity, getattr(module, class_name))
+        _, output = workflow.run(Input(utterances=body))
+        entities = output["entities"]
+        for i, entity in enumerate(entities):
+            assert entity["type"] == expected[i]["type"]
+            assert entity["entity_type"] == expected[i]["type"]
     elif exception:
         with pytest.raises(EXCEPTIONS[exception]):
-            workflow.run(body)
+            workflow.run(Input(utterances=body))

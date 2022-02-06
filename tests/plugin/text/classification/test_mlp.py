@@ -12,11 +12,13 @@ import dialogy.constants as const
 from dialogy.plugins import MergeASROutputPlugin, MLPMultiClass
 from dialogy.utils import load_file
 from dialogy.workflow import Workflow
+from dialogy.base import Input, Plugin, Guard
 from tests import load_tests
 
 
 class MockMLPClassifier:
     def __init__(self, model_dir, args=None, **kwargs):
+        super().__init__(**kwargs)
         self.model_dir = model_dir
         self.args = args or {}
         self.kwargs = kwargs
@@ -30,19 +32,10 @@ class MockMLPClassifier:
         return
 
 
-def write_intent_to_workflow(w, v):
-    w.output[const.INTENTS] = v
-
-
-def update_input(w, v):
-    w.input[const.CLASSIFICATION_INPUT] = v
-
-
 def test_mlp_plugin_when_no_mlpmodel_saved():
     mlp_clf = MLPMultiClass(
         model_dir=".",
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents"
     )
     assert isinstance(mlp_clf, MLPMultiClass)
     assert mlp_clf.model_pipeline is None
@@ -56,8 +49,7 @@ def test_mlp_plugin_when_mlpmodel_EOFError(capsys):
     with capsys.disabled():
         mlp_plugin = MLPMultiClass(
             model_dir=directory,
-            access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-            mutate=write_intent_to_workflow,
+            dest="output.intents",
             debug=False,
         )
         assert mlp_plugin.model_pipeline is None
@@ -68,8 +60,8 @@ def test_mlp_plugin_when_mlpmodel_EOFError(capsys):
 def test_mlp_init_mock():
     mlp_clf = MLPMultiClass(
         model_dir=".",
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+            dest="output.intents",
+            debug=False,
     )
     mlp_clf.init_model()
     assert isinstance(mlp_clf.model_pipeline, sklearn.pipeline.Pipeline)
@@ -79,8 +71,8 @@ def test_mlp_invalid_argsmap():
     with pytest.raises(ValueError):
         MLPMultiClass(
             model_dir=".",
-            access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-            mutate=write_intent_to_workflow,
+            dest="output.intents",
+            debug=False,
             args_map={"invalid": "value"},
         )
 
@@ -108,8 +100,8 @@ def test_mlp_gridsearch_argsmap():
 
     xlmr_clf = MLPMultiClass(
         model_dir=".",
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False,
         args_map=fake_args,
     )
     xlmr_clf.init_model()
@@ -137,8 +129,8 @@ def test_mlp_gridsearch_argsmap():
     with pytest.raises(ValueError):
         xlmr_clf_invalid = MLPMultiClass(
             model_dir=".",
-            access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-            mutate=write_intent_to_workflow,
+            dest="output.intents",
+            debug=False,
             args_map=fake_invalid_args,
         )
         xlmr_clf_invalid.init_model()
@@ -150,8 +142,8 @@ def test_train_mlp_mock():
 
     mlp_clf = MLPMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False,
     )
 
     train_df = pd.DataFrame(
@@ -170,8 +162,8 @@ def test_train_mlp_mock():
     # So this instance would have read the saved mlp model.
     mlp_clf_copy = MLPMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False,
     )
     mlp_clf_copy.load()
     assert isinstance(mlp_clf_copy.model_pipeline, sklearn.pipeline.Pipeline)
@@ -204,8 +196,8 @@ def test_train_mlp_gridsearch_mock():
 
     mlp_clf = MLPMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False,
         args_map=fake_args,
     )
 
@@ -225,8 +217,8 @@ def test_train_mlp_gridsearch_mock():
     # So this instance would have read the saved mlp model.
     mlp_clf_copy = MLPMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False,
     )
     mlp_clf_copy.load()
     assert mlp_clf_copy.valid_mlpmodel is True
@@ -242,8 +234,8 @@ def test_invalid_operations():
 
     mlp_clf = MLPMultiClass(
         model_dir=directory,
-        access=lambda w: w.input[const.CLASSIFICATION_INPUT],
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
+        debug=False,
     )
     mlp_clf.init_model()
 
@@ -309,20 +301,19 @@ def test_inference(payload):
         const.PRODUCTION: {},
     }
 
-    text = payload.get("input")
+    transcripts = payload.get("input")
     intent = payload["expected"]["label"]
 
     mlp_clf = MLPMultiClass(
         model_dir=directory,
-        access=lambda w: (w.input[const.CLASSIFICATION_INPUT],),
-        mutate=write_intent_to_workflow,
+        dest="output.intents",
         args_map=fake_args,
         debug=False,
     )
 
     merge_asr_output_plugin = MergeASROutputPlugin(
-        access=lambda w: (w.input[const.CLASSIFICATION_INPUT],),
-        mutate=update_input,
+        dest="input.clf_feature",
+        debug=False,
     )
 
     workflow = Workflow([merge_asr_output_plugin, mlp_clf])
@@ -357,8 +348,8 @@ def test_inference(payload):
     )
 
     workflow.train(train_df)
-    output = workflow.run(input_={const.CLASSIFICATION_INPUT: text})
-    assert output[const.INTENTS][0].name == intent
-    assert output[const.INTENTS][0].score > 0.5
+    _, output = workflow.run(Input(utterances=[[{"transcript": transcript} for transcript in transcripts]]))
+    assert output[const.INTENTS][0]["name"] == intent
+    assert output[const.INTENTS][0]["score"] > 0.5
     if os.path.exists(file_path):
         os.remove(file_path)

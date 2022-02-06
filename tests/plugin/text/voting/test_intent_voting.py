@@ -1,12 +1,13 @@
 """
 This is a tutorial for understanding the use of `VotePlugin`.
 """
-from typing import Any, List
+from typing import List
 
 import pytest
 
 from dialogy import constants as const
 from dialogy.plugins import VotePlugin
+from dialogy.base import Input, Output
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
 
@@ -22,11 +23,11 @@ def test_voting_0_intents():
     have a test to see if it takes care of division 0.
     """
     intents: List[Intent] = []
-    vote_plugin = VotePlugin(access=lambda w: (w.output[0], 0), mutate=update_intent)
+    vote_plugin = VotePlugin(dest="output.intents")
     workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
-    intent, _ = workflow.run(input_="")
-    assert intent.name == const.S_INTENT_OOS
+    workflow.output = Output(intents=intents)
+    _, output = workflow.run(Input(utterances=["some text"]))
+    assert output["intents"][0]["name"] == const.S_INTENT_OOS
 
 
 def test_voting_n_intents():
@@ -40,12 +41,12 @@ def test_voting_n_intents():
         Intent(name="a", score=1),
     ]
     vote_plugin = VotePlugin(
-        debug=False, access=lambda w: (w.output[0], len(intents)), mutate=update_intent
+        debug=False, dest="output.intents",
     )
     workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
-    intent, _ = workflow.run(input_="")
-    assert intent.name == "a"
+    workflow.output = Output(intents=intents)
+    _, output = workflow.run(Input(utterances=["some text"]))
+    assert output["intents"][0]["name"] == "a"
 
 
 def test_voting_on_conflicts():
@@ -59,12 +60,12 @@ def test_voting_on_conflicts():
         Intent(name="b", score=1),
     ]
     vote_plugin = VotePlugin(
-        access=lambda w: (w.output[0], len(intents)), mutate=update_intent
+        dest="output.intents"
     )
     workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
-    intent, _ = workflow.run(input_="")
-    assert intent.name == "_oos_"
+    workflow.output = Output(intents=intents)
+    _, output = workflow.run(Input(utterances=["some text"]))
+    assert output["intents"][0]["name"] == "_oos_"
 
 
 def test_voting_on_weak_signals():
@@ -78,42 +79,12 @@ def test_voting_on_weak_signals():
         Intent(name="b", score=0.1),
     ]
     vote_plugin = VotePlugin(
-        access=lambda w: (w.output[0], len(intents)), mutate=update_intent
+        dest="output.intents"
     )
     workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
-    intent, _ = workflow.run(input_="")
-    assert intent.name == "_oos_"
-
-
-def test_missing_access():
-    intents = [
-        Intent(name="a", score=0.3),
-        Intent(name="a", score=0.2),
-        Intent(name="b", score=0.1),
-        Intent(name="b", score=0.1),
-    ]
-
-    vote_plugin = VotePlugin(mutate=update_intent)
-    workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
-    with pytest.raises(TypeError):
-        intent, _ = workflow.run(input_="")
-
-
-def test_missing_mutate():
-    intents = [
-        Intent(name="a", score=0.3),
-        Intent(name="a", score=0.2),
-        Intent(name="b", score=0.1),
-        Intent(name="b", score=0.1),
-    ]
-
-    vote_plugin = VotePlugin(access=lambda w: w.output[0])
-    workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
-    with pytest.raises(TypeError):
-        intent, _ = workflow.run(input_="")
+    workflow.output = Output(intents=intents)
+    _, output = workflow.run(Input(utterances=["some text"]))
+    assert output["intents"][0]["name"] == "_oos_"
 
 
 def test_representation_oos():
@@ -125,13 +96,11 @@ def test_representation_oos():
         Intent(name="d", score=0.44),
     ]
 
-    vote_plugin = VotePlugin(
-        access=lambda w: (w.output[0], len(intents)), mutate=update_intent
-    )
+    vote_plugin = VotePlugin(dest="output.intents")
     workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
-    intent, _ = workflow.run(input_="")
-    assert intent.name == "_oos_"
+    workflow.output = Output(intents=intents)
+    _, output = workflow.run(Input(utterances=["some text"]))
+    assert output["intents"][0]["name"] == "_oos_"
 
 
 def test_representation_intent():
@@ -145,12 +114,12 @@ def test_representation_intent():
     ]
 
     vote_plugin = VotePlugin(
-        access=lambda w: (w.output[0], len(intents)), mutate=update_intent
+        dest="output.intents"
     )
     workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
-    intent, _ = workflow.run(input_="")
-    assert intent.name == "a"
+    workflow.output = Output(intents=intents)
+    _, output = workflow.run(Input(utterances=["some text"]))
+    assert output["intents"][0]["name"] == "a"
 
 
 def test_aggregate_fn_incorrect():
@@ -164,13 +133,12 @@ def test_aggregate_fn_incorrect():
     ]
 
     vote_plugin = VotePlugin(
-        access=lambda w: (w.output[0], len(intents)),
-        mutate=update_intent,
+        dest="output.intents",
         aggregate_fn=5,
     )
     workflow = Workflow([vote_plugin])
-    workflow.output = intents, []
+    workflow.output = Output(intents=intents)
 
     with pytest.raises(TypeError):
-        intent, _ = workflow.run(input_="")
-        assert intent.name == "a"
+        _, output = workflow.run(Input(utterances=[""]))
+        assert output["intents"][0]["name"] == "a"
