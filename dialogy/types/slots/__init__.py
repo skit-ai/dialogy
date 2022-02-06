@@ -7,13 +7,15 @@ Import classes:
 
     - Slot
 """
-
+from __future__ import annotations
+import attr
 from typing import Any, Dict, List
 
 import dialogy.constants as const
 from dialogy.types.entity import BaseEntity
 
 
+@attr.s
 class Slot:
     """Slot Type
 
@@ -23,19 +25,18 @@ class Slot:
     - `values` list of entities extracted
     """
 
-    def __init__(self, name: str, types: List[str], values: List[BaseEntity]) -> None:
-        self.name = name
-        self.types = types
-        self.values = values
+    name: str = attr.ib(kw_only=True, order=True)
+    types: str = attr.ib(kw_only=True, factory=list, order=False)
+    values: List[BaseEntity] = attr.ib(kw_only=True, factory=list, order=False)
 
-    def add(self, entity: BaseEntity) -> "Slot":
+    def add(self, entity: BaseEntity) -> Slot:
         """
         Insert the `BaseEntity` within the current `Slot` instance.
         """
         self.values.append(entity)
         return self
 
-    def clear(self) -> "Slot":
+    def clear(self) -> Slot:
         """
         Remove all `BaseEntity` within the current `Slot` instance.
         """
@@ -49,16 +50,11 @@ class Slot:
         Returns:
             Dict[str, Any]
         """
-        entities_json = [entity.json() for entity in self.values]
-        slot_json = {
+        return {
             "name": self.name,
-            "type": self.types,
-            const.EntityKeys.VALUES: entities_json,
+            "types": self.types,
+            "values": [entity.json() for entity in self.values],
         }
-        return slot_json
-
-    def __repr__(self) -> str:
-        return f"Slot(name={self.name}, types={self.types}, values={self.values})"
 
 
 Rule = Dict[str, Dict[str, Any]]
