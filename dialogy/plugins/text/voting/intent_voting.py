@@ -203,7 +203,7 @@ class VotePlugin(Plugin):
         :return: Voted signal or fallback in case of no consensus.
         :rtype: Intent
         """
-        fallback = Intent(name=self.fallback_intent, score=1)
+        fallback = [Intent(name=self.fallback_intent, score=1)]
         if not intents:
             return fallback
 
@@ -234,11 +234,11 @@ class VotePlugin(Plugin):
         logger.debug(f"strong signal: {strong_signal}")
 
         if (consensus_achieved or representative_signal) and strong_signal:
-            return Intent(
+            return [Intent(
                 name=main_intent[const.SIGNAL.NAME],  # type: ignore
                 score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
-            )
-        return Intent(name=self.fallback_intent, score=1)
+            )]
+        return [Intent(name=self.fallback_intent, score=1)]
 
-    def utility(self, input: Input, output: Output) -> Any:
-        return self.vote_signal(output.intents, len(input.transcripts))
+    def utility(self, input_: Input, output: Output) -> Any:
+        return self.vote_signal(output.intents, len(input_.transcripts))
