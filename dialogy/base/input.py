@@ -48,7 +48,7 @@ class Input:
 
     def __attrs_post_init__(self):
         try:
-        object.__setattr__(self, "transcripts", normalize(self.utterances))
+            object.__setattr__(self, "transcripts", normalize(self.utterances))
         except TypeError:
             ...
 
