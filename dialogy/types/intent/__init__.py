@@ -154,4 +154,10 @@ class Intent:
             intent = Intent(name="special", score=0.8)
             intent.json()
         """
-        return attr.asdict(self)
+        return {
+            "name": self.name,
+            "alternative_index": self.alternative_index,
+            "score": self.score,
+            "parsers": self.parsers,
+            "slots": {slot_name: slot.json() for slot_name, slot in self.slots.items()},
+        }
