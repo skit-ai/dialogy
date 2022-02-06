@@ -21,6 +21,11 @@ class Output:
     )
 
     def json(self: Output) -> dict:
+        return {
+            "intents": [intent.json() for intent in self.intents],
+            "entities": [entity.json() for entity in self.entities],
+        }
+
     @classmethod
     def from_dict(cls, d: dict, reference: Optional[Output] = None):
         if reference:
