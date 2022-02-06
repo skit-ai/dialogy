@@ -214,7 +214,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         aggregated_entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(aggregated_entities)
 
-    def utility(self, input: Input, output: Output) -> Any:
+    def utility(self, input: Input, _: Output) -> Any:
         transcripts = input.transcripts
         return self.get_entities(transcripts)  # pylint: disable=no-value-for-parameter
 
@@ -309,7 +309,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         logger.disable("dialogy")
         for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             transcripts = self.make_transform_values(row[self.input_column])
-            entities = self.utility(transcripts)
+            entities = self.get_entities(transcripts)
             is_empty_series = isinstance(row[self.output_column], pd.Series) and (
                 row[self.output_column].isnull()
             )
