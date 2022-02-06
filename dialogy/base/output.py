@@ -21,4 +21,8 @@ class Output:
     )
 
     def json(self: Output) -> dict:
-        return attr.asdict(self)
+    @classmethod
+    def from_dict(cls, d: dict, reference: Optional[Output] = None):
+        if reference:
+            return attr.evolve(reference, **d)
+        return attr.evolve(cls(), **d)
