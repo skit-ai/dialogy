@@ -46,7 +46,10 @@ class Input:
     )
 
     def __attrs_post_init__(self):
+        try:
         object.__setattr__(self, "transcripts", normalize(self.utterances))
+        except TypeError:
+            ...
 
     @reference_time.validator
     def _check_reference_time(self, attribute: attr.Attribute, reference_time: int):
