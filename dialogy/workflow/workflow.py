@@ -88,8 +88,8 @@ class Workflow:
         type=List[Plugin],
         validator=attr.validators.instance_of(list),
     )
-    input: Optional[Input] = attr.ib(default=None, kw_only=True)
-    output: Optional[Output] = attr.ib(default=None, kw_only=True)
+    input: Optional[Input] = attr.ib(default=None, kw_only=True, validator=attr.validators.optional(attr.validators.instance_of(Input)))
+    output: Optional[Output] = attr.ib(default=None, kw_only=True, validator=attr.validators.optional(attr.validators.instance_of(Output)))
     debug = attr.ib(
         type=bool, default=False, validator=attr.validators.instance_of(bool)
     )
@@ -121,17 +121,12 @@ class Workflow:
         :return: This instance
         :rtype: Workflow
         """
-        if not self.input:
-            raise RuntimeError(
-                f"Unexpected state - Attmpted to set on {self.input=}."
-            )
-
         dest, attribute = path.split(".")
 
         if dest == "input":
-            self.input = Input(**{**self.input.json(), attribute: value})
+            self.input = Input.from_dict({attribute: value}, reference=self.input)
         elif dest == "output" and isinstance(value, list):
-            self.output = Output(**{**self.output.json(), attribute: value})
+            self.output = Output.from_dict({attribute: value}, reference=self.output)
         elif dest == "output":
             raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
         else:
@@ -225,3 +220,4 @@ class Workflow:
             if transformed_data is not None:
                 training_data = transformed_data
         return self
+47
