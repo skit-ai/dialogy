@@ -519,7 +519,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         except ValueError as value_error:
             raise ValueError(str(value_error)) from value_error
 
-    def utility(self, input: Input, output: Output) -> List[BaseEntity]:
+    def utility(self, input: Input, _: Output) -> List[BaseEntity]:
         """
         Produces Duckling entities, runs with a :ref:`Workflow's run<workflow_run>` method.
 
@@ -567,11 +567,11 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                     f"{reference_time=} should be isoformat date or unix timestamp integer."
                 )
             transcripts = self.make_transform_values(row[self.input_column])
-            entities = self.utility(
+            entities = self.extract(
                 transcripts,
-                reference_time,
                 lang_detect_from_text(self.input_column),
-                self.activate_latent_entities,
+                reference_time=reference_time,
+                use_latent=self.activate_latent_entities,
             )
             if row[self.output_column] is None or pd.isnull(row[self.output_column]):
                 training_data.at[i, self.output_column] = entities
