@@ -200,10 +200,8 @@ class CalibrationModel(Plugin):
     def save(self, fname: str) -> None:
         pickle.dump(self, open(fname, "wb"))
 
-    def utility(self, input: Input, _) -> Any:
-        transcript = input.transcript
-        utterances = input.utterances
-        return self.inference(transcript, utterances)  # pylint: disable=no-value-for-parameter
+    def utility(self, input: Input, _: Output) -> Any:
+        return self.inference(input.transcripts, input.utterances)  # pylint: disable=no-value-for-parameter
 
     def validate(self, df: pd.DataFrame) -> bool:
         """
