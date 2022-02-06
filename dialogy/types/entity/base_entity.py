@@ -37,7 +37,7 @@ class BaseEntity:
     # **type**
     #
     # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
-    type = attr.ib(type=str, validator=attr.validators.instance_of(str), order=False)
+    type = "value"
 
     # **body**
     #
@@ -104,9 +104,6 @@ class BaseEntity:
 
     __properties_map = const.BASE_ENTITY_PROPS
 
-    def __attrs_post_init__(self) -> None:
-        self.entity_type = self.type
-
     @classmethod
     def validate(cls, dict_: Dict[str, Any]) -> None:
         """
@@ -135,7 +132,7 @@ class BaseEntity:
         # ['body', 'start', 'value', 'end', 'dim', 'latent']
 
         # **type** of an entity is same as its **dimension**.
-        dict_[const.EntityKeys.TYPE] = dict_[const.EntityKeys.DIM]
+        dict_[const.EntityKeys.ENTITY_TYPE] = dict_[const.EntityKeys.DIM]
 
         # This piece is a preparation for multiple entity values.
         # So, even though we are confident of the value found, we are still keeping the
