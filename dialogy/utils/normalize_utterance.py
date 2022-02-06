@@ -175,7 +175,7 @@ def utterance2alternatives(
     Convert a list of utterances to a list of alternatives.
     """
     return [
-        " ".join([alternative[key] for alternative in alternatives]).lower()
+        " ".join([alternative[key] for alternative in alternatives])
         for alternatives in itertools.product(*utterances)
     ]
 
@@ -214,13 +214,13 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
         return utterance2alternatives(maybe_utterance)
 
     if is_unsqueezed_utterance(maybe_utterance):
-        return [alternative[key].lower() for alternative in maybe_utterance]
+        return [alternative[key] for alternative in maybe_utterance]
 
     if is_list(maybe_utterance) and is_list_of_string(maybe_utterance):
-        return [utterance.lower() for utterance in maybe_utterance]
+        return [utterance for utterance in maybe_utterance]
 
     if is_string(maybe_utterance):
-        return [maybe_utterance.lower()]
+        return [maybe_utterance]
 
     else:
         raise TypeError(
