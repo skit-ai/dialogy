@@ -5,7 +5,7 @@ Module provides access to an entity type (class) to handle locations.
 Import classes:
     - LocationEntity
 """
-from typing import Dict
+from typing import Dict, Optional
 
 import attr
 
@@ -18,5 +18,5 @@ class LocationEntity(BaseEntity):
     Use this type for handling locations available with reference-ids.
     This is not meant for (latitude, longitude) values, those will be covered in GeoPointEntity.
     """
-
     _meta = attr.ib(type=Dict[str, str], default=attr.Factory(Dict))
+    entity_type: Optional[str] = attr.ib(default="location", repr=False, order=False)    

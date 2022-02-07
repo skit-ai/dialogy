@@ -5,6 +5,7 @@ Module provides access to entity types that can be parsed to obtain numeric valu
 Import classes:
     - NumericalEntity
 """
+from typing import Optional
 import attr
 
 from dialogy import constants as const
@@ -30,4 +31,5 @@ class NumericalEntity(BaseEntity):
     origin = attr.ib(
         type=str, default="value", validator=attr.validators.instance_of(str)
     )
+    entity_type: Optional[str] = attr.ib(default="number", repr=False, order=False)    
     __properties_map = const.BASE_ENTITY_PROPS
