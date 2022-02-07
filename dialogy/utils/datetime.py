@@ -3,18 +3,6 @@ from datetime import datetime
 from typing import Callable, Union
 
 
-def dt2timestamp(date_time: datetime) -> int:
-    """
-    Converts a python datetime object to unix-timestamp.
-
-    :param date_time: An instance of datetime.
-    :type date_time: datetime
-    :return: Unix timestamp integer.
-    :rtype: int
-    """
-    return int(date_time.timestamp() * 1000)
-
-
 def is_unix_ts(ts: int) -> bool:
     """
     Check if the input is a unix timestamp.
@@ -74,7 +62,7 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
         :return: A unix timestamp (13 digit).
         :rtype: int
         """
-        if isinstance(date_string, int) and is_unix_ts(date_string):
+        if isinstance(date_string, int):
             return date_string
         dt = datetime.fromisoformat(date_string)
         if dt.tzinfo is None and tz not in pytz.all_timezones:
