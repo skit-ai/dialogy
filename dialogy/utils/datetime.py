@@ -30,6 +30,7 @@ def is_unix_ts(ts: int) -> bool:
     except ValueError:
         return False
 
+
 def dt2timestamp(date_time: datetime) -> int:
     """
     Converts a python datetime object to unix-timestamp.
