@@ -4,6 +4,17 @@ from typing import Callable
 
 import pytz
 
+def dt2timestamp(date_time: datetime) -> int:
+    """
+    Converts a python datetime object to unix-timestamp.
+
+    :param date_time: An instance of datetime.
+    :type date_time: datetime
+    :return: Unix timestamp integer.
+    :rtype: int
+    """
+    return int(date_time.timestamp() * 1000)
+
 
 def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
     """
@@ -32,7 +43,7 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
 
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=pytz.timezone(tz))
-        return int(dt.timestamp() * 1000)
+        return dt2timestamp(dt)
 
     return make_tz_aware
 
