@@ -79,3 +79,10 @@ def test_workflow_invalid_set_value():
     workflow = Workflow()
     with pytest.raises(ValueError):
         workflow.set("output.intents", 10)
+
+
+def test_safe_flush():
+    workflow = Workflow()
+    i, o = workflow.flush()
+    assert i == {}
+    assert o == {}

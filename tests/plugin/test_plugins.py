@@ -3,6 +3,7 @@ This is a tutorial on creating and using Plugins with Workflows.
 """
 import re
 from typing import Any, Optional, List
+from dialogy import workflow
 
 from dialogy.base import Plugin, Guard, Input, Output
 from dialogy.workflow import Workflow
@@ -113,4 +114,24 @@ def test_plugin_guards() -> None:
     )
     workflow = Workflow().set("input.utterances", ["hello"]).set("input.current_state", "COF")
     assert arbitrary_plugin.prevent(workflow.input, workflow.output) is True
+    assert arbitrary_plugin(workflow) is None
+
+
+def test_plugin_no_set_on_invalid_input():
+    arbitrary_plugin = ArbitraryPlugin(
+        dest="output.intents",
+        guards=[lambda i, _: i.current_state == "COF"],
+    )
+    workflow = Workflow()
+    assert arbitrary_plugin(workflow) is None
+
+
+def test_plugin_no_set_on_invalid_output():
+    arbitrary_plugin = ArbitraryPlugin(
+        dest="output.intents",
+        guards=[lambda i, _: i.current_state == "COF"],
+    )
+    workflow = Workflow()
+    workflow.input = Input(utterances="hello")
+    workflow.output = None
     assert arbitrary_plugin(workflow) is None
