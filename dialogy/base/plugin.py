@@ -268,12 +268,21 @@ Notes
 - If your plugin needs a model but it need not be trained frequently or uses an off the shelf pre-trained model, then you must build a Solitary plugin.
 - A trainable plugin can also have transform methods if it needs to modify a dataframe for other plugins in place.
 """
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
 import dialogy.constants as const
-from dialogy.types import PluginFn
+from dialogy.base.input import Input
+from dialogy.base.output import Output
 from dialogy.utils.logger import logger
+
+if TYPE_CHECKING:  # pragma: no cover
+    from dialogy.workflow import Workflow
+
+
+Guard = Callable[[Input, Output], bool]
 
 
 class Plugin(ABC):
@@ -366,22 +375,22 @@ class Plugin(ABC):
 
     def __init__(
         self,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         debug: bool = False,
     ) -> None:
-        self.access = access
-        self.mutate = mutate
         self.debug = debug
+        self.guards = guards
+        self.dest = dest
         self.input_column = input_column
         self.output_column = output_column or input_column
         self.use_transform = use_transform
 
     @abstractmethod
-    def utility(self, *args: Any) -> Any:
+    def utility(self, input: Input, output: Output) -> Any:
         """
         Transform X -> y.
 
@@ -391,7 +400,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    def __call__(self, workflow: Any) -> None:
+    def __call__(self, workflow: Workflow) -> None:
         """
         Abstraction for plugin io.
 
@@ -400,27 +409,38 @@ class Plugin(ABC):
         :raises TypeError: If access method is missing, we can't get inputs for transformation.
         """
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
-        if self.access:
-            args = self.access(workflow)
-            value = self.utility(*args)  # pylint: disable=assignment-from-none
-            if value is not None and self.mutate:
-                self.mutate(workflow, value)
-        else:
-            raise TypeError(
-                "Expected access to be functions" f" but {type(self.access)} was found."
-            )
 
-    def train(
-        self, _: Any
-    ) -> Any:  # pylint: disable=unused-argument disable=no-self-use
+        if workflow.input is None:
+            return
+
+        if workflow.output is None:
+            return
+
+        if self.prevent(workflow.input, workflow.output):
+            return
+
+        value = self.utility(workflow.input, workflow.output)
+        if value is not None and isinstance(self.dest, str):
+            workflow.set(self.dest, value)
+
+    def prevent(self, input_: Input, output: Output) -> bool:
+        """
+        Decide if the plugin should execute.
+
+        :return: prevent plugin execution if True.
+        :rtype: bool
+        """
+        if not self.guards:
+            return False
+        return any(guard(input_, output) for guard in self.guards)
+
+    def train(self, _: Any) -> Any:
         """
         Train a plugin.
         """
         return None
 
-    def transform(
-        self, training_data: Any
-    ) -> Any:  # pylint: disable=unused-argument disable=no-self-use
+    def transform(self, training_data: Any) -> Any:
         """
         Transform data for a plugin in the workflow.
         """

@@ -29,6 +29,7 @@ class TimeIntervalEntity(TimeEntity):
 
     origin = "interval"
     dim = "time"
+    type = attr.ib(type=str, default="value", order=False)
     __properties_map = const.TIME_ENTITY_PROPS
 
     @classmethod

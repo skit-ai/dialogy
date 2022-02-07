@@ -198,8 +198,6 @@ class TimeEntity(NumericalEntity):
         self.post_init()
 
     def post_init(self) -> None:
-        grain_: Optional[str] = None
         if isinstance(self.values, list) and self.values:
             self.grain = self.values[0].get("grain") or self.grain
         self.entity_type = self.set_entity_type()
-        self.type = self.entity_type

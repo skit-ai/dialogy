@@ -10,6 +10,8 @@ Import classes:
 
 - BaseEntity
 """
+from __future__ import annotations
+
 import copy
 from typing import Any, Dict, List, Optional, Union
 
@@ -32,22 +34,22 @@ class BaseEntity:
     # **range**
     #
     # is the character range in the alternative where the entity is parsed.
-    range = attr.ib(type=Dict[str, int], repr=False)
-
-    # **type**
-    #
-    # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
-    type = attr.ib(type=str, validator=attr.validators.instance_of(str))
+    range = attr.ib(type=Dict[str, int], repr=False, order=False, kw_only=True)
 
     # **body**
     #
     # is the string from which the entity is extracted.
-    body = attr.ib(type=str, validator=attr.validators.instance_of(str))
+    body = attr.ib(type=str, validator=attr.validators.instance_of(str), order=False)
 
     # **dim**
     #
     # is influenced from Duckling's convention of categorization.
-    dim = attr.ib(type=Optional[str], default=None, repr=False)
+    dim = attr.ib(type=Optional[str], default=None, repr=False, order=False)
+
+    # **type**
+    #
+    # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
+    type = attr.ib(type=str, default="value", order=False, kw_only=True)
 
     # **parsers**
     #
@@ -56,6 +58,7 @@ class BaseEntity:
         type=List[str],
         default=attr.Factory(list),
         validator=attr.validators.instance_of(list),
+        order=False,
     )
 
     # **score**
@@ -66,19 +69,21 @@ class BaseEntity:
     # **slot_names**
     #
     # Entities have awareness of the slots they should fill.
-    slot_names = attr.ib(type=List[str], default=attr.Factory(list), repr=False)
+    slot_names = attr.ib(
+        type=List[str], default=attr.Factory(list), repr=False, order=False
+    )
 
     # **alternative_index**
     #
     # is the index of transcript within the ASR output: `List[Utterances]`
     # from which this entity was picked up. This may be None.
-    alternative_index = attr.ib(type=Optional[int], default=None)
-    alternative_indices = attr.ib(type=Optional[List[int]], default=None)
+    alternative_index = attr.ib(type=Optional[int], default=None, order=False)
+    alternative_indices = attr.ib(type=Optional[List[int]], default=None, order=False)
 
     # **latent**
     #
     # Duckling influenced attribute, tells if there is less evidence for an entity if latent is True.
-    latent = attr.ib(type=bool, default=False)
+    latent = attr.ib(type=bool, default=False, order=False)
 
     # **values**
     #
@@ -88,22 +93,20 @@ class BaseEntity:
         default=attr.Factory(list),
         validator=attr.validators.instance_of(List),
         repr=False,
+        order=False,
     )
 
     # **values**
     #
     # A single value interpretation from values.
-    value: Any = attr.ib(default=None)
+    value: Any = attr.ib(default=None, order=False)
 
     # **entity_type**
     #
     # Mirrors type, to be deprecated.
-    entity_type: Optional[str] = attr.ib(default=None, repr=False)
+    entity_type: Optional[str] = attr.ib(default=None, repr=False, order=False)
 
     __properties_map = const.BASE_ENTITY_PROPS
-
-    def __attrs_post_init__(self) -> None:
-        self.entity_type = self.type
 
     @classmethod
     def validate(cls, dict_: Dict[str, Any]) -> None:
@@ -133,7 +136,7 @@ class BaseEntity:
         # ['body', 'start', 'value', 'end', 'dim', 'latent']
 
         # **type** of an entity is same as its **dimension**.
-        dict_[const.EntityKeys.TYPE] = dict_[const.EntityKeys.DIM]
+        dict_[const.EntityKeys.ENTITY_TYPE] = dict_[const.EntityKeys.DIM]
 
         # This piece is a preparation for multiple entity values.
         # So, even though we are confident of the value found, we are still keeping the
@@ -151,7 +154,7 @@ class BaseEntity:
         return dict_
 
     @classmethod
-    def from_dict(cls, dict_: Dict[str, Any]) -> "BaseEntity":
+    def from_dict(cls, dict_: Dict[str, Any]) -> BaseEntity:
         """
         Create an instance of a given class `cls` from a `dict` that complies
         with attributes of `cls` through its keys and values.
@@ -208,7 +211,7 @@ class BaseEntity:
         else:
             return reference.get(const.VALUE)
 
-    def copy(self) -> "BaseEntity":
+    def copy(self) -> BaseEntity:
         """
         Create a deep copy of the instance and return.
 

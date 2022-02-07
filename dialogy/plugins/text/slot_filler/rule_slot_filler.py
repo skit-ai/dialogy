@@ -5,10 +5,9 @@ Module provides access to a rule-based :ref:`slot filler<slot_filler>`.
 """
 from typing import Any, List, Optional
 
-from dialogy.base.plugin import Plugin
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
-from dialogy.types.plugin import PluginFn
 from dialogy.types.slots import Rule
 from dialogy.utils.logger import logger
 
@@ -108,9 +107,9 @@ class RuleBasedSlotFillerPlugin(Plugin):
     def __init__(
         self,
         rules: Rule,
-        fill_multiple: bool = False,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
+        fill_multiple: bool = True,
         debug: bool = False,
     ) -> None:
         """
@@ -125,7 +124,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # ```
         # rules = {"intent": {"slot_name": "entity_type"}}
         # ```
-        super().__init__(access=access, mutate=mutate, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug)
         self.rules: Rule = rules or {}
 
         # fill_multiple
@@ -133,21 +132,19 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
-    def fill(self, intents: List[Intent], entities: List[BaseEntity]) -> None:
-        if not intents:
-            return
+    def fill(self, intents: List[Intent], entities: List[BaseEntity]) -> List[Intent]:
+        if not isinstance(intents, list) or not intents:
+            return intents
 
-        if not (isinstance(intents, list) and isinstance(intents[0], Intent)):
-            return
+        intent, *rest = intents
 
-        intent = intents[0]
         intent.apply(self.rules)
 
         for entity in entities:
             intent.fill_slot(entity, fill_multiple=self.fill_multiple)
 
         intent.cleanup()
-        logger.debug(f"intent after slot-filling: {intent}")
+        return [intent, *rest]
 
-    def utility(self, *args: Any) -> Any:
-        return self.fill(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, _: Input, output: Output) -> List[Intent]:
+        return self.fill(output.intents, output.entities)

@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn import preprocessing
 
 import dialogy.constants as const
-from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, save_file
 
@@ -27,8 +27,8 @@ class XLMRMultiClass(Plugin):
     def __init__(
         self,
         model_dir: str,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         debug: bool = False,
         threshold: float = 0.1,
         use_cuda: bool = False,
@@ -52,7 +52,7 @@ class XLMRMultiClass(Plugin):
                 "Plugin requires simpletransformers -- https://simpletransformers.ai/docs/installation/"
             ) from error
 
-        super().__init__(access, mutate, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug)
         self.labelencoder = preprocessing.LabelEncoder()
         self.classifier = classifer
         self.model: Any = None
@@ -135,7 +135,7 @@ class XLMRMultiClass(Plugin):
     def valid_labelencoder(self) -> bool:
         return hasattr(self.labelencoder, "classes_")
 
-    def inference(self, texts: List[str]) -> List[Intent]:
+    def inference(self, texts: Optional[List[str]]) -> List[Intent]:
         """
         Predict the intent of a list of texts.
 
@@ -147,6 +147,9 @@ class XLMRMultiClass(Plugin):
         """
         logger.debug(f"Classifier input:\n{texts}")
         fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
+        if not texts:
+            logger.error(f"texts passed to model {texts}!")
+            return [fallback_output]
 
         if self.model is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
@@ -165,17 +168,18 @@ class XLMRMultiClass(Plugin):
                 f"save the {self.__class__.__name__} plugin."
             )
 
-        if not texts:
-            return [fallback_output]
-
         predictions, logits = self.model.predict(texts)
         if not predictions:
             return [fallback_output]
-        
+
         confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
         intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
-        predicted_intents = self.labelencoder.inverse_transform(intents_confidence_order)
-        ordered_confidence_scores = [confidence_scores[0][idx] for idx in intents_confidence_order]
+        predicted_intents = self.labelencoder.inverse_transform(
+            intents_confidence_order
+        )
+        ordered_confidence_scores = [
+            confidence_scores[0][idx] for idx in intents_confidence_order
+        ]
 
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(
@@ -268,5 +272,5 @@ class XLMRMultiClass(Plugin):
             self.labelencoder_file_path, mode="rb", loader=pickle.load
         )
 
-    def utility(self, *args: Any) -> Any:
-        return self.inference(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, input: Input, _: Output) -> List[Intent]:
+        return self.inference(input.clf_feature)

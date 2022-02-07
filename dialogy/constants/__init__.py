@@ -33,6 +33,7 @@ class EntityKeys:
     START = "start"
     TO = "to"
     TYPE = "type"
+    ENTITY_TYPE = "entity_type"
     UNIT = "unit"
     VALUE = "value"
     VALUES = "values"

@@ -17,8 +17,8 @@ from loguru import logger
 from tqdm import tqdm
 
 from dialogy import constants as const
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
 
 Text = str
@@ -61,10 +61,10 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         style: Optional[str] = None,
         candidates: Optional[Dict[str, Dict[str, List[Any]]]] = None,
         spacy_nlp: Any = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         labels: Optional[List[str]] = None,
         threshold: Optional[float] = None,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = True,
@@ -72,8 +72,8 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         debug: bool = False,
     ):
         super().__init__(
-            access=access,
-            mutate=mutate,
+            dest=dest,
+            guards=guards,
             debug=debug,
             input_column=input_column,
             output_column=output_column,
@@ -214,8 +214,9 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         aggregated_entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(aggregated_entities)
 
-    def utility(self, *args: Any) -> Any:
-        return self.get_entities(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, input: Input, _: Output) -> Any:
+        transcripts = input.transcripts
+        return self.get_entities(transcripts)  # pylint: disable=no-value-for-parameter
 
     def ner_search(self, transcript: str) -> MatchType:
         """
@@ -308,7 +309,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         logger.disable("dialogy")
         for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             transcripts = self.make_transform_values(row[self.input_column])
-            entities = self.utility(transcripts)
+            entities = self.get_entities(transcripts)
             is_empty_series = isinstance(row[self.output_column], pd.Series) and (
                 row[self.output_column].isnull()
             )

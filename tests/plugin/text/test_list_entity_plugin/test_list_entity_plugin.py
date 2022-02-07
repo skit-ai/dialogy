@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 
+from dialogy.base import Input, Output
 from dialogy.plugins import ListEntityPlugin
 from dialogy.types import KeywordEntity
 from dialogy.workflow import Workflow
@@ -33,17 +34,14 @@ def mutate(w, v):
 
 def test_value_error_if_incorrect_style():
     with pytest.raises(ValueError):
-        l = ListEntityPlugin(
-            access=lambda w: (w.input,), mutate=mutate, style="unknown"
-        )
+        l = ListEntityPlugin(dest="output.entities", style="unknown")
         l._parse({"location": ["..."]})
 
 
 def test_value_error_if_spacy_missing():
     with pytest.raises(ValueError):
         l = ListEntityPlugin(
-            access=lambda w: (w.input,),
-            mutate=mutate,
+            dest="output.entities",
             style="spacy",
             spacy_nlp=None,
         )
@@ -53,8 +51,7 @@ def test_value_error_if_spacy_missing():
 def test_type_error_if_compiled_patterns_missing():
     with pytest.raises(TypeError):
         l = ListEntityPlugin(
-            access=lambda w: (w.input,),
-            mutate=mutate,
+            dest="output.entities",
             style="spacy",
             spacy_nlp=None,
         )
@@ -63,8 +60,7 @@ def test_type_error_if_compiled_patterns_missing():
 
 def test_entity_extractor_transform():
     entity_extractor = ListEntityPlugin(
-        access=lambda x: x,
-        mutate=lambda y: y,
+        dest="output.entities",
         input_column="data",
         output_column="entities",
         use_transform=True,
@@ -100,8 +96,7 @@ def test_entity_extractor_transform():
 
 def test_entity_extractor_no_transform():
     entity_extractor = ListEntityPlugin(
-        access=lambda x: x,
-        mutate=lambda y: y,
+        dest="output.entities",
         input_column="data",
         output_column="entities",
         use_transform=False,
@@ -134,8 +129,7 @@ def test_entity_extractor_no_transform():
 
 def test_entity_extractor_transform_no_existing_entity():
     entity_extractor = ListEntityPlugin(
-        access=lambda x: x,
-        mutate=lambda y: y,
+        dest="output.entities",
         input_column="data",
         output_column="entities",
         use_transform=True,
@@ -174,29 +168,27 @@ def test_get_list_entities(payload):
 
     if expected:
         list_entity_plugin = ListEntityPlugin(
-            access=lambda w: (w.input,), mutate=mutate, spacy_nlp=spacy_mocker, **config
+            dest="output.entities", spacy_nlp=spacy_mocker, **config
         )
 
         workflow = Workflow([list_entity_plugin])
-        output = workflow.run(input_=transcripts)
-        entities = output
+        print(transcripts)
+        _, output = workflow.run(input_=Input(utterances=transcripts))
+        entities = output["entities"]
 
         if not entities and expected:
             pytest.fail("No entities found!")
 
         for i, entity in enumerate(entities):
-            assert entity.value == expected[i]["value"]
-            assert entity.type == expected[i]["type"]
+            assert entity["value"] == expected[i]["value"]
+            assert entity["type"] == expected[i]["type"]
             if "score" in expected[i]:
-                assert entity.score == expected[i]["score"]
+                assert entity["score"] == expected[i]["score"]
     else:
         with pytest.raises(EXCEPTIONS.get(exception)):
             list_entity_plugin = ListEntityPlugin(
-                access=lambda w: (w.input,),
-                mutate=mutate,
-                spacy_nlp=spacy_mocker,
-                **config
+                dest="output.entities", spacy_nlp=spacy_mocker, **config
             )
 
             workflow = Workflow([list_entity_plugin])
-            workflow.run(input_=input_)
+            _, output = workflow.run(input_=Input(utterances=transcripts))

@@ -8,10 +8,9 @@ import numpy as np
 import pydash as py_
 
 from dialogy import constants as const
-from dialogy.base.plugin import Plugin
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Signal
 from dialogy.types.intent import Intent
-from dialogy.types.plugin import PluginFn
 from dialogy.utils.logger import logger
 
 
@@ -169,10 +168,10 @@ class VotePlugin(Plugin):
 
     def __init__(
         self,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
         threshold: float = 0.6,
         consensus: float = 0.2,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         representation: float = 0.3,
         fallback_intent: str = const.S_INTENT_OOS,
         aggregate_fn: Any = np.mean,
@@ -181,14 +180,14 @@ class VotePlugin(Plugin):
         """
         constructor
         """
-        super().__init__(access=access, mutate=mutate, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug)
         self.threshold: float = threshold
         self.consensus: float = consensus
         self.representation: float = representation
         self.fallback_intent: str = fallback_intent
         self.aggregate_fn: Any = aggregate_fn
 
-    def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
+    def vote_signal(self, intents: List[Intent], trials: int) -> List[Intent]:
         """
         Reduce a list of intents.
 
@@ -204,7 +203,7 @@ class VotePlugin(Plugin):
         :return: Voted signal or fallback in case of no consensus.
         :rtype: Intent
         """
-        fallback = Intent(name=self.fallback_intent, score=1)
+        fallback = [Intent(name=self.fallback_intent, score=1)]
         if not intents:
             return fallback
 
@@ -235,11 +234,13 @@ class VotePlugin(Plugin):
         logger.debug(f"strong signal: {strong_signal}")
 
         if (consensus_achieved or representative_signal) and strong_signal:
-            return Intent(
-                name=main_intent[const.SIGNAL.NAME],  # type: ignore
-                score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
-            )
-        return Intent(name=self.fallback_intent, score=1)
+            return [
+                Intent(
+                    name=main_intent[const.SIGNAL.NAME],  # type: ignore
+                    score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
+                )
+            ]
+        return [Intent(name=self.fallback_intent, score=1)]
 
-    def utility(self, *args: Any) -> Any:
-        return self.vote_signal(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, input_: Input, output: Output) -> Any:
+        return self.vote_signal(output.intents, len(input_.transcripts))

@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import pydash as py_
 import pytest
+from torch import threshold
 
 from dialogy.base.entity_extractor import EntityScoringMixin
 from dialogy.plugins import DucklingPlugin
@@ -11,17 +12,8 @@ from tests import EXCEPTIONS, load_tests
 
 
 def make_entity_object(entity_items):
-    reference_time = 1622640071000
-
-    def access(workflow):
-        return workflow.input, reference_time, "en_IN"
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     duckling_plugin = DucklingPlugin(
-        access=access,
-        mutate=mutate,
+        dest="output.entities",
         dimensions=["date", "time", "duration", "number", "people"],
         timezone="Asia/Kolkata",
         debug=False,
@@ -33,6 +25,24 @@ def make_entity_object(entity_items):
             for i, entities in enumerate(entity_items)
         ]
     )
+
+
+def test_remove_low_scoring_entities():
+    entity_extractor = EntityScoringMixin()
+    entity_extractor.threshold = 0.5
+    body = "test"
+    entities = [
+        KeywordEntity(
+            body=body,
+            value=body,
+            range={
+                "start": 0,
+                "end": len(body),
+            },
+            entity_type=body,
+        )
+    ]
+    assert entity_extractor.remove_low_scoring_entities(entities) == entities
 
 
 @pytest.mark.parametrize("payload", load_tests("entity_extractor", __file__))

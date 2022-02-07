@@ -1,20 +1,22 @@
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+import attr
+from pydash import py_
+
 from dialogy import constants as const
-from dialogy.base.plugin import Plugin, PluginFn
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import BaseEntity, TimeEntity
 
 
 def has_time_component(entity: BaseEntity) -> bool:
-    return entity.type in [
+    return entity.entity_type in [
         CombineDateTimeOverSlots.TIME,
         CombineDateTimeOverSlots.DATETIME,
     ]
 
 
 def is_date(entity: BaseEntity) -> bool:
-    return entity.type == CombineDateTimeOverSlots.DATE
+    return entity.entity_type == CombineDateTimeOverSlots.DATE
 
 
 class CombineDateTimeOverSlots(Plugin):
@@ -74,8 +76,8 @@ class CombineDateTimeOverSlots(Plugin):
 
     def __init__(
         self,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
@@ -83,8 +85,8 @@ class CombineDateTimeOverSlots(Plugin):
         debug: bool = False,
     ) -> None:
         super().__init__(
-            access=access,
-            mutate=mutate,
+            dest=dest,
+            guards=guards,
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
@@ -92,8 +94,9 @@ class CombineDateTimeOverSlots(Plugin):
         )
         self.trigger_intents = trigger_intents
 
-    def join(self, current_entity: TimeEntity, previous_entity: TimeEntity) -> None:
-        combined_value = None
+    def join(
+        self, current_entity: TimeEntity, previous_entity: TimeEntity
+    ) -> TimeEntity:
         current_turn_datetime = current_entity.get_value()
         previous_turn_datetime = previous_entity.get_value()
 
@@ -109,61 +112,73 @@ class CombineDateTimeOverSlots(Plugin):
                 month=previous_turn_datetime.month,
                 day=previous_turn_datetime.day,
             )
+        else:
+            return current_entity
 
-        if not combined_value:
-            return
+        return attr.evolve(
+            current_entity, **{const.EntityKeys.VALUE: combined_value.isoformat()}
+        )
 
-        current_entity.value = combined_value.isoformat()
-        current_entity.set_value(current_entity.value)
+    def get_tracked_slots(
+        self, slot_tracker: Optional[List[Dict[str, Any]]]
+    ) -> List[Dict[str, Any]]:
+        if not self.trigger_intents or not slot_tracker:
+            return []
 
-    def utility(self, *args: Any) -> Any:
+        tracked_intents = [
+            intent
+            for intent in slot_tracker
+            if intent[const.NAME] in self.trigger_intents
+        ]
+
+        if not tracked_intents:
+            return []
+
+        tracked_intent, *_ = tracked_intents
+        return tracked_intent.get(const.SLOTS, [])
+
+    def pick_previously_filled_time_entity(
+        self, tracked_slots: Optional[List[Dict[str, Any]]]
+    ) -> Optional[TimeEntity]:
+        if not tracked_slots:
+            return None
+
+        filled_entities_json = tracked_slots[0][const.EntityKeys.VALUES]
+
+        if not filled_entities_json or not isinstance(filled_entities_json, list):
+            return None
+
+        filled_entity_json, *_ = filled_entities_json
+        filled_entity_json[const.EntityKeys.VALUES] = [
+            {const.VALUE: filled_entity_json[const.VALUE]}
+        ]
+
+        return TimeEntity(**filled_entity_json)
+
+    def combine_time_entities_from_slots(
+        self, slot_tracker: Optional[List[Dict[str, Any]]], entities: List[BaseEntity]
+    ) -> List[BaseEntity]:
+        previously_filled_time_entity = self.pick_previously_filled_time_entity(
+            self.get_tracked_slots(slot_tracker)
+        )
+
+        if not previously_filled_time_entity:
+            return entities
+
+        time_entities, other_entities = py_.partition(
+            entities,
+            lambda entity: entity.entity_type
+            in CombineDateTimeOverSlots.SUPPORTED_ENTITIES,
+        )
+        combined_time_entities = [
+            self.join(entity, previously_filled_time_entity) for entity in time_entities
+        ]
+        return combined_time_entities + other_entities
+
+    def utility(self, input: Input, output: Output) -> List[BaseEntity]:
         """
         Combine the date and time entities collected across turns into a single entity.
         """
-        tracker: List[Dict[str, Any]]
-        entities: List[BaseEntity]
-
-        tracked_entity = None
-        tracked_intent = None
-
-        tracker, entities = args
-
-        if not self.trigger_intents:
-            return
-
-        if not tracker:
-            return
-
-        for entity in entities:
-            if entity.type not in CombineDateTimeOverSlots.SUPPORTED_ENTITIES:
-                continue
-
-            tracked_intents = [
-                intent
-                for intent in tracker
-                if intent[const.NAME] in self.trigger_intents
-            ]
-
-            if not tracked_intents:
-                continue
-
-            tracked_intent = tracked_intents[0]
-            tracked_slots = tracked_intent.get(const.SLOTS, [])
-
-            if not tracked_slots:
-                continue
-
-            tracked_entities_metadata = tracked_slots[0][const.EntityKeys.VALUES]
-
-            if not tracked_entities_metadata:
-                continue
-
-            if not isinstance(tracked_entities_metadata, list):
-                continue
-
-            tracked_entity_metadata = tracked_entities_metadata[0]
-            tracked_entity_metadata[const.EntityKeys.VALUES] = [
-                {const.VALUE: tracked_entity_metadata[const.VALUE]}
-            ]
-            tracked_entity = TimeEntity(**tracked_entity_metadata)
-            self.join(entity, tracked_entity)  # type: ignore
+        return self.combine_time_entities_from_slots(
+            input.slot_tracker, output.entities
+        )

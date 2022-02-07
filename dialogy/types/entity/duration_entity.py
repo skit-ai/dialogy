@@ -44,7 +44,7 @@ class DurationEntity(BaseEntity):
         }
         # ['body', 'start', 'value', 'end', 'dim', 'latent']
 
-        dict_[const.EntityKeys.TYPE] = dict_[const.EntityKeys.DIM]
+        dict_[const.EntityKeys.ENTITY_TYPE] = dict_[const.EntityKeys.DIM]
 
         # This piece is a preparation for multiple entity values.
         # So, even though we are confident of the value found, we are still keeping the

@@ -79,15 +79,3 @@ def validate_type(obj: Any, obj_type: Union[type, Tuple[type]]) -> None:
     """
     if not isinstance(obj, obj_type):
         raise TypeError(f"{obj} should be a {obj_type}")
-
-
-def dt2timestamp(date_time: datetime) -> int:
-    """
-    Converts a python datetime object to unix-timestamp.
-
-    :param date_time: An instance of datetime.
-    :type date_time: datetime
-    :return: Unix timestamp integer.
-    :rtype: int
-    """
-    return int(date_time.timestamp() * 1000)

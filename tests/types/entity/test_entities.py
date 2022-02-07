@@ -7,7 +7,7 @@ from datetime import datetime
 import httpretty
 import pytest
 
-from dialogy.base.plugin import Plugin
+from dialogy.base import Input, Plugin
 from dialogy.plugins import DucklingPlugin
 from dialogy.types.entity import (
     BaseEntity,
@@ -66,7 +66,7 @@ def test_entity_parser():
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=[{"value": 0}],
     )
     entity.add_parser(MockPlugin())
@@ -81,7 +81,7 @@ def test_entity_values_index_error():
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=[],
     )
     with pytest.raises(IndexError):
@@ -93,7 +93,7 @@ def test_entity_deep_copy():
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="basic",
+        entity_type="basic",
         dim="default",
         values=[],
     )
@@ -110,7 +110,7 @@ def test_base_entity_value_setter():
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="basic",
+        entity_type="basic",
         dim="default",
         values=[],
     )
@@ -125,7 +125,7 @@ def test_entity_synthesis():
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=[],
     )
     synthetic_entity = entity_synthesis(entity, "body", "12th november")
@@ -145,7 +145,7 @@ def test_entity_values_key_error():
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=[{"key": "value"}],
     )
     with pytest.raises(KeyError):
@@ -161,7 +161,7 @@ def test_people_entity_unit_not_str_error():
     body = "12 people"
     with pytest.raises(TypeError):
         _ = PeopleEntity(
-            range={"from": 0, "to": len(body)}, body=body, type="people", unit=0
+            range={"from": 0, "to": len(body)}, body=body, entity_type="people", unit=0
         )
 
 
@@ -169,7 +169,7 @@ def test_time_entity_grain_not_str_error():
     body = "12 pm"
     with pytest.raises(TypeError):
         _ = TimeEntity(
-            range={"from": 0, "to": len(body)}, body=body, type="time", grain=0
+            range={"from": 0, "to": len(body)}, body=body, entity_type="time", grain=0
         )
 
 
@@ -177,7 +177,7 @@ def test_time_interval_entity_value_not_dict_error():
     body = "from 4 pm to 12 am"
     with pytest.raises(TypeError):
         _ = TimeIntervalEntity(
-            range={"from": 0, "to": len(body)}, body=body, type="time", grain=0
+            range={"from": 0, "to": len(body)}, body=body, entity_type="time", grain=0
         )
 
 
@@ -185,7 +185,7 @@ def test_location_entity_value_not_int_error():
     body = "bangalore"
     with pytest.raises(TypeError):
         _ = LocationEntity(
-            range={"from": 0, "to": len(body)}, body=body, type="location"
+            range={"from": 0, "to": len(body)}, body=body, entity_type="location"
         )
 
 
@@ -195,7 +195,7 @@ def test_entity_set_value_values_present():
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=[{"value": 4}],
     )
     entity.set_value()
@@ -208,7 +208,7 @@ def test_entity_set_value_values_missing():
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
     )
     entity.set_value(value=4)
     assert entity.value == 4
@@ -223,7 +223,7 @@ def test_interval_entity_set_value_values_missing() -> None:
     entity = TimeIntervalEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="time",
+        entity_type="time",
         grain="hour",
         values=[value],
     )
@@ -239,7 +239,7 @@ def test_entity_jsonify() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=values,
     )
     entity.set_value(value)
@@ -256,7 +256,7 @@ def test_entity_jsonify_unrestricted() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=values,
     )
     entity_json = entity.json(add=["dim", "values"])
@@ -273,7 +273,7 @@ def test_entity_jsonify_skip() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=values,
     )
     entity_json = entity.json(skip=["values"])
@@ -286,10 +286,10 @@ def test_both_entity_type_attributes_match() -> None:
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="base",
+        entity_type="base",
         values=[value],
     )
-    assert entity.type == entity.entity_type
+    assert "base" == entity.entity_type
 
 
 def test_interval_entity_only_from() -> None:
@@ -300,7 +300,7 @@ def test_interval_entity_only_from() -> None:
     entity = TimeIntervalEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="time",
+        entity_type="time",
         grain="hour",
         values=[value],
     )
@@ -316,7 +316,7 @@ def test_interval_entity_only_to() -> None:
     entity = TimeIntervalEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="time",
+        entity_type="time",
         grain="hour",
         values=[value],
     )
@@ -330,7 +330,7 @@ def test_bad_interval_entity_neither_from_nor_to() -> None:
     entity = TimeIntervalEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="time",
+        entity_type="time",
         grain="hour",
         values=[value],
     )
@@ -344,7 +344,7 @@ def test_bad_time_entity_invalid_value() -> None:
     entity = TimeEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="time",
+        entity_type="time",
         grain="hour",
         values=[value],
     )
@@ -358,7 +358,7 @@ def test_bad_time_entity_no_value() -> None:
         entity = TimeEntity(
             range={"from": 0, "to": len(body)},
             body=body,
-            type="time",
+            entity_type="time",
             grain="hour",
             values=[],
         )
@@ -373,7 +373,7 @@ def test_time_interval_entity_value_without_range() -> None:
     entity = TimeIntervalEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="time",
+        entity_type="time",
         grain="hour",
         values=[value],
         value=value,
@@ -421,7 +421,7 @@ def test_time_interval_entity_get_value() -> None:
     entity = TimeIntervalEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="time",
+        entity_type="time",
         grain="hour",
         values=[value],
         value=value,
@@ -439,7 +439,7 @@ def test_time_interval_entity_no_value() -> None:
     entity = TimeIntervalEntity(
         range={"from": 0, "to": len(body)},
         body=body,
-        type="time",
+        entity_type="time",
         grain="hour",
         values=[value],
         value=value,
@@ -460,15 +460,8 @@ def test_entity_type(payload) -> None:
     expected = payload.get("expected")
     exception = payload.get("exception")
 
-    def access(workflow):
-        return workflow.input, None, None, False
-
-    def mutate(workflow, entities):
-        workflow.output = {"entities": entities}
-
     duckling_plugin = DucklingPlugin(
-        access=access,
-        mutate=mutate,
+        dest="output.entities",
         dimensions=["people", "time", "date", "duration"],
         locale="en_IN",
         timezone="Asia/Kolkata",
@@ -482,14 +475,10 @@ def test_entity_type(payload) -> None:
     workflow = Workflow([duckling_plugin])
 
     if expected:
-        workflow.run(body)
-        module = importlib.import_module("dialogy.types.entity")
-
-        for i, entity in enumerate(workflow.output["entities"]):
-            class_name = expected[i]["entity"]
-            assert entity.type == expected[i]["type"]
-            assert entity.entity_type == expected[i]["type"]
-            assert isinstance(entity, getattr(module, class_name))
+        _, output = workflow.run(Input(utterances=body))
+        entities = output["entities"]
+        for i, entity in enumerate(entities):
+            assert entity["entity_type"] == expected[i]["entity_type"]
     elif exception:
         with pytest.raises(EXCEPTIONS[exception]):
-            workflow.run(body)
+            workflow.run(Input(utterances=body))

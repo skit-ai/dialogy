@@ -3,13 +3,12 @@ from typing import Any, Dict, List, Optional
 from pydash import partition
 
 from dialogy import constants as const
-from dialogy.base.plugin import PluginFn
+from dialogy.base import Guard, Input, Output
 from dialogy.plugins import DucklingPlugin
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 
 
 class DucklingPluginLB(DucklingPlugin):
-
     # Constructor
     def __init__(
         self,
@@ -19,8 +18,8 @@ class DucklingPluginLB(DucklingPlugin):
         url: str = "http://0.0.0.0:8000/parse",
         locale: str = "en_IN",
         datetime_filters: Optional[str] = None,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         entity_map: Optional[Dict[str, Any]] = None,
         reference_time_column: str = const.REFERENCE_TIME,
         input_column: str = const.ALTERNATIVES,
@@ -36,8 +35,8 @@ class DucklingPluginLB(DucklingPlugin):
             locale=locale,
             datetime_filters=datetime_filters,
             threshold=0,
-            access=access,
-            mutate=mutate,
+            dest=dest,
+            guards=guards,
             entity_map=entity_map,
             reference_time_column=reference_time_column,
             input_column=input_column,
@@ -46,10 +45,10 @@ class DucklingPluginLB(DucklingPlugin):
             debug=debug,
         )
 
-    def utility(self, *args: Any) -> List[BaseEntity]:
-        entity_list = super().utility(*args)
+    def utility(self, input_: Input, output: Output) -> List[BaseEntity]:
+        entity_list = super().utility(input_, output)
         datetime_list, other_list = partition(
-            entity_list, lambda x: x.type in ["datetime", "date", "time"]
+            entity_list, lambda x: x.entity_type in ["datetime", "date", "time"]
         )
         if datetime_list:
             other_list.append(min(datetime_list, key=lambda x: x.alternative_index))

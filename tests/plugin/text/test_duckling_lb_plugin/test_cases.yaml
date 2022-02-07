@@ -15,7 +15,7 @@
   'end': 15,
   'dim': 'time',
   'latent': False}]
-  expected: [{"entity": "TimeEntity"}]
+  expected: [{"entity_type": "date"}]
 
 - description: "test time entity."
   input: ["27th next month", "28th next month"]
@@ -45,7 +45,7 @@
   'end': 15,
   'dim': 'time',
   'latent': False}]
-  expected: [{"entity": "TimeEntity"}]
+  expected: [{"entity_type": "date"}]
 
 - description: "test time entity."
   input: ""
@@ -96,7 +96,7 @@
     dimensions: ["people", "time", "date", "duration"]
     locale: "en_IN"
     timezone: "Asia/Kolkata"
-  expected: [{"entity": "PeopleEntity"}, {"entity": "TimeEntity"}, {"entity": "TimeEntity"}]
+  expected: [{"entity_type": "people"}, {"entity_type": "date"}, {"entity_type": "time"}]
 
 - description: "numerical entity test"
   input: "4 items"
@@ -110,4 +110,4 @@
   'end': 4,
   'dim': 'number',
   'latent': False}]
-  expected: [{"entity": "NumericalEntity"}]
+  expected: [{"entity_type": "number"}]

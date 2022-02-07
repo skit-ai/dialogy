@@ -3,20 +3,12 @@ import json
 import pandas as pd
 import pytest
 
+from dialogy.base import Input
 from dialogy.plugins import MergeASROutputPlugin
 from dialogy.workflow import Workflow
 
-
-def access(workflow):
-    return workflow.input
-
-
-def mutate(workflow, value):
-    workflow.output = value
-
-
 merge_asr_output_plugin = MergeASROutputPlugin(
-    access=access, mutate=mutate, use_transform=True, input_column="data"
+    dest="input.clf_feature", use_transform=True, input_column="data"
 )
 
 
@@ -26,9 +18,10 @@ def test_merge_asr_output() -> None:
     """
 
     workflow = Workflow([merge_asr_output_plugin])
+    input_ = Input(utterances=[[{"transcript": "hello world", "confidence": None}]])
 
-    output = workflow.run([[{"transcript": "hello world", "confidence": None}]])
-    assert output == ["<s> hello world </s>"]
+    input_, _ = workflow.run(input_)
+    assert input_["clf_feature"] == ["<s> hello world </s>"]
 
 
 def test_merge_longer_asr_output() -> None:
@@ -36,9 +29,8 @@ def test_merge_longer_asr_output() -> None:
     This case shows the merge in case there are multiple options.
     """
     workflow = Workflow([merge_asr_output_plugin])
-
-    output = workflow.run(
-        [
+    input_ = Input(
+        utterances=[
             [
                 {"transcript": "hello world", "confidence": None},
                 {"transcript": "hello word", "confidence": None},
@@ -46,7 +38,11 @@ def test_merge_longer_asr_output() -> None:
             ]
         ]
     )
-    assert output == ["<s> hello world </s> <s> hello word </s> <s> jello world </s>"]
+
+    input_, _ = workflow.run(input_)
+    assert input_["clf_feature"] == [
+        "<s> hello world </s> <s> hello word </s> <s> jello world </s>"
+    ]
 
 
 def test_merge_keyerror_on_missing_transcript() -> None:
@@ -56,9 +52,10 @@ def test_merge_keyerror_on_missing_transcript() -> None:
     """
 
     workflow = Workflow([merge_asr_output_plugin])
+    input_ = Input(utterances=[[{"not_transcript": "hello world", "confidence": None}]])
 
     with pytest.raises(TypeError):
-        workflow.run([[{"not_transcript": "hello world", "confidence": None}]])
+        workflow.run(input_)
 
 
 def test_invalid_data() -> None:

@@ -48,15 +48,19 @@ The aim of this project is to be largest supplier of plugins for SLU application
     abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden
     to offer flexibility of use.
 """
+from __future__ import annotations
+
 import copy
 import time
 from threading import Lock
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 
 import attr
 import pandas as pd
 
 from dialogy import constants as const
+from dialogy.base.input import Input
+from dialogy.base.output import Output
 from dialogy.base.plugin import Plugin
 from dialogy.utils.logger import logger
 
@@ -85,8 +89,16 @@ class Workflow:
         type=List[Plugin],
         validator=attr.validators.instance_of(list),
     )
-    input: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
-    output: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
+    input: Optional[Input] = attr.ib(
+        default=None,
+        kw_only=True,
+        validator=attr.validators.optional(attr.validators.instance_of(Input)),
+    )
+    output: Optional[Output] = attr.ib(
+        default=None,
+        kw_only=True,
+        validator=attr.validators.optional(attr.validators.instance_of(Output)),
+    )
     debug = attr.ib(
         type=bool, default=False, validator=attr.validators.instance_of(bool)
     )
@@ -97,29 +109,46 @@ class Workflow:
         """
         Post init hook.
         """
-        self.set_io()
+        self.__reset()
         self.lock = Lock()
 
-    def set_io(self) -> None:
+    def __reset(self) -> None:
         """
         Use this method to keep workflow-io in the same format as expected.
         """
-        self.input: Dict[str, Any] = {}
-        self.output: Dict[str, Any] = {const.INTENTS: [], const.ENTITIES: []}
+        self.input = None
+        self.output = Output()
 
-    def execute(self) -> None:
+    def set(self, path: str, value: Any) -> Workflow:
+        """
+        Set attribute path with value.
+
+        :param path: A '.' separated attribute path.
+        :type path: str
+        :param value: A value to set.
+        :type value: Any
+        :return: This instance
+        :rtype: Workflow
+        """
+        dest, attribute = path.split(".")
+
+        if dest == "input":
+            self.input = Input.from_dict({attribute: value}, reference=self.input)
+        elif dest == "output" and isinstance(value, list):
+            self.output = Output.from_dict({attribute: value}, reference=self.output)
+        elif dest == "output":
+            raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
+        else:
+            raise ValueError(f"{path} is not a valid path.")
+        return self
+
+    def execute(self) -> Workflow:
         """
         Update input, output attributes.
 
         We iterate through pre/post processing functions and update the input and
         output attributes of the class. It is expected that pre-processing functions
         would modify the input, and post-processing functions would modify the output.
-
-        Args:
-            processors (`List`): The list of preprocess or postprocess functions.
-
-        Raises:
-            `TypeError`: If any element in processors list is not a Callable.
         """
         history = {}
         for plugin in self.plugins:
@@ -147,8 +176,9 @@ class Workflow:
                 history["perf"] = round(end - start, 4)
             if history:
                 logger.debug(history)
+        return self
 
-    def run(self, input_: Any) -> Any:
+    def run(self, input_: Input) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """
         .. _workflow_run:
 
@@ -156,26 +186,21 @@ class Workflow:
 
         The current workflow exhibits the following simple procedure:
         pre-processing -> inference -> post-processing.
-
-        Args:
-            input_ (`Any`): This function receives any arbitrary input. Subclasses may enforce
-            a stronger check.
-
-        Returns:
-            (`Any`): This function can return any arbitrary value. Subclasses may enforce a stronger check.
         """
         with self.lock:
             self.input = input_
-            self.execute()
-            output = copy.copy(self.output)
-            self.flush()
-        return output
+            return self.execute().flush()
 
-    def flush(self) -> None:
+    def flush(self) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """
         Reset :code:`workflow.input` and :code:`workflow.output`.
         """
-        self.set_io()
+        if self.input is None or self.output is None:
+            return {}, {}
+        input_ = copy.deepcopy(self.input.json())
+        output = copy.deepcopy(self.output.json())
+        self.__reset()
+        return input_, output
 
     def json(self) -> Dict[str, Any]:
         """
@@ -189,7 +214,7 @@ class Workflow:
             not in self.NON_SERIALIZABLE_FIELDS,
         )
 
-    def train(self, training_data: pd.DataFrame) -> None:
+    def train(self, training_data: pd.DataFrame) -> Workflow:
         """
         Train all the plugins in the workflow.
 
@@ -205,3 +230,7 @@ class Workflow:
             transformed_data = plugin.transform(training_data)
             if transformed_data is not None:
                 training_data = transformed_data
+        return self
+
+
+47

@@ -9,18 +9,15 @@ intermediate structure that the DucklingPlugin expects. We need to prevent the i
 all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.
 """
 import re
-from pprint import pformat
 from typing import Any, Dict, List, Optional, Tuple
 
-import pandas as pd
 import stanza
 from loguru import logger
 from thefuzz import fuzz
-from tqdm import tqdm
 
 from dialogy import constants as const
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.base.plugin import Plugin, PluginFn
 from dialogy.types import BaseEntity, KeywordEntity
 
 Text = str
@@ -63,8 +60,8 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         self,
         fuzzy_dp_config: Dict[Any, Any],  # parsed yaml file
         threshold: Optional[float] = None,
-        access: Optional[PluginFn] = None,
-        mutate: Optional[PluginFn] = None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = True,
@@ -73,8 +70,8 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         fuzzy_threshold: Optional[float] = 0.1,
     ):
         super().__init__(
-            access=access,
-            mutate=mutate,
+            dest=dest,
+            guards=guards,
             debug=debug,
             input_column=input_column,
             output_column=output_column,
@@ -123,48 +120,6 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             self.nlp[lang_code] = stanza.Pipeline(
                 lang=lang_code, tokenize_pretokenized=True
             )
-
-    '''
-    def _parse(self, candidates: Optional[Dict[str, Dict[str, List[Any]]]]) -> None:
-        """
-        Pre compile regex patterns to speed up runtime evaluation.
-
-        This method's search will still be slow depending on the list of patterns.
-
-        :param candidates: A map for entity types and their pattern list.
-        :type candidates: Optional[Dict[str, List[str]]]
-        :return: None
-        :rtype: NoneType
-        """
-        logger.debug(
-            pformat(
-                {
-                    "style": self.style,
-                    "candidates": candidates,
-                }
-            )
-        )
-        if not isinstance(candidates, dict):
-            raise TypeError(
-                'Expected "candidates" to be a Dict[str, List[str]]'
-                f" but {type(candidates)} was found."
-            )
-
-        if not candidates:
-            raise ValueError(
-                'Expected "candidates" to be a Dict[str, List[str]]'
-                f" but {candidates} was found."
-            )
-
-        if self.style not in self.__style_search_map:
-            raise ValueError(
-                f"Expected style to be one of {list(self.__style_search_map.keys())}"
-                f' but "{self.style}" was found.'
-            )
-
-        logger.debug("compiled patterns")
-        logger.debug(self.compiled_patterns)
-    '''
 
     def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:
         """
@@ -263,7 +218,6 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         """
         match = []
         query = transcript
-        # regex variables
 
         entity_patterns = {}
         entity_match_dict = {}
@@ -290,8 +244,6 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             match.append(match_entity)
 
         return match
-
-        # return [(value, self.entity_type, "", (0, 0), float(0))]
 
     def get_entities(self, transcripts: List[str], lang: str) -> List[BaseEntity]:
         """
@@ -338,5 +290,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         aggregated_entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(aggregated_entities)
 
-    def utility(self, *args: Any) -> Any:
-        return self.get_entities(*args)  # pylint: disable=no-value-for-parameter
+    def utility(self, input_: Input, _: Output) -> Any:
+        return self.get_entities(
+            input_.transcripts, input_.lang
+        )  # pylint: disable=no-value-for-parameter

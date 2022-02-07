@@ -38,7 +38,7 @@
     dimensions: ["people", "time", "date", "duration"]
     locale: "en_IN"
     timezone: "Asia/Kolkata"
-  expected: [{"entity": "PeopleEntity"}, {"entity": "TimeEntity"}, {"entity": "TimeEntity"}]
+  expected: [{"entity_type": "people"}, {"entity_type": "date"}, {"entity_type": "time"}]
 
 - description: "test time interval."
   input: "between 2 to 4 am"
@@ -84,7 +84,7 @@
   'end': 4,
   'dim': 'number',
   'latent': False}]
-  expected: [{"entity": "NumericalEntity"}]
+  expected: [{"entity_type": "number"}]
 
 - description: "numerical entity test with a list of strings"
   input: ["4 items", "four items"]
@@ -98,7 +98,7 @@
   'end': 4,
   'dim': 'number',
   'latent': False}]
-  expected: [{"entity": "NumericalEntity"}, {"entity": "NumericalEntity"}]
+  expected: [{"entity_type": "number"}, {"entity_type": "number"}]
 
 - description: "plastic money entity"
   input: ["my card 4111111111111111"]
@@ -112,7 +112,7 @@
    'end': 24,
    'dim': 'credit-card-number',
    'latent': False}]
-  expected: [{"entity": "PlasticCurrencyEntity"}]
+  expected: [{"entity_type": "credit-card-number"}]
 
 - description: "test time entity."
   input: "27th next month"
@@ -131,7 +131,7 @@
   'end': 15,
   'dim': 'time',
   'latent': False}]
-  expected: [{"entity": "TimeEntity"}]
+  expected: [{"entity_type": "date"}]
 
 - description: "test time interval."
   input: "between 2 to 4 am"
@@ -157,7 +157,7 @@
   'end': 17,
   'dim': 'time',
   'latent': False}]
-  expected: [{"entity": "TimeIntervalEntity"}]
+  expected: [{"entity_type": "time"}]
 
 - description: "Test time interval entity having inconsistent values."
   input: "11 से 13 तक 11 तारीख"
@@ -182,7 +182,7 @@
   'end': 20,
   'dim': 'time',
   'latent': False}]
-  expected: [{"entity": "TimeIntervalEntity"}]
+  expected: [{"entity_type": "datetime"}]
 
 - description: "time interval entity with only from value."
   input: "from 4 am"
@@ -204,7 +204,7 @@
   'end': 9,
   'dim': 'time',
   'latent': False}]
-  expected: [{"entity": "TimeIntervalEntity"}]
+  expected: [{"entity_type": "time"}]
 
 - description: "time interval entity with only to value"
   input: "till 2 pm"
@@ -226,7 +226,7 @@
   'end': 9,
   'dim': 'time',
   'latent': False}]
-  expected: [{"entity":"TimeIntervalEntity"}]
+  expected: [{"entity_type":"time"}]
 
 - description: "duration entity"
   input: "2 hours"
@@ -244,7 +244,7 @@
   'end': 7,
   'dim': 'duration',
   'latent': False}]
-  expected: [{"entity": "DurationEntity"}]
+  expected: [{"entity_type": "duration"}]
 
 - description: "no entity found."
   input: "there is no spoon"
@@ -371,7 +371,7 @@
   'end': 7,
   'dim': 'time',
   'latent': False}]
-  expected: [{"entity": "TimeEntity"}]
+  expected: [{"entity_type": "date"}]
 
 - description: "Filter out future dates only."
   input: ""
@@ -415,7 +415,52 @@
     }
   }]
   reference_time: 1622640071000
-  expected: [{"entity": "TimeEntity"}]
+  expected: [{"entity_type": "time"}]
+
+
+- description: "Filter out future dates using 'ge' (greater than or equals) filter."
+  input: ""
+  duckling:
+    locale: "hi_IN"
+    dimensions: ["time", "date"]
+    timezone: "Asia/Kolkata"
+    datetime_filters: "ge"
+    debug: False
+  mock_entity_json: [{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-05-31T17:00:00.000+05:30'
+      }],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-05-31T17:00:00.000+05:30'
+    }
+  },{
+    'body': 'परसो शाम 5 बजे',
+    'dim': 'time',
+    'latent': False,
+    'end': 23,
+    'start': 9,
+    'value': {
+      'values': [{
+        'grain': 'hour',
+        'type': 'value',
+        'value': '2021-06-04T17:00:00.000+05:30'}
+      ],
+      'grain': 'hour',
+      'type': 'value',
+      'value': '2021-06-04T17:00:00.000+05:30'
+    }
+  }]
+  reference_time: 1622640071000
+  expected: [{"entity_type": "time"}]
 
 
 - description: "Filter out future dates only but preserve other entities."
@@ -467,8 +512,7 @@
     'latent': False
   }]
   reference_time: 1622640071000
-  expected: [{"entity": "TimeEntity"}, {"entity": "NumericalEntity"}]
-
+  expected: [{"entity_type": "time"}, {"entity_type": "number"}]
 
 
 - description: "Exceptions due to incorrect datetime filter value."
@@ -477,7 +521,7 @@
     locale: "hi_IN"
     dimensions: ["time", "date"]
     timezone: "Asia/Kolkata"
-    datetime_filters: "latest"
+    datetime_filters: 116
     debug: False
   mock_entity_json: [{
     'body': 'परसो शाम 5 बजे',
@@ -513,7 +557,7 @@
     }
   }]
   reference_time: 1622640071000
-  exception: "ValueError"
+  exception: "TypeError"
 
 - description: "Exceptions due to incorrect datetime filter type."
   input: ""
@@ -556,7 +600,7 @@
       'value': '2021-06-04T17:00:00.000+05:30'
     }
   }]
-  reference_time: 1622640071000
+  reference_time: '2021-06-04T17:00:00.000+05:30'
   exception: "TypeError"
 
 - description: "Exceptions due to incorrect reftime."
@@ -565,7 +609,7 @@
     locale: "hi_IN"
     dimensions: ["time", "date"]
     timezone: "Asia/Kolkata"
-    datetime_filters: "latest"
+    datetime_filters: "future"
     debug: False
   mock_entity_json: [{
     'body': 'परसो शाम 5 बजे',
@@ -600,51 +644,7 @@
       'value': '2021-06-04T17:00:00.000+05:30'
     }
   }]
-  reference_time: '2021-06-02T18:51:11.000+05:30'
-  exception: "TypeError"
-
-- description: "Exceptions due to incorrect date filter type."
-  input: ""
-  duckling:
-    locale: "hi_IN"
-    dimensions: ["time", "date"]
-    timezone: "Asia/Kolkata"
-    datetime_filters: 12
-    debug: False
-  mock_entity_json: [{
-    'body': 'परसो शाम 5 बजे',
-    'dim': 'time',
-    'latent': False,
-    'end': 23,
-    'start': 9,
-    'value': {
-      'values': [{
-        'grain': 'hour',
-        'type': 'value',
-        'value': '2021-05-31T17:00:00.000+05:30'
-      }],
-      'grain': 'hour',
-      'type': 'value',
-      'value': '2021-05-31T17:00:00.000+05:30'
-    }
-  },{
-    'body': 'परसो शाम 5 बजे',
-    'dim': 'time',
-    'latent': False,
-    'end': 23,
-    'start': 9,
-    'value': {
-      'values': [{
-        'grain': 'hour',
-        'type': 'value',
-        'value': '2021-06-04T17:00:00.000+05:30'}
-      ],
-      'grain': 'hour',
-      'type': 'value',
-      'value': '2021-06-04T17:00:00.000+05:30'
-    }
-  }]
-  reference_time: '2021-06-02T18:51:11.000+05:30'
+  reference_time: 4854163.585
   exception: "TypeError"
 
 - description: "Testing aggregation on ASR transcripts."
@@ -753,10 +753,10 @@
   'dim': 'time',
   'latent': False}]
   reference_time: 1622640071000
-  expected: [{"entity": "NumericalEntity"},
-  {"entity": "TimeEntity"},
-  {"entity": "TimeEntity"},
-  {"entity": "TimeEntity"}]
+  expected: [{"entity": "number"},
+  {"entity_type": "time"},
+  {"entity_type": "time"},
+  {"entity_type": "time"}]
 
 - description: "Testing currency entity."
   input: "300 dollars"
@@ -772,7 +772,7 @@
   'dim': 'amount-of-money',
   'latent': False}]
   reference_time: 1622640071000
-  expected: [{"entity": "CurrencyEntity"}]
+  expected: [{"entity_type": "amount-of-money"}]
 
 - description: "Latent entity present"
   input: "on 2nd"
@@ -799,4 +799,4 @@
   'end': 6,
   'dim': 'time',
   'latent': True}]
-  expected: [{"entity": "TimeEntity"}]
+  expected: [{"entity_type": "date"}]
