@@ -68,4 +68,4 @@ class Input:
     def from_dict(cls, d: dict, reference: Optional[Input] = None):
         if reference:
             return attr.evolve(reference, **d)
-        return attr.evolve(cls(), **d)
+        return attr.evolve(cls(utterances=d["utterances"]), **d)
