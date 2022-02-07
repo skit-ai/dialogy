@@ -237,6 +237,16 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
 
         return payload
 
+    def get_operator(self, filter_type: Any) -> Any:
+        try:
+            return getattr(operator, filter_type)
+        except (AttributeError, TypeError) as exception:
+            logger.debug(traceback.format_exc())
+            raise ValueError(
+                f"Expected datetime_filters to be one of {self.FUTURE}, {self.PAST} "
+                "or a valid comparison operator here: https://docs.python.org/3/library/operator.html"
+            ) from exception
+
     def select_datetime(
         self, entities: List[BaseEntity], filter_type: Any
     ) -> List[BaseEntity]:
@@ -259,14 +269,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         if filter_type in self.DATETIME_OPERATION_ALIAS:
             operation = self.DATETIME_OPERATION_ALIAS[filter_type]
         else:
-            try:
-                operation = getattr(operator, filter_type)
-            except (AttributeError, TypeError) as exception:
-                logger.debug(traceback.format_exc())
-                raise ValueError(
-                    f"Expected datetime_filters to be one of {self.FUTURE}, {self.PAST} "
-                    "or a valid comparison operator here: https://docs.python.org/3/library/operator.html"
-                ) from exception
+            operation = self.get_operator(filter_type)
 
         time_entities, other_entities = py_.partition(
             entities, lambda entity: entity.dim == const.TIME
@@ -507,7 +510,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.reference_time = reference_time
 
         if isinstance(transcripts, str):
-            transcripts = [transcripts]
+            transcripts = [transcripts] # pragma: no cover
 
         try:
             list_of_entities = self._get_entities_concurrent(
