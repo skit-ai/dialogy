@@ -1,7 +1,34 @@
+import pytz
 from datetime import datetime
 from typing import Callable, Union
 
-import pytz
+
+def dt2timestamp(date_time: datetime) -> int:
+    """
+    Converts a python datetime object to unix-timestamp.
+
+    :param date_time: An instance of datetime.
+    :type date_time: datetime
+    :return: Unix timestamp integer.
+    :rtype: int
+    """
+    return int(date_time.timestamp() * 1000)
+
+
+def is_unix_ts(ts: int) -> bool:
+    """
+    Check if the input is a unix timestamp.
+
+    :param ts: A unix timestamp (13-digit).
+    :type ts: int
+    :return: True if :code:`ts` is a unix timestamp, else False.
+    :rtype: bool
+    """
+    try:
+        datetime.fromtimestamp(ts / 1000)
+        return True
+    except ValueError:
+        return False
 
 
 def dt2timestamp(date_time: datetime) -> int:
@@ -35,7 +62,7 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
         :return: A unix timestamp (13 digit).
         :rtype: int
         """
-        if isinstance(date_string, int):
+        if isinstance(date_string, int) and is_unix_ts(date_string):
             return date_string
         dt = datetime.fromisoformat(date_string)
         if dt.tzinfo is None and tz not in pytz.all_timezones:
@@ -46,19 +73,3 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
         return dt2timestamp(dt)
 
     return make_tz_aware
-
-
-def is_unix_ts(ts: int) -> bool:
-    """
-    Check if the input is a unix timestamp.
-
-    :param ts: A unix timestamp (13-digit).
-    :type ts: int
-    :return: True if :code:`ts` is a unix timestamp, else False.
-    :rtype: bool
-    """
-    try:
-        datetime.fromtimestamp(ts / 1000)
-        return True
-    except ValueError:
-        return False
