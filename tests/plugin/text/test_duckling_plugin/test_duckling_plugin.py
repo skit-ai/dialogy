@@ -366,7 +366,7 @@ def test_plugin_transform():
     )
 
     today = TimeEntity(
-        type="date",
+        entity_type="date",
         body="today",
         parsers=["DucklingPlugin"],
         range={"start": 0, "end": 5},
@@ -479,7 +479,7 @@ def test_plugin_transform_existing_entity():
                     KeywordEntity(
                         range={"start": 0, "end": 0},
                         value="apple",
-                        type="fruits",
+                        entity_type="fruits",
                         body="apple",
                     )
                 ],
@@ -491,7 +491,7 @@ def test_plugin_transform_existing_entity():
                     KeywordEntity(
                         range={"start": 0, "end": 0},
                         value="apple",
-                        type="fruits",
+                        entity_type="fruits",
                         body="apple",
                     )
                 ],
@@ -514,7 +514,7 @@ def test_plugin_transform_existing_entity():
 
     df_ = duckling_plugin.transform(df)
     today = TimeEntity(
-        type="date",
+        entity_type="date",
         body="today",
         parsers=["DucklingPlugin"],
         range={"start": 0, "end": 5},

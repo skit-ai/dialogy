@@ -44,7 +44,7 @@ TEST_DATA = pd.DataFrame(
             "data": json.dumps(["hello apple", "hello orange"]),
             "entities": [
                 KeywordEntity(
-                    type="fruits",
+                    entity_type="fruits",
                     body="apple",
                     parsers=["ListEntityPlugin"],
                     score=1.0,
@@ -54,7 +54,7 @@ TEST_DATA = pd.DataFrame(
                     range={"start": 6, "end": 11},
                 ),
                 KeywordEntity(
-                    type="colour",
+                    entity_type="colour",
                     body="orange",
                     parsers=["ListEntityPlugin"],
                     score=0.0,
@@ -64,7 +64,7 @@ TEST_DATA = pd.DataFrame(
                     range={"start": 6, "end": 12},
                 ),
                 KeywordEntity(
-                    type="colour",
+                    entity_type="colour",
                     body="orange",
                     parsers=["ListEntityPlugin"],
                     score=0.5,
@@ -87,7 +87,7 @@ TEST_DATA_2 = pd.DataFrame(
             "data": json.dumps(["hello apple", "hello orange"]),
             "entities": [
                 KeywordEntity(
-                    type="colour",
+                    entity_type="colour",
                     body="orange",
                     parsers=["ListEntityPlugin"],
                     score=0.5,

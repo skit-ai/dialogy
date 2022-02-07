@@ -31,7 +31,7 @@
       "latent": false
     }
   ]
-  expected: [{"type": "date", "entity": "TimeEntity"}]
+  expected: [{"entity_type": "date", "entity": "TimeEntity"}]
 
 - description: "time interval time type test"
   input: "between 2 to 4 am"
@@ -90,7 +90,7 @@
         "latent": false
       }
   ]
-  expected: [{"type": "time", "entity": "TimeIntervalEntity"}]
+  expected: [{"entity_type": "time", "entity": "TimeIntervalEntity"}]
 
 - description: "datetime time type test"
   input: "Monday 9 pm"
@@ -125,7 +125,7 @@
       "latent": false
     }
   ]
-  expected: [{"type": "datetime", "entity": "TimeEntity"}]
+  expected: [{"entity_type": "datetime", "entity": "TimeEntity"}]
 
 - description: "time interval with neither `from` nor `to` keys"
   input: "between 2 to 4 am"

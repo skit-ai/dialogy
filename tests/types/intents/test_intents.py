@@ -74,7 +74,7 @@ def test_slot_filling() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=[{"key": "value"}],
         slot_names=["basic_slot"],
     )
@@ -103,7 +103,7 @@ def test_slot_filling_prop_removal() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="basic",
+        entity_type="basic",
         values=[{"key": "value"}],
         slot_names=["basic_slot"],
     )
@@ -121,7 +121,7 @@ def test_rule_with_multiple_types() -> None:
         range={"from": 0, "to": 15},
         body="12th december",
         dim="default",
-        type="ordinal",
+        entity_type="ordinal",
         values=[{"key": "12th"}],
         slot_names=["basic_slot"],
     )
@@ -129,7 +129,7 @@ def test_rule_with_multiple_types() -> None:
         range={"from": 0, "to": 15},
         body="12 december",
         dim="default",
-        type="number",
+        entity_type="number",
         values=[{"key": "12"}],
         slot_names=["basic_slot"],
     )

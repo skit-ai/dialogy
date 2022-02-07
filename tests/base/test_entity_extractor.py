@@ -44,4 +44,7 @@ def test_entity_extractor_for_thresholding(payload) -> None:
         entity.json()
         for entity in entity_extractor.entity_consensus(entities, input_size)
     ]
+    from pprint import pprint
+    pprint(expected)
+    pprint(entities)
     assert expected == entities

@@ -1,6 +1,7 @@
 """
 This is a tutorial for understanding the use of `RuleBasedSlotFillerPlugin`.
 """
+from textwrap import fill
 from typing import Any
 
 import pytest
@@ -46,7 +47,7 @@ def test_slot_filling() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_1",
+        entity_type="entity_1",
         values=[{"key": "value"}],
     )
 
@@ -85,7 +86,7 @@ def test_slot_no_fill() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_2",
+        entity_type="entity_2",
         values=[{"key": "value"}],
     )
 
@@ -122,7 +123,7 @@ def test_slot_invalid_intent() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_2",
+        entity_type="entity_1",
         values=[{"key": "value"}],
     )
 
@@ -158,7 +159,7 @@ def test_slot_invalid_intents() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_2",
+        entity_type="entity_1",
         values=[{"key": "value"}],
     )
 
@@ -199,7 +200,7 @@ def test_slot_dual_fill() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_1",
+        entity_type="entity_1",
         values=[{"key": "value"}],
     )
 
@@ -207,7 +208,7 @@ def test_slot_dual_fill() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_2",
+        entity_type="entity_2",
         values=[{"key": "value"}],
     )
 
@@ -247,7 +248,7 @@ def test_slot_filling_multiple() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_1",
+        entity_type="entity_1",
         values=[{"key": "value"}],
     )
 
@@ -255,7 +256,7 @@ def test_slot_filling_multiple() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_2",
+        entity_type="entity_2",
         values=[{"key": "value"}],
     )
 
@@ -282,7 +283,7 @@ def test_slot_competition() -> None:
     intent_name = "intent_1"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, dest="output.intents")
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, dest="output.intents", fill_multiple=True)
 
     # Create a mock `workflow`
     workflow = Workflow([slot_filler])
@@ -296,7 +297,7 @@ def test_slot_competition() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_1",
+        entity_type="entity_1",
         values=[{"key": "value_1"}],
     )
 
@@ -304,7 +305,7 @@ def test_slot_competition() -> None:
         range={"from": 0, "to": len(body)},
         body=body,
         dim="default",
-        type="entity_1",
+        entity_type="entity_1",
         values=[{"key": "value_2"}],
     )
 
@@ -315,58 +316,5 @@ def test_slot_competition() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
+
     assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [entity_1.json(), entity_2.json()]
-
-
-# def test_incorrect_access_fn() -> None:
-#     """
-#     This test shows that the plugin needs `access` function to be a `PluginFn`,
-#     or else it throws a `TypeError`.
-#     """
-#     rules = {"basic": {"slot_name": "basic_slot", "entity_type": "basic"}}
-#     access = 5
-
-#     slot_filler = RuleBasedSlotFillerPlugin(rules=rules, dest="output.intents")
-#     workflow = Workflow([slot_filler])
-#     intent = Intent(name="intent", score=0.8)
-
-#     body = "12th december"
-#     entity = BaseEntity(
-#         range={"from": 0, "to": len(body)},
-#         body=body,
-#         dim="default",
-#         type="basic",
-#         values=[{"key": "value"}],
-#     )
-
-#     workflow \
-#         .set("output.intents", [intent]) \
-#         .set("output.entities", [entity])
-
-#     with pytest.raises(TypeError):
-#         workflow.run(Input(utterances=body))
-
-
-# def test_missing_access_fn() -> None:
-#     """
-#     This test shows that the plugin needs an `access` provided or else it raises a type error.
-#     """
-#     slot_filler = RuleBasedSlotFillerPlugin(rules=rules)
-#     workflow = Workflow([slot_filler])
-#     intent = Intent(name="intent", score=0.8)
-
-#     body = "12th december"
-#     entity = BaseEntity(
-#         range={"from": 0, "to": len(body)},
-#         body=body,
-#         dim="default",
-#         type="basic",
-#         values=[{"key": "value"}],
-#     )
-
-#     workflow \
-#         .set("output.intents", [intent]) \
-#         .set("output.entities", [entity])
-
-#     with pytest.raises(TypeError):
-#         workflow.run(Input(utterances=body))
