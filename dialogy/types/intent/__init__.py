@@ -114,10 +114,11 @@ class Intent:
                 f"slot type: {slot.types}",
             )
             logger.debug(
-                f"entity type: {entity.type}",
+                f"entity type: {entity.entity_type}",
             )
-            if entity.type in slot.types:
+            if entity.entity_type in slot.types:
                 if fill_multiple:
+                    logger.debug(f"filling {entity} into {self.name}.")
                     self.slots[slot_name].add(entity)
                     return self
 

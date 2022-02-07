@@ -10,6 +10,7 @@ Import classes:
 
 - BaseEntity
 """
+from __future__ import annotations
 import copy
 from typing import Any, Dict, List, Optional, Union
 
@@ -32,12 +33,7 @@ class BaseEntity:
     # **range**
     #
     # is the character range in the alternative where the entity is parsed.
-    range = attr.ib(type=Dict[str, int], repr=False, order=False)
-
-    # **type**
-    #
-    # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
-    type = "value"
+    range = attr.ib(type=Dict[str, int], repr=False, order=False, kw_only=True)
 
     # **body**
     #
@@ -48,6 +44,11 @@ class BaseEntity:
     #
     # is influenced from Duckling's convention of categorization.
     dim = attr.ib(type=Optional[str], default=None, repr=False, order=False)
+
+    # **type**
+    #
+    # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
+    type = attr.ib(type=str, default="value", order=False, kw_only=True)
 
     # **parsers**
     #
@@ -150,7 +151,7 @@ class BaseEntity:
         return dict_
 
     @classmethod
-    def from_dict(cls, dict_: Dict[str, Any]) -> "BaseEntity":
+    def from_dict(cls, dict_: Dict[str, Any]) -> BaseEntity:
         """
         Create an instance of a given class `cls` from a `dict` that complies
         with attributes of `cls` through its keys and values.
@@ -207,7 +208,7 @@ class BaseEntity:
         else:
             return reference.get(const.VALUE)
 
-    def copy(self) -> "BaseEntity":
+    def copy(self) -> BaseEntity:
         """
         Create a deep copy of the instance and return.
 

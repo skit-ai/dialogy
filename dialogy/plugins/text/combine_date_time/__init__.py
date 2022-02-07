@@ -10,14 +10,14 @@ from dialogy.types import BaseEntity, TimeEntity
 
 
 def has_time_component(entity: BaseEntity) -> bool:
-    return entity.type in [
+    return entity.entity_type in [
         CombineDateTimeOverSlots.TIME,
         CombineDateTimeOverSlots.DATETIME,
     ]
 
 
 def is_date(entity: BaseEntity) -> bool:
-    return entity.type == CombineDateTimeOverSlots.DATE
+    return entity.entity_type == CombineDateTimeOverSlots.DATE
 
 
 class CombineDateTimeOverSlots(Plugin):
@@ -157,7 +157,7 @@ class CombineDateTimeOverSlots(Plugin):
         if not previously_filled_time_entity:
             return entities
 
-        time_entities, other_entities = py_.partition(entities, lambda entity: entity.type in CombineDateTimeOverSlots.SUPPORTED_ENTITIES)
+        time_entities, other_entities = py_.partition(entities, lambda entity: entity.entity_type in CombineDateTimeOverSlots.SUPPORTED_ENTITIES)
         combined_time_entities = [self.join(entity, previously_filled_time_entity) for entity in time_entities]
         return combined_time_entities + other_entities
 
