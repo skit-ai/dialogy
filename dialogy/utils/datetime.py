@@ -32,18 +32,6 @@ def dt2timestamp(date_time: datetime) -> int:
     return int(date_time.timestamp() * 1000)
 
 
-def dt2timestamp(date_time: datetime) -> int:
-    """
-    Converts a python datetime object to unix-timestamp.
-
-    :param date_time: An instance of datetime.
-    :type date_time: datetime
-    :return: Unix timestamp integer.
-    :rtype: int
-    """
-    return int(date_time.timestamp() * 1000)
-
-
 def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
     """
     Convert date in ISO 8601 format to unix ms timestamp.
