@@ -73,19 +73,3 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
         return dt2timestamp(dt)
 
     return make_tz_aware
-
-
-def is_unix_ts(ts: int) -> bool:
-    """
-    Check if the input is a unix timestamp.
-
-    :param ts: A unix timestamp (13-digit).
-    :type ts: int
-    :return: True if :code:`ts` is a unix timestamp, else False.
-    :rtype: bool
-    """
-    try:
-        datetime.fromtimestamp(ts / 1000)
-        return True
-    except ValueError:
-        return False
