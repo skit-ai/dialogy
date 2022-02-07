@@ -4,7 +4,7 @@ import attr
 from pydash import py_
 
 from dialogy import constants as const
-from dialogy.base import Plugin, Input, Output, Guard
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import BaseEntity, TimeEntity
 
 
@@ -94,7 +94,9 @@ class CombineDateTimeOverSlots(Plugin):
         )
         self.trigger_intents = trigger_intents
 
-    def join(self, current_entity: TimeEntity, previous_entity: TimeEntity) -> TimeEntity:
+    def join(
+        self, current_entity: TimeEntity, previous_entity: TimeEntity
+    ) -> TimeEntity:
         current_turn_datetime = current_entity.get_value()
         previous_turn_datetime = previous_entity.get_value()
 
@@ -113,9 +115,13 @@ class CombineDateTimeOverSlots(Plugin):
         else:
             return current_entity
 
-        return attr.evolve(current_entity, **{const.EntityKeys.VALUE: combined_value.isoformat()})
+        return attr.evolve(
+            current_entity, **{const.EntityKeys.VALUE: combined_value.isoformat()}
+        )
 
-    def get_tracked_slots(self, slot_tracker: Optional[List[Dict[str, Any]]]) -> List[Dict[str, Any]]:
+    def get_tracked_slots(
+        self, slot_tracker: Optional[List[Dict[str, Any]]]
+    ) -> List[Dict[str, Any]]:
         if not self.trigger_intents or not slot_tracker:
             return []
 
@@ -131,7 +137,9 @@ class CombineDateTimeOverSlots(Plugin):
         tracked_intent, *_ = tracked_intents
         return tracked_intent.get(const.SLOTS, [])
 
-    def pick_previously_filled_time_entity(self, tracked_slots: Optional[List[Dict[str, Any]]]) -> Optional[TimeEntity]:
+    def pick_previously_filled_time_entity(
+        self, tracked_slots: Optional[List[Dict[str, Any]]]
+    ) -> Optional[TimeEntity]:
         if not tracked_slots:
             return None
 
@@ -141,24 +149,36 @@ class CombineDateTimeOverSlots(Plugin):
             return None
 
         filled_entity_json, *_ = filled_entities_json
-        filled_entity_json[const.EntityKeys.VALUES] = [{
-            const.VALUE: filled_entity_json[const.VALUE]
-        }]
+        filled_entity_json[const.EntityKeys.VALUES] = [
+            {const.VALUE: filled_entity_json[const.VALUE]}
+        ]
 
         return TimeEntity(**filled_entity_json)
 
-    def combine_time_entities_from_slots(self, slot_tracker: Optional[List[Dict[str, Any]]], entities: List[BaseEntity]) -> List[BaseEntity]:
-        previously_filled_time_entity = self.pick_previously_filled_time_entity(self.get_tracked_slots(slot_tracker))
+    def combine_time_entities_from_slots(
+        self, slot_tracker: Optional[List[Dict[str, Any]]], entities: List[BaseEntity]
+    ) -> List[BaseEntity]:
+        previously_filled_time_entity = self.pick_previously_filled_time_entity(
+            self.get_tracked_slots(slot_tracker)
+        )
 
         if not previously_filled_time_entity:
             return entities
 
-        time_entities, other_entities = py_.partition(entities, lambda entity: entity.entity_type in CombineDateTimeOverSlots.SUPPORTED_ENTITIES)
-        combined_time_entities = [self.join(entity, previously_filled_time_entity) for entity in time_entities]
+        time_entities, other_entities = py_.partition(
+            entities,
+            lambda entity: entity.entity_type
+            in CombineDateTimeOverSlots.SUPPORTED_ENTITIES,
+        )
+        combined_time_entities = [
+            self.join(entity, previously_filled_time_entity) for entity in time_entities
+        ]
         return combined_time_entities + other_entities
 
     def utility(self, input: Input, output: Output) -> List[BaseEntity]:
         """
         Combine the date and time entities collected across turns into a single entity.
         """
-        return self.combine_time_entities_from_slots(input.slot_tracker, output.entities)
+        return self.combine_time_entities_from_slots(
+            input.slot_tracker, output.entities
+        )

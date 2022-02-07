@@ -1,10 +1,10 @@
 import pandas as pd
 import pytest
 
+from dialogy.base import Input, Output
 from dialogy.plugins import ListEntityPlugin
 from dialogy.types import KeywordEntity
 from dialogy.workflow import Workflow
-from dialogy.base import Input, Output
 from tests import EXCEPTIONS, load_tests
 
 
@@ -34,9 +34,7 @@ def mutate(w, v):
 
 def test_value_error_if_incorrect_style():
     with pytest.raises(ValueError):
-        l = ListEntityPlugin(
-            dest="output.entities", style="unknown"
-        )
+        l = ListEntityPlugin(dest="output.entities", style="unknown")
         l._parse({"location": ["..."]})
 
 
@@ -189,9 +187,7 @@ def test_get_list_entities(payload):
     else:
         with pytest.raises(EXCEPTIONS.get(exception)):
             list_entity_plugin = ListEntityPlugin(
-                dest="output.entities",
-                spacy_nlp=spacy_mocker,
-                **config
+                dest="output.entities", spacy_nlp=spacy_mocker, **config
             )
 
             workflow = Workflow([list_entity_plugin])

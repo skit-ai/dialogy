@@ -1,9 +1,13 @@
 import pytest
+
 from dialogy.utils import make_unix_ts
 
 
 def test_tz_aware_ts():
-    assert make_unix_ts("Asia/Kolkata")("2022-02-07T19:36:37.188396+05:30") == 1644242797188
+    assert (
+        make_unix_ts("Asia/Kolkata")("2022-02-07T19:36:37.188396+05:30")
+        == 1644242797188
+    )
 
 
 def test_tz_unaware_ts():

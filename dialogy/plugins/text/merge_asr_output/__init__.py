@@ -26,7 +26,7 @@ from loguru import logger
 from tqdm import tqdm
 
 import dialogy.constants as const
-from dialogy.base import Plugin, Guard, Input, Output
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.utils import normalize
 
 

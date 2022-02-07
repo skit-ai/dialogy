@@ -20,7 +20,7 @@ from tqdm import tqdm
 from xgboost import XGBRegressor
 
 from dialogy import constants as const
-from dialogy.base import Plugin, Guard, Input, Output
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Transcript, Utterance, utterances
 from dialogy.utils import normalize
 
@@ -180,7 +180,9 @@ class CalibrationModel(Plugin):
             )
         return training_data_
 
-    def inference(self, transcripts: List[str], utterances: List[Utterance]) -> List[str]:
+    def inference(
+        self, transcripts: List[str], utterances: List[Utterance]
+    ) -> List[str]:
         transcript_lengths: List[int] = [
             len(transcript.split()) for transcript in transcripts
         ]
@@ -201,7 +203,9 @@ class CalibrationModel(Plugin):
         pickle.dump(self, open(fname, "wb"))
 
     def utility(self, input: Input, _: Output) -> Any:
-        return self.inference(input.transcripts, input.utterances)  # pylint: disable=no-value-for-parameter
+        return self.inference(
+            input.transcripts, input.utterances
+        )  # pylint: disable=no-value-for-parameter
 
     def validate(self, df: pd.DataFrame) -> bool:
         """

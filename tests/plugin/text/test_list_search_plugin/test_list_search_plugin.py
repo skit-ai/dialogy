@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from dialogy.plugins import ListSearchPlugin
 from dialogy.base import Input, Output
+from dialogy.plugins import ListSearchPlugin
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 
@@ -49,10 +49,7 @@ def test_get_list_entities(payload):
     transcripts = [expectation["text"] for expectation in input_]
 
     if expected:
-        list_entity_plugin = ListSearchPlugin(
-            dest="output.entities",
-            **config
-        )
+        list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)
 
         workflow = Workflow([list_entity_plugin])
         _, output = workflow.run(Input(utterances=transcripts, lang=lang_))
@@ -68,9 +65,7 @@ def test_get_list_entities(payload):
                 assert entity["score"] == expected[i]["score"]
     else:
         with pytest.raises(EXCEPTIONS.get(exception)):
-            list_entity_plugin = ListSearchPlugin(
-                dest="output.entities", **config
-            )
+            list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)
 
             workflow = Workflow([list_entity_plugin])
             workflow.run(Input(utterances=transcripts, lang=lang_))

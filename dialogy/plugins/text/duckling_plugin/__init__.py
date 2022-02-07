@@ -63,8 +63,8 @@ from pytz.tzinfo import BaseTzInfo
 from tqdm import tqdm
 
 from dialogy import constants as const
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.base import Plugin, Input, Output, Guard
 from dialogy.constants import EntityKeys
 from dialogy.types import PluginFn
 from dialogy.types.entity import BaseEntity, dimension_entity_map
@@ -510,11 +510,14 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.reference_time = reference_time
 
         if isinstance(transcripts, str):
-            transcripts = [transcripts] # pragma: no cover
+            transcripts = [transcripts]  # pragma: no cover
 
         try:
             list_of_entities = self._get_entities_concurrent(
-                transcripts, locale, reference_time=reference_time, use_latent=use_latent
+                transcripts,
+                locale,
+                reference_time=reference_time,
+                use_latent=use_latent,
             )
             entities = self.apply_entity_classes(list_of_entities)
             entities = self.entity_consensus(entities, len(transcripts))

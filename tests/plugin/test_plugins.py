@@ -2,12 +2,12 @@
 This is a tutorial on creating and using Plugins with Workflows.
 """
 import re
-from typing import Any, Optional, List
-from dialogy import workflow
+from typing import Any, List, Optional
 
-from dialogy.base import Plugin, Guard, Input, Output
-from dialogy.workflow import Workflow
+from dialogy import workflow
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
+from dialogy.workflow import Workflow
 
 
 # == ArbitraryPlugin ==
@@ -39,7 +39,7 @@ class ArbitraryPlugin(Plugin):
         )
 
     def utility(self, _: Input, __: Output) -> Any:
-        return [Intent(name="_greeting_", score=.9)]
+        return [Intent(name="_greeting_", score=0.9)]
 
 
 # == Plugin as a class with workflow ==
@@ -93,10 +93,7 @@ def test_plugin_train() -> None:
 
 
 def test_plugin_transform_not_use_transform() -> None:
-    arbitrary_plugin = ArbitraryPlugin(
-        dest="output.intents",
-        use_transform=False
-    )
+    arbitrary_plugin = ArbitraryPlugin(dest="output.intents", use_transform=False)
     assert arbitrary_plugin.transform([]) == []
 
 
@@ -112,7 +109,9 @@ def test_plugin_guards() -> None:
         dest="output.intents",
         guards=[lambda i, _: i.current_state == "COF"],
     )
-    workflow = Workflow().set("input.utterances", ["hello"]).set("input.current_state", "COF")
+    workflow = (
+        Workflow().set("input.utterances", ["hello"]).set("input.current_state", "COF")
+    )
     assert arbitrary_plugin.prevent(workflow.input, workflow.output) is True
     assert arbitrary_plugin(workflow) is None
 

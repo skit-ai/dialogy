@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn import preprocessing
 
 import dialogy.constants as const
-from dialogy.base import Plugin, Input, Output, Guard
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, save_file
 
@@ -171,11 +171,15 @@ class XLMRMultiClass(Plugin):
         predictions, logits = self.model.predict(texts)
         if not predictions:
             return [fallback_output]
-        
+
         confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
         intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
-        predicted_intents = self.labelencoder.inverse_transform(intents_confidence_order)
-        ordered_confidence_scores = [confidence_scores[0][idx] for idx in intents_confidence_order]
+        predicted_intents = self.labelencoder.inverse_transform(
+            intents_confidence_order
+        )
+        ordered_confidence_scores = [
+            confidence_scores[0][idx] for idx in intents_confidence_order
+        ]
 
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(
@@ -270,4 +274,3 @@ class XLMRMultiClass(Plugin):
 
     def utility(self, input: Input, _: Output) -> List[Intent]:
         return self.inference(input.clf_feature)
-

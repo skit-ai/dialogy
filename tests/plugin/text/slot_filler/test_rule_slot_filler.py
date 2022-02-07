@@ -7,8 +7,8 @@ from typing import Any
 import pytest
 
 import dialogy.constants as const
+from dialogy.base import Input, Output
 from dialogy.plugins import RuleBasedSlotFillerPlugin
-from dialogy.base import Output, Input
 from dialogy.types.entity import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
@@ -52,9 +52,7 @@ def test_slot_filling() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow \
-        .set("output.intents", [intent]) \
-        .set("output.entities", [entity])
+    workflow.set("output.intents", [intent]).set("output.entities", [entity])
 
     _, output = workflow.run(Input(utterances=body))
     intent, *_ = output[const.INTENTS]
@@ -91,9 +89,7 @@ def test_slot_no_fill() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow \
-        .set("output.intents", [intent]) \
-        .set("output.entities", [entity])
+    workflow.set("output.intents", [intent]).set("output.entities", [entity])
 
     _, output = workflow.run(Input(utterances=body))
 
@@ -128,9 +124,7 @@ def test_slot_invalid_intent() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow \
-        .set("output.intents", [1]) \
-        .set("output.entities", [entity])
+    workflow.set("output.intents", [1]).set("output.entities", [entity])
 
     with pytest.raises(AttributeError):
         workflow.run(Input(utterances=body))
@@ -164,9 +158,7 @@ def test_slot_invalid_intents() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow \
-        .set("output.intents", []) \
-        .set("output.entities", [entity])
+    workflow.set("output.intents", []).set("output.entities", [entity])
     _, output = workflow.run(Input(utterances=body))
 
     # `workflow.output[0]` is the `Intent` we created.
@@ -213,15 +205,19 @@ def test_slot_dual_fill() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow \
-        .set("output.intents", [intent]) \
-        .set("output.entities", [entity_1, entity_2])
+    workflow.set("output.intents", [intent]).set(
+        "output.entities", [entity_1, entity_2]
+    )
     _, output = workflow.run(Input(utterances=body))
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [entity_1.json()]
-    assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [entity_2.json()]
+    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [
+        entity_1.json()
+    ]
+    assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [
+        entity_2.json()
+    ]
 
 
 def test_slot_filling_multiple() -> None:
@@ -261,15 +257,19 @@ def test_slot_filling_multiple() -> None:
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow \
-        .set("output.intents", [intent]) \
-        .set("output.entities", [entity_1, entity_2])
+    workflow.set("output.intents", [intent]).set(
+        "output.entities", [entity_1, entity_2]
+    )
     _, output = workflow.run(Input(utterances=body))
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [entity_1.json()]
-    assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [entity_2.json()]
+    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [
+        entity_1.json()
+    ]
+    assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [
+        entity_2.json()
+    ]
 
 
 def test_slot_competition_fill_multiple() -> None:
@@ -279,7 +279,9 @@ def test_slot_competition_fill_multiple() -> None:
     intent_name = "intent_1"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, dest="output.intents", fill_multiple=True)
+    slot_filler = RuleBasedSlotFillerPlugin(
+        rules=rules, dest="output.intents", fill_multiple=True
+    )
 
     # Create a mock `workflow`
     workflow = Workflow([slot_filler])
@@ -305,15 +307,18 @@ def test_slot_competition_fill_multiple() -> None:
         values=[{"key": "value_2"}],
     )
 
-    workflow \
-        .set("output.intents", [intent]) \
-        .set("output.entities", [entity_1, entity_2])
+    workflow.set("output.intents", [intent]).set(
+        "output.entities", [entity_1, entity_2]
+    )
     _, output = workflow.run(Input(utterances=body))
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
 
-    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [entity_1.json(), entity_2.json()]
+    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [
+        entity_1.json(),
+        entity_2.json(),
+    ]
 
 
 def test_slot_competition_fill_one() -> None:
@@ -323,7 +328,9 @@ def test_slot_competition_fill_one() -> None:
     intent_name = "intent_1"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, dest="output.intents", fill_multiple=False)
+    slot_filler = RuleBasedSlotFillerPlugin(
+        rules=rules, dest="output.intents", fill_multiple=False
+    )
 
     # Create a mock `workflow`
     workflow = Workflow([slot_filler])
@@ -349,9 +356,9 @@ def test_slot_competition_fill_one() -> None:
         values=[{"key": "value_2"}],
     )
 
-    workflow \
-        .set("output.intents", [intent]) \
-        .set("output.entities", [entity_1, entity_2])
+    workflow.set("output.intents", [intent]).set(
+        "output.entities", [entity_1, entity_2]
+    )
     _, output = workflow.run(Input(utterances=body))
 
     # `workflow.output[0]` is the `Intent` we created.

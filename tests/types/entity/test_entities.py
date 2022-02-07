@@ -7,7 +7,7 @@ from datetime import datetime
 import httpretty
 import pytest
 
-from dialogy.base import Plugin, Input
+from dialogy.base import Input, Plugin
 from dialogy.plugins import DucklingPlugin
 from dialogy.types.entity import (
     BaseEntity,

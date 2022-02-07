@@ -6,6 +6,7 @@ Import classes:
     - PeopleEntity
 """
 from typing import Optional
+
 import attr
 
 from dialogy import constants
@@ -24,5 +25,5 @@ class PeopleEntity(NumericalEntity):
     """
 
     unit = attr.ib(type=str, default="", validator=attr.validators.instance_of(str))
-    entity_type: Optional[str] = attr.ib(default="people", repr=False, order=False)    
+    entity_type: Optional[str] = attr.ib(default="people", repr=False, order=False)
     __properties_map = constants.PEOPLE_ENTITY_PROPS

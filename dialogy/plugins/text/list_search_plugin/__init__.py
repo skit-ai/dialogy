@@ -16,8 +16,8 @@ from loguru import logger
 from thefuzz import fuzz
 
 from dialogy import constants as const
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.base import Plugin, Guard, Input, Output
 from dialogy.types import BaseEntity, KeywordEntity
 
 Text = str
@@ -291,4 +291,6 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         return self.apply_filters(aggregated_entities)
 
     def utility(self, input_: Input, _: Output) -> Any:
-        return self.get_entities(input_.transcripts, input_.lang)  # pylint: disable=no-value-for-parameter
+        return self.get_entities(
+            input_.transcripts, input_.lang
+        )  # pylint: disable=no-value-for-parameter

@@ -2,12 +2,11 @@ import json
 
 import pandas as pd
 
+from dialogy.base import Input
 from dialogy.plugins.text.canonicalization import CanonicalizationPlugin
 from dialogy.plugins.text.list_entity_plugin import ListEntityPlugin
-from dialogy.base import Input
 from dialogy.types import KeywordEntity
 from dialogy.workflow import Workflow
-
 
 canonicalization = CanonicalizationPlugin(
     mask_tokens=["hello"],
@@ -15,7 +14,7 @@ canonicalization = CanonicalizationPlugin(
     use_transform=True,
     threshold=0.1,
     debug=False,
-    dest="input.clf_feature"
+    dest="input.clf_feature",
 )
 
 
@@ -33,7 +32,7 @@ list_entity_plugin = ListEntityPlugin(
     candidates={"fruits": {"apple": ["apple", "apples"]}},
     style="regex",
     dest="output.entities",
-    debug=False
+    debug=False,
 )
 
 workflow = Workflow([list_entity_plugin, canonicalization])

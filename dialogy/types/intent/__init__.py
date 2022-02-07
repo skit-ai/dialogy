@@ -7,8 +7,10 @@ Import classes:
     - Intent
 """
 from __future__ import annotations
-import attr
+
 from typing import Any, Dict, List, Optional
+
+import attr
 
 from dialogy.types.entity import BaseEntity
 from dialogy.types.slots import Rule, Slot
@@ -20,6 +22,7 @@ class Intent:
     """
     An instance of this class contains the name of the action associated with a body of text.
     """
+
     # The name of the intent to be used.
     name: str = attr.ib(kw_only=True, order=False)
 
@@ -34,7 +37,9 @@ class Intent:
     parsers: List[str] = attr.ib(kw_only=True, factory=list, order=False, repr=False)
 
     # Container for holding `List[BaseEntity]`.
-    slots: Dict[str, Slot] = attr.ib(kw_only=True, factory=dict, order=False, repr=False)
+    slots: Dict[str, Slot] = attr.ib(
+        kw_only=True, factory=dict, order=False, repr=False
+    )
 
     def apply(self, rules: Rule) -> Intent:
         """

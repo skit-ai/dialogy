@@ -1,8 +1,8 @@
-from typing import Union
 from datetime import datetime
-from typing import Callable
+from typing import Callable, Union
 
 import pytz
+
 
 def dt2timestamp(date_time: datetime) -> int:
     """

@@ -1,14 +1,14 @@
-import time
 import operator
+import time
 
 import httpretty
 import pandas as pd
 import pytest
 
-from dialogy.plugins import DucklingPlugin
 from dialogy.base import Input
-from dialogy.utils import make_unix_ts
+from dialogy.plugins import DucklingPlugin
 from dialogy.types import BaseEntity, KeywordEntity, TimeEntity
+from dialogy.utils import make_unix_ts
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
@@ -55,7 +55,7 @@ def test_duckling_get_operator_happy_case():
         dimensions=["time"],
         timezone="Asia/Kolkata",
         threshold=0.2,
-        datetime_filters="future"
+        datetime_filters="future",
     )
     assert duckling_plugin.get_operator("lt") == operator.lt
 
@@ -66,7 +66,7 @@ def test_duckling_get_operator_exception():
         dimensions=["time"],
         timezone="Asia/Kolkata",
         threshold=0.2,
-        datetime_filters="future"
+        datetime_filters="future",
     )
     with pytest.raises(ValueError):
         duckling_plugin.get_operator("invalid")
@@ -78,7 +78,7 @@ def test_duckling_reftime():
         dimensions=["time"],
         timezone="Asia/Kolkata",
         threshold=0.2,
-        datetime_filters="future"
+        datetime_filters="future",
     )
     with pytest.raises(TypeError):
         duckling_plugin.validate("test", None)
@@ -97,7 +97,7 @@ def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
         type="basic",
         dim="default",
         values=[],
-        score=0.0
+        score=0.0,
     )
     entity_B = BaseEntity(
         range={"from": 0, "to": len(body)},
@@ -138,9 +138,8 @@ def test_duckling_timeout() -> None:
         timezone="Asia/Kolkata",
         threshold=0.2,
         timeout=0.01,
-        dest="output.entities"
+        dest="output.entities",
     )
-
 
     workflow = Workflow([duckling_plugin])
     _, output = workflow.run(Input(utterances="test"))
@@ -229,7 +228,12 @@ def test_plugin_working_cases(payload) -> None:
         reference_time = make_unix_ts("Asia/Kolkata")(reference_time)
 
     if expected_types is not None:
-        input_ = Input(utterances=body, locale=locale, reference_time=reference_time, latent_entities=use_latent)
+        input_ = Input(
+            utterances=body,
+            locale=locale,
+            reference_time=reference_time,
+            latent_entities=use_latent,
+        )
         _, output = workflow.run(input_)
 
         if not output["entities"]:
@@ -240,7 +244,12 @@ def test_plugin_working_cases(payload) -> None:
             assert entity["entity_type"] == expected_entity_type
     else:
         with pytest.raises(EXCEPTIONS[exception]):
-            input_ = Input(utterances=body, locale=locale, reference_time=reference_time, latent_entities=use_latent)
+            input_ = Input(
+                utterances=body,
+                locale=locale,
+                reference_time=reference_time,
+                latent_entities=use_latent,
+            )
             workflow.run(input_)
 
 

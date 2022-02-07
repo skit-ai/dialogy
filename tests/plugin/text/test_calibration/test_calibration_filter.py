@@ -13,7 +13,6 @@ from dialogy.plugins.text.calibration.xgb import CalibrationModel
 from dialogy.types import utterances
 from tests import load_tests
 
-
 json_data = load_tests("df", __file__, ext=".json")
 df = pd.DataFrame(json_data, columns=["conv_id", "data", "tag", "value", "time"])
 
@@ -101,19 +100,20 @@ def test_calibration_model_validation():
 
 
 def test_calibration_model_utility():
-    input_ = Input(utterances=[[{"transcript": "hello", "am_score": -100, "lm_score": -200}]])
+    input_ = Input(
+        utterances=[[{"transcript": "hello", "am_score": -100, "lm_score": -200}]]
+    )
     assert calibration_model.utility(input_, Output()) == ["hello"]
     calibration_model.threshold = float("inf")
-    input_ = Input(utterances=[
-                [
-                    {
-                        "transcript": "hello world hello world",
-                        "am_score": -100,
-                        "lm_score": -200,
-                    }
-                ]
+    input_ = Input(
+        utterances=[
+            [
+                {
+                    "transcript": "hello world hello world",
+                    "am_score": -100,
+                    "lm_score": -200,
+                }
             ]
-        )
-    assert (
-        calibration_model.utility(input_, Output()) == ["hello world hello world"]
+        ]
     )
+    assert calibration_model.utility(input_, Output()) == ["hello world hello world"]

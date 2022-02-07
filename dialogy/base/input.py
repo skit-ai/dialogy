@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Optional, List, Any, Dict
+
+from typing import Any, Dict, List, Optional
 
 import attr
 
@@ -14,21 +15,23 @@ class Input:
     reference_time: Optional[int] = attr.ib(default=None, kw_only=True)
     latent_entities: bool = attr.ib(default=False, kw_only=True, converter=bool)
     transcripts: List[str] = attr.ib(default=None)
-    clf_feature: Optional[List[str]] = attr.ib( # type: ignore
+    clf_feature: Optional[List[str]] = attr.ib(  # type: ignore
         kw_only=True,
         factory=list,
         validator=attr.validators.optional(attr.validators.instance_of(list)),
     )
-    lang: str = attr.ib(default="en", kw_only=True, validator=attr.validators.instance_of(str))
+    lang: str = attr.ib(
+        default="en", kw_only=True, validator=attr.validators.instance_of(str)
+    )
     locale: str = attr.ib(
         default="en_IN",
         kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)), # type: ignore
+        validator=attr.validators.optional(attr.validators.instance_of(str)),  # type: ignore
     )
     timezone: str = attr.ib(
         default="UTC",
         kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)), # type: ignore
+        validator=attr.validators.optional(attr.validators.instance_of(str)),  # type: ignore
     )
     slot_tracker: Optional[List[Dict[str, Any]]] = attr.ib(
         default=None,
@@ -52,18 +55,18 @@ class Input:
         except TypeError:
             ...
 
-    @reference_time.validator # type: ignore
+    @reference_time.validator  # type: ignore
     def _check_reference_time(
-        self,
-        attribute: attr.Attribute,  # type: ignore
-        reference_time: Optional[int]
+        self, attribute: attr.Attribute, reference_time: Optional[int]  # type: ignore
     ) -> None:
         if reference_time is None:
             return
         if not isinstance(reference_time, int):
             raise TypeError(f"{attribute.name} must be an integer.")
         if not is_unix_ts(reference_time):
-            raise ValueError(f"{attribute.name} must be a unix timestamp but got {reference_time}.")
+            raise ValueError(
+                f"{attribute.name} must be a unix timestamp but got {reference_time}."
+            )
 
     def json(self) -> Dict[str, Any]:
         return attr.asdict(self)
@@ -72,4 +75,4 @@ class Input:
     def from_dict(cls, d: Dict[str, Any], reference: Optional[Input] = None) -> Input:
         if reference:
             return attr.evolve(reference, **d)
-        return attr.evolve(cls(utterances=d["utterances"]), **d) # type: ignore
+        return attr.evolve(cls(utterances=d["utterances"]), **d)  # type: ignore

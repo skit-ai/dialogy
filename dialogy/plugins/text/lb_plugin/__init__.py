@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 from pydash import partition
 
 from dialogy import constants as const
-from dialogy.base import Input, Output, Guard
+from dialogy.base import Guard, Input, Output
 from dialogy.plugins import DucklingPlugin
 from dialogy.types import BaseEntity
 

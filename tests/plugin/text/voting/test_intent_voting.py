@@ -6,8 +6,8 @@ from typing import List
 import pytest
 
 from dialogy import constants as const
-from dialogy.plugins import VotePlugin
 from dialogy.base import Input, Output
+from dialogy.plugins import VotePlugin
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
 
@@ -41,7 +41,8 @@ def test_voting_n_intents():
         Intent(name="a", score=1),
     ]
     vote_plugin = VotePlugin(
-        debug=False, dest="output.intents",
+        debug=False,
+        dest="output.intents",
     )
     workflow = Workflow([vote_plugin])
     workflow.output = Output(intents=intents)
@@ -59,9 +60,7 @@ def test_voting_on_conflicts():
         Intent(name="b", score=1),
         Intent(name="b", score=1),
     ]
-    vote_plugin = VotePlugin(
-        dest="output.intents"
-    )
+    vote_plugin = VotePlugin(dest="output.intents")
     workflow = Workflow([vote_plugin])
     workflow.output = Output(intents=intents)
     _, output = workflow.run(Input(utterances=["some text"]))
@@ -78,9 +77,7 @@ def test_voting_on_weak_signals():
         Intent(name="b", score=0.1),
         Intent(name="b", score=0.1),
     ]
-    vote_plugin = VotePlugin(
-        dest="output.intents"
-    )
+    vote_plugin = VotePlugin(dest="output.intents")
     workflow = Workflow([vote_plugin])
     workflow.output = Output(intents=intents)
     _, output = workflow.run(Input(utterances=["some text"]))
@@ -113,9 +110,7 @@ def test_representation_intent():
         Intent(name="d", score=0.44),
     ]
 
-    vote_plugin = VotePlugin(
-        dest="output.intents"
-    )
+    vote_plugin = VotePlugin(dest="output.intents")
     workflow = Workflow([vote_plugin])
     workflow.output = Output(intents=intents)
     _, output = workflow.run(Input(utterances=["some text"]))

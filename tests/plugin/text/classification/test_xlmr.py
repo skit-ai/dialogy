@@ -62,11 +62,7 @@ def test_xlmr_plugin_no_module_error():
     const.XLMR_MODULE = "this-module-doesn't-exist"
 
     with pytest.raises(ModuleNotFoundError):
-        XLMRMultiClass(
-            model_dir=".",
-            dest="output.intents",
-            debug=False
-        )
+        XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
     const.XLMR_MODULE = save_val
 
 
@@ -76,11 +72,7 @@ def test_xlmr_plugin_when_no_labelencoder_saved():
     const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
     const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
 
-    xlmr_clf = XLMRMultiClass(
-        model_dir=".",
-            dest="output.intents",
-            debug=False
-    )
+    xlmr_clf = XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
     assert isinstance(xlmr_clf, XLMRMultiClass)
     assert xlmr_clf.model is None
     const.XLMR_MODULE = save_module_name
@@ -115,11 +107,7 @@ def test_xlmr_init_mock():
     const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
     const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
 
-    xlmr_clf = XLMRMultiClass(
-        model_dir=".",
-        dest="output.intents",
-        debug=False
-    )
+    xlmr_clf = XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
     xlmr_clf.init_model(5)
     assert xlmr_clf.model is not None
 
@@ -152,11 +140,7 @@ def test_train_xlmr_mock():
     directory = "/tmp"
     file_path = os.path.join(directory, const.LABELENCODER_FILE)
 
-    xlmr_clf = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=False
-    )
+    xlmr_clf = XLMRMultiClass(model_dir=directory, dest="output.intents", debug=False)
 
     xlmr_clf_state = XLMRMultiClass(
         model_dir=directory,
@@ -189,9 +173,7 @@ def test_train_xlmr_mock():
     # This copy loads from the same directory that was trained previously.
     # So this instance would have read the labelencoder saved.
     xlmr_clf_copy = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=False
+        model_dir=directory, dest="output.intents", debug=False
     )
 
     assert len(xlmr_clf_copy.labelencoder.classes_) == 2
@@ -212,11 +194,7 @@ def test_invalid_operations():
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    xlmr_clf = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=False
-    )
+    xlmr_clf = XLMRMultiClass(model_dir=directory, dest="output.intents", debug=False)
     xlmr_clf_state = XLMRMultiClass(
         model_dir=directory,
         dest="output.intents",
@@ -284,8 +262,7 @@ def test_inference(payload):
     )
 
     merge_asr_output_plugin = MergeASROutputPlugin(
-        dest="input.clf_feature",
-        debug=False
+        dest="input.clf_feature", debug=False
     )
 
     workflow = Workflow([merge_asr_output_plugin, xlmr_clf])
@@ -316,7 +293,11 @@ def test_inference(payload):
         xlmr_clf.model, MockClassifier
     ), "model should be a MockClassifier after training."
 
-    _, output = workflow.run(input_=Input(utterances=[[{"transcript": transcript} for transcript in transcripts]]))
+    _, output = workflow.run(
+        input_=Input(
+            utterances=[[{"transcript": transcript} for transcript in transcripts]]
+        )
+    )
     assert output[const.INTENTS][0]["name"] == intent
     assert output[const.INTENTS][0]["score"] > 0.9
 

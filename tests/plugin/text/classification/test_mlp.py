@@ -9,10 +9,10 @@ import pytest
 import sklearn
 
 import dialogy.constants as const
+from dialogy.base import Guard, Input, Plugin
 from dialogy.plugins import MergeASROutputPlugin, MLPMultiClass
 from dialogy.utils import load_file
 from dialogy.workflow import Workflow
-from dialogy.base import Input, Plugin, Guard
 from tests import load_tests
 
 
@@ -33,10 +33,7 @@ class MockMLPClassifier:
 
 
 def test_mlp_plugin_when_no_mlpmodel_saved():
-    mlp_clf = MLPMultiClass(
-        model_dir=".",
-        dest="output.intents"
-    )
+    mlp_clf = MLPMultiClass(model_dir=".", dest="output.intents")
     assert isinstance(mlp_clf, MLPMultiClass)
     assert mlp_clf.model_pipeline is None
 
@@ -60,8 +57,8 @@ def test_mlp_plugin_when_mlpmodel_EOFError(capsys):
 def test_mlp_init_mock():
     mlp_clf = MLPMultiClass(
         model_dir=".",
-            dest="output.intents",
-            debug=False,
+        dest="output.intents",
+        debug=False,
     )
     mlp_clf.init_model()
     assert isinstance(mlp_clf.model_pipeline, sklearn.pipeline.Pipeline)
@@ -348,7 +345,9 @@ def test_inference(payload):
     )
 
     workflow.train(train_df)
-    _, output = workflow.run(Input(utterances=[[{"transcript": transcript} for transcript in transcripts]]))
+    _, output = workflow.run(
+        Input(utterances=[[{"transcript": transcript} for transcript in transcripts]])
+    )
     assert output[const.INTENTS][0]["name"] == intent
     assert output[const.INTENTS][0]["score"] > 0.5
     if os.path.exists(file_path):

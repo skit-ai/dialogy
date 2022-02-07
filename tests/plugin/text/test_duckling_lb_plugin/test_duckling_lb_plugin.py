@@ -35,7 +35,14 @@ def test_plugin_working_cases(payload) -> None:
     workflow = Workflow([duckling_plugin])
 
     if expected_types is not None:
-        _, output = workflow.run(Input(utterances=body, locale=locale, reference_time=reference_time, latent_entities=use_latent))
+        _, output = workflow.run(
+            Input(
+                utterances=body,
+                locale=locale,
+                reference_time=reference_time,
+                latent_entities=use_latent,
+            )
+        )
 
         for i, entity in enumerate(output["entities"]):
             assert entity["entity_type"] == expected_types[i]["entity_type"]

@@ -11,6 +11,7 @@ Import classes:
 - BaseEntity
 """
 from __future__ import annotations
+
 import copy
 from typing import Any, Dict, List, Optional, Union
 
@@ -57,7 +58,7 @@ class BaseEntity:
         type=List[str],
         default=attr.Factory(list),
         validator=attr.validators.instance_of(list),
-        order=False
+        order=False,
     )
 
     # **score**
@@ -68,7 +69,9 @@ class BaseEntity:
     # **slot_names**
     #
     # Entities have awareness of the slots they should fill.
-    slot_names = attr.ib(type=List[str], default=attr.Factory(list), repr=False, order=False)
+    slot_names = attr.ib(
+        type=List[str], default=attr.Factory(list), repr=False, order=False
+    )
 
     # **alternative_index**
     #
@@ -90,7 +93,7 @@ class BaseEntity:
         default=attr.Factory(list),
         validator=attr.validators.instance_of(List),
         repr=False,
-        order=False
+        order=False,
     )
 
     # **values**

@@ -21,7 +21,7 @@ from tqdm import tqdm
 tqdm.pandas()
 
 import dialogy.constants as const
-from dialogy.base import Plugin, Input, Output, Guard
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.plugins.text.classification.tokenizers import identity_tokenizer
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, save_file
@@ -313,4 +313,6 @@ class MLPMultiClass(Plugin):
         )
 
     def utility(self, input: Input, _: Output) -> Any:
-        return self.inference(input.clf_feature)  # pylint: disable=no-value-for-parameter
+        return self.inference(
+            input.clf_feature
+        )  # pylint: disable=no-value-for-parameter

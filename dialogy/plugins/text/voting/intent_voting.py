@@ -8,7 +8,7 @@ import numpy as np
 import pydash as py_
 
 from dialogy import constants as const
-from dialogy.base import Plugin, Guard, Input, Output
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Signal
 from dialogy.types.intent import Intent
 from dialogy.utils.logger import logger
@@ -234,10 +234,12 @@ class VotePlugin(Plugin):
         logger.debug(f"strong signal: {strong_signal}")
 
         if (consensus_achieved or representative_signal) and strong_signal:
-            return [Intent(
-                name=main_intent[const.SIGNAL.NAME],  # type: ignore
-                score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
-            )]
+            return [
+                Intent(
+                    name=main_intent[const.SIGNAL.NAME],  # type: ignore
+                    score=main_intent[const.SIGNAL.STRENGTH],  # type: ignore
+                )
+            ]
         return [Intent(name=self.fallback_intent, score=1)]
 
     def utility(self, input_: Input, output: Output) -> Any:

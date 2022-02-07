@@ -269,6 +269,7 @@ Notes
 - A trainable plugin can also have transform methods if it needs to modify a dataframe for other plugins in place.
 """
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
@@ -277,7 +278,7 @@ from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.utils.logger import logger
 
-if TYPE_CHECKING: # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
     from dialogy.workflow import Workflow
 
 

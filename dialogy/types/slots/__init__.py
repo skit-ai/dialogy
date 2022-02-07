@@ -8,8 +8,10 @@ Import classes:
     - Slot
 """
 from __future__ import annotations
-import attr
+
 from typing import Any, Dict, List
+
+import attr
 
 import dialogy.constants as const
 from dialogy.types.entity import BaseEntity

@@ -49,6 +49,7 @@ The aim of this project is to be largest supplier of plugins for SLU application
     to offer flexibility of use.
 """
 from __future__ import annotations
+
 import copy
 import time
 from threading import Lock
@@ -88,8 +89,16 @@ class Workflow:
         type=List[Plugin],
         validator=attr.validators.instance_of(list),
     )
-    input: Optional[Input] = attr.ib(default=None, kw_only=True, validator=attr.validators.optional(attr.validators.instance_of(Input)))
-    output: Optional[Output] = attr.ib(default=None, kw_only=True, validator=attr.validators.optional(attr.validators.instance_of(Output)))
+    input: Optional[Input] = attr.ib(
+        default=None,
+        kw_only=True,
+        validator=attr.validators.optional(attr.validators.instance_of(Input)),
+    )
+    output: Optional[Output] = attr.ib(
+        default=None,
+        kw_only=True,
+        validator=attr.validators.optional(attr.validators.instance_of(Output)),
+    )
     debug = attr.ib(
         type=bool, default=False, validator=attr.validators.instance_of(bool)
     )
@@ -222,4 +231,6 @@ class Workflow:
             if transformed_data is not None:
                 training_data = transformed_data
         return self
+
+
 47
