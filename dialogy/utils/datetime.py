@@ -1,6 +1,7 @@
-import pytz
 from datetime import datetime
 from typing import Callable, Union
+
+import pytz
 
 
 def is_unix_ts(ts: int) -> bool:
