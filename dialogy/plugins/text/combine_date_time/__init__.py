@@ -94,9 +94,7 @@ class CombineDateTimeOverSlots(Plugin):
         )
         self.trigger_intents = trigger_intents
 
-    def join(
-        self, current_entity: TimeEntity, previous_entity: TimeEntity
-    ) -> TimeEntity:
+    def join(self, current_entity: TimeEntity, previous_entity: TimeEntity) -> TimeEntity:
         current_turn_datetime = current_entity.get_value()
         previous_turn_datetime = previous_entity.get_value()
 
@@ -122,6 +120,10 @@ class CombineDateTimeOverSlots(Plugin):
     def get_tracked_slots(
         self, slot_tracker: Optional[List[Dict[str, Any]]]
     ) -> List[Dict[str, Any]]:
+        if not self.trigger_intents or not slot_tracker:
+            return []
+
+    def get_tracked_slots(self, slot_tracker: Optional[List[Dict[str, Any]]]) -> List[Dict[str, Any]]:
         if not self.trigger_intents or not slot_tracker:
             return []
 

@@ -17,6 +17,7 @@ class Input:
     transcripts: List[str] = attr.ib(default=None)
     clf_feature: Optional[List[str]] = attr.ib(  # type: ignore
         kw_only=True,
+        type=List[str],
         factory=list,
         validator=attr.validators.optional(attr.validators.instance_of(list)),
     )
