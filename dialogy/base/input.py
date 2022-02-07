@@ -14,9 +14,8 @@ class Input:
     reference_time: Optional[int] = attr.ib(default=None, kw_only=True)
     latent_entities: bool = attr.ib(default=False, kw_only=True, converter=bool)
     transcripts: List[str] = attr.ib(default=None)
-    clf_feature: Optional[List[str]] = attr.ib(
+    clf_feature: Optional[List[str]] = attr.ib( # type: ignore
         kw_only=True,
-        type=List[str],
         factory=list,
         validator=attr.validators.optional(attr.validators.instance_of(list)),
     )
