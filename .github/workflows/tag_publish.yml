@@ -46,12 +46,12 @@ jobs:
          flags: unittests
          fail_ci_if_error: true
          verbose: true
-    - name: Check if coverage less than 90%
-      if: env.covpercentage < '90'
+    - name: Check if coverage less than 100%
+      if: env.covpercentage < '100'
       uses: actions/github-script@v3
       with:
         script: |
-            core.setFailed('Code Coverage is less than 90%')
+            core.setFailed('Code Coverage is less than 100%')
     - name: Build and Publish to PYPI
       env:
         TWINE_USERNAME: __token__
