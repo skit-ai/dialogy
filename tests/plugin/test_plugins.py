@@ -104,3 +104,13 @@ def test_plugin_transform() -> None:
         dest="output.intents", debug=False, use_transform=True
     )
     assert arbitrary_plugin.transform([{"a": 1}]) == [{"a": 1}]
+
+
+def test_plugin_guards() -> None:
+    arbitrary_plugin = ArbitraryPlugin(
+        dest="output.intents",
+        guards=[lambda i, _: i.current_state == "COF"],
+    )
+    workflow = Workflow().set("input.utterances", ["hello"]).set("input.current_state", "COF")
+    assert arbitrary_plugin.prevent(workflow.input, workflow.output) is True
+    assert arbitrary_plugin(workflow) is None

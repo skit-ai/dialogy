@@ -1,4 +1,4 @@
-- description: ""
+- description: "Check addition on thresholding"
   input_size: 10
   threshold: 0.1
   mock_entities: [[{'body': '3rd of July',

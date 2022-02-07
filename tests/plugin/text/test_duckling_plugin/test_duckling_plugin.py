@@ -1,10 +1,9 @@
-import importlib
 import time
+import operator
 
 import httpretty
 import pandas as pd
 import pytest
-import requests
 
 from dialogy.plugins import DucklingPlugin
 from dialogy.base import Input
@@ -29,49 +28,6 @@ def test_plugin_with_custom_entity_map() -> None:
     assert duckling_plugin.dimension_entity_map["number"]["value"] == BaseEntity
 
 
-# def test_plugin_io_missing() -> None:
-#     """
-#     Here we are checking if the plugin has access to workflow.
-#     Since we haven't provided `access`, `mutate` to `DucklingPlugin`
-#     we will receive a `TypeError`.
-#     """
-#     duckling_plugin = DucklingPlugin(
-#         locale="en_IN", timezone="Asia/Kolkata", dimensions=["time"]
-#     )
-
-#     workflow = Workflow([duckling_plugin])
-#     with pytest.raises(TypeError):
-#         workflow.run("")
-
-
-# # == Test invalid i/o ==
-# @pytest.mark.parametrize(
-#     "access,mutate",
-#     [
-#         (1, 1),
-#         (lambda x: x, 1),
-#         (1, lambda x: x),
-#     ],
-# )
-# def test_plugin_io_type_mismatch(access, mutate) -> None:
-#     """
-#     Here we are chcking if the plugin has access to workflow.
-#     Since we have provided `access`, `mutate` of incorrect types to `DucklingPlugin`
-#     we will receive a `TypeError`.
-#     """
-#     duckling_plugin = DucklingPlugin(
-#         access=access,
-#         mutate=mutate,
-#         locale="en_IN",
-#         dimensions=["time"],
-#         timezone="Asia/Kolkata",
-#     )
-
-#     workflow = Workflow([duckling_plugin])
-#     with pytest.raises(TypeError):
-#         workflow.run("")
-
-
 def test_remove_low_scoring_entities_works_only_if_threshold_is_not_none():
     duckling_plugin = DucklingPlugin(
         locale="en_IN",
@@ -91,6 +47,41 @@ def test_remove_low_scoring_entities_works_only_if_threshold_is_not_none():
     )
 
     assert duckling_plugin.remove_low_scoring_entities([entity]) == [entity]
+
+
+def test_duckling_get_operator_happy_case():
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        threshold=0.2,
+        datetime_filters="future"
+    )
+    assert duckling_plugin.get_operator("lt") == operator.lt
+
+
+def test_duckling_get_operator_exception():
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        threshold=0.2,
+        datetime_filters="future"
+    )
+    with pytest.raises(ValueError):
+        duckling_plugin.get_operator("invalid")
+
+
+def test_duckling_reftime():
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        threshold=0.2,
+        datetime_filters="future"
+    )
+    with pytest.raises(TypeError):
+        duckling_plugin.validate("test", None)
 
 
 def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():

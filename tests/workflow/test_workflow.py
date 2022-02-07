@@ -61,3 +61,21 @@ def test_workflow_as_dict():
         "input": None,
         "output": {const.INTENTS: [], const.ENTITIES: []},
     }
+
+
+def test_workflow_invalid_set_path():
+    """
+    We can't set invalid values in workflow.
+    """
+    workflow = Workflow()
+    with pytest.raises(ValueError):
+        workflow.set("invalid.path", [])
+
+
+def test_workflow_invalid_set_value():
+    """
+    We can't set invalid values in workflow.
+    """
+    workflow = Workflow()
+    with pytest.raises(ValueError):
+        workflow.set("output.intents", 10)

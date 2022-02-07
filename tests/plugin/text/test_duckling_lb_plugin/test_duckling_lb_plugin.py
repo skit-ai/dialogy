@@ -36,14 +36,9 @@ def test_plugin_working_cases(payload) -> None:
 
     if expected_types is not None:
         _, output = workflow.run(Input(utterances=body, locale=locale, reference_time=reference_time, latent_entities=use_latent))
-        module = importlib.import_module("dialogy.types.entity")
-
-        if not output["entities"]:
-            assert output["entities"] == []
 
         for i, entity in enumerate(output["entities"]):
-            class_name = expected_types[i]["entity"]
-            assert isinstance(entity, getattr(module, class_name))
+            assert entity["entity_type"] == expected_types[i]["entity_type"]
     else:
         with pytest.raises(EXCEPTIONS[exception]):
             workflow.run(body)

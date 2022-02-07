@@ -272,14 +272,10 @@ def test_slot_filling_multiple() -> None:
     assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [entity_2.json()]
 
 
-def test_slot_competition() -> None:
+def test_slot_competition_fill_multiple() -> None:
     """
     What happens when we have two entities of the same type but different value?
     """
-
-    def access(workflow: Workflow) -> Any:
-        return (workflow.output[const.INTENTS], workflow.output[const.ENTITIES])
-
     intent_name = "intent_1"
 
     # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
@@ -318,3 +314,47 @@ def test_slot_competition() -> None:
     # The `entity_1_slot` and `entity_2_slot` are filled.
 
     assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [entity_1.json(), entity_2.json()]
+
+
+def test_slot_competition_fill_one() -> None:
+    """
+    What happens when we have two entities of the same type but different value?
+    """
+    intent_name = "intent_1"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, dest="output.intents", fill_multiple=False)
+
+    # Create a mock `workflow`
+    workflow = Workflow([slot_filler])
+
+    # ... a mock `Intent`
+    intent = Intent(name=intent_name, score=0.8)
+
+    # Here we have two entities which compete for the same slot but have different values.
+    body = "12th december"
+    entity_1 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        entity_type="entity_1",
+        values=[{"key": "value_1"}],
+    )
+
+    entity_2 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        entity_type="entity_1",
+        values=[{"key": "value_2"}],
+    )
+
+    workflow \
+        .set("output.intents", [intent]) \
+        .set("output.entities", [entity_1, entity_2])
+    _, output = workflow.run(Input(utterances=body))
+
+    # `workflow.output[0]` is the `Intent` we created.
+    # The `entity_1_slot` and `entity_2_slot` are filled.
+
+    assert "entity_1_slot" not in output[const.INTENTS][0]["slots"]
