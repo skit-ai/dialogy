@@ -277,7 +277,7 @@ from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.utils.logger import logger
 
-if TYPE_CHECKING:
+if TYPE_CHECKING: # pragma: no cover
     from dialogy.workflow import Workflow
 
 
@@ -408,14 +408,14 @@ class Plugin(ABC):
         :raises TypeError: If access method is missing, we can't get inputs for transformation.
         """
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
-        if self.prevent(workflow):
+        if self.prevent(workflow.input, workflow.output):
             return
 
         value = self.utility(workflow.input, workflow.output)
         if value is not None and isinstance(self.dest, str):
             workflow.set(self.dest, value)
 
-    def prevent(self, workflow: Workflow) -> bool:
+    def prevent(self, input_: Input, output: Output) -> bool:
         """
         Decide if the plugin should execute.
 
@@ -424,7 +424,7 @@ class Plugin(ABC):
         """
         if not self.guards:
             return False
-        return any(guard(workflow.input, workflow.output) for guard in self.guards)
+        return any(guard(input_, output) for guard in self.guards)
 
     def train(self, _: Any) -> Any:
         """
