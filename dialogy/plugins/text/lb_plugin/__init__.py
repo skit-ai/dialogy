@@ -45,10 +45,10 @@ class DucklingPluginLB(DucklingPlugin):
             debug=debug,
         )
 
-    def utility(self, _: Input, output: Output) -> List[BaseEntity]:
-        entity_list = output.entities
+    def utility(self, input_: Input, output: Output) -> List[BaseEntity]:
+        entity_list = super().utility(input_, output)
         datetime_list, other_list = partition(
-            entity_list, lambda x: x.type in ["datetime", "date", "time"]
+            entity_list, lambda x: x.entity_type in ["datetime", "date", "time"]
         )
         if datetime_list:
             other_list.append(min(datetime_list, key=lambda x: x.alternative_index))
