@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 import attr
 
@@ -20,14 +20,14 @@ class Output:
         kw_only=True,
     )
 
-    def json(self: Output) -> dict:
+    def json(self: Output) -> Dict[str, List[Dict[str, Any]]]:
         return {
             "intents": [intent.json() for intent in self.intents],
             "entities": [entity.json() for entity in self.entities],
         }
 
     @classmethod
-    def from_dict(cls, d: dict, reference: Optional[Output] = None):
+    def from_dict(cls, d: Dict[str, Any], reference: Optional[Output] = None) -> Output:
         if reference:
             return attr.evolve(reference, **d)
         return attr.evolve(cls(), **d)

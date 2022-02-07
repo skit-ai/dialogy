@@ -169,7 +169,7 @@ class Workflow:
                 logger.debug(history)
         return self
 
-    def run(self, input_: Input) -> Tuple[dict, dict]:
+    def run(self, input_: Input) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """
         .. _workflow_run:
 
@@ -182,10 +182,12 @@ class Workflow:
             self.input = input_
             return self.execute().flush()
 
-    def flush(self) -> Workflow:
+    def flush(self) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """
         Reset :code:`workflow.input` and :code:`workflow.output`.
         """
+        if self.input is None or self.output is None:
+            return {}, {}
         input_ = copy.deepcopy(self.input.json())
         output = copy.deepcopy(self.output.json())
         self.__reset()

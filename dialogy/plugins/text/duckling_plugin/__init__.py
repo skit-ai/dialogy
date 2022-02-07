@@ -197,7 +197,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         text: str,
         reference_time: Optional[int] = None,
         locale: str = "en_IN",
-        use_latent: bool = False,
+        use_latent: Union[Callable[..., bool], bool] = False,
     ) -> Dict[str, Any]:
         """
         create request body for entity parsing
@@ -379,7 +379,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         text: str,
         locale: str = "en_IN",
         reference_time: Optional[int] = None,
-        use_latent: bool = False,
+        use_latent: Union[Callable[..., bool], bool] = False,
         sort_idx: int = 0,
     ) -> Dict[str, Any]:
         """
@@ -431,7 +431,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         texts: List[str],
         locale: str = "en_IN",
         reference_time: Optional[int] = None,
-        use_latent: bool = False,
+        use_latent: Union[Callable[..., bool], bool] = False,
     ) -> List[List[Dict[str, Any]]]:
         """
         Make multiple-parallel API calls to duckling-server .
@@ -501,7 +501,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         transcripts: Union[str, List[str]],
         locale: str,
         reference_time: Optional[int] = None,
-        use_latent: bool = False,
+        use_latent: Union[Callable[..., bool], bool] = False,
     ) -> List[BaseEntity]:
         list_of_entities: List[List[Dict[str, Any]]] = []
         entities: List[BaseEntity] = []

@@ -1,10 +1,10 @@
 from __future__ import annotations
-from typing import Optional, List
+from typing import Optional, List, Any, Dict
 
 import attr
 
 from dialogy.types import Utterance
-from dialogy.utils import is_unix_ts, normalize, is_utterance
+from dialogy.utils import is_unix_ts, normalize
 
 
 @attr.frozen
@@ -16,6 +16,7 @@ class Input:
     transcripts: List[str] = attr.ib(default=None)
     clf_feature: Optional[List[str]] = attr.ib(
         kw_only=True,
+        type=List[str],
         factory=list,
         validator=attr.validators.optional(attr.validators.instance_of(list)),
     )
@@ -23,14 +24,14 @@ class Input:
     locale: str = attr.ib(
         default="en_IN",
         kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)),
+        validator=attr.validators.optional(attr.validators.instance_of(str)), # type: ignore
     )
     timezone: str = attr.ib(
         default="UTC",
         kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)),
+        validator=attr.validators.optional(attr.validators.instance_of(str)), # type: ignore
     )
-    slot_tracker: Optional[list] = attr.ib(
+    slot_tracker: Optional[List[Dict[str, Any]]] = attr.ib(
         default=None,
         kw_only=True,
         validator=attr.validators.optional(attr.validators.instance_of(list)),
@@ -46,14 +47,18 @@ class Input:
         validator=attr.validators.optional(attr.validators.instance_of(str)),
     )
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self) -> None:
         try:
             object.__setattr__(self, "transcripts", normalize(self.utterances))
         except TypeError:
             ...
 
-    @reference_time.validator
-    def _check_reference_time(self, attribute: attr.Attribute, reference_time: int):
+    @reference_time.validator # type: ignore
+    def _check_reference_time(
+        self,
+        attribute: attr.Attribute,  # type: ignore
+        reference_time: Optional[int]
+    ) -> None:
         if reference_time is None:
             return
         if not isinstance(reference_time, int):
@@ -61,11 +66,11 @@ class Input:
         if not is_unix_ts(reference_time):
             raise ValueError(f"{attribute.name} must be a unix timestamp but got {reference_time}.")
 
-    def json(self):
+    def json(self) -> Dict[str, Any]:
         return attr.asdict(self)
 
     @classmethod
-    def from_dict(cls, d: dict, reference: Optional[Input] = None):
+    def from_dict(cls, d: Dict[str, Any], reference: Optional[Input] = None) -> Input:
         if reference:
             return attr.evolve(reference, **d)
-        return attr.evolve(cls(utterances=d["utterances"]), **d)
+        return attr.evolve(cls(utterances=d["utterances"]), **d) # type: ignore

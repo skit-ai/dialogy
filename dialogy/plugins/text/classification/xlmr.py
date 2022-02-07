@@ -135,7 +135,7 @@ class XLMRMultiClass(Plugin):
     def valid_labelencoder(self) -> bool:
         return hasattr(self.labelencoder, "classes_")
 
-    def inference(self, texts: List[str]) -> List[Intent]:
+    def inference(self, texts: Optional[List[str]]) -> List[Intent]:
         """
         Predict the intent of a list of texts.
 
@@ -147,6 +147,9 @@ class XLMRMultiClass(Plugin):
         """
         logger.debug(f"Classifier input:\n{texts}")
         fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
+        if not texts:
+            logger.error(f"texts passed to model {texts}!")
+            return [fallback_output]
 
         if self.model is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
@@ -268,5 +271,6 @@ class XLMRMultiClass(Plugin):
             self.labelencoder_file_path, mode="rb", loader=pickle.load
         )
 
-    def utility(self, input: Input, _: Output) -> Any:
-        return self.inference(input.clf_feature)  # pylint: disable=no-value-for-parameter
+    def utility(self, input: Input, _: Output) -> List[Intent]:
+        return self.inference(input.clf_feature)
+

@@ -26,7 +26,7 @@ class Slot:
     """
 
     name: str = attr.ib(kw_only=True, order=True)
-    types: str = attr.ib(kw_only=True, factory=list, order=False)
+    types: List[str] = attr.ib(kw_only=True, factory=list, order=False)
     values: List[BaseEntity] = attr.ib(kw_only=True, factory=list, order=False)
 
     def add(self, entity: BaseEntity) -> Slot:

@@ -1,4 +1,4 @@
-import math
+from typing import Union
 from datetime import datetime
 from typing import Callable
 
@@ -26,7 +26,7 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
     :rtype: Callable[[str], int]
     """
 
-    def make_tz_aware(date_string: str) -> int:
+    def make_tz_aware(date_string: Union[str, int]) -> int:
         """
         Convert date in ISO 8601 format to unix ms timestamp.
 

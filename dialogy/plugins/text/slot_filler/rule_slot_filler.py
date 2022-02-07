@@ -134,12 +134,9 @@ class RuleBasedSlotFillerPlugin(Plugin):
 
     def fill(self, intents: List[Intent], entities: List[BaseEntity]) -> List[Intent]:
         if not isinstance(intents, list) or not intents:
-            return
+            return intents
 
         intent, *rest = intents
-
-        if not isinstance(intent, Intent):
-            return
 
         intent.apply(self.rules)
 

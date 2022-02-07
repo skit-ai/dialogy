@@ -1,4 +1,3 @@
-from sqlite3 import Time
 from typing import Any, Dict, List, Optional
 
 import attr
@@ -95,7 +94,7 @@ class CombineDateTimeOverSlots(Plugin):
         )
         self.trigger_intents = trigger_intents
 
-    def join(self, current_entity: TimeEntity, previous_entity: TimeEntity) -> None:
+    def join(self, current_entity: TimeEntity, previous_entity: TimeEntity) -> TimeEntity:
         current_turn_datetime = current_entity.get_value()
         previous_turn_datetime = previous_entity.get_value()
 
@@ -116,19 +115,23 @@ class CombineDateTimeOverSlots(Plugin):
 
         return attr.evolve(current_entity, **{const.EntityKeys.VALUE: combined_value.isoformat()})
 
-    def get_tracked_slots(self, slot_tracker: List[dict]) -> List[dict]:
+    def get_tracked_slots(self, slot_tracker: Optional[List[Dict[str, Any]]]) -> List[Dict[str, Any]]:
+        if not self.trigger_intents or not slot_tracker:
+            return []
+
         tracked_intents = [
             intent
             for intent in slot_tracker
             if intent[const.NAME] in self.trigger_intents
         ]
+
         if not tracked_intents:
             return []
 
         tracked_intent, *_ = tracked_intents
         return tracked_intent.get(const.SLOTS, [])
 
-    def pick_previously_filled_time_entity(self, tracked_slots: List[dict], entities: List[BaseEntity]) -> Optional[TimeEntity]:
+    def pick_previously_filled_time_entity(self, tracked_slots: Optional[List[Dict[str, Any]]]) -> Optional[TimeEntity]:
         if not tracked_slots:
             return None
 
@@ -144,15 +147,8 @@ class CombineDateTimeOverSlots(Plugin):
 
         return TimeEntity(**filled_entity_json)
 
-
-    def combine_time_entities_from_slots(self, slot_tracker: List[Dict[str, Any]], entities: List[BaseEntity]):
-        if not self.trigger_intents or not slot_tracker:
-            return entities
-
-        previously_filled_time_entity = self.pick_previously_filled_time_entity(
-            self.get_tracked_slots(slot_tracker), 
-            entities
-        )
+    def combine_time_entities_from_slots(self, slot_tracker: Optional[List[Dict[str, Any]]], entities: List[BaseEntity]) -> List[BaseEntity]:
+        previously_filled_time_entity = self.pick_previously_filled_time_entity(self.get_tracked_slots(slot_tracker))
 
         if not previously_filled_time_entity:
             return entities
@@ -161,7 +157,7 @@ class CombineDateTimeOverSlots(Plugin):
         combined_time_entities = [self.join(entity, previously_filled_time_entity) for entity in time_entities]
         return combined_time_entities + other_entities
 
-    def utility(self, input: Input, output: Output) -> Any:
+    def utility(self, input: Input, output: Output) -> List[BaseEntity]:
         """
         Combine the date and time entities collected across turns into a single entity.
         """

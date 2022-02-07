@@ -408,6 +408,13 @@ class Plugin(ABC):
         :raises TypeError: If access method is missing, we can't get inputs for transformation.
         """
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
+
+        if workflow.input is None:
+            return
+
+        if workflow.output is None:
+            return
+
         if self.prevent(workflow.input, workflow.output):
             return
 

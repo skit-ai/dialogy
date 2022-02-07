@@ -187,7 +187,7 @@ class VotePlugin(Plugin):
         self.fallback_intent: str = fallback_intent
         self.aggregate_fn: Any = aggregate_fn
 
-    def vote_signal(self, intents: List[Intent], trials: int) -> Intent:
+    def vote_signal(self, intents: List[Intent], trials: int) -> List[Intent]:
         """
         Reduce a list of intents.
 

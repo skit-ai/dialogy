@@ -178,7 +178,7 @@ class MLPMultiClass(Plugin):
     def valid_mlpmodel(self) -> bool:
         return hasattr(self.model_pipeline, "classes_")
 
-    def inference(self, texts: List[str]) -> List[Intent]:
+    def inference(self, texts: Optional[List[str]]) -> List[Intent]:
         """
         Predict the intent of a list of texts.
 
