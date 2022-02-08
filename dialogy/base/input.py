@@ -15,6 +15,7 @@ class Input:
 
     Represents inputs to a :ref:`Workflow <WorkflowClass>`. This is a frozen class, which means attributes cannot be modified once created.
     """
+
     utterances: List[Utterance] = attr.ib(kw_only=True)
     """
     ASRs produce utterances. 

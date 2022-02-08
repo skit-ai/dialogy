@@ -26,13 +26,16 @@ def test_output_invalid_intents_type():
     with pytest.raises(TypeError):
         Output(intents=1)
 
+
 def test_output_invalid_intent_type():
     with pytest.raises(TypeError):
         Output(intents=[1])
 
+
 def test_output_invalid_entities_type():
     with pytest.raises(TypeError):
         Output(entities=1)
+
 
 def test_output_invalid_entity_type():
     with pytest.raises(TypeError):

@@ -16,6 +16,7 @@ class Output:
 
     This is a frozen class, which means items cannot be modified once created.
     """
+
     intents: List[Intent] = attr.ib(default=attr.Factory(list), kw_only=True)
     """
     A list of intents. Produced by :ref:`XLMRMultiClass <XLMRMultiClass>`
@@ -28,11 +29,9 @@ class Output:
     :ref:`ListEntityPlugin <ListEntityPlugin>` or :ref:`ListSearchPlugin <ListSearchPlugin>`.
     """
 
-    @intents.validator # type: ignore
+    @intents.validator  # type: ignore
     def _are_intents_valid(
-        self,
-        _: attr.Attribute, # type: ignore
-        intents: List[Intent]
+        self, _: attr.Attribute, intents: List[Intent]  # type: ignore
     ) -> None:
         if not isinstance(intents, list):
             raise TypeError(f"intents must be a list, not {type(intents)}")
@@ -41,13 +40,13 @@ class Output:
             return
 
         if any(not isinstance(intent, Intent) for intent in intents):
-            raise TypeError(f"intents must be a List[Intent] but {intents} was provided.")
+            raise TypeError(
+                f"intents must be a List[Intent] but {intents} was provided."
+            )
 
-    @entities.validator # type: ignore
+    @entities.validator  # type: ignore
     def _are_entities_valid(
-        self,
-        _: attr.Attribute,  # type: ignore
-        entities: List[BaseEntity]
+        self, _: attr.Attribute, entities: List[BaseEntity]  # type: ignore
     ) -> None:
         if not isinstance(entities, list):
             raise TypeError(f"entities must be a list, not {type(entities)}")
@@ -56,7 +55,9 @@ class Output:
             return
 
         if any(not isinstance(entity, BaseEntity) for entity in entities):
-            raise TypeError(f"intents must be a List[BaseEntity] but {entities} was provided.")
+            raise TypeError(
+                f"intents must be a List[BaseEntity] but {entities} was provided."
+            )
 
     def json(self: Output) -> Dict[str, List[Dict[str, Any]]]:
         """

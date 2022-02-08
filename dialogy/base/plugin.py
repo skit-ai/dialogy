@@ -191,6 +191,7 @@ class Plugin(ABC):
     :param debug: Should we print debug logs?, defaults to False
     :type debug: bool, optional
     """
+
     def __init__(
         self,
         input_column: str = const.ALTERNATIVES,
