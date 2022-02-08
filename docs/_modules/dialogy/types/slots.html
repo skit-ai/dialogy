@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.types.slots - dialogy 0.8.10 documentation</title>
+        <title>dialogy.types.slots - dialogy 0.9.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../../_static/pygments.css">
     
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.8.10 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.10 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -195,14 +195,18 @@
 
 <span class="sd">    - Slot</span>
 <span class="sd">"""</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
 
 <span class="kn">import</span> <span class="nn">dialogy.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
 
 
-<div class="viewcode-block" id="Slot"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot">[docs]</a><span class="k">class</span> <span class="nc">Slot</span><span class="p">:</span>
+<div class="viewcode-block" id="Slot"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">Slot</span><span class="p">:</span>
     <span class="sd">"""Slot Type</span>
 
 <span class="sd">    Keys are:</span>
@@ -211,19 +215,18 @@
 <span class="sd">    - `values` list of entities extracted</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">types</span> <span class="o">=</span> <span class="n">types</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Slot.add"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Slot"</span><span class="p">:</span>
+<div class="viewcode-block" id="Slot.add"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Slot</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Insert the `BaseEntity` within the current `Slot` instance.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Slot.clear"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Slot"</span><span class="p">:</span>
+<div class="viewcode-block" id="Slot.clear"><a class="viewcode-back" href="../../../source/dialogy.types.slots.html#dialogy.types.slots.Slot.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Slot</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Remove all `BaseEntity` within the current `Slot` instance.</span>
 <span class="sd">        """</span>
@@ -237,16 +240,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Dict[str, Any]</span>
 <span class="sd">        """</span>
-        <span class="n">entities_json</span> <span class="o">=</span> <span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
-        <span class="n">slot_json</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">{</span>
             <span class="s2">"name"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="s2">"type"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">,</span>
-            <span class="n">const</span><span class="o">.</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">:</span> <span class="n">entities_json</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">slot_json</span></div>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Slot(name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, types=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="si">}</span><span class="s2">, values=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s2">)"</span></div>
+            <span class="s2">"types"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">,</span>
+            <span class="s2">"values"</span><span class="p">:</span> <span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">],</span>
+        <span class="p">}</span></div></div>
 
 
 <span class="n">Rule</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.plugins.text.canonicalization - dialogy 0.8.10 documentation</title>
+        <title>dialogy.plugins.text.canonicalization - dialogy 0.9.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../../../_static/pygments.css">
     
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.8.10 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.10 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -197,13 +197,13 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">import</span> <span class="nn">dialogy.constants</span> <span class="k">as</span> <span class="nn">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
-<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">plugin</span>
+<span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">normalize</span>
 
 
 <div class="viewcode-block" id="get_entity_type"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.get_entity_type">[docs]</a><span class="k">def</span> <span class="nf">get_entity_type</span><span class="p">(</span><span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&gt;"</span></div>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">&gt;"</span></div>
 
 
 <div class="viewcode-block" id="CanonicalizationPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.CanonicalizationPlugin">[docs]</a><span class="k">class</span> <span class="nc">CanonicalizationPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
@@ -216,8 +216,8 @@
         <span class="n">serializer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseEntity</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_entity_type</span><span class="p">,</span>
         <span class="n">mask</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"MASK"</span><span class="p">,</span>
         <span class="n">mask_tokens</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plugin</span><span class="o">.</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plugin</span><span class="o">.</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">guards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">entity_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ENTITY_COLUMN</span><span class="p">,</span>
         <span class="n">input_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVES</span><span class="p">,</span>
         <span class="n">output_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -226,8 +226,8 @@
         <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">access</span><span class="p">,</span>
-            <span class="n">mutate</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span>
+            <span class="n">guards</span><span class="o">=</span><span class="n">guards</span><span class="p">,</span>
             <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
             <span class="n">use_transform</span><span class="o">=</span><span class="n">use_transform</span><span class="p">,</span>
             <span class="n">input_column</span><span class="o">=</span><span class="n">input_column</span><span class="p">,</span>
@@ -265,8 +265,9 @@
 
         <span class="k">return</span> <span class="n">canonicalized_transcripts</span></div>
 
-<div class="viewcode-block" id="CanonicalizationPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.CanonicalizationPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="n">entities</span><span class="p">,</span> <span class="n">transcripts</span> <span class="o">=</span> <span class="n">args</span>
+<div class="viewcode-block" id="CanonicalizationPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.CanonicalizationPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">entities</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">entities</span>
+        <span class="n">transcripts</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">transcripts</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_transcript</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="n">transcripts</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CanonicalizationPlugin.transform"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.canonicalization.html#dialogy.plugins.text.canonicalization.CanonicalizationPlugin.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
@@ -277,7 +278,7 @@
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">training_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">canonicalized_transcripts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utility</span><span class="p">(</span>
+                <span class="n">canonicalized_transcripts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_transcript</span><span class="p">(</span>
                     <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_column</span><span class="p">],</span>
                     <span class="n">normalize</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">])),</span>
                 <span class="p">)</span>

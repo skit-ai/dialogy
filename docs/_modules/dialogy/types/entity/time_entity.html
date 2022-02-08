@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.types.entity.time_entity - dialogy 0.8.10 documentation</title>
+        <title>dialogy.types.entity.time_entity - dialogy 0.9.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../../../_static/pygments.css">
     
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.8.10 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.10 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -265,43 +265,6 @@
 <span class="sd">        Check a list has a unique day</span>
 
 <span class="sd">        Where day is the date number for a month.</span>
-<span class="sd">        Ex: for "2021-04-17T16:00:00.000+05:30", the day is 17</span>
-
-<span class="sd">        .. ipython :: python</span>
-
-<span class="sd">            from dialogy.types import TimeEntity</span>
-<span class="sd">            duckling_time_entity = {</span>
-<span class="sd">                "body": "july 19",</span>
-<span class="sd">                "start": 0,</span>
-<span class="sd">                "value": {</span>
-<span class="sd">                "values": [</span>
-<span class="sd">                    {</span>
-<span class="sd">                    "value": "2021-07-19T00:00:00.000+05:30",</span>
-<span class="sd">                    "grain": "day",</span>
-<span class="sd">                    "type": "value"</span>
-<span class="sd">                    },</span>
-<span class="sd">                    {</span>
-<span class="sd">                    "value": "2022-07-19T00:00:00.000+05:30",</span>
-<span class="sd">                    "grain": "day",</span>
-<span class="sd">                    "type": "value"</span>
-<span class="sd">                    },</span>
-<span class="sd">                    {</span>
-<span class="sd">                    "value": "2023-07-19T00:00:00.000+05:30",</span>
-<span class="sd">                    "grain": "day",</span>
-<span class="sd">                    "type": "value"</span>
-<span class="sd">                    }</span>
-<span class="sd">                ],</span>
-<span class="sd">                "value": "2021-07-19T00:00:00.000+05:30",</span>
-<span class="sd">                "grain": "day",</span>
-<span class="sd">                "type": "value"</span>
-<span class="sd">                },</span>
-<span class="sd">                "end": 7,</span>
-<span class="sd">                "dim": "time",</span>
-<span class="sd">                "latent": False</span>
-<span class="sd">            }</span>
-<span class="sd">            time_entity = TimeEntity.from_dict(duckling_time_entity)</span>
-<span class="sd">            time_entity.is_uniq_date_from_values()</span>
-
 
 <span class="sd">        :return: True if there is a unique day in all datetime values</span>
 <span class="sd">        :rtype: bool</span>
@@ -386,11 +349,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">post_init</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TimeEntity.post_init"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">grain_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"grain"</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">grain</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_entity_type</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_entity_type</span><span class="p">()</span></div></div>
 </pre></div>
       </article>
       <footer>

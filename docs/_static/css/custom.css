@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:wght@100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+body {
+    --font-stack: "Open Sans", sans-serif;
+    --font-stack--monospace: "Roboto Mono", monospace;
+}
+
+p {
+    font-size: 0.9rem;
+}
+
+dl {
+    display: block;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    border-top: 1px solid #eee;
+}
+
+h1 {
+    font-size: 1.75rem;
+}
+
+h2 {
+    font-size: 1.25rem;
+    border-top: 1px solid #ccc;
+}
+
+h3 {
+    font-size: 1.15rem;
+}
+
+ol li>p:first-child, ul li>p:last-child {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) .field-list dt {
+    font-size: var(--font-size--small);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

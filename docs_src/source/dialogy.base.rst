@@ -12,6 +12,22 @@ dialogy.base.entity\_extractor module
    :undoc-members:
    :show-inheritance:
 
+dialogy.base.input module
+-------------------------
+
+.. automodule:: dialogy.base.input
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dialogy.base.output module
+--------------------------
+
+.. automodule:: dialogy.base.output
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.base.plugin module
 --------------------------
 

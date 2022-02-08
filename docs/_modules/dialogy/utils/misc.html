@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.utils.misc - dialogy 0.8.10 documentation</title>
+        <title>dialogy.utils.misc - dialogy 0.9.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../../_static/pygments.css">
     
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.8.10 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.10 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -267,18 +267,6 @@
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> should be a </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="dt2timestamp"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.misc.dt2timestamp">[docs]</a><span class="k">def</span> <span class="nf">dt2timestamp</span><span class="p">(</span><span class="n">date_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">"""</span>
-<span class="sd">    Converts a python datetime object to unix-timestamp.</span>
-
-<span class="sd">    :param date_time: An instance of datetime.</span>
-<span class="sd">    :type date_time: datetime</span>
-<span class="sd">    :return: Unix timestamp integer.</span>
-<span class="sd">    :rtype: int</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">date_time</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span></div>
 </pre></div>
       </article>
       <footer>

@@ -2,51 +2,50 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.workflow package" href="dialogy.workflow.html" /><link rel="prev" title="dialogy.types.utterances package" href="dialogy.types.utterances.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="dialogy.workflow package" href="dialogy.workflow.html" />
 
-    <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.utils package - dialogy 0.8.10 documentation</title>
-      <link rel="stylesheet" href="../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
-    <link rel="stylesheet" href="../_static/pygments.css">
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
+        <title>dialogy.utils package - dialogy 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=0af69da206d614734f649b27d4cdc2dd6c31f41d" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
     
 
 
 <style>
-  :root {
+  body {
     --color-code-background: #f8f8f8;
   --color-code-foreground: black;
   
   }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
   @media (prefers-color-scheme: dark) {
-    :root {
+    body:not([data-theme="light"]) {
       --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   
     }
   }
-
-  /* For allowing end-user-specific overrides */
-  .override-light {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
-  
-  }
-  .override-dark {
-    --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-  }
-</style><link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
-    <link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
-  <body dir="">
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
     
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
       <line x1="4" y1="6" x2="20" y2="6" />
       <line x1="10" y1="12" x2="20" y2="12" />
       <line x1="6" y1="18" x2="20" y2="18" />
@@ -54,9 +53,8 @@
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="feather feather-menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
       <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -64,18 +62,57 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="feather feather-chevron-right">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
     </svg>
   </symbol>
 </svg>
 
 <input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
 <input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation"></label>
-<label class="overlay toc-overlay" for="__toc"></label>
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
 
 
 
@@ -83,14 +120,24 @@
   <header class="mobile-header">
     <div class="header-left">
       <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
         <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.10 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
     </div>
@@ -101,35 +148,17 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.10 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.0 documentation</span>
   
-</a><form class="sidebar-search-container" method="get" action="../search.html">
-  <input class="sidebar-search" placeholder=Search name="q">
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
-</form><div class="sidebar-scroll"><div class="sidebar-tree">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.html">dialogy.base package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.cli.html">dialogy.cli package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.constants.html">dialogy.constants package</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.plugins.html">dialogy.plugins package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">dialogy.plugins.text.combine_date_time package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">dialogy.plugins.text.list_search_plugin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.voting.html">dialogy.plugins.text.voting package</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
@@ -154,23 +183,14 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.voting.html">dialogy.plugins.text.voting package</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.types.html">dialogy.types package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.signal.html">dialogy.types.signal package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.slots.html">dialogy.types.slots package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.signal.html">dialogy.types.signal package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">dialogy.types.slots package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">dialogy.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">dialogy.workflow package</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">dialogy.utils package</a></li>
 </ul>
 
 </div>
@@ -179,26 +199,102 @@
       
     </div>
   </aside>
-  <main class="main">
+  <div class="main">
     <div class="content">
-      <article role="main">
-        <label class="toc-overlay-icon toc-content-icon" for="__toc">
-          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-        </label>
-        <div class="section" id="dialogy-utils-package">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="dialogy-utils-package">
 <h1>dialogy.utils package<a class="headerlink" href="#dialogy-utils-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-dialogy.utils.datetime">
+<span id="dialogy-utils-datetime-module"></span><h2>dialogy.utils.datetime module<a class="headerlink" href="#module-dialogy.utils.datetime" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.utils.datetime.dt2timestamp">
+<span class="sig-name descname"><span class="pre">dt2timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/datetime.html#dt2timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.datetime.dt2timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a python datetime object to unix-timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date_time</strong> (<em>datetime</em>) – An instance of datetime.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Unix timestamp integer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.utils.datetime.is_unix_ts">
+<span class="sig-name descname"><span class="pre">is_unix_ts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/datetime.html#is_unix_ts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.datetime.is_unix_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the input is a unix timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ts</strong> (<em>int</em>) – A unix timestamp (13-digit).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if <code class="code docutils literal notranslate"><span class="pre">ts</span></code> is a unix timestamp, else False.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.utils.datetime.make_unix_ts">
+<span class="sig-name descname"><span class="pre">make_unix_ts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/datetime.html#make_unix_ts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.datetime.make_unix_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert date in ISO 8601 format to unix ms timestamp.</p>
+<div class="highlight-ipython notranslate" id="make-unix-ts"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.datetime</span> <span class="kn">import</span> <span class="n">make_unix_ts</span>
+
+<span class="gp">In [2]: </span><span class="n">ts</span> <span class="o">=</span> <span class="n">make_unix_ts</span><span class="p">(</span><span class="s2">"Asia/Kolkata"</span><span class="p">)(</span><span class="s2">"2022-02-07T19:39:39.537827"</span><span class="p">)</span>
+
+<span class="gp">In [3]: </span><span class="n">ts</span> <span class="o">==</span> <span class="mi">1644241599537</span>
+<span class="gh">Out[3]: </span><span class="go">True</span>
+</pre></div>
 </div>
-<div class="section" id="module-dialogy.utils.file_handler">
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tz</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – A timezone string, defaults to “UTC”</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A callable that converts a date in ISO 8601 format to unix ms timestamp.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable[[str], int]</p>
+</dd>
+</dl>
+</dd></dl>
+</section>
+<section id="module-dialogy.utils.file_handler">
 <span id="dialogy-utils-file-handler-module"></span><h2>dialogy.utils.file_handler module<a class="headerlink" href="#module-dialogy.utils.file_handler" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="dialogy.utils.file_handler.create_timestamps_path">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.file_handler.</span></code><code class="sig-name descname"><span class="pre">create_timestamps_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> → <span class="pre">str</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#create_timestamps_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.create_timestamps_path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="dialogy.utils.file_handler.create_timestamps_path">
+<span class="sig-name descname"><span class="pre">create_timestamps_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#create_timestamps_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.create_timestamps_path" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.file_handler.load_file">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.file_handler.</span></code><code class="sig-name descname"><span class="pre">load_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#load_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.load_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.file_handler.load_file">
+<span class="sig-name descname"><span class="pre">load_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#load_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.load_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Safely load a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -216,8 +312,8 @@
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.file_handler.save_file">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.file_handler.</span></code><code class="sig-name descname"><span class="pre">save_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#save_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.save_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.file_handler.save_file">
+<span class="sig-name descname"><span class="pre">save_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/file_handler.html#save_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.file_handler.save_file" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Save a file.</p>
 <dl class="field-list simple">
@@ -258,14 +354,19 @@
 </dl>
 </dd>
 </dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
 </dd></dl>
-</div>
-<div class="section" id="module-dialogy.utils.logger">
+</section>
+<section id="module-dialogy.utils.logger">
 <span id="dialogy-utils-logger-module"></span><h2>dialogy.utils.logger module<a class="headerlink" href="#module-dialogy.utils.logger" title="Permalink to this headline">¶</a></h2>
 <p>Module provides access to logger.</p>
 <p>This needs to be used sparingly, prefer to raise specific exceptions instead.</p>
-</div>
-<div class="section" id="module-dialogy.utils.misc">
+</section>
+<section id="module-dialogy.utils.misc">
 <span id="dialogy-utils-misc-module"></span><h2>dialogy.utils.misc module<a class="headerlink" href="#module-dialogy.utils.misc" title="Permalink to this headline">¶</a></h2>
 <p>Module provides utility functions for entities.</p>
 <dl class="simple">
@@ -276,24 +377,8 @@
 </dd>
 </dl>
 <dl class="py function">
-<dt id="dialogy.utils.misc.dt2timestamp">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.misc.</span></code><code class="sig-name descname"><span class="pre">dt2timestamp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span> → <span class="pre">int</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#dt2timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.dt2timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a python datetime object to unix-timestamp.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>date_time</strong> (<em>datetime</em>) – An instance of datetime.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Unix timestamp integer.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="dialogy.utils.misc.traverse_dict">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.misc.</span></code><code class="sig-name descname"><span class="pre">traverse_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#traverse_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.traverse_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.misc.traverse_dict">
+<span class="sig-name descname"><span class="pre">traverse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#traverse_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.traverse_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Traverse a dictionary for a given list of properties.</p>
 <p>This is useful for traversing a deeply nested dictionary.
 Instead of recursion, we are using reduce to update the <cite>dict</cite>.
@@ -319,24 +404,38 @@ Missing properties will lead to KeyErrors.</p>
 
 <span class="go"># element with index 3 doesn't exist!</span>
 <span class="gp">In [4]: </span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
-<span class="gt">---------------------------------------------------------------------</span>
-<span class="ne">IndexError</span><span class="g g-Whitespace">                          </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">556</span><span class="n">a11057179</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">IndexError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
+<span class="n">Input</span> <span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
 
-<span class="nn">~/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">"""</span>
-<span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd">     try:</span>
-<span class="ne">---&gt; </span><span class="mi">53</span><span class="sd">         return reduce(lambda o, k: o[k], properties, obj)</span>
-<span class="g g-Whitespace">     </span><span class="mi">54</span><span class="sd">     except KeyError as key_error:</span>
-<span class="g g-Whitespace">     </span><span class="mi">55</span><span class="sd">         raise KeyError(</span>
+<span class="nn">File ~/Programs/pythoncode/dialogy/dialogy/utils/misc.py:53,</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
+<span class="g g-Whitespace">     </span><span class="mi">14</span> <span class="sd">"""</span>
+<span class="g g-Whitespace">     </span><span class="mi">15</span><span class="sd"> Traverse a dictionary for a given list of properties.</span>
+<span class="g g-Whitespace">     </span><span class="mi">16</span><span class="sd"> </span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">     </span><span class="mi">50</span><span class="sd"> :raises TypeError: Properties don't describe a path due to possible type error.</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd"> """</span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">---&gt; </span><span class="mi">53</span>     <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">54</span> <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">55</span>     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">56</span>         <span class="sa">f</span><span class="s2">"Missing property </span><span class="si">{</span><span class="n">key_error</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">. Check the types. Failed for path </span><span class="si">{</span><span class="n">properties</span><span class="si">}</span><span class="s2">"</span>
+<span class="g g-Whitespace">     </span><span class="mi">57</span>     <span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
 
-<span class="nn">~/pythoncode/dialogy/dialogy/utils/misc.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd">     """</span>
-<span class="g g-Whitespace">     </span><span class="mi">52</span>     <span class="k">try</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">53</span>         <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">54</span>     <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">55</span>         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+<span class="nn">File ~/Programs/pythoncode/dialogy/dialogy/utils/misc.py:53,</span> in <span class="ni">traverse_dict.&lt;locals&gt;.&lt;lambda&gt;</span><span class="nt">(o, k)</span>
+<span class="g g-Whitespace">     </span><span class="mi">14</span> <span class="sd">"""</span>
+<span class="g g-Whitespace">     </span><span class="mi">15</span><span class="sd"> Traverse a dictionary for a given list of properties.</span>
+<span class="g g-Whitespace">     </span><span class="mi">16</span><span class="sd"> </span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">     </span><span class="mi">50</span><span class="sd"> :raises TypeError: Properties don't describe a path due to possible type error.</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd"> """</span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">---&gt; </span><span class="mi">53</span>     <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">54</span> <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">55</span>     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">56</span>         <span class="sa">f</span><span class="s2">"Missing property </span><span class="si">{</span><span class="n">key_error</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">. Check the types. Failed for path </span><span class="si">{</span><span class="n">properties</span><span class="si">}</span><span class="s2">"</span>
+<span class="g g-Whitespace">     </span><span class="mi">57</span>     <span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
 
 <span class="ne">IndexError</span>: list index out of range
 </pre></div>
@@ -363,8 +462,8 @@ Missing properties will lead to KeyErrors.</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.misc.validate_type">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.misc.</span></code><code class="sig-name descname"><span class="pre">validate_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#validate_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.validate_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.misc.validate_type">
+<span class="sig-name descname"><span class="pre">validate_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#validate_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.validate_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raise TypeError on object type mismatch.</p>
 <blockquote>
 <div><p>This is syntatic sugar for instance type checks.</p>
@@ -391,22 +490,32 @@ Missing properties will lead to KeyErrors.</p>
 </dd>
 </dl>
 </div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
 </dd></dl>
-</div>
-<div class="section" id="module-dialogy.utils.naive_lang_detect">
+</section>
+<section id="module-dialogy.utils.naive_lang_detect">
 <span id="dialogy-utils-naive-lang-detect-module"></span><h2>dialogy.utils.naive_lang_detect module<a class="headerlink" href="#module-dialogy.utils.naive_lang_detect" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="dialogy.utils.naive_lang_detect.lang_detect_from_text">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.naive_lang_detect.</span></code><code class="sig-name descname"><span class="pre">lang_detect_from_text</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">str</span><a class="reference internal" href="../_modules/dialogy/utils/naive_lang_detect.html#lang_detect_from_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.naive_lang_detect.lang_detect_from_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</div>
-<div class="section" id="module-dialogy.utils.normalize_utterance">
+<dt class="sig sig-object py" id="dialogy.utils.naive_lang_detect.lang_detect_from_text">
+<span class="sig-name descname"><span class="pre">lang_detect_from_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/naive_lang_detect.html#lang_detect_from_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.naive_lang_detect.lang_detect_from_text" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+</section>
+<section id="module-dialogy.utils.normalize_utterance">
 <span id="dialogy-utils-normalize-utterance-module"></span><h2>dialogy.utils.normalize_utterance module<a class="headerlink" href="#module-dialogy.utils.normalize_utterance" title="Permalink to this headline">¶</a></h2>
 <p>This module was created in response to: <a class="reference external" href="https://github.com/Vernacular-ai/dialogy/issues/9">https://github.com/Vernacular-ai/dialogy/issues/9</a>
 we will ship functions to assist normalization of ASR output, we will refer to these as Utterances.</p>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.dict_get">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">dict_get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#dict_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.dict_get" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.dict_get">
+<span class="sig-name descname"><span class="pre">dict_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#dict_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.dict_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get value of prop within obj.</p>
 <p>This simple function exists to facilitate a partial function defined <a class="reference internal" href="#is-utterance"><span class="std std-ref">here</span></a>.</p>
 <dl class="field-list simple">
@@ -425,8 +534,8 @@ we will ship functions to assist normalization of ASR output, we will refer to t
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.is_each_element">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_each_element</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">type_:</span> <span class="pre">type,</span> <span class="pre">input_:</span> <span class="pre">List[Any],</span> <span class="pre">transform:</span> <span class="pre">Callable[[Any],</span> <span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;</span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_each_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_each_element" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.is_each_element">
+<span class="sig-name descname"><span class="pre">is_each_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform=&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_each_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_each_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if each element in a list is of a given type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -449,8 +558,8 @@ this returns False, else True.</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.is_list">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_list" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.is_list">
+<span class="sig-name descname"><span class="pre">is_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check type of <code class="code docutils literal notranslate"><span class="pre">input</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -465,8 +574,8 @@ this returns False, else True.</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.is_list_of_string">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_list_of_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_list_of_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_list_of_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.is_list_of_string">
+<span class="sig-name descname"><span class="pre">is_list_of_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_list_of_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_list_of_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check input to be of <cite>List[str]</cite>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_list_of_string</span>
 
@@ -487,8 +596,8 @@ this returns False, else True.</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.is_string">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.is_string">
+<span class="sig-name descname"><span class="pre">is_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check input’s type is <cite>str</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -503,8 +612,8 @@ this returns False, else True.</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.is_unsqueezed_utterance">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_unsqueezed_utterance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_unsqueezed_utterance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_unsqueezed_utterance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.is_unsqueezed_utterance">
+<span class="sig-name descname"><span class="pre">is_unsqueezed_utterance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_unsqueezed_utterance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_unsqueezed_utterance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check input to be of <cite>List[Dict]</cite>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_unsqueezed_utterance</span>
 
@@ -533,8 +642,8 @@ this returns False, else True.</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.is_utterance">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">is_utterance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_utterance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_utterance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.is_utterance">
+<span class="sig-name descname"><span class="pre">is_utterance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#is_utterance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.is_utterance" title="Permalink to this definition">¶</a></dt>
 <dd><p id="is-utterance">Check input to be of <cite>List[List[Dict]]</cite>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">is_utterance</span>
 
@@ -569,26 +678,37 @@ Defaults to <code class="code docutils literal notranslate"><span class="pre">co
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.normalize">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">normalize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.normalize" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.normalize">
+<span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adapt various non-standard ASR alternative forms.</p>
 <p>The output will be a list of strings since models will expect that.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">normalize</span>
-
-<span class="gp">In [2]: </span><span class="n">normalize</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hi"</span><span class="p">}]])</span>
-<span class="gh">Out[2]: </span><span class="go">['hi']</span>
-
-<span class="gp">In [3]: </span><span class="n">normalize</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">}],</span> <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"world"</span><span class="p">}]])</span>
-<span class="gh">Out[3]: </span><span class="go">['hello world']</span>
-
-<span class="gp">In [4]: </span><span class="n">normalize</span><span class="p">([{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"I wanted to know umm hello?"</span><span class="p">}])</span>
-<span class="gh">Out[4]: </span><span class="go">['i wanted to know umm hello?']</span>
-
-<span class="gp">In [5]: </span><span class="n">normalize</span><span class="p">([</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">])</span>
-<span class="gh">Out[5]: </span><span class="go">['i wanted to know umm hello?']</span>
-
-<span class="gp">In [6]: </span><span class="n">normalize</span><span class="p">(</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">)</span>
-<span class="gh">Out[6]: </span><span class="go">['i wanted to know umm hello?']</span>
+<div class="highlight-ipython notranslate" id="normalize"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">normalize</span>
+<span class="gp">   ...: </span><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="c1"># A popular case</span>
+<span class="gp">   ...: </span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"this"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"works"</span><span class="p">}]])</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[1]: </span><span class="go">['this', 'works']</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [2]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="c1"># A case with multiple utterances</span>
+<span class="gp">   ...: </span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">([</span>
+<span class="gp">   ...: </span>            <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello hello?"</span><span class="p">,</span> <span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"yellow yellow?"</span><span class="p">}],</span>
+<span class="gp">   ...: </span>            <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"I wanted to check"</span><span class="p">}],</span>
+<span class="gp">   ...: </span>            <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"if you have space for us?"</span><span class="p">}]</span>
+<span class="gp">   ...: </span>        <span class="p">])</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[2]: </span><span class="go">['yellow yellow? I wanted to check if you have space for us?']</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [3]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">([{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"I wanted to know umm hello?"</span><span class="p">}])</span>
+<span class="gh">Out[3]: </span><span class="go">['I wanted to know umm hello?']</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">([</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">])</span>
+<span class="gh">Out[4]: </span><span class="go">['I wanted to know umm hello?']</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">(</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">)</span>
+<span class="gh">Out[5]: </span><span class="go">['I wanted to know umm hello?']</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -610,51 +730,45 @@ Defaults to <code class="code docutils literal notranslate"><span class="pre">co
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.utils.normalize_utterance.utterance2alternatives">
-<code class="sig-prename descclassname"><span class="pre">dialogy.utils.normalize_utterance.</span></code><code class="sig-name descname"><span class="pre">utterance2alternatives</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">utterances</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span> → <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#utterance2alternatives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.utterance2alternatives" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.utils.normalize_utterance.utterance2alternatives">
+<span class="sig-name descname"><span class="pre">utterance2alternatives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">utterances</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#utterance2alternatives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.utterance2alternatives" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a list of utterances to a list of alternatives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
 </dd></dl>
-</div>
-<div class="section" id="module-dialogy.utils">
+</section>
+<section id="module-dialogy.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.utils" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
-      </article>
+        </article>
+      </div>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="dialogy.workflow.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">dialogy.workflow package</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="dialogy.types.utterances.html">
+          
+          <a class="prev-page" href="dialogy.workflow.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">dialogy.types.utterances package</div>
+                <div class="title">dialogy.workflow package</div>
                 
               </div>
             </a>
         </div>
 
         <div class="related-information">
-              Copyright &#169; 
-            |
-            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
-              and
-              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
-            |
-            <a class="muted-link" href="../_sources/source/dialogy.utils.rst.txt"
+              Copyright &#169;  |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/source/dialogy.utils.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -676,6 +790,7 @@ Defaults to <code class="code docutils literal notranslate"><span class="pre">co
             <ul>
 <li><a class="reference internal" href="#">dialogy.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.utils.datetime">dialogy.utils.datetime module</a></li>
 <li><a class="reference internal" href="#module-dialogy.utils.file_handler">dialogy.utils.file_handler module</a></li>
 <li><a class="reference internal" href="#module-dialogy.utils.logger">dialogy.utils.logger module</a></li>
 <li><a class="reference internal" href="#module-dialogy.utils.misc">dialogy.utils.misc module</a></li>
@@ -692,13 +807,13 @@ Defaults to <code class="code docutils literal notranslate"><span class="pre">co
       
       
     </aside>
-  </main>
-</div>
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+    </body>
 </html>

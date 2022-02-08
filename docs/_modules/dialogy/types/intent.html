@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.types.intent - dialogy 0.8.10 documentation</title>
+        <title>dialogy.types.intent - dialogy 0.9.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
     <link rel="stylesheet" href="../../../_static/pygments.css">
     
@@ -87,7 +87,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.8.10 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
@@ -101,7 +101,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.10 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html">
   <input class="sidebar-search" placeholder=Search name="q">
@@ -194,57 +194,42 @@
 
 <span class="sd">    - Intent</span>
 <span class="sd">"""</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
 
 <span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.slots</span> <span class="kn">import</span> <span class="n">Rule</span><span class="p">,</span> <span class="n">Slot</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">logger</span>
 
 
-<div class="viewcode-block" id="Intent"><a class="viewcode-back" href="../../../source/dialogy.types.intent.html#dialogy.types.intent.Intent">[docs]</a><span class="k">class</span> <span class="nc">Intent</span><span class="p">:</span>
+<div class="viewcode-block" id="Intent"><a class="viewcode-back" href="../../../source/dialogy.types.intent.html#dialogy.types.intent.Intent">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">Intent</span><span class="p">:</span>
     <span class="sd">"""</span>
 <span class="sd">    An instance of this class contains the name of the action associated with a body of text.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">score</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">parsers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">alternative_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">slots</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Slot</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">"""</span>
+    <span class="c1"># The name of the intent to be used.</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="sd">        :param name: The name of the intent. A class label</span>
-<span class="sd">        :type name: str</span>
-<span class="sd">        :param score: The confidence score from a model.</span>
-<span class="sd">        :type score: float</span>
-<span class="sd">        :param parsers: Items that alter the attributes.</span>
-<span class="sd">        :type parsers: Optional[List[str]]</span>
-<span class="sd">        :param alternative_index: Out of a list of transcripts, this points at the index which lead to prediction.</span>
-<span class="sd">        :type alternative_index: Optional[int]</span>
-<span class="sd">        :param slots: A map of slot names and :ref:`Slot&lt;slot&gt;`</span>
-<span class="sd">        :type slots: Optional[Dict[str, Slot]]</span>
-<span class="sd">        """</span>
-        <span class="c1"># The name of the intent to be used.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="c1"># The confidence of this intent being present in the utterance.</span>
+    <span class="n">score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># The confidence of this intent being present in the utterance.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">score</span>
+    <span class="c1"># In case of an ASR, `alternative_index` points at one of the nth</span>
+    <span class="c1"># alternatives that help in predictions.</span>
+    <span class="n">alternative_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="c1"># Trail of functions that modify the attributes of an instance.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span> <span class="o">=</span> <span class="n">parsers</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="c1"># Trail of functions that modify the attributes of an instance.</span>
+    <span class="n">parsers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="c1"># In case of an ASR, `alternative_index` points at one of the nth</span>
-        <span class="c1"># alternatives that help in predictions.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alternative_index</span> <span class="o">=</span> <span class="n">alternative_index</span>
+    <span class="c1"># Container for holding `List[BaseEntity]`.</span>
+    <span class="n">slots</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
+        <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
 
-        <span class="c1"># Container for holding `List[BaseEntity]`.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Slot</span><span class="p">]</span> <span class="o">=</span> <span class="n">slots</span> <span class="ow">or</span> <span class="p">{}</span>
-
-<div class="viewcode-block" id="Intent.apply"><a class="viewcode-back" href="../../../source/dialogy.types.intent.html#dialogy.types.intent.Intent.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Rule</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Intent"</span><span class="p">:</span>
+<div class="viewcode-block" id="Intent.apply"><a class="viewcode-back" href="../../../source/dialogy.types.intent.html#dialogy.types.intent.Intent.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Rule</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intent</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Create slots using :ref:`rules`.</span>
 
@@ -279,7 +264,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Intent.add_parser"><a class="viewcode-back" href="../../../source/dialogy.types.intent.html#dialogy.types.intent.Intent.add_parser">[docs]</a>    <span class="k">def</span> <span class="nf">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Intent"</span><span class="p">:</span>
+<div class="viewcode-block" id="Intent.add_parser"><a class="viewcode-back" href="../../../source/dialogy.types.intent.html#dialogy.types.intent.Intent.add_parser">[docs]</a>    <span class="k">def</span> <span class="nf">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intent</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Update parsers with the plugin name</span>
 
@@ -295,7 +280,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Intent.fill_slot"><a class="viewcode-back" href="../../../source/dialogy.types.intent.html#dialogy.types.intent.Intent.fill_slot">[docs]</a>    <span class="k">def</span> <span class="nf">fill_slot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">fill_multiple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Intent"</span><span class="p">:</span>
+<div class="viewcode-block" id="Intent.fill_slot"><a class="viewcode-back" href="../../../source/dialogy.types.intent.html#dialogy.types.intent.Intent.fill_slot">[docs]</a>    <span class="k">def</span> <span class="nf">fill_slot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">fill_multiple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Intent</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Update :code:`slots[slot_type].values` with a single entity.</span>
 
@@ -322,10 +307,11 @@
                 <span class="sa">f</span><span class="s2">"slot type: </span><span class="si">{</span><span class="n">slot</span><span class="o">.</span><span class="n">types</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"entity type: </span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"entity type: </span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="n">slot</span><span class="o">.</span><span class="n">types</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">entity_type</span> <span class="ow">in</span> <span class="n">slot</span><span class="o">.</span><span class="n">types</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">fill_multiple</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"filling </span><span class="si">{</span><span class="n">entity</span><span class="si">}</span><span class="s2"> into </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot_name</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
                     <span class="k">return</span> <span class="bp">self</span>
 
@@ -364,14 +350,11 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">"name"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="s2">"score"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">,</span>
             <span class="s2">"alternative_index"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alternative_index</span><span class="p">,</span>
-            <span class="s2">"slots"</span><span class="p">:</span> <span class="p">[</span><span class="n">slot</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
+            <span class="s2">"score"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">,</span>
             <span class="s2">"parsers"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span><span class="p">,</span>
-        <span class="p">}</span></div>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Intent(name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, score=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="si">}</span><span class="s2">, slots=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="si">}</span><span class="s2">)"</span></div>
+            <span class="s2">"slots"</span><span class="p">:</span> <span class="p">{</span><span class="n">slot_name</span><span class="p">:</span> <span class="n">slot</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="k">for</span> <span class="n">slot_name</span><span class="p">,</span> <span class="n">slot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="p">}</span></div></div>
 </pre></div>
       </article>
       <footer>
