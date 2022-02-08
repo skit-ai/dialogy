@@ -40,11 +40,13 @@ release = pyproject_version
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosectionlabel",
     "sphinx.ext.coverage",
     "sphinx.ext.doctest",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
+    "sphinx_autodoc_typehints",
     "IPython.sphinxext.ipython_console_highlighting",
     "IPython.sphinxext.ipython_directive",
     "sphinx_copybutton",
@@ -71,6 +73,5 @@ html_theme = "furo"
 html_static_path = ["_static"]
 
 html_sidebars = {"docs": ["source/dialogy.plugin.html"]}
-
-
+add_module_names = False
 # -- Extension configuration -------------------------------------------------
