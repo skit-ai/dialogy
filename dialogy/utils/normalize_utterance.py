@@ -190,14 +190,30 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
 
     .. ipython:: python
 
-        from dialogy.utils.normalize_utterance import normalize
+        In [1]: from dialogy.utils.normalize_utterance import normalize
+        In [2]: # A popular case
+        In [3]: normalize([[{"transcript": "this"}, {"transcript": "works"}]])
 
-        normalize([[{"transcript": "hi"}]])
-        normalize([[{"transcript": "hello"}], [{"transcript": "world"}]])
-        normalize([{"transcript": "I wanted to know umm hello?"}])
-        normalize(["I wanted to know umm hello?"])
-        normalize("I wanted to know umm hello?")
+    .. ipython:: python
 
+        In [3]: # A case with multiple utterances
+        In [4]: normalize([
+                    [{"transcript": "hello hello?", "transcript": "yellow yellow?"}],
+                    [{"transcript": "I wanted to check"}],
+                    [{"transcript": "if you have space for us?"}]
+                ])
+
+    .. ipython:: python
+
+        In [5]: normalize([{"transcript": "I wanted to know umm hello?"}])
+
+    .. ipython:: python
+
+        In [6]: normalize(["I wanted to know umm hello?"])
+
+    .. ipython:: python
+
+        In [7]: normalize("I wanted to know umm hello?")
 
     :param maybe_utterance: Arbitrary input.
     :type maybe_utterance: Any

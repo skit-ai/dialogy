@@ -77,43 +77,6 @@ class TimeEntity(NumericalEntity):
         Check a list has a unique day
 
         Where day is the date number for a month.
-        Ex: for "2021-04-17T16:00:00.000+05:30", the day is 17
-
-        .. ipython :: python
-
-            from dialogy.types import TimeEntity
-            duckling_time_entity = {
-                "body": "july 19",
-                "start": 0,
-                "value": {
-                "values": [
-                    {
-                    "value": "2021-07-19T00:00:00.000+05:30",
-                    "grain": "day",
-                    "type": "value"
-                    },
-                    {
-                    "value": "2022-07-19T00:00:00.000+05:30",
-                    "grain": "day",
-                    "type": "value"
-                    },
-                    {
-                    "value": "2023-07-19T00:00:00.000+05:30",
-                    "grain": "day",
-                    "type": "value"
-                    }
-                ],
-                "value": "2021-07-19T00:00:00.000+05:30",
-                "grain": "day",
-                "type": "value"
-                },
-                "end": 7,
-                "dim": "time",
-                "latent": False
-            }
-            time_entity = TimeEntity.from_dict(duckling_time_entity)
-            time_entity.is_uniq_date_from_values()
-
 
         :return: True if there is a unique day in all datetime values
         :rtype: bool

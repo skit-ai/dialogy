@@ -28,42 +28,49 @@ class CombineDateTimeOverSlots(Plugin):
 
     Assume that at the moment of dialog the date is 15th December 2019.
 
-    [1] BOT: When do you want to visit?
-    [2] USER: Day after tomorrow        # entity = {'type': 'date', 'value': '2019-12-17'}
-    [3] BOT: At what time?
-    [4] USER: 3 pm                      # entity = {'type': 'time', 'value': '2019-12-15T15:00:00+0000'}
+    +---+------+----------------------------+-------------------------------------------------------+
+    |   |      |          utterance         |                         entity                        |
+    +===+======+============================+=======================================================+
+    | 1 | BOT  | When do you want to visit? |                                                       |
+    +---+------+----------------------------+-------------------------------------------------------+
+    | 2 | USER | Day after tomorrow         |        {'type': 'date', 'value': '2019-12-17'}        |
+    +---+------+----------------------------+-------------------------------------------------------+
+    | 3 | BOT  | At what time?              |                                                       |
+    +---+------+----------------------------+-------------------------------------------------------+
+    | 4 | USER | 3 pm                       | {'type': 'time', 'value': '2019-12-15T15:00:00+0000'} |
+    +---+------+----------------------------+-------------------------------------------------------+
 
     We want to use the slots such that the date from interaction [2] and the time from interaction [4] are combined into a single entity.
 
     We receive this as a tracked slot:
 
-    ```json
-    [{
-        "name": "_callback_",
-        "slots": [{
-            "name": "callback_datetime",
-            "type": [
-                "time",
-                "date",
-                "datetime"
-            ],
-            "values": [{
-                "alternative_index": 0,
-                "body": "tomorrow",
-                "entity_type": "date",
-                "grain": "day",
-                "parsers": ["duckling"],
-                "range": {
-                    "end": 8,
-                    "start": 0
-                },
-                "score": null,
-                "type": "value",
-                "value": "2021-10-15T00:00:00+05:30"
+    .. code-block:: json
+
+        [{
+            "name": "_callback_",
+            "slots": [{
+                "name": "callback_datetime",
+                "type": [
+                    "time",
+                    "date",
+                    "datetime"
+                ],
+                "values": [{
+                    "alternative_index": 0,
+                    "body": "tomorrow",
+                    "entity_type": "date",
+                    "grain": "day",
+                    "parsers": ["duckling"],
+                    "range": {
+                        "end": 8,
+                        "start": 0
+                    },
+                    "score": null,
+                    "type": "value",
+                    "value": "2021-10-15T00:00:00+05:30"
+                }]
             }]
         }]
-    }]
-    ```
 
     At interaction [4] we would have a TimeEntity from DucklingPlugin but as we can see, the tracked slot provides us
     previously filled values as json.

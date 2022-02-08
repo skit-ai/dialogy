@@ -9,21 +9,14 @@ means to connect from the implementation here.
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 4, 30
 
+    from pprint import pprint
     from dialogy.workflow import Workflow
-
-    def update_workflow(workflow, entities):
-        workflow.input["duckling_entities"] = entities
+    from dialogy.base import Input
+    from dialogy.plugins import DucklingPlugin
 
     duckling_plugin = DucklingPlugin(
-        access=lambda workflow: (workflow.input["sentence"], workflow.input["reftime"], workflow.input["locale"])
-        # the access method guides the plugin to data within a workflow.
-        # in this case, the `input` property of a workflow is expected
-        # to be a `dict` with a key named "sentence". Check line 30.
-        mutate=update_workflow,
-        # the mutate method guides the plugin to place the processed output
-        # somewhere on the workflow.
+        dest="output.entities",
         dimensions=["people"],
         # Duckling supports multiple dimensions, by specifying a list, we make sure
         # we are searching for a match within the expected dimensions only.
@@ -32,18 +25,35 @@ means to connect from the implementation here.
         # get language specific matches.
         timezone="Asia/Kolkata",
         # Date/Time related entities make this field imperative.
-    )() # ⬅️ the instance is also getting called.
-    # Notice that we instantiate the class and also
-    # invoke __call__ method of the instance.
-    # The returned value from the instance is the plugin.
-    #
-    # This is a standard pattern across all plugins.
+    )
 
-    workflow = Workflow(preprocessors=[duckling_plugin])
-    workflow.run(input_={"sentence": "there are 7 people"})
-    # Once an input is run through the workflow as on line 30,
-    # we can expect the plugin mutation to create an artifact
-    # as per line 4.
+    workflow = Workflow([duckling_plugin])
+    input_, output = workflow.run(Input(utterances=[[{"transcript": "there are 7 people"}]]))
+
+    pprint(input_)
+    # {'clf_feature': [],
+    #  'current_state': None,
+    #  'lang': 'en',
+    #  'latent_entities': False,
+    #  'locale': 'en_IN',
+    #  'previous_intent': None,
+    #  'reference_time': None,
+    #  'slot_tracker': None,
+    #  'timezone': 'UTC',
+    #  'transcripts': ['there are 7 people'],
+    #  'utterances': [[{'transcript': 'there are 7 people'}]]}
+
+    pprint(output)
+    # {'entities': [{'alternative_index': 0,
+    #                'body': '7 people',
+    #                'entity_type': 'people',
+    #                'parsers': ['DucklingPlugin'],
+    #                'range': {'end': 18, 'start': 10},
+    #                'score': 1.0,
+    #                'type': 'value',
+    #                'unit': '',
+    #                'value': 7}],
+    #  'intents': []}
 
 """
 import json
@@ -76,6 +86,8 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
     A :ref:`Plugin<plugin>` for extracting entities using `Duckling <https://github.com/facebook/duckling>`_. Once
     instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling
     <https://github.com/facebook/duckling>`_.
+
+    .. _DucklingPlugin:
 
     This object when used as a plugin, transforms the :code:`List[Dict[str, Any]]` returned from the API to a
     :ref:`BaseEntity<base_entity>` or one of its subclasses.

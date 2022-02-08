@@ -14,7 +14,7 @@ def entity_scoring(presence: int, input_size: int) -> float:
 
 class EntityScoringMixin:
     """
-    Mixin class for scoring entities acquired over a set of transcripts.
+    Mixin for scoring and aggregation of entities over a set of transcripts.
     """
 
     FUTURE = "future"

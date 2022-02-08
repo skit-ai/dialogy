@@ -9,8 +9,25 @@ from dialogy.types import BaseEntity, Intent
 
 @attr.frozen
 class Output:
+    """
+    Represents outputs from a :ref:`Workflow <WorkflowClass>`.
+
+    .. _Output:
+
+    This is a frozen class, which means items cannot be modified once created.
+    """
     intents: List[Intent] = attr.ib(default=attr.Factory(list), kw_only=True)
+    """
+    A list of intents. Produced by :ref:`XLMRMultiClass <XLMRMultiClass>`
+    or :ref:`MLPMultiClass <MLPMultiClass>`.
+    """
+
     entities: List[BaseEntity] = attr.ib(default=attr.Factory(list), kw_only=True)
+    """
+    A list of entities. Produced by :ref:`DucklingPlugin <DucklingPlugin>`, 
+    :ref:`ListEntityPlugin <ListEntityPlugin>` or :ref:`ListSearchPlugin <ListSearchPlugin>`.
+    """
+
     @intents.validator # type: ignore
     def _are_intents_valid(
         self,
@@ -42,6 +59,14 @@ class Output:
             raise TypeError(f"intents must be a List[BaseEntity] but {entities} was provided.")
 
     def json(self: Output) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Serialize `Output`_ to a JSON-like dict.
+
+        :param self: [description]
+        :type self: Output
+        :return: [description]
+        :rtype: Dict[str, List[Dict[str, Any]]]
+        """
         return {
             "intents": [intent.json() for intent in self.intents],
             "entities": [entity.json() for entity in self.entities],
@@ -49,6 +74,16 @@ class Output:
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any], reference: Optional[Output] = None) -> Output:
+        """
+        Create a new `Output`_ instance from a dictionary.
+
+        :param d: A dictionary such that keys are a subset of `Output`_ attributes.
+        :type d: Dict[str, Any]
+        :param reference: An existing `Output`_ instance., defaults to None
+        :type reference: Optional[Output], optional
+        :return: A new `Output`_ instance.
+        :rtype: Output
+        """
         if reference:
             return attr.evolve(reference, **d)
         return attr.evolve(cls(), **d)

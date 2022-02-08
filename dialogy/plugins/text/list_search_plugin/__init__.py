@@ -32,8 +32,8 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
     """
      A :ref:`Plugin<plugin>` for extracting entities using spacy or a list of regex patterns.
 
-     .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy
-        and regex based entity parsers.
+    .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy
+                and regex based entity parsers.
 
     .. _ListSearchPlugin:
 

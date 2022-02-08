@@ -1,6 +1,4 @@
 """
-.. _workflow:
-
 A :code:`workflow` is supposed to run tasks that can be anticipated well in advance.
 
 Here are few demo's where you can see mock :code:`workflow` in action.
@@ -69,6 +67,7 @@ from dialogy.utils.logger import logger
 class Workflow:
     """
     .. _WorkflowClass:
+
     This is a light but fairly flexible workflow for building a machine learning pipeline.
 
     Requirements

@@ -48,13 +48,6 @@ def merge_asr_output(utterances: Any) -> List[str]:
 
     The normalization is done by :ref:`normalize<normalize>`
 
-    .. ipython:: python
-
-        from dialogy.plugins.text.merge_asr_output import merge_asr_output
-
-        utterances = ["This is a sentence", "That is a sentence"]
-        merge_asr_output(utterances)
-
     :param utterances: A structure representing ASR output. We support only:
 
         1. :code:`List[str]`

@@ -45,53 +45,6 @@ class RuleBasedSlotFillerPlugin(Plugin):
     Let's run through a practical example. We will create a workflow and preset the output to have expected intent and
     entities.
 
-    .. ipython:: python
-
-        import yaml
-        from pprint import pprint
-        from dialogy.workflow import Workflow
-        from dialogy.plugins import RuleBasedSlotFillerPlugin
-        from dialogy.types.intent import Intent
-        from dialogy.types.entity import PeopleEntity, NumericalEntity
-
-        # ---------------------------------------------------------------------------------------------------
-        # Create rules
-        rule_string = \"""
-        faqs:
-            number_slot: number
-        count_people:
-            number_slot:
-            - people
-            - number
-        \"""
-        slot_rules = yaml.safe_load(rule_string)
-        # ---------------------------------------------------------------------------------------------------
-
-        # ---------------------------------------------------------------------------------------------------
-        # Setting up the plugin
-        slot_filler = RuleBasedSlotFillerPlugin(rules=slot_rules, access=lambda w: w.output, debug=False)
-        # ---------------------------------------------------------------------------------------------------
-
-        # ---------------------------------------------------------------------------------------------------
-        # Creating synthetic values.
-        # normally you'd get these by running the workflow with models.
-        intent = Intent(name="count_people", score=1)
-        number_entity = NumericalEntity(type="number", range={"start": 0, "end": 7}, body='2 people', latent=False, values=[{"values":2}], dim="number")
-        people_entity = PeopleEntity(type="people", range={"start": 0, "end": 7}, body='2 people', latent=False, values=[{"values":2}], dim="people")
-        entities = [people_entity, number_entity]
-        # ---------------------------------------------------------------------------------------------------
-
-        # ---------------------------------------------------------------------------------------------------
-        # setting up the workflow to use slot_filler
-        workflow = Workflow([slot_filler], debug=False)
-        # ---------------------------------------------------------------------------------------------------
-
-        # If you notice the instantiation of RuleBasedSlotFillerPlugin,
-        # you will notice the `access` method expects a Tuple of two elements.
-        workflow.output = (intent, entities)
-
-        workflow.run(input_="2 am")
-
     :param rules: A mapping that defines relationship between an intent, its slots and the entities that fill them.
     :type rules: Rule
     :param fill_multiple: More than one item be allowed to fill a single slot.
@@ -133,7 +86,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         self.fill_multiple = fill_multiple
 
     def fill(self, intents: List[Intent], entities: List[BaseEntity]) -> List[Intent]:
-        if not isinstance(intents, list) or not intents:
+        if not intents:
             return intents
 
         intent, *rest = intents
