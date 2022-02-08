@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.0
+- [x] fix: `entity.entity_type` and `entity.type` hold separate meaning.
+- [x] update: Plugins no longer need `access` or `mutate` functions.
+- [x] update: `Workflow` has `Input` and `Output` objects.
+
 ## 0.8.11
 - [x] feat: plugin to merge previously tracked datetime entities with currently extracted datetime entities. 
 - [x] feat: New entity type credit-card / debit-card supported via `PlasticCurrencyEntity`.
