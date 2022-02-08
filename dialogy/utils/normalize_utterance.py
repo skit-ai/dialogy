@@ -186,6 +186,7 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
 
     The output will be a list of strings since models will expect that.
 
+    .. _normalize:
 
     .. ipython:: python
 

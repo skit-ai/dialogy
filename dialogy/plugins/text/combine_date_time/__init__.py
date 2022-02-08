@@ -21,6 +21,9 @@ def is_date(entity: BaseEntity) -> bool:
 
 class CombineDateTimeOverSlots(Plugin):
     """
+
+    .. _combine_date_time_over_slots:
+
     Dialog case:
 
     Assume that at the moment of dialog the date is 15th December 2019.

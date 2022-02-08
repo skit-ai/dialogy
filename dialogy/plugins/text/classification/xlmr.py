@@ -22,6 +22,8 @@ from dialogy.utils import load_file, logger, save_file
 class XLMRMultiClass(Plugin):
     """
     This plugin provides a classifier based on `XLM-Roberta <https://arxiv.org/abs/1911.02116>`.
+
+    .. _XLMRMultiClass:
     """
 
     def __init__(

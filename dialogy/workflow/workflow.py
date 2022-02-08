@@ -68,6 +68,7 @@ from dialogy.utils.logger import logger
 @attr.s
 class Workflow:
     """
+    .. _WorkflowClass:
     This is a light but fairly flexible workflow for building a machine learning pipeline.
 
     Requirements

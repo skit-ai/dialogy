@@ -36,6 +36,7 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
     """
     Convert date in ISO 8601 format to unix ms timestamp.
 
+    .. _make_unix_ts:
     :param tz: A timezone string, defaults to "UTC"
     :type tz: Optional[str], optional
     :return: A callable that converts a date in ISO 8601 format to unix ms timestamp.

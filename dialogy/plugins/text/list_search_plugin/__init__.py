@@ -35,6 +35,8 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
      .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy
         and regex based entity parsers.
 
+    .. _ListSearchPlugin:
+
     :param style: One of ["regex", "spacy"]
     :type style: Optional[str]
     :param candidates: Required if style is "regex", this is a :code:`dict` that shows a mapping of entity
