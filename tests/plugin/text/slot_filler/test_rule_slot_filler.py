@@ -98,38 +98,6 @@ def test_slot_no_fill() -> None:
     assert "entity_1_slot" not in output[const.INTENTS][0]["slots"]
 
 
-def test_slot_invalid_intent() -> None:
-    """
-    Here, we will see that an entity will not fill an intent unless the intent has a slot for it.
-    `intent_1` doesn't have a slot for an entity of type `entity_2`.
-    """
-    intent_name = "intent_1"
-    # ... a mock `Intent`
-    intent = Intent(name=intent_name, score=0.8)
-
-    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
-    slot_filler = RuleBasedSlotFillerPlugin(rules=rules, dest="output.intents")
-
-    # Create a mock `workflow`
-    workflow = Workflow([slot_filler])
-
-    # and a mock `Entity`.
-    body = "12th december"
-    entity = BaseEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        dim="default",
-        entity_type="entity_1",
-        values=[{"key": "value"}],
-    )
-
-    # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.set("output.intents", [1]).set("output.entities", [entity])
-
-    with pytest.raises(AttributeError):
-        workflow.run(Input(utterances=body))
-
-
 def test_slot_invalid_intents() -> None:
     """
     Here, we will see that an entity will not fill an intent unless the intent has a slot for it.
