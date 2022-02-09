@@ -1,5 +1,4 @@
 import json
-import operator
 from typing import Any, Dict, List, Optional, Tuple
 
 from pydash import py_
@@ -15,18 +14,22 @@ def entity_scoring(presence: int, input_size: int) -> float:
 class EntityScoringMixin:
     """
     Mixin for scoring and aggregation of entities over a set of transcripts.
+
+    .. _EntityScoringMixin:
     """
 
-    FUTURE = "future"
-    PAST = "past"
-    DATETIME_OPERATION_ALIAS = {FUTURE: operator.ge, PAST: operator.le}
     threshold: Optional[float] = None
+    """
+    Value to compare against an entity's score.
+    """
 
     def remove_low_scoring_entities(
         self, entities: List[BaseEntity]
     ) -> List[BaseEntity]:
         """
         Remove entities with a lower score than the threshold.
+
+        This doesn't apply to entities with score=None.
 
         :param entities: A list of entities.
         :type entities: List[BaseEntity]
@@ -54,7 +57,14 @@ class EntityScoringMixin:
         """
         Reduce entities sharing same type and value.
 
-        Entities with same type and value are considered identical even if other metadata is same.
+        - Entities with same type and value are considered identical even if other metadata is same.
+          These entities are part of a group.
+        - We track the transcript indices for every entity in a group.
+        - Select the minimum of all the indices. (because 0th transcript has highest confidence)
+        - We pick one entity per group and modify its index to the minimum and score is aggregated for the group.
+        - The entity picked is added to a list of aggregates.
+        
+        The above is done for all entities in a group
 
         :param entity_type_val_group: A data-structure that groups entities by type and value.
         :type entity_type_val_group: Dict[Tuple[str, Any], List[BaseEntity]]
@@ -78,7 +88,7 @@ class EntityScoringMixin:
 
     def apply_filters(self, entities: List[BaseEntity]) -> List[BaseEntity]:
         """
-        Conditionally remove entities.
+        Filter entities with score less than the threshold.
 
         :param entities: A list of entities.
         :type entities: List[BaseEntity]
