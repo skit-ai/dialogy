@@ -127,6 +127,18 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
     :type url: Optional[str]
     """
 
+    FUTURE = "future"
+    """
+    This selects entity values with scores greater than or equal to the threshold.
+    """
+
+    PAST = "past"
+    """
+    This selects entity values with scores less than or equal to the threshold.
+    """
+
+    __DATETIME_OPERATION_ALIAS = {FUTURE: operator.ge, PAST: operator.le}
+
     def __init__(
         self,
         dimensions: List[str],
@@ -278,8 +290,8 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 " a valid comparison operator here: https://docs.python.org/3/library/operator.html"
             )
 
-        if filter_type in self.DATETIME_OPERATION_ALIAS:
-            operation = self.DATETIME_OPERATION_ALIAS[filter_type]
+        if filter_type in self.__DATETIME_OPERATION_ALIAS:
+            operation = self.__DATETIME_OPERATION_ALIAS[filter_type]
         else:
             operation = self.get_operator(filter_type)
 
