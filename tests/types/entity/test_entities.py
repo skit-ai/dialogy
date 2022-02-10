@@ -8,7 +8,7 @@ import pytest
 
 from dialogy.base import Input, Plugin
 from dialogy.plugins import DucklingPlugin
-from dialogy.types.entity import (
+from dialogy.types import (
     BaseEntity,
     CreditCardNumberEntity,
     PeopleEntity,

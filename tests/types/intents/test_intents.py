@@ -3,7 +3,7 @@ Tests for intents
 """
 import pytest
 
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 from dialogy.types.intent import Intent
 
 
