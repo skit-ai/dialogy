@@ -27,9 +27,10 @@ reservation :ref:`intents<intent>`.
 """
 from dialogy.types.entity import (
     BaseEntity,
+    CreditCardNumberEntity,
+    CurrencyEntity,
     DurationEntity,
     KeywordEntity,
-    LocationEntity,
     NumericalEntity,
     PeopleEntity,
     TimeEntity,

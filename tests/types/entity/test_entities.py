@@ -11,12 +11,9 @@ from dialogy.plugins import DucklingPlugin
 from dialogy.types.entity import (
     BaseEntity,
     CreditCardNumberEntity,
-    LocationEntity,
-    NumericalEntity,
     PeopleEntity,
     TimeEntity,
     TimeIntervalEntity,
-    deserialize_duckling_entity,
     entity_synthesis,
 )
 from dialogy.workflow import Workflow
@@ -178,14 +175,6 @@ def test_time_interval_entity_value_not_dict_error():
     with pytest.raises(TypeError):
         _ = TimeIntervalEntity(
             range={"from": 0, "to": len(body)}, body=body, entity_type="time", grain=0
-        )
-
-
-def test_location_entity_value_not_int_error():
-    body = "bangalore"
-    with pytest.raises(TypeError):
-        _ = LocationEntity(
-            range={"from": 0, "to": len(body)}, body=body, entity_type="location"
         )
 
 

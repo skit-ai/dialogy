@@ -1,28 +1,21 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from dialogy import constants as const
-from dialogy.types.entity.credit_card_number import CreditCardNumberEntity
-from dialogy.types.entity.amount_of_money import CurrencyEntity
-from dialogy.types.entity.duration import DurationEntity
-from dialogy.types.entity.numerical import NumericalEntity
-from dialogy.types.entity.people import PeopleEntity
-from dialogy.types.entity.time import TimeEntity
-from dialogy.types.entity.time_interval import TimeIntervalEntity
-
-
-def deserialize_duckling_entity(
-    duckling_entity_dict: Dict[str, Any],
-    alternative_index: int,
-    reference_time: Optional[int] = None,
-) -> Union[
-    NumericalEntity,
+from dialogy.types import (
+    BaseEntity,
+    CreditCardNumberEntity,
     CurrencyEntity,
     DurationEntity,
+    NumericalEntity,
     PeopleEntity,
     TimeEntity,
     TimeIntervalEntity,
-    CreditCardNumberEntity,
-]:
+)
+
+
+def deserialize_duckling_entity(
+    duckling_entity_dict: Dict[str, Any], alternative_index: int
+) -> BaseEntity:
     keys = tuple(sorted(duckling_entity_dict.keys()))
     if keys != const.DUCKLING_ENTITY_KEYS:
         raise ValueError(
