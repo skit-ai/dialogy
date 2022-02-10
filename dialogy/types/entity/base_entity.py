@@ -83,7 +83,7 @@ class BaseEntity:
     values = attr.ib(
         type=List[Dict[str, Any]],
         default=attr.Factory(list),
-        validator=attr.validators.instance_of(List),
+        validator=attr.validators.optional(attr.validators.instance_of(list)),
         repr=False,
         order=False,
     )
