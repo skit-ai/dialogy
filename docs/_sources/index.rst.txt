@@ -55,7 +55,7 @@ Listing sections by order of significance. Higher ranking items are helpful in u
 |   |                                                                | #. **duration**                                                                                                           |
 |   |                                                                | #. **number**                                                                                                             |
 |   |                                                                | #. **people**                                                                                                             |
-|   |                                                                | #. **plastic-money**                                                                                                      |
+|   |                                                                | #. **credit-card-number**                                                                                                 |
 |   |                                                                | #. **amount-of-money**                                                                                                    |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
 |   | :ref:`MergeASROutput<merge_asr_output>`                        | Featurizer for the intent classifier model. Concatenates :code:`input.utterances`.                                        |
@@ -65,7 +65,7 @@ Listing sections by order of significance. Higher ranking items are helpful in u
 |   | :ref:`CombineDateTimeOverSlots <combine_date_time_over_slots>` | This plugin combines date/time entities tracked by the slot filler (previous turns)                                       |
 |   |                                                                | with time/date entities extracted in the current turn.                                                                    |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-|   | :ref:`WERCalibrationPlugin<calibration_plugin>`                | This plugin can only be used with the proprietary ASR of skit.ai. Uses :code:`lm_score` and :score:`am_score` to          |
+|   | :ref:`WERCalibrationPlugin<calibration_plugin>`                | This plugin can only be used with the proprietary ASR of skit.ai. Uses :code:`lm_score` and :code:`am_score` to           |
 |   |                                                                | detect if the current set of code:`input.utterances` are too noisy for the intent classifier to use.                      |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
 
@@ -134,7 +134,7 @@ Clone the repository. We use [`poetry <https://python-poetry.org/>`_] to setup d
 
    git clone git@github.com:skit-ai/dialogy.git
    cd dialogy
-   # Activate your virtualenv/conda or you may allow poetry take care of it.
+   # Activate your virtualenv/conda/poetry.
    poetry install
    make test
 
@@ -142,18 +142,54 @@ Ensure tests are passing before you start working on your PRs.
 
 [`Read more <https://github.com/skit-ai/dialogy/blob/master/CONTRIBUTING.md>`_]
 
-Further Reading
-###############
+Index
+#######
 
-#. :ref:`Index<genindex>`
-#. All Modules
+:ref:`Index<genindex>`
 
-   .. toctree::
-      :maxdepth: 1
-      :glob:
 
-      ../source/dialogy.base
-      ../source/dialogy.plugins.*
-      ../source/dialogy.types.*
-      ../source/dialogy.workflow
-      ../source/dialogy.utils
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Basics
+
+   Input <./source/dialogy.base.input>
+   Output <./source/dialogy.base.output>
+   Workflow <./source/dialogy.workflow>
+   Base Plugin <./source/dialogy.base.plugin>
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Types
+
+   Intent <./source/dialogy.types.intent>
+   Pattern Entity <./source/dialogy.types.entity.keyword>
+   Currency Entity <./source/dialogy.types.entity.amount_of_money>
+   Credit Card Number Entity <./source/dialogy.types.entity.credit_card_number>
+   Numeric Entity <./source/dialogy.types.entity.numerical>
+   People Entity <./source/dialogy.types.entity.people>
+   Time Entity <./source/dialogy.types.entity.time>
+   Time Interval Entity <./source/dialogy.types.entity.time_interval>
+   Duration Entity <./source/dialogy.types.entity.duration>
+   Slots <./source/dialogy.types.slots>
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Plugins
+
+   Intent Classifier Plugin <./source/dialogy.plugins.text.classification>
+   Duckling Entities <./source/dialogy.plugins.text.duckling_plugin>
+   Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
+   Regex Entity Search <./source/dialogy.plugins.text.list_entity_plugin>
+   Fuzzy Entity Search <./source/dialogy.plugins.text.list_search_plugin>
+   ASR Featurizer <./source/dialogy.plugins.text.merge_asr_output>
+   Slot Filler <./source/dialogy.plugins.text.slot_filler>
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Misc
+
+   Utils <./source/dialogy.utils>

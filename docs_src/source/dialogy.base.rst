@@ -1,40 +1,16 @@
 dialogy.base package
 ====================
 
-Submodules
-----------
+Subpackages
+-----------
 
-dialogy.base.entity\_extractor module
--------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: dialogy.base.entity_extractor
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dialogy.base.input module
--------------------------
-
-.. automodule:: dialogy.base.input
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dialogy.base.output module
---------------------------
-
-.. automodule:: dialogy.base.output
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dialogy.base.plugin module
---------------------------
-
-.. automodule:: dialogy.base.plugin
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   dialogy.base.entity_extractor
+   dialogy.base.input
+   dialogy.base.output
+   dialogy.base.plugin
 
 Module contents
 ---------------
