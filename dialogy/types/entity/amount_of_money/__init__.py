@@ -12,7 +12,7 @@ from typing import Any, Dict, Optional
 import attr
 
 from dialogy import constants as const
-from dialogy.types.entity.numerical_entity import NumericalEntity
+from dialogy.types.entity.numerical import NumericalEntity
 
 
 @attr.s
