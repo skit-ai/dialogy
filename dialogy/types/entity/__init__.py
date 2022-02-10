@@ -13,15 +13,7 @@ from dialogy.types.entity.keyword_entity import KeywordEntity
 from dialogy.types.entity.location_entity import LocationEntity
 from dialogy.types.entity.numerical_entity import NumericalEntity
 from dialogy.types.entity.people_entity import PeopleEntity
-from dialogy.types.entity.plastic_currency_entity import PlasticCurrencyEntity
+from dialogy.types.entity.credit_card_number_entity import CreditCardNumberEntity
 from dialogy.types.entity.time_entity import TimeEntity
 from dialogy.types.entity.time_interval_entity import TimeIntervalEntity
-
-dimension_entity_map: Dict[str, Dict[str, Any]] = {
-    "number": {"value": NumericalEntity},
-    "people": {"value": PeopleEntity},
-    "time": {"value": TimeEntity, "interval": TimeIntervalEntity},
-    "duration": {"value": DurationEntity},
-    "amount-of-money": {"value": CurrencyEntity},
-    "credit-card-number": {"value": PlasticCurrencyEntity},
-}
+from dialogy.types.entity.deserialize_duckling import deserialize_duckling_entity
