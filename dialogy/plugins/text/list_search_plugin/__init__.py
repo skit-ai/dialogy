@@ -265,26 +265,25 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                 if score == 0.0:
                     continue
                 entity_dict = {
-                    "start": span[0],
-                    "end": span[1],
-                    "body": text,
-                    "dim": label,
-                    "parsers": [self.__class__.__name__],
-                    "score": score,
-                    "alternative_index": i,
-                    "latent": False,
-                    "__group": f"{label}_{text}",
-                    "type": label,
-                    "entity_type": label,
-                    "value": {
-                        "values": [{"value": value}],
+                    const.RANGE: {
+                        const.START: span[0],
+                        const.END: span[1],
                     },
+                    const.BODY: text,
+                    const.DIM: label,
+                    const.SCORE: 0,
+                    const.ALTERNATIVE_INDEX: i,
+                    const.LATENT: False,
+                    "__group": f"{label}_{text}",
+                    const.TYPE: label,
+                    const.ENTITY_TYPE: label,
+                    const.VALUE: value,
+                    const.VALUES: [{const.VALUE: value}]
                 }
 
                 del entity_dict["__group"]
                 entity_ = KeywordEntity.from_dict(entity_dict)
-                entity_.add_parser(self).set_value()
-
+                entity_.add_parser(self)
                 entities.append(entity_)
 
         logger.debug("Parsed entities")

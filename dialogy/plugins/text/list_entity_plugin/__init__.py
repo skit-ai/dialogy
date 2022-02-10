@@ -189,25 +189,25 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         for i, matches_on_transcript in enumerate(matches_on_transcripts):
             for text, label, value, span in matches_on_transcript:
                 entity_dict = {
-                    "start": span[0],
-                    "end": span[1],
-                    "body": text,
-                    "dim": label,
-                    "parsers": [self.__class__.__name__],
-                    "score": 0,
-                    "alternative_index": i,
-                    "latent": False,
-                    "__group": f"{label}_{text}",
-                    "type": label,
-                    "entity_type": label,
-                    "value": {
-                        "values": [{"value": value}],
+                    const.RANGE: {
+                        const.START: span[0],
+                        const.END: span[1],
                     },
+                    const.BODY: text,
+                    const.DIM: label,
+                    const.SCORE: 0,
+                    const.ALTERNATIVE_INDEX: i,
+                    const.LATENT: False,
+                    "__group": f"{label}_{text}",
+                    const.TYPE: label,
+                    const.ENTITY_TYPE: label,
+                    const.VALUE: value,
+                    const.VALUES: [{const.VALUE: value}]
                 }
 
                 del entity_dict["__group"]
                 entity_ = KeywordEntity.from_dict(entity_dict)
-                entity_.add_parser(self).set_value()
+                entity_.add_parser(self)
                 entities.append(entity_)
 
         logger.debug("Parsed entities")
