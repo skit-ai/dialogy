@@ -1,3 +1,4 @@
+from math import comb
 from typing import Any, Dict, List, Optional
 
 import attr
@@ -124,10 +125,7 @@ class CombineDateTimeOverSlots(Plugin):
             )
         else:
             return current_entity
-
-        return attr.evolve(
-            current_entity, **{const.EntityKeys.VALUE: combined_value.isoformat()}
-        )
+        return TimeEntity.from_dict({const.VALUE: combined_value.isoformat()}, current_entity)
 
     def get_tracked_slots(
         self, slot_tracker: Optional[List[Dict[str, Any]]]
@@ -153,13 +151,13 @@ class CombineDateTimeOverSlots(Plugin):
         if not tracked_slots:
             return None
 
-        filled_entities_json = tracked_slots[0][const.EntityKeys.VALUES]
+        filled_entities_json = tracked_slots[0][const.VALUES]
 
         if not filled_entities_json or not isinstance(filled_entities_json, list):
             return None
 
         filled_entity_json, *_ = filled_entities_json
-        filled_entity_json[const.EntityKeys.VALUES] = [
+        filled_entity_json[const.VALUES] = [
             {const.VALUE: filled_entity_json[const.VALUE]}
         ]
 
