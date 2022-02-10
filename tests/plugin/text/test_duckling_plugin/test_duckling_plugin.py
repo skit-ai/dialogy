@@ -193,6 +193,7 @@ def test_plugin_working_cases(payload) -> None:
 
         for i, entity in enumerate(output["entities"]):
             from pprint import pprint
+
             pprint(entity)
             pprint(expected_types)
             expected_entity_type = expected_types[i]["entity_type"]

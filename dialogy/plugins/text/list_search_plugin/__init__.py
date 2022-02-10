@@ -278,7 +278,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                     const.TYPE: label,
                     const.ENTITY_TYPE: label,
                     const.VALUE: value,
-                    const.VALUES: [{const.VALUE: value}]
+                    const.VALUES: [{const.VALUE: value}],
                 }
 
                 del entity_dict["__group"]

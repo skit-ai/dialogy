@@ -81,7 +81,7 @@ class BaseEntity:
     # The parsed value of an entity resides within this attribute.
     values: List[Dict[str, Any]] = attr.ib(
         default=attr.Factory(list),
-        validator=attr.validators.optional(attr.validators.instance_of(list)), # type: ignore
+        validator=attr.validators.optional(attr.validators.instance_of(list)),  # type: ignore
         repr=False,
         order=False,
     )
@@ -171,7 +171,9 @@ class BaseEntity:
         return attr.asdict(self, filter=lambda attr, _: attr.name not in skip_)
 
     @classmethod
-    def from_dict(cls, dict_: Dict[str, Any], reference: Optional[BaseEntity] = None) -> BaseEntity:
+    def from_dict(
+        cls, dict_: Dict[str, Any], reference: Optional[BaseEntity] = None
+    ) -> BaseEntity:
         if reference:
             if const.VALUES in dict_ or const.VALUE in dict_:
                 object.__setattr__(reference, const.VALUES, None)

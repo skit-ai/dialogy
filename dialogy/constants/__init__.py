@@ -18,7 +18,11 @@ SLOTS = "slots"
 
 DUCKLING_ENTITY_KEYS = ("body", "dim", "end", "latent", "start", "value")
 DUCKLING_TIME_VALUES_ENTITY_KEYS = ("grain", "type", "value", "values")
-DUCKLING_TIME_INTERVAL_ENTITY_KEYS = (("from", "type", "values"), ("to", "type", "values"), ("from", "to", "type", "values"))
+DUCKLING_TIME_INTERVAL_ENTITY_KEYS = (
+    ("from", "type", "values"),
+    ("to", "type", "values"),
+    ("from", "to", "type", "values"),
+)
 
 # Time Entity types
 DATE = "date"
@@ -33,14 +37,7 @@ DURATION = "duration"
 CREDIT_CARD_NUMBER = "credit-card-number"
 
 
-DUCKLING_DIMS = [
-    PEOPLE,
-    NUMBER,
-    AMOUNT_OF_MONEY,
-    DURATION,
-    CREDIT_CARD_NUMBER,
-    TIME
-]
+DUCKLING_DIMS = [PEOPLE, NUMBER, AMOUNT_OF_MONEY, DURATION, CREDIT_CARD_NUMBER, TIME]
 
 BODY = "body"
 DIM = "dim"

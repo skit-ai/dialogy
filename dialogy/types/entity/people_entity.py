@@ -6,7 +6,8 @@ Import classes:
     - PeopleEntity
 """
 from __future__ import annotations
-from typing import Optional, Dict, Any
+
+from typing import Any, Dict, Optional
 
 import attr
 
@@ -38,5 +39,5 @@ class PeopleEntity(NumericalEntity):
             alternative_index=alternative_index,
             latent=d[const.LATENT],
             values=[{const.VALUE: value}],
-            unit=d[const.VALUE][const.UNIT]
+            unit=d[const.VALUE][const.UNIT],
         )

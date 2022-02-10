@@ -6,8 +6,9 @@ Import classes:
     - TimeIntervalEntity
 """
 from __future__ import annotations
+
 from datetime import datetime
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, List, Optional
 
 import attr
 
@@ -37,34 +38,33 @@ class TimeIntervalEntity(TimeEntity):
     values: List[Dict[str, Any]] = attr.ib(default=None, kw_only=True)
     value: Dict[str, Any] = attr.ib(default=None, kw_only=True)
 
-    @values.validator # type: ignore
+    @values.validator  # type: ignore
     def _check_values(
-        self,
-        attribute: attr.Attribute, # type: ignore
-        values: List[Dict[str, Any]]
+        self, attribute: attr.Attribute, values: List[Dict[str, Any]]  # type: ignore
     ) -> None:
         if not values:
             return
         for value in values:
             obj_keys = set(value.keys())
             if not obj_keys.issubset(self.value_keys):
-                raise TypeError(f"Expected {obj_keys} to be a subset of {self.value_keys} for {attribute.name}")
+                raise TypeError(
+                    f"Expected {obj_keys} to be a subset of {self.value_keys} for {attribute.name}"
+                )
 
     def __attrs_post_init__(self) -> None:
         if self.values and not self.value:
             self.from_value = self.values[0].get(const.FROM, {}).get(const.VALUE)
             self.to_value = self.values[0].get(const.TO, {}).get(const.VALUE)
-            self.value = {
-                const.FROM: self.from_value,
-                const.TO: self.to_value
-            }
+            self.value = {const.FROM: self.from_value, const.TO: self.to_value}
         elif self.value and not self.values:
             self.from_value = self.value.get(const.FROM, {})
             self.to_value = self.value.get(const.TO, {})
-            self.values = [{
-                const.FROM: {const.VALUE: self.from_value},
-                const.TO: {const.VALUE: self.to_value}
-            }]
+            self.values = [
+                {
+                    const.FROM: {const.VALUE: self.from_value},
+                    const.TO: {const.VALUE: self.to_value},
+                }
+            ]
 
     def collect_datetime_values(self) -> List[datetime]:
         """
@@ -123,7 +123,7 @@ class TimeIntervalEntity(TimeEntity):
             latent=d[const.LATENT],
             values=d[const.VALUE][const.VALUES],
             type=d[const.VALUE][const.TYPE],
-            grain=grain
+            grain=grain,
         )
         time_interval_entity.set_entity_type()
         return time_interval_entity

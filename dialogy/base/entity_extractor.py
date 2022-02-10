@@ -63,7 +63,7 @@ class EntityScoringMixin:
         - Select the minimum of all the indices. (because 0th transcript has highest confidence)
         - We pick one entity per group and modify its index to the minimum and score is aggregated for the group.
         - The entity picked is added to a list of aggregates.
-        
+
         The above is done for all entities in a group
 
         :param entity_type_val_group: A data-structure that groups entities by type and value.

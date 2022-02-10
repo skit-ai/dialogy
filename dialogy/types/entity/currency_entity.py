@@ -6,6 +6,7 @@ Import classes:
     - CurrencyEntity
 """
 from __future__ import annotations
+
 from typing import Any, Dict, Optional
 
 import attr
@@ -31,7 +32,11 @@ class CurrencyEntity(NumericalEntity):
     """
 
     unit: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
-    entity_type: str = attr.ib(default="amount-of-money", validator=attr.validators.instance_of(str), kw_only=True)
+    entity_type: str = attr.ib(
+        default="amount-of-money",
+        validator=attr.validators.instance_of(str),
+        kw_only=True,
+    )
 
     def get_value(self) -> Any:
         """
@@ -57,5 +62,5 @@ class CurrencyEntity(NumericalEntity):
             alternative_index=alternative_index,
             values=[{const.VALUE: value}],
             latent=d[const.LATENT],
-            unit=d[const.VALUE][const.UNIT]
+            unit=d[const.VALUE][const.UNIT],
         )

@@ -74,7 +74,7 @@ from tqdm import tqdm
 from dialogy import constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.types.entity import deserialize_duckling_entity, BaseEntity
+from dialogy.types.entity import BaseEntity, deserialize_duckling_entity
 from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
 
 
@@ -321,7 +321,10 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         return super().apply_filters(entities)
 
     def _reshape(
-        self, entities_json: List[Dict[str, Any]], alternative_index: int = 0, reference_time: Optional[int] = None
+        self,
+        entities_json: List[Dict[str, Any]],
+        alternative_index: int = 0,
+        reference_time: Optional[int] = None,
     ) -> List[BaseEntity]:
         """
         Create a list of :ref:`BaseEntity <base_entity>` objects from a list of entity dicts.
@@ -333,7 +336,12 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :return: A list of objects subclassed from :ref:`BaseEntity <base_entity>`
         :rtype: Optional[List[BaseEntity]]
         """
-        return [deserialize_duckling_entity(entity_json, alternative_index, reference_time=reference_time) for entity_json in entities_json]
+        return [
+            deserialize_duckling_entity(
+                entity_json, alternative_index, reference_time=reference_time
+            )
+            for entity_json in entities_json
+        ]
 
     def _get_entities(
         self,
@@ -373,9 +381,9 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 # A list of dicts or an empty list.
                 return {const.IDX: sort_idx, const.VALUE: response.json()}
         except requests.exceptions.Timeout as timeout_exception:
-            logger.error(f"Duckling timed out: {timeout_exception}") # pragma: no cover
-            logger.error(pformat(body)) # pragma: no cover
-            return {const.IDX: sort_idx, const.VALUE: []} # pragma: no cover
+            logger.error(f"Duckling timed out: {timeout_exception}")  # pragma: no cover
+            logger.error(pformat(body))  # pragma: no cover
+            return {const.IDX: sort_idx, const.VALUE: []}  # pragma: no cover
         except requests.exceptions.ConnectionError as connection_error:
             logger.error(f"Duckling server is turned off?: {connection_error}")
             logger.error(pformat(body))
@@ -432,11 +440,15 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         ]
 
     def apply_entity_classes(
-        self, list_of_entities: List[List[Dict[str, Any]]], reference_time: Optional[int] = None
+        self,
+        list_of_entities: List[List[Dict[str, Any]]],
+        reference_time: Optional[int] = None,
     ) -> List[BaseEntity]:
         shaped_entities = []
         for (alternative_index, entities) in enumerate(list_of_entities):
-            shaped_entities.append(self._reshape(entities, alternative_index, reference_time))
+            shaped_entities.append(
+                self._reshape(entities, alternative_index, reference_time)
+            )
         return py_.flatten(shaped_entities)
 
     def validate(

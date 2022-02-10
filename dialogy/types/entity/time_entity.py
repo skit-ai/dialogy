@@ -6,6 +6,7 @@ Import classes:
     - TimeEntity
 """
 from __future__ import annotations
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -60,10 +61,7 @@ class TimeEntity(NumericalEntity):
         :return: List of datetime values
         :rtype: List[str]
         """
-        return [
-            datetime.fromisoformat(value[const.VALUE])
-            for value in self.values
-        ]
+        return [datetime.fromisoformat(value[const.VALUE]) for value in self.values]
 
     def is_uniq_date_from_values(self) -> bool:
         """
@@ -84,15 +82,15 @@ class TimeEntity(NumericalEntity):
         Where weekday ranges from 0 for Monday till 6 for Sunday
         Ex: for "2021-04-17T16:00:00.000+05:30", the weekday is 5 (Saturday)
 
-        Duckling may return 3 datetime values in chronological order. For cases where the utterance is "Monday", 
+        Duckling may return 3 datetime values in chronological order. For cases where the utterance is "Monday",
         (or any weekday for that matter) we will get 3 values, each value a week apart.
         We pair these dates and check the difference is 1 week long (7 days).
 
-        For example: 
-        
+        For example:
+
         .. code-block:: python
 
-            # Say, our 3 date values are: 
+            # Say, our 3 date values are:
             date values = [21-04-2021, 28-04-2021, 05-05-2021]
 
             # then we generate pairs as:
@@ -155,7 +153,7 @@ class TimeEntity(NumericalEntity):
             alternative_index=alternative_index,
             latent=d[const.LATENT],
             values=d[const.VALUE][const.VALUES],
-            grain=d[const.VALUE][const.VALUES][0][const.GRAIN]
+            grain=d[const.VALUE][const.VALUES][0][const.GRAIN],
         )
         time_entity.set_entity_type()
         return time_entity

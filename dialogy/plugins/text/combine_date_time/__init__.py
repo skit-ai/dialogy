@@ -125,7 +125,9 @@ class CombineDateTimeOverSlots(Plugin):
             )
         else:
             return current_entity
-        return TimeEntity.from_dict({const.VALUE: combined_value.isoformat()}, current_entity)
+        return TimeEntity.from_dict(
+            {const.VALUE: combined_value.isoformat()}, current_entity
+        )
 
     def get_tracked_slots(
         self, slot_tracker: Optional[List[Dict[str, Any]]]

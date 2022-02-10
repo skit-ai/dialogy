@@ -6,6 +6,7 @@ Import classes:
     - LocationEntity
 """
 from __future__ import annotations
+
 from typing import Any, Dict, Optional
 
 import attr
@@ -27,6 +28,7 @@ class DurationEntity(BaseEntity):
     This entity parses this information and also provides us the number of seconds to add to the current timestamp
     to get to a date that's 2 days ahead.
     """
+
     unit: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
     normalized: Dict[str, Any] = attr.ib(default=attr.Factory(dict))
     _meta: Dict[str, str] = attr.ib(default=attr.Factory(dict))

@@ -6,6 +6,7 @@ Import classes:
     - NumericalEntity
 """
 from __future__ import annotations
+
 from typing import Any, Dict, Optional
 
 import attr
@@ -36,7 +37,9 @@ class NumericalEntity(BaseEntity):
     entity_type: Optional[str] = attr.ib(default="number", order=False)
 
     @classmethod
-    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> NumericalEntity:
+    def from_duckling(
+        cls, d: Dict[str, Any], alternative_index: int
+    ) -> NumericalEntity:
         value = d[const.VALUE][const.VALUE]
         return cls(
             range={const.START: d[const.START], const.END: d[const.END]},

@@ -10,14 +10,14 @@ from dialogy.base import Input, Plugin
 from dialogy.plugins import DucklingPlugin
 from dialogy.types.entity import (
     BaseEntity,
+    CreditCardNumberEntity,
     LocationEntity,
     NumericalEntity,
     PeopleEntity,
-    CreditCardNumberEntity,
     TimeEntity,
     TimeIntervalEntity,
+    deserialize_duckling_entity,
     entity_synthesis,
-    deserialize_duckling_entity
 )
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
@@ -192,28 +192,37 @@ def test_location_entity_value_not_int_error():
 def test_interval_entity_set_value_values_missing() -> None:
     body = "between 2 to 4 am"
     d = {
-        'body': 'between 2 to 4 am',
-        'start': 0,
-        'value': {'values': [{'to': {'value': '2022-02-11T05:00:00.000+05:30',
-            'grain': 'hour'},
-            'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'},
-        {'to': {'value': '2022-02-12T05:00:00.000+05:30', 'grain': 'hour'},
-            'from': {'value': '2022-02-12T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'},
-        {'to': {'value': '2022-02-13T05:00:00.000+05:30', 'grain': 'hour'},
-            'from': {'value': '2022-02-13T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'}],
-        'to': {'value': '2022-02-11T05:00:00.000+05:30', 'grain': 'hour'},
-        'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
-        'type': 'interval'},
-        'end': 17,
-        'dim': 'time',
-        'latent': False
+        "body": "between 2 to 4 am",
+        "start": 0,
+        "value": {
+            "values": [
+                {
+                    "to": {"value": "2022-02-11T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-11T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+                {
+                    "to": {"value": "2022-02-12T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-12T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+                {
+                    "to": {"value": "2022-02-13T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-13T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+            ],
+            "to": {"value": "2022-02-11T05:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-02-11T02:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        },
+        "end": 17,
+        "dim": "time",
+        "latent": False,
     }
 
     entity = TimeIntervalEntity.from_duckling(d, 1)
-    assert entity.get_value() == datetime.fromisoformat('2022-02-11T02:00:00.000+05:30')
+    assert entity.get_value() == datetime.fromisoformat("2022-02-11T02:00:00.000+05:30")
 
 
 def test_entity_jsonify() -> None:
@@ -336,12 +345,12 @@ def test_bad_time_entity_invalid_value() -> None:
 def test_bad_time_entity_no_value() -> None:
     body = "4 am"
     d = {
-        'body': 'at 4oclock',
-        'start': 0,
-        'grain': 'hour',
-        'end': 10,
-        'dim': 'time',
-        'latent': False
+        "body": "at 4oclock",
+        "start": 0,
+        "grain": "hour",
+        "end": 10,
+        "dim": "time",
+        "latent": False,
     }
 
     with pytest.raises(KeyError):
@@ -351,22 +360,31 @@ def test_bad_time_entity_no_value() -> None:
 def test_time_interval_entity_value_without_range() -> None:
     body = "to 4 am"
     d = {
-        'body': 'between 2 to 4 am',
-        'value': {'values': [{'to': {'value': '2022-02-11T05:00:00.000+05:30',
-            'grain': 'hour'},
-            'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'},
-        {'to': {'value': '2022-02-12T05:00:00.000+05:30', 'grain': 'hour'},
-            'from': {'value': '2022-02-12T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'},
-        {'to': {'value': '2022-02-13T05:00:00.000+05:30', 'grain': 'hour'},
-            'from': {'value': '2022-02-13T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'}],
-        'to': {'value': '2022-02-11T05:00:00.000+05:30', 'grain': 'hour'},
-        'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
-        'type': 'interval'},
-        'dim': 'time',
-        'latent': False
+        "body": "between 2 to 4 am",
+        "value": {
+            "values": [
+                {
+                    "to": {"value": "2022-02-11T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-11T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+                {
+                    "to": {"value": "2022-02-12T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-12T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+                {
+                    "to": {"value": "2022-02-13T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-13T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+            ],
+            "to": {"value": "2022-02-11T05:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-02-11T02:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        },
+        "dim": "time",
+        "latent": False,
     }
 
     with pytest.raises(KeyError):
@@ -385,18 +403,20 @@ def test_plastic_currency_set_no_number():
 
 def test_plastic_currency_set_no_issuer():
     with pytest.raises(TypeError):
-        CreditCardNumberEntity(range={"from": 0, "to": 1}, body="", value="1234-5678-9012-3456")
+        CreditCardNumberEntity(
+            range={"from": 0, "to": 1}, body="", value="1234-5678-9012-3456"
+        )
 
 
 def test_plastic_currency_get_value():
     body = "My card number is 4111-1111-1111-1111"
     d = {
-        'body': '4111-1111-1111-1111',
-        'start': 18,
-        'value': {'value': '4111111111111111', 'issuer': 'visa'},
-        'end': 37,
-        'dim': 'credit-card-number',
-        'latent': False
+        "body": "4111-1111-1111-1111",
+        "start": 18,
+        "value": {"value": "4111111111111111", "issuer": "visa"},
+        "end": 37,
+        "dim": "credit-card-number",
+        "latent": False,
     }
 
     entity = CreditCardNumberEntity.from_duckling(d, 1)
@@ -415,7 +435,7 @@ def test_time_interval_entity_get_value() -> None:
         body=body,
         entity_type="time",
         grain="hour",
-        values=[value]
+        values=[value],
     )
     value = "2021-06-03T15:00:00+05:30"
     assert entity.get_value() == datetime.fromisoformat(value)
@@ -423,40 +443,52 @@ def test_time_interval_entity_get_value() -> None:
 
 def test_time_interval_generation() -> None:
     d = {
-        'body': 'between 2 to 4 am',
-        'value': {'values': [{'to': {'value': '2022-02-11T05:00:00.000+05:30',
-            'grain': 'hour'},
-            'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'},
-        {'to': {'value': '2022-02-12T05:00:00.000+05:30', 'grain': 'hour'},
-            'from': {'value': '2022-02-12T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'},
-        {'to': {'value': '2022-02-13T05:00:00.000+05:30', 'grain': 'hour'},
-            'from': {'value': '2022-02-13T02:00:00.000+05:30', 'grain': 'hour'},
-            'type': 'interval'}],
-        'to': {'value': '2022-02-11T05:00:00.000+05:30', 'grain': 'hour'},
-        'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
-        'type': 'interval'},
-        'dim': 'time',
-        'start': 0,
-        'end': 17,
-        'latent': False
+        "body": "between 2 to 4 am",
+        "value": {
+            "values": [
+                {
+                    "to": {"value": "2022-02-11T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-11T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+                {
+                    "to": {"value": "2022-02-12T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-12T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+                {
+                    "to": {"value": "2022-02-13T05:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-02-13T02:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+            ],
+            "to": {"value": "2022-02-11T05:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-02-11T02:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        },
+        "dim": "time",
+        "start": 0,
+        "end": 17,
+        "latent": False,
     }
     entity = TimeIntervalEntity.from_duckling(d, 1)
     modification = "2022-02-10T00:00:00.000+05:30"
-    generated = TimeIntervalEntity.from_dict({"value": {"from": modification, "to": "2022-02-11T05:00:00.000+05:30"}}, reference=entity)
+    generated = TimeIntervalEntity.from_dict(
+        {"value": {"from": modification, "to": "2022-02-11T05:00:00.000+05:30"}},
+        reference=entity,
+    )
     assert generated.get_value() == datetime.fromisoformat(modification)
 
 
 def test_time_interval_entity_no_value() -> None:
     body = "to 4 am"
     d = {
-        'body': 'between 2 to 4 am',
-        'start': 0,
-        'type': 'interval',
-        'end': 17,
-        'dim': 'time',
-        'latent': False
+        "body": "between 2 to 4 am",
+        "start": 0,
+        "type": "interval",
+        "end": 17,
+        "dim": "time",
+        "latent": False,
     }
 
     with pytest.raises(KeyError):
