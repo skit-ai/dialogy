@@ -9,7 +9,6 @@ from typing import Any, Dict
 from dialogy.types.entity.base_entity import BaseEntity, entity_synthesis
 from dialogy.types.entity.credit_card_number_entity import CreditCardNumberEntity
 from dialogy.types.entity.currency_entity import CurrencyEntity
-from dialogy.types.entity.deserialize_duckling import deserialize_duckling_entity
 from dialogy.types.entity.duration_entity import DurationEntity
 from dialogy.types.entity.keyword_entity import KeywordEntity
 from dialogy.types.entity.location_entity import LocationEntity
