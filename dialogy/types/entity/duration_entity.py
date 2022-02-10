@@ -5,7 +5,8 @@ Module provides access to an entity type (class) to handle locations.
 Import classes:
     - LocationEntity
 """
-from typing import Any, Dict
+from __future__ import annotations
+from typing import Any, Dict, Optional
 
 import attr
 
@@ -26,36 +27,21 @@ class DurationEntity(BaseEntity):
     This entity parses this information and also provides us the number of seconds to add to the current timestamp
     to get to a date that's 2 days ahead.
     """
-
-    normalized = attr.ib(type=Dict[str, Any], default=attr.Factory(dict))
-    _meta = attr.ib(type=Dict[str, str], default=attr.Factory(dict))
+    unit: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
+    normalized: Dict[str, Any] = attr.ib(default=attr.Factory(dict))
+    _meta: Dict[str, str] = attr.ib(default=attr.Factory(dict))
+    entity_type: str = attr.ib(default="duration", kw_only=True)
 
     @classmethod
-    def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        :type dict_: Dict[str, Any]
-        """
-        match_start = dict_[const.EntityKeys.START]
-        match_end = dict_[const.EntityKeys.END]
-
-        dict_[const.EntityKeys.RANGE] = {
-            const.EntityKeys.START: match_start,
-            const.EntityKeys.END: match_end,
-        }
-        # ['body', 'start', 'value', 'end', 'dim', 'latent']
-
-        dict_[const.EntityKeys.ENTITY_TYPE] = dict_[const.EntityKeys.DIM]
-
-        # This piece is a preparation for multiple entity values.
-        # So, even though we are confident of the value found, we are still keeping the
-        # structure.
-        value = dict_[const.EntityKeys.VALUE][const.EntityKeys.NORMALIZED]
-        dict_[const.EntityKeys.VALUES] = [value]
-
-        del dict_[const.EntityKeys.START]
-        del dict_[const.EntityKeys.END]
-        del dict_[const.EntityKeys.VALUE]
-        return dict_
-
-    def set_value(self, value: Any = None) -> "BaseEntity":
-        return super().set_value(value=value)
+    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> DurationEntity:
+        value = d[const.VALUE][const.NORMALIZED][const.VALUE]
+        return cls(
+            range={const.START: d[const.START], const.END: d[const.END]},
+            body=d[const.BODY],
+            dim=d[const.DIM],
+            alternative_index=alternative_index,
+            latent=d[const.LATENT],
+            values=[{const.VALUE: value}],
+            unit=d[const.VALUE][const.UNIT],
+            normalized=d[const.VALUE][const.NORMALIZED],
+        )

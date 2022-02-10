@@ -7,10 +7,12 @@ These entities originate from token lookups, regex, etc.
 Import classes:
     - KeywordEntity
 """
-from typing import Dict
+from __future__ import annotations
+from typing import Any, Dict, Optional
 
 import attr
 
+from dialogy import constants as const
 from dialogy.types.entity import BaseEntity
 
 

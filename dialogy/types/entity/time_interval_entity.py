@@ -5,8 +5,9 @@ Module provides access to entity types that can be parsed to obtain intervals of
 Import classes:
     - TimeIntervalEntity
 """
+from __future__ import annotations
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 import attr
 
@@ -29,24 +30,57 @@ class TimeIntervalEntity(TimeEntity):
 
     origin = "interval"
     dim = "time"
-    type = attr.ib(type=str, default="value", order=False)
-    __properties_map = const.TIME_ENTITY_PROPS
+    value_keys = {const.FROM, const.TO, const.TYPE}
+    type: str = attr.ib(default="value", order=False)
+    from_value: Optional[datetime] = attr.ib(default=None, order=False)
+    to_value: Optional[datetime] = attr.ib(default=None, order=False)
+    values: Optional[List[Dict[str, Any]]] = attr.ib(default=None, kw_only=True)
+    value: Dict[str, Any] = attr.ib(default=None, kw_only=True)
 
-    @classmethod
-    def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
-        dict_ = super(TimeIntervalEntity, cls).reshape(dict_)
-        for value in dict_[const.EntityKeys.VALUES]:
-            if value[const.EntityKeys.TYPE] == const.EntityKeys.INTERVAL:
-                date_range = dict_[const.EntityKeys.VALUES][0].get(
-                    const.EntityKeys.FROM
-                ) or dict_[const.EntityKeys.VALUES][0].get(const.EntityKeys.TO)
-                if not date_range:
-                    raise TypeError(f"{dict_} does not match TimeIntervalEntity format")
-                dict_[const.EntityKeys.GRAIN] = date_range[const.EntityKeys.GRAIN]
-                break
-        return dict_
+    @values.validator # type: ignore
+    def _check_values(
+        self,
+        attribute: attr.Attribute, # type: ignore
+        values: Optional[int]
+    ) -> None:
+        if not values:
+            return
+        for value in values:
+            obj_keys = set(value.keys())
+            if not obj_keys.issubset(self.value_keys):
+                raise TypeError(f"Expected {obj_keys} to be a subset of {self.value_keys} for {attribute.name}")
 
-    def get_value(self, reference: Any = None) -> Any:
+    def __attrs_post_init__(self) -> None:
+        if self.values and not self.value:
+            self.from_value = self.values[0].get(const.FROM, {}).get(const.VALUE)
+            self.to_value = self.values[0].get(const.TO, {}).get(const.VALUE)
+            self.value = {
+                const.FROM: self.from_value,
+                const.TO: self.to_value
+            }
+        elif self.value and not self.values:
+            self.from_value = self.value.get(const.FROM, {})
+            self.to_value = self.value.get(const.TO, {})
+            self.values = [{
+                const.FROM: {const.VALUE: self.from_value},
+                const.TO: {const.VALUE: self.to_value}
+            }]
+
+    def collect_datetime_values(self) -> List[str]:
+        """
+        Collect all datetime values from the entity
+
+        :return: List of datetime values
+        :rtype: List[str]
+        """
+        datetime_values = []
+        for value in self.values:
+            from_value = value.get(const.FROM, {}).get(const.VALUE)
+            to_value = value.get(const.TO, {}).get(const.VALUE)
+            datetime_values.append(datetime.fromisoformat(from_value or to_value))
+        return datetime_values
+
+    def get_value(self) -> Any:
         """
         Return the date string in ISO format from the dictionary passed
 
@@ -65,55 +99,31 @@ class TimeIntervalEntity(TimeEntity):
         :return: :code:`date["value"]`
         :rtype: Optional[datetime]
         """
-        if not reference:
-            date_dict = self.value.get(const.EntityKeys.FROM) or self.value.get(
-                const.EntityKeys.TO
-            )
-        else:
-            date_dict = reference.get(const.EntityKeys.FROM) or reference.get(
-                const.EntityKeys.TO
-            )
+        value = self.value.get(const.FROM) or self.value.get(const.TO)
 
-        if date_dict:
-            return datetime.fromisoformat(date_dict.get(const.EntityKeys.VALUE))
-        elif reference.get(const.EntityKeys.VALUE):
-            return datetime.fromisoformat(reference.get(const.EntityKeys.VALUE))
+        print(self.value)
+        if value:
+            return datetime.fromisoformat(value)
         else:
             raise KeyError(
                 f"Expected at least 1 of `from` or `to` in {self.values} for {self}"
             )
 
-    def set_value(self, value: Optional[Dict[str, Any]] = None) -> "TimeIntervalEntity":
-        """
-        Set values and value attribute.
-
-        Args:
-            value (Any): The parsed value of an entity token.
-
-        Returns:
-            None
-        """
-        if value is None and isinstance(self.values, list) and len(self.values) > 0:
-            self.value = self.values[0]
-        else:
-            if value:
-                if isinstance(value, dict) and (
-                    const.FROM in value or const.TO in value
-                ):
-                    self.values = [value]
-                    self.value = value
-                else:
-                    raise TypeError(
-                        "Expected value to be a dict and look like: {'to': ...,  'from': ...}"
-                        f" but {type(value)} found."
-                    )
-            else:
-                raise TypeError(
-                    "Either values should be a non empty list"
-                    " or value should look like: {'to': ...,  'from': ...}"
-                    f" but {type(value)} found."
-                )
-        return self
-
-    def __attrs_post_init__(self) -> None:
-        self.post_init()
+    @classmethod
+    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> TimeEntity:
+        from_value = d[const.VALUE].get(const.FROM)
+        to_value = d[const.VALUE].get(const.TO)
+        grain_source = from_value or to_value
+        grain = grain_source.get(const.GRAIN)
+        time_interval_entity = cls(
+            range={const.START: d[const.START], const.END: d[const.END]},
+            body=d[const.BODY],
+            dim=d[const.DIM],
+            alternative_index=alternative_index,
+            latent=d[const.LATENT],
+            values=d[const.VALUE][const.VALUES],
+            type=d[const.VALUE][const.TYPE],
+            grain=grain
+        )
+        time_interval_entity.set_entity_type()
+        return time_interval_entity

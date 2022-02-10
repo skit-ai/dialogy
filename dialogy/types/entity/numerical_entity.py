@@ -5,7 +5,8 @@ Module provides access to entity types that can be parsed to obtain numeric valu
 Import classes:
     - NumericalEntity
 """
-from typing import Optional
+from __future__ import annotations
+from typing import Any, Dict, Optional
 
 import attr
 
@@ -32,5 +33,16 @@ class NumericalEntity(BaseEntity):
     origin = attr.ib(
         type=str, default="value", validator=attr.validators.instance_of(str)
     )
-    entity_type: Optional[str] = attr.ib(default="number", repr=False, order=False)
-    __properties_map = const.BASE_ENTITY_PROPS
+    entity_type: Optional[str] = attr.ib(default="number", order=False)
+
+    @classmethod
+    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> NumericalEntity:
+        value = d[const.VALUE][const.VALUE]
+        return cls(
+            range={const.START: d[const.START], const.END: d[const.END]},
+            body=d[const.BODY],
+            dim=d[const.DIM],
+            alternative_index=alternative_index,
+            values=[{const.VALUE: value}],
+            latent=d[const.LATENT],
+        )

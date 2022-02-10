@@ -18,7 +18,6 @@ from typing import Any, Dict, List, Optional, Union
 import attr
 
 from dialogy import constants as const
-from dialogy.utils import traverse_dict, validate_type
 
 
 # = BaseEntity =
@@ -66,13 +65,6 @@ class BaseEntity:
     # is the confidence that the range is the entity.
     score = attr.ib(type=Optional[float], default=None)
 
-    # **slot_names**
-    #
-    # Entities have awareness of the slots they should fill.
-    slot_names = attr.ib(
-        type=List[str], default=attr.Factory(list), repr=False, order=False
-    )
-
     # **alternative_index**
     #
     # is the index of transcript within the ASR output: `List[Utterances]`
@@ -102,73 +94,13 @@ class BaseEntity:
     value: Any = attr.ib(default=None, order=False)
 
     # **entity_type**
-    #
-    # Mirrors type, to be deprecated.
     entity_type: Optional[str] = attr.ib(default=None, repr=False, order=False)
 
-    __properties_map = const.BASE_ENTITY_PROPS
-
-    @classmethod
-    def validate(cls, dict_: Dict[str, Any]) -> None:
-        """
-        Check attributes of instance match expected types.
-
-        :param dict_: A `Dict` where each key is an attribute of the instance and value is the expected type.
-        :type dict_: Dict[str, Any]
-        :return: None
-        :rtype: None
-        """
-        for prop, prop_type in cls.__properties_map:
-            validate_type(traverse_dict(dict_, prop), prop_type)
-
-    @classmethod
-    def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        :type dict_: Dict[str, Any]
-        """
-        match_start = dict_[const.EntityKeys.START]
-        match_end = dict_[const.EntityKeys.END]
-
-        dict_[const.EntityKeys.RANGE] = {
-            const.EntityKeys.START: match_start,
-            const.EntityKeys.END: match_end,
-        }
-        # ['body', 'start', 'value', 'end', 'dim', 'latent']
-
-        # **type** of an entity is same as its **dimension**.
-        dict_[const.EntityKeys.ENTITY_TYPE] = dict_[const.EntityKeys.DIM]
-
-        # This piece is a preparation for multiple entity values.
-        # So, even though we are confident of the value found, we are still keeping the
-        # structure.
-        if const.EntityKeys.VALUES in dict_[const.EntityKeys.VALUE]:
-            dict_[const.EntityKeys.VALUES] = dict_[const.EntityKeys.VALUE][
-                const.EntityKeys.VALUES
-            ]
-        else:
-            dict_[const.EntityKeys.VALUES] = [dict_[const.EntityKeys.VALUE]]
-
-        del dict_[const.EntityKeys.START]
-        del dict_[const.EntityKeys.END]
-        del dict_[const.EntityKeys.VALUE]
-        return dict_
-
-    @classmethod
-    def from_dict(cls, dict_: Dict[str, Any]) -> BaseEntity:
-        """
-        Create an instance of a given class `cls` from a `dict` that complies
-        with attributes of `cls` through its keys and values.
-        Compliance is verified using the `__validate` method. It is expected that each subclass
-        will implement their own flavor of `__validate` to check their respective inputs.
-
-        :param dict_: A dict that provides all the attributes necessary for instantiating this class
-        :type dict_: Dict[str, Any]
-        :return: Instance of class
-        :rtype: BaseEntity
-        """
-        dict_ = cls.reshape(dict_)
-        cls.validate(dict_)
-        return cls(**dict_)
+    def __attrs_post_init__(self) -> None:
+        if self.values and not self.value:
+            self.value = self.values[0][const.VALUE]
+        elif self.value and not self.values:
+            self.values = [{const.VALUE: self.value}]
 
     def add_parser(self, plugin: Union[Any, str]) -> "BaseEntity":
         """
@@ -185,7 +117,7 @@ class BaseEntity:
         self.parsers.append(str(plugin))
         return self
 
-    def get_value(self, reference: Any = None) -> Any:
+    def get_value(self) -> Any:
         """
         Get value of an entity.
 
@@ -201,15 +133,10 @@ class BaseEntity:
         """
         key = "value"
         error_message = f'entity value should be in values[0]["{key}"]'
-        if not reference:
-            try:
-                return self.values[0][key]
-            except IndexError as index_error:
-                raise IndexError(error_message) from index_error
-            except KeyError as key_error:
-                raise KeyError(error_message) from key_error
-        else:
-            return reference.get(const.VALUE)
+        try:
+            return self.values[0][key]
+        except IndexError as index_error:
+            raise IndexError(error_message) from index_error
 
     def copy(self) -> BaseEntity:
         """
@@ -245,21 +172,14 @@ class BaseEntity:
             skip_ = [name for name in const.SKIP_ENTITY_ATTRS if name not in add]
         return attr.asdict(self, filter=lambda attr, _: attr.name not in skip_)
 
-    def set_value(self, value: Any = None) -> "BaseEntity":
-        """
-        Set values and value attribute.
-
-        :param value: The parsed value of an entity token.
-        :type value: Any
-        :return: None
-        :rtype: None
-        """
-        if value is None and isinstance(self.values, list) and len(self.values) > 0:
-            self.value = self.values[0][const.VALUE]
-        else:
-            self.values = [{const.VALUE: value}]
-            self.value = value
-        return self
+    @classmethod
+    def from_dict(cls, dict_: Dict[str, Any], reference: Optional[BaseEntity] = None) -> BaseEntity:
+        if reference:
+            if const.VALUES in dict_ or const.VALUE in dict_:
+                reference.values = None
+                reference.value = None
+            return attr.evolve(reference, **dict_)
+        return cls(**dict_)
 
 
 # = entity_synthesis =

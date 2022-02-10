@@ -5,11 +5,12 @@ Module provides access to entity types that can be parsed to obtain numeric valu
 Import classes:
     - PeopleEntity
 """
-from typing import Optional
+from __future__ import annotations
+from typing import Optional, Dict, Any
 
 import attr
 
-from dialogy import constants
+from dialogy import constants as const
 from dialogy.types.entity.numerical_entity import NumericalEntity
 
 
@@ -25,5 +26,17 @@ class PeopleEntity(NumericalEntity):
     """
 
     unit = attr.ib(type=str, default="", validator=attr.validators.instance_of(str))
-    entity_type: Optional[str] = attr.ib(default="people", repr=False, order=False)
-    __properties_map = constants.PEOPLE_ENTITY_PROPS
+    entity_type: Optional[str] = attr.ib(default="people", order=False)
+
+    @classmethod
+    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> PeopleEntity:
+        value = d[const.VALUE][const.VALUE]
+        return cls(
+            range={const.START: d[const.START], const.END: d[const.END]},
+            body=d[const.BODY],
+            dim=d[const.DIM],
+            alternative_index=alternative_index,
+            latent=d[const.LATENT],
+            values=[{const.VALUE: value}],
+            unit=d[const.VALUE][const.UNIT]
+        )

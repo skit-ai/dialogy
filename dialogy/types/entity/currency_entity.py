@@ -5,7 +5,8 @@ Module provides access to entity types that can be parsed to currencies and thei
 Import classes:
     - CurrencyEntity
 """
-from typing import Any, Dict
+from __future__ import annotations
+from typing import Any, Dict, Optional
 
 import attr
 
@@ -30,15 +31,9 @@ class CurrencyEntity(NumericalEntity):
     """
 
     unit = attr.ib(type=str, validator=attr.validators.instance_of(str), kw_only=True)
+    entity_type = attr.ib(default="amount-of-money", kw_only=True)
 
-    @classmethod
-    def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
-        unit = dict_[const.EntityKeys.VALUE].get(const.EntityKeys.UNIT)
-        dict_ = super().reshape(dict_)
-        dict_[const.EntityKeys.UNIT] = unit
-        return dict_
-
-    def get_value(self, reference: Any = None) -> Any:
+    def get_value(self) -> Any:
         """
         Getter for CurrencyEntity.
 
@@ -49,5 +44,18 @@ class CurrencyEntity(NumericalEntity):
         :return: [description]
         :rtype: Any
         """
-        value = super().get_value(reference=reference)
+        value = super().get_value()
         return f"{self.unit}{value:.2f}"
+
+    @classmethod
+    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> CurrencyEntity:
+        value = d[const.VALUE][const.VALUE]
+        return cls(
+            range={const.START: d[const.START], const.END: d[const.END]},
+            body=d[const.BODY],
+            dim=d[const.DIM],
+            alternative_index=alternative_index,
+            values=[{const.VALUE: value}],
+            latent=d[const.LATENT],
+            unit=d[const.VALUE][const.UNIT]
+        )

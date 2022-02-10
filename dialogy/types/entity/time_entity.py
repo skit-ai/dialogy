@@ -5,8 +5,9 @@ Module provides access to entity types that can be parsed to obtain datetime val
 Import classes:
     - TimeEntity
 """
+from __future__ import annotations
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import attr
 import pydash as py_
@@ -31,23 +32,8 @@ class TimeEntity(NumericalEntity):
 
     dim = "time"
     grain = attr.ib(type=str, default=None, validator=attr.validators.instance_of(str))
-    __properties_map = const.TIME_ENTITY_PROPS
 
-    @classmethod
-    def reshape(cls, dict_: Dict[str, Any]) -> Dict[str, Any]:
-        dict_ = super(TimeEntity, cls).reshape(dict_)
-        # Pulling out the value of entity's **grain**. The value of **grain** helps
-        # us understand the precision of the entity. Usually present for `Time` dimension
-        # expect "year", "month", "day", etc.
-        if all(
-            const.EntityKeys.GRAIN in value for value in dict_[const.EntityKeys.VALUES]
-        ):
-            dict_[const.EntityKeys.GRAIN] = dict_[const.EntityKeys.VALUES][0][
-                const.EntityKeys.GRAIN
-            ]
-        return dict_
-
-    def get_value(self, reference: Any = None) -> Any:
+    def get_value(self) -> Any:
         """
         Return the date string in ISO format from the dictionary passed
 
@@ -64,13 +50,20 @@ class TimeEntity(NumericalEntity):
         :return: :code:`date["value"]`
         :rtype: Optional[datetime]
         """
-        entity_date_value = (
-            super().get_value() if not reference else reference.get("value")
-        )
-        if entity_date_value:
-            return datetime.fromisoformat(entity_date_value)
-        else:
-            raise KeyError(f"Expected key `value` in {reference} for {self}")
+        entity_date_value = super().get_value()
+        return datetime.fromisoformat(entity_date_value)
+
+    def collect_datetime_values(self) -> List[str]:
+        """
+        Collect all datetime values from the entity
+
+        :return: List of datetime values
+        :rtype: List[str]
+        """
+        return [
+            datetime.fromisoformat(value[const.VALUE])
+            for value in self.values
+        ]
 
     def is_uniq_date_from_values(self) -> bool:
         """
@@ -81,11 +74,7 @@ class TimeEntity(NumericalEntity):
         :return: True if there is a unique day in all datetime values
         :rtype: bool
         """
-        dates = []
-        for date_value in self.values:
-            date_ = self.get_value(date_value)
-            if date_:
-                dates.append(date_.day)
+        dates = self.collect_datetime_values()
         return len(py_.uniq(dates)) == 1
 
     def is_uniq_day_from_values(self) -> bool:
@@ -95,24 +84,26 @@ class TimeEntity(NumericalEntity):
         Where weekday ranges from 0 for Monday till 6 for Sunday
         Ex: for "2021-04-17T16:00:00.000+05:30", the weekday is 5 (Saturday)
 
+        Duckling may return 3 datetime values in chronological order. For cases where the utterance is "Monday", 
+        (or any weekday for that matter) we will get 3 values, each value a week apart.
+        We pair these dates and check the difference is 1 week long (7 days).
+
+        For example: 
+        
+        .. code-block:: python
+
+            # Say, our 3 date values are: 
+            date values = [21-04-2021, 28-04-2021, 05-05-2021]
+
+            # then we generate pairs as:
+            [(21-04-2021, 28-04-2021), (28-04-2021, 05-05-2021)]
+
+        If the difference between these dates is divisible by seven, then the input was a weekday.
+
         :return: True if there is a unique weekday in all datetime values
         :rtype: bool
         """
-        dates = []
-        for date_value in self.values:
-            date_ = self.get_value(date_value)
-            if date_:
-                dates.append(date_)
-        # Duckling may return 3 datetime values in chronological order.
-        # For cases where someone has said "Monday", we will get 3 values,
-        # each value a week apart.
-        # We are pairing these dates and checking whether the difference is a week (7 days).
-        # For example, if our dates are [21-04-2021, 28-04-2021, 05-05-2021],
-        # then we generate pairs as (21-04-2021, 28-04-2021) and (28-04-2021, 05-05-2021).
-        # If the difference between these dates is divisible by seven,
-        # then we are clear that the input was a weekday.
-        if not dates:
-            return False
+        dates = self.collect_datetime_values()
         return all(
             abs((next - prev).days) % 7 == 0
             for (prev, next) in zip(dates[:-1], dates[1:])
@@ -147,20 +138,24 @@ class TimeEntity(NumericalEntity):
         :rtype: str
         """
         if self.grain in const.DATE_UNITS:
-            return const.DATE
+            self.entity_type = const.DATE
         elif self.grain in const.TIME_UNITS and len(self.values) == 1:
-            return const.DATETIME
+            self.entity_type = const.DATETIME
         elif self.is_uniq_date_from_values() or self.is_uniq_day_from_values():
-            return const.DATETIME
+            self.entity_type = const.DATETIME
         elif len(self.values) > 0:
-            return const.TIME
-        else:
-            raise ValueError(f"Expected at least 1 value in {self.values} for {self}")
+            self.entity_type = const.TIME
 
-    def __attrs_post_init__(self) -> None:
-        self.post_init()
-
-    def post_init(self) -> None:
-        if isinstance(self.values, list) and self.values:
-            self.grain = self.values[0].get("grain") or self.grain
-        self.entity_type = self.set_entity_type()
+    @classmethod
+    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> TimeEntity:
+        time_entity = cls(
+            range={const.START: d[const.START], const.END: d[const.END]},
+            body=d[const.BODY],
+            dim=d[const.DIM],
+            alternative_index=alternative_index,
+            latent=d[const.LATENT],
+            values=d[const.VALUE][const.VALUES],
+            grain=d[const.VALUE][const.VALUES][0][const.GRAIN]
+        )
+        time_entity.set_entity_type()
+        return time_entity
