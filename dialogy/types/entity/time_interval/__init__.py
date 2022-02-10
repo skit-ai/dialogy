@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional
 import attr
 
 from dialogy import constants as const
-from dialogy.types.entity import TimeEntity
+from dialogy.types.entity.time import TimeEntity
 
 
 @attr.s

@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 import attr
 
 import dialogy.constants as const
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 
 
 @attr.s

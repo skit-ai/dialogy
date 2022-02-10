@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from pydash import py_
 
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 from dialogy.utils import normalize
 
 

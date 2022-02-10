@@ -6,7 +6,7 @@ import attr
 from this import d
 
 from dialogy import constants as const
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 
 
 @attr.s

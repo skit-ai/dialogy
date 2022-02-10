@@ -143,7 +143,7 @@ from tqdm import tqdm
 from dialogy import constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 from dialogy.types.entity.deserialize import deserialize_duckling_entity
 from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
 
