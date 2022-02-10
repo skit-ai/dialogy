@@ -38,6 +38,14 @@ def test_entity_not_found():
     )
     assert l.get_entities(["I live in punjab"], "en") == []
 
+def test_keyerror():
+    l = ListSearchPlugin(
+        dest="output.entities",
+        fuzzy_threshold=0.4,
+        fuzzy_dp_config={"en": {"location": {"delhi": "Delhi"}}},
+    )
+    assert l.get_entities(["ramchandra k hathiyar"], "en") == []
+
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_get_list_entities(payload):

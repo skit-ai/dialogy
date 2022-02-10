@@ -170,41 +170,43 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         entity_patterns: List[str] = [""],
         match_dict: Dict[Any, Any] = {},
     ) -> Tuple[Text, Label, Value, Span, Score]:
+        try:
+            sentence = nlp(query).sentences[0]
+            value = ""
+            pos_tags = ["PROPN", "NOUN", "ADP"]
+            result_dict = {}
+            for word in sentence.words:
+                if word.upos in pos_tags:
+                    if value == "":
+                        span_start = word.start_char
+                    span_end = word.end_char
 
-        sentence = nlp(query).sentences[0]
-        value = ""
-        pos_tags = ["PROPN", "NOUN", "ADP"]
-        result_dict = {}
-        for word in sentence.words:
-            if word.upos in pos_tags:
-                if value == "":
-                    span_start = word.start_char
-                span_end = word.end_char
+                    """
+                    joining individual tokens that together are the real entity,
+                    Since we are dealing with Multi-Word entities here
 
-                """
-                joining individual tokens that together are the real entity,
-                Since we are dealing with Multi-Word entities here
+                    """
+                    value = value + str(word.text) + " "
+            if value != "":
+                for pattern in entity_patterns:
+                    val = fuzz.ratio(pattern, value) / 100
+                    if val > self.fuzzy_threshold:
+                        match_value = match_dict[pattern]
+                        result_dict[match_value] = val
+                if result_dict:
+                    match_output = max(result_dict, key=lambda x: result_dict[x])
+                    match_score = result_dict[match_output]
 
-                """
-                value = value + str(word.text) + " "
-        if value != "":
-            for pattern in entity_patterns:
-                val = fuzz.ratio(pattern, value) / 100
-                if val > self.fuzzy_threshold:
-                    match_value = match_dict[pattern]
-                    result_dict[match_value] = val
-            if result_dict:
-                match_output = max(result_dict, key=lambda x: result_dict[x])
-                match_score = result_dict[match_output]
-
-                return (
-                    value,
-                    entity_type,
-                    match_output,
-                    (span_start, span_end),
-                    match_score,
-                )
-        return (value, entity_type, "", (0, 0), 0.0)
+                    return (
+                        value,
+                        entity_type,
+                        match_output,
+                        (span_start, span_end),
+                        match_score,
+                    )
+            return (value, entity_type, "", (0, 0), 0.0)
+        except KeyError:
+            return ("", entity_type, "", (0, 0), 0.0)
 
     # new method based on experiments done during development of channel parser
     def get_fuzzy_dp_search(self, transcript: str, lang: str = "") -> MatchType:
