@@ -2,51 +2,50 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.duckling_plugin package" href="dialogy.plugins.text.duckling_plugin.html" /><link rel="prev" title="dialogy.plugins.text.classification package" href="dialogy.plugins.text.classification.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
-    <meta name="generator" content="sphinx-3.5.4, furo 2021.06.18.beta36"/>
-        <title>dialogy.plugins.text.combine_date_time package - dialogy 0.8.10 documentation</title>
-      <link rel="stylesheet" href="../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
-    <link rel="stylesheet" href="../_static/pygments.css">
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
+        <title>dialogy.plugins.text.combine_date_time package - dialogy 0.9.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=0af69da206d614734f649b27d4cdc2dd6c31f41d" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
     
 
 
 <style>
-  :root {
+  body {
     --color-code-background: #f8f8f8;
   --color-code-foreground: black;
   
   }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
   @media (prefers-color-scheme: dark) {
-    :root {
+    body:not([data-theme="light"]) {
       --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   
     }
   }
-
-  /* For allowing end-user-specific overrides */
-  .override-light {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
-  
-  }
-  .override-dark {
-    --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-  }
-</style><link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
-    <link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
-  <body dir="">
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
     
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
       <line x1="4" y1="6" x2="20" y2="6" />
       <line x1="10" y1="12" x2="20" y2="12" />
       <line x1="6" y1="18" x2="20" y2="18" />
@@ -54,9 +53,8 @@
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="feather feather-menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
       <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -64,18 +62,57 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="feather feather-chevron-right">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
     </svg>
   </symbol>
 </svg>
 
 <input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
 <input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation"></label>
-<label class="overlay toc-overlay" for="__toc"></label>
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
 
 
 
@@ -83,14 +120,24 @@
   <header class="mobile-header">
     <div class="header-left">
       <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
         <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.8.10 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.1 documentation</div></a>
     </div>
     <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
     </div>
@@ -101,76 +148,47 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.8.10 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.1 documentation</span>
   
-</a><form class="sidebar-search-container" method="get" action="../search.html">
-  <input class="sidebar-search" placeholder=Search name="q">
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
-</form><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="dialogy.base.html">dialogy.base package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.cli.html">dialogy.cli package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.constants.html">dialogy.constants package</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.html">dialogy.plugins package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">dialogy.plugins.text.combine_date_time package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">dialogy.plugins.text.list_search_plugin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dialogy.plugins.text.voting.html">dialogy.plugins.text.voting package</a></li>
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.output.html">Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.plugin.html">Base Plugin</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.keyword.html">Pattern Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.numerical.html">Numeric Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.people.html">People Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time.html">Time Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.duration.html">Duration Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
-</li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="dialogy.plugins.text.html">dialogy.plugins.text package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dialogy.plugins.text.combine_date_time package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">dialogy.plugins.text.list_search_plugin package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.plugins.text.voting.html">dialogy.plugins.text.voting package</a></li>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.calibration.html">dialogy.plugins.text.calibration package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.canonicalization.html">dialogy.plugins.text.canonicalization package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">dialogy.plugins.text.classification package</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">dialogy.plugins.text.combine_date_time package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">dialogy.plugins.text.duckling_plugin package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">dialogy.plugins.text.lb_plugin package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">dialogy.plugins.text.list_entity_plugin package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">dialogy.plugins.text.list_search_plugin package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">dialogy.plugins.text.merge_asr_output package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">dialogy.plugins.text.slot_filler package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.voting.html">dialogy.plugins.text.voting package</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="dialogy.types.html">dialogy.types package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.signal.html">dialogy.types.signal package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.slots.html">dialogy.types.slots package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.html">dialogy.types.entity package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.signal.html">dialogy.types.signal package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">dialogy.types.slots package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.utterances.html">dialogy.types.utterances package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.utils.html">dialogy.utils package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">dialogy.workflow package</a></li>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.utils.html">Utils</a></li>
 </ul>
 
 </div>
@@ -179,139 +197,202 @@
       
     </div>
   </aside>
-  <main class="main">
+  <div class="main">
     <div class="content">
-      <article role="main">
-        <label class="toc-overlay-icon toc-content-icon" for="__toc">
-          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-        </label>
-        <div class="section" id="dialogy-plugins-text-combine-date-time-package">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="dialogy-plugins-text-combine-date-time-package">
 <h1>dialogy.plugins.text.combine_date_time package<a class="headerlink" href="#dialogy-plugins-text-combine-date-time-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-dialogy.plugins.text.combine_date_time">
+<section id="module-dialogy.plugins.text.combine_date_time">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.combine_date_time" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">dialogy.plugins.text.combine_date_time.</span></code><code class="sig-name descname"><span class="pre">CombineDateTimeOverSlots</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_intents</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="dialogy.base.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
-<p>Dialog case:</p>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CombineDateTimeOverSlots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
+<p id="combine-date-time-over-slots">Dialog case:</p>
 <p>Assume that at the moment of dialog the date is 15th December 2019.</p>
-<p>[1] BOT: When do you want to visit?
-[2] USER: Day after tomorrow        # entity = {‘type’: ‘date’, ‘value’: ‘2019-12-17’}
-[3] BOT: At what time?
-[4] USER: 3 pm                      # entity = {‘type’: ‘time’, ‘value’: ‘2019-12-15T15:00:00+0000’}</p>
+<div class="table-wrapper"><table class="docutils align-default">
+<colgroup>
+<col style="width: 3%"/>
+<col style="width: 7%"/>
+<col style="width: 30%"/>
+<col style="width: 60%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head"></th>
+<th class="head"><p>utterance</p></th>
+<th class="head"><p>entity</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>BOT</p></td>
+<td><p>When do you want to visit?</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>USER</p></td>
+<td><p>Day after tomorrow</p></td>
+<td><p>{‘type’: ‘date’, ‘value’: ‘2019-12-17’}</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>BOT</p></td>
+<td><p>At what time?</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>USER</p></td>
+<td><p>3 pm</p></td>
+<td><p>{‘type’: ‘time’, ‘value’: ‘2019-12-15T15:00:00+0000’}</p></td>
+</tr>
+</tbody>
+</table></div>
 <p>We want to use the slots such that the date from interaction [2] and the time from interaction [4] are combined into a single entity.</p>
 <p>We receive this as a tracked slot:</p>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>json
-[{</p>
-<blockquote>
-<div><p>“name”: “_callback_”,
-“slots”: [{</p>
-<blockquote>
-<div><p>“name”: “callback_datetime”,
-“type”: [</p>
-<blockquote>
-<div><p>“time”,
-“date”,
-“datetime”</p>
-</div></blockquote>
-<p>],
-“values”: [{</p>
-<blockquote>
-<div><p>“alternative_index”: 0,
-“body”: “tomorrow”,
-“entity_type”: “date”,
-“grain”: “day”,
-“parsers”: [“duckling”],
-“range”: {</p>
-<blockquote>
-<div><p>“end”: 8,
-“start”: 0</p>
-</div></blockquote>
-<p>},
-“score”: null,
-“type”: “value”,
-“value”: “2021-10-15T00:00:00+05:30”</p>
-</div></blockquote>
-<p>}]</p>
-</div></blockquote>
-<p>}]</p>
-</div></blockquote>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_callback_"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"slots"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"callback_datetime"</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">"time"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">"date"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">"datetime"</span><span class="w"></span>
+<span class="w">        </span><span class="p">],</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"alternative_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"body"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tomorrow"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"date"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"grain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"day"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"parsers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"duckling"</span><span class="p">],</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"score"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-10-15T00:00:00+05:30"</span><span class="w"></span>
+<span class="w">        </span><span class="p">}]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}]</span><span class="w"></span>
+<span class="p">}]</span><span class="w"></span>
+</pre></div>
+</div>
 <p>At interaction [4] we would have a TimeEntity from DucklingPlugin but as we can see, the tracked slot provides us
 previously filled values as json.</p>
 <p>So we need to parse the first value in the slot (since they are the entities) if they are one of these date, time, datetime types.
 This would give us a date / time entity that we can subsequently combine with the available entity in the current turn.</p>
 <dl class="py attribute">
-<dt id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATE">
-<code class="sig-name descname"><span class="pre">DATE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'date'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATE">
+<span class="sig-name descname"><span class="pre">DATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'date'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATETIME">
-<code class="sig-name descname"><span class="pre">DATETIME</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'datetime'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATETIME" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATETIME">
+<span class="sig-name descname"><span class="pre">DATETIME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'datetime'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATETIME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.SUPPORTED_ENTITIES">
-<code class="sig-name descname"><span class="pre">SUPPORTED_ENTITIES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['date',</span> <span class="pre">'time',</span> <span class="pre">'datetime']</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.SUPPORTED_ENTITIES" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.SUPPORTED_ENTITIES">
+<span class="sig-name descname"><span class="pre">SUPPORTED_ENTITIES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['date',</span> <span class="pre">'time',</span> <span class="pre">'datetime']</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.SUPPORTED_ENTITIES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.TIME">
-<code class="sig-name descname"><span class="pre">TIME</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'time'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.TIME" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.TIME">
+<span class="sig-name descname"><span class="pre">TIME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'time'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.TIME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.join">
-<code class="sig-name descname"><span class="pre">join</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_entity</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity" title="dialogy.types.entity.time_entity.TimeEntity"><span class="pre">dialogy.types.entity.time_entity.TimeEntity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_entity</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.time_entity.TimeEntity" title="dialogy.types.entity.time_entity.TimeEntity"><span class="pre">dialogy.types.entity.time_entity.TimeEntity</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">None</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.join" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.combine_time_entities_from_slots">
+<span class="sig-name descname"><span class="pre">combine_time_entities_from_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.combine_time_entities_from_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.combine_time_entities_from_slots" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEntity</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py method">
-<dt id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.utility">
-<code class="sig-name descname"><span class="pre">utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> → <span class="pre">Any</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.utility" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.get_tracked_slots">
+<span class="sig-name descname"><span class="pre">get_tracked_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.get_tracked_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.get_tracked_slots" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.join">
+<span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.join" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEntity</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.pick_previously_filled_time_entity">
+<span class="sig-name descname"><span class="pre">pick_previously_filled_time_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracked_slots</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.pick_previously_filled_time_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.pick_previously_filled_time_entity" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeEntity</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.utility">
+<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.utility" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combine the date and time entities collected across turns into a single entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEntity</span></code></a>]</p>
+</dd>
+</dl>
 </dd></dl>
 </dd></dl>
 <dl class="py function">
-<dt id="dialogy.plugins.text.combine_date_time.has_time_component">
-<code class="sig-prename descclassname"><span class="pre">dialogy.plugins.text.combine_date_time.</span></code><code class="sig-name descname"><span class="pre">has_time_component</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#has_time_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.has_time_component" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.has_time_component">
+<span class="sig-name descname"><span class="pre">has_time_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#has_time_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.has_time_component" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py function">
-<dt id="dialogy.plugins.text.combine_date_time.is_date">
-<code class="sig-prename descclassname"><span class="pre">dialogy.plugins.text.combine_date_time.</span></code><code class="sig-name descname"><span class="pre">is_date</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="dialogy.types.entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a></span></em><span class="sig-paren">)</span> → <span class="pre">bool</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#is_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.is_date" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</div>
-</div>
+<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.is_date">
+<span class="sig-name descname"><span class="pre">is_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#is_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.is_date" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+</section>
+</section>
 
-      </article>
+        </article>
+      </div>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="dialogy.plugins.text.duckling_plugin.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">dialogy.plugins.text.duckling_plugin package</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="dialogy.plugins.text.classification.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">dialogy.plugins.text.classification package</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
 
         <div class="related-information">
-              Copyright &#169; 
-            |
-            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
-              and
-              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
-            |
-            <a class="muted-link" href="../_sources/source/dialogy.plugins.text.combine_date_time.rst.txt"
+              Copyright &#169;  |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/source/dialogy.plugins.text.combine_date_time.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -343,13 +424,13 @@ This would give us a date / time entity that we can subsequently combine with th
       
       
     </aside>
-  </main>
-</div>
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+    </body>
 </html>

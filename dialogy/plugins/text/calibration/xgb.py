@@ -84,6 +84,8 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
 
 class CalibrationModel(Plugin):
     """
+    .. _calibration_plugin:
+
     This plugin provides a calibration model that sits between ASR and SLU.
     It trains a model that learn to classify alternatives from the text and
     AM, LM score. Bad alternatives are removed before training SLU and during

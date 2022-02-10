@@ -88,9 +88,9 @@ def test_entity_extractor_transform():
     )
     df_ = entity_extractor.transform(df)
     parsed_entities = df_.entities
-    assert parsed_entities.iloc[0][0].type == "fruits"
+    assert parsed_entities.iloc[0][0].entity_type == "fruits"
     assert parsed_entities.iloc[0][0].value == "apple"
-    assert parsed_entities.iloc[1][1].type == "fruits"
+    assert parsed_entities.iloc[1][1].entity_type == "fruits"
     assert parsed_entities.iloc[1][1].value == "orange"
 
 
@@ -148,9 +148,9 @@ def test_entity_extractor_transform_no_existing_entity():
     )
     df_ = entity_extractor.transform(df)
     parsed_entities = df_.entities
-    assert parsed_entities.iloc[0][0].type == "fruits"
+    assert parsed_entities.iloc[0][0].entity_type == "fruits"
     assert parsed_entities.iloc[0][0].value == "apple"
-    assert parsed_entities.iloc[1][0].type == "fruits"
+    assert parsed_entities.iloc[1][0].entity_type == "fruits"
     assert parsed_entities.iloc[1][0].value == "orange"
 
 
@@ -172,7 +172,6 @@ def test_get_list_entities(payload):
         )
 
         workflow = Workflow([list_entity_plugin])
-        print(transcripts)
         _, output = workflow.run(input_=Input(utterances=transcripts))
         entities = output["entities"]
 
@@ -181,7 +180,7 @@ def test_get_list_entities(payload):
 
         for i, entity in enumerate(entities):
             assert entity["value"] == expected[i]["value"]
-            assert entity["type"] == expected[i]["type"]
+            assert entity["entity_type"] == expected[i]["entity_type"]
             if "score" in expected[i]:
                 assert entity["score"] == expected[i]["score"]
     else:

@@ -63,4 +63,9 @@ def test_entity_extractor_for_thresholding(payload) -> None:
         entity.json()
         for entity in entity_extractor.entity_consensus(entities, input_size)
     ]
-    assert expected == entities
+
+    for expected_entity, extracted_entity in zip(expected, entities):
+        assert expected_entity["type"] == extracted_entity["type"]
+        assert expected_entity["value"] == extracted_entity["value"]
+        assert expected_entity["range"] == extracted_entity["range"]
+        assert expected_entity["entity_type"] == extracted_entity["entity_type"]

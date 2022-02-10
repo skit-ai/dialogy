@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 import attr
 
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 from dialogy.types.slots import Rule, Slot
 from dialogy.utils.logger import logger
 

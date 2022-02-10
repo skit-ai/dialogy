@@ -30,6 +30,8 @@ from dialogy.utils import load_file, logger, save_file
 class MLPMultiClass(Plugin):
     """
     This plugin provides a classifier based on sklearn's MLPClassifier.
+
+    .. _MLPMultiClass:
     """
 
     def __init__(

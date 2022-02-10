@@ -4,10 +4,7 @@ DEFAULT_NAMESPACE = "vernacular-ai"
 DEFAULT_PROJECT_TEMPLATE = "dialogy-template-simple-transformers"
 
 PLUGINS = "plugins"
-PREPROCESSORS = "preprocessors"
-POSTPROCESSORS = "postprocessors"
 DEBUG = "debug"
-WORKFLOW_PUBLIC_PROPERTIES = [PREPROCESSORS, POSTPROCESSORS]
 S_INTENT_OOS = "_oos_"
 TRANSCRIPT = "transcript"
 AM_SCORE = "am_score"
@@ -19,40 +16,60 @@ LOCK = "lock"
 NAME = "name"
 SLOTS = "slots"
 
+DUCKLING_ENTITY_KEYS = ("body", "dim", "end", "latent", "start", "value")
+DUCKLING_TIME_VALUES_ENTITY_KEYS = ("grain", "type", "value", "values")
+DUCKLING_TIME_INTERVAL_ENTITY_KEYS = (
+    ("from", "type", "values"),
+    ("to", "type", "values"),
+    ("from", "to", "type", "values"),
+)
 
-class EntityKeys:
-    BODY = "body"
-    DIM = "dim"
-    END = "end"
-    FROM = "from"
-    GRAIN = "grain"
-    INTERVAL = "interval"
-    DURATION = "duration"
-    LATENT = "latent"
-    RANGE = "range"
-    START = "start"
-    TO = "to"
-    TYPE = "type"
-    ENTITY_TYPE = "entity_type"
-    UNIT = "unit"
-    VALUE = "value"
-    VALUES = "values"
-    ORIGIN = "origin"
-    ISSUER = "issuer"
-    NORMALIZED = "normalized"
-    SLOT_NAMES = "slot_names"
-    ALTERNATIVE_INDEX = "alternative_index"
-    ALTERNATIVE_INDICES = "alternative_indices"
-    CREDIT_CARD_NUMBER = "credit-card-number"
+# Time Entity types
+DATE = "date"
+TIME = "time"
+DATETIME = "datetime"
 
 
+PEOPLE = "people"
+NUMBER = "number"
+AMOUNT_OF_MONEY = "amount-of-money"
+DURATION = "duration"
+CREDIT_CARD_NUMBER = "credit-card-number"
+
+
+DUCKLING_DIMS = [PEOPLE, NUMBER, AMOUNT_OF_MONEY, DURATION, CREDIT_CARD_NUMBER, TIME]
+
+BODY = "body"
+DIM = "dim"
+END = "end"
+FROM = "from"
+GRAIN = "grain"
+INTERVAL = "interval"
+DURATION = "duration"
+LATENT = "latent"
+RANGE = "range"
+START = "start"
+TO = "to"
+TYPE = "type"
+ENTITY_TYPE = "entity_type"
+UNIT = "unit"
+VALUE = "value"
+VALUES = "values"
+ORIGIN = "origin"
+ISSUER = "issuer"
+NORMALIZED = "normalized"
+ALTERNATIVE_INDEX = "alternative_index"
+ALTERNATIVE_INDICES = "alternative_indices"
+CREDIT_CARD_NUMBER = "credit-card-number"
+
+SLOT_NAMES = "slot_names"
 SKIP_ENTITY_ATTRS = [
-    EntityKeys.DIM,
-    EntityKeys.VALUES,
-    EntityKeys.LATENT,
-    EntityKeys.ORIGIN,
-    EntityKeys.SLOT_NAMES,
-    EntityKeys.ALTERNATIVE_INDICES,
+    DIM,
+    VALUES,
+    LATENT,
+    ORIGIN,
+    SLOT_NAMES,
+    ALTERNATIVE_INDICES,
 ]
 
 # This section is needed for dialogy.types.entities.*
@@ -64,36 +81,31 @@ SKIP_ENTITY_ATTRS = [
 # instantiate the Entity. We use this mapping to ensure that the
 # values belong to expected types.
 BASE_ENTITY_PROPS = [
-    ([EntityKeys.RANGE], dict),
-    ([EntityKeys.RANGE, EntityKeys.START], int),
-    ([EntityKeys.RANGE, EntityKeys.END], int),
-    ([EntityKeys.BODY], str),
-    ([EntityKeys.VALUES], list),
-    ([EntityKeys.DIM], str),
-    ([EntityKeys.LATENT], bool),
+    ([RANGE], dict),
+    ([RANGE, START], int),
+    ([RANGE, END], int),
+    ([BODY], str),
+    ([VALUES], list),
+    ([DIM], str),
+    ([LATENT], bool),
 ]
 
-PLASTIC_MONEY_PROPS = [
-    ([EntityKeys.RANGE], dict),
-    ([EntityKeys.RANGE, EntityKeys.START], int),
-    ([EntityKeys.RANGE, EntityKeys.END], int),
-    ([EntityKeys.BODY], str),
-    ([EntityKeys.VALUE], dict),
-    ([EntityKeys.DIM], str),
-    ([EntityKeys.LATENT], bool),
+CREDIT_CARD_NUMBER_PROPS = [
+    ([RANGE], dict),
+    ([RANGE, START], int),
+    ([RANGE, END], int),
+    ([BODY], str),
+    ([VALUE], dict),
+    ([DIM], str),
+    ([LATENT], bool),
 ]
 
-TIME_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.GRAIN], str)]
-PEOPLE_ENTITY_PROPS = BASE_ENTITY_PROPS + [([EntityKeys.UNIT], str)]
+TIME_ENTITY_PROPS = BASE_ENTITY_PROPS + [([GRAIN], str)]
+PEOPLE_ENTITY_PROPS = BASE_ENTITY_PROPS + [([UNIT], str)]
 
 # Time related constants
 DATE_UNITS = ["day", "week", "month", "quarter", "year"]
 TIME_UNITS = ["hour", "minute", "second"]
-
-# Time Entity types
-DATE = "date"
-TIME = "time"
-DATETIME = "datetime"
 
 
 # This section covers signals tuple indices

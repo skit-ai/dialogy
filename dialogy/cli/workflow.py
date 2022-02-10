@@ -40,7 +40,6 @@ def workflow_cli(args: argparse.Namespace) -> None:
     CLI entry point for workflows.
 
     args contain the following attributes:
-    ----
 
     module      - We expect the Workflow or its subclass to be available at this path.
     fn          - A function that provides a Workflow or its subclass' instance.

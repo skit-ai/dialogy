@@ -95,42 +95,6 @@ class VotePlugin(Plugin):
 
     .. warning:: Use this with caution, this is not production ready yet.
 
-    .. ipython:: python
-
-        from dialogy.plugins import VotePlugin
-        from dialogy.workflow import Workflow
-        from dialogy.types import Intent
-
-        # Let's say we had a normalized set of alternatives that look like:
-        transcripts = [
-            "yes",
-            "yet",
-            "yep",
-            "ye",
-            "<UNK>", # ASR's way of being under-confident about the token
-            "no" # expected anomalies in SLU.
-        ]
-
-        # We have noticed that concatenation of all the transcripts leads to a situation
-        # where a model can't pick signals since there is only one, the one built by
-        # concatenation of transcripts. So let's mock the intents for this and continue.
-
-        intents = [Intent(name="affirmative", score=0.8), Intent(name="affirmative", score=0.8),
-                    Intent(name="affirmative", score=0.8), Intent(name="affirmative", score=0.8),
-                    Intent(name="_oos_", score=0.8), Intent(name="negative", score=0.9)]
-        # This situation simulates a single very confident prediction, while the overall group representation
-        # paints a different picture.
-
-        # We need to define a function to let the plugin modify the workflow state.
-
-        def update_intent(w, intent):
-            w.output[0] = intent
-        vote_plugin = VotePlugin(access=lambda w: (w.output, len(w.input[0])), mutate=update_intent, debug=False)
-        workflow = Workflow([vote_plugin])
-        workflow.output = intents
-        workflow.run(input_=(transcripts,))
-
-
     :param access: A function that expects workflow as an argument and returns a Tuple.
         The Tuple contains: :code:`intents`, :code:`trials`. Here,
 

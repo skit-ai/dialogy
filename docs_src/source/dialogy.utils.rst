@@ -4,6 +4,14 @@ dialogy.utils package
 Submodules
 ----------
 
+dialogy.utils.datetime module
+-----------------------------
+
+.. automodule:: dialogy.utils.datetime
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.utils.file\_handler module
 ----------------------------------
 

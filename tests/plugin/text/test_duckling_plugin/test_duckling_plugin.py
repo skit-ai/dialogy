@@ -13,21 +13,6 @@ from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
 
-def test_plugin_with_custom_entity_map() -> None:
-    """
-    Here we are checking if the plugin has access to workflow.
-    Since we haven't provided `access`, `mutate` to `DucklingPlugin`
-    we will receive a `TypeError`.
-    """
-    duckling_plugin = DucklingPlugin(
-        locale="en_IN",
-        timezone="Asia/Kolkata",
-        dimensions=["time"],
-        entity_map={"number": {"value": BaseEntity}},
-    )
-    assert duckling_plugin.dimension_entity_map["number"]["value"] == BaseEntity
-
-
 def test_remove_low_scoring_entities_works_only_if_threshold_is_not_none():
     duckling_plugin = DucklingPlugin(
         locale="en_IN",
@@ -111,39 +96,6 @@ def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
     assert duckling_plugin.remove_low_scoring_entities([entity_A, entity_B]) == [
         entity_B,
     ]
-
-
-@httpretty.activate
-def test_duckling_timeout() -> None:
-    """
-    [summary]
-
-    :return: [description]
-    :rtype: [type]
-    """
-    locale = "en_IN"
-    wait_time = 0.1
-
-    def raise_timeout(_, __, headers):
-        time.sleep(wait_time)
-        return 200, headers, "received"
-
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=raise_timeout
-    )
-
-    duckling_plugin = DucklingPlugin(
-        locale=locale,
-        dimensions=["time"],
-        timezone="Asia/Kolkata",
-        threshold=0.2,
-        timeout=0.01,
-        dest="output.entities",
-    )
-
-    workflow = Workflow([duckling_plugin])
-    _, output = workflow.run(Input(utterances="test"))
-    assert output["entities"] == []
 
 
 def test_duckling_connection_error() -> None:
@@ -240,6 +192,10 @@ def test_plugin_working_cases(payload) -> None:
             assert output["entities"] == []
 
         for i, entity in enumerate(output["entities"]):
+            from pprint import pprint
+
+            pprint(entity)
+            pprint(expected_types)
             expected_entity_type = expected_types[i]["entity_type"]
             assert entity["entity_type"] == expected_entity_type
     else:

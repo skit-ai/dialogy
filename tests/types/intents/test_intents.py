@@ -3,7 +3,7 @@ Tests for intents
 """
 import pytest
 
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 from dialogy.types.intent import Intent
 
 
@@ -75,8 +75,7 @@ def test_slot_filling() -> None:
         body=body,
         dim="default",
         entity_type="basic",
-        values=[{"key": "value"}],
-        slot_names=["basic_slot"],
+        values=[{"value": "value"}],
     )
     rules = {"intent": {"basic_slot": "basic"}}
     intent = Intent(name="intent", score=0.8)
@@ -104,8 +103,7 @@ def test_slot_filling_prop_removal() -> None:
         body=body,
         dim="default",
         entity_type="basic",
-        values=[{"key": "value"}],
-        slot_names=["basic_slot"],
+        values=[{"value": "value"}],
     )
     rules = {"intent": {"basic_slot": "basic"}}
     intent = Intent(name="intent", score=0.8)
@@ -122,16 +120,14 @@ def test_rule_with_multiple_types() -> None:
         body="12th december",
         dim="default",
         entity_type="ordinal",
-        values=[{"key": "12th"}],
-        slot_names=["basic_slot"],
+        values=[{"value": "12th"}],
     )
     number_entity = BaseEntity(
         range={"from": 0, "to": 15},
         body="12 december",
         dim="default",
         entity_type="number",
-        values=[{"key": "12"}],
-        slot_names=["basic_slot"],
+        values=[{"value": "12"}],
     )
     rules = {"intent": {"basic_slot": ["ordinal", "number"]}}
     intent = Intent(name="intent", score=0.8)
