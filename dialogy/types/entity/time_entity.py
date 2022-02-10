@@ -53,7 +53,7 @@ class TimeEntity(NumericalEntity):
         entity_date_value = super().get_value()
         return datetime.fromisoformat(entity_date_value)
 
-    def collect_datetime_values(self) -> List[str]:
+    def collect_datetime_values(self) -> List[datetime]:
         """
         Collect all datetime values from the entity
 
@@ -109,7 +109,7 @@ class TimeEntity(NumericalEntity):
             for (prev, next) in zip(dates[:-1], dates[1:])
         )
 
-    def set_entity_type(self) -> str:
+    def set_entity_type(self) -> None:
         """
         Returns the type for this entity
 

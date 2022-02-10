@@ -33,28 +33,27 @@ class BaseEntity:
     # **range**
     #
     # is the character range in the alternative where the entity is parsed.
-    range = attr.ib(type=Dict[str, int], repr=False, order=False, kw_only=True)
+    range: Dict[str, int] = attr.ib(repr=False, order=False, kw_only=True)
 
     # **body**
     #
     # is the string from which the entity is extracted.
-    body = attr.ib(type=str, validator=attr.validators.instance_of(str), order=False)
+    body: str = attr.ib(validator=attr.validators.instance_of(str), order=False)
 
     # **dim**
     #
     # is influenced from Duckling's convention of categorization.
-    dim = attr.ib(type=Optional[str], default=None, repr=False, order=False)
+    dim: Optional[str] = attr.ib(default=None, repr=False, order=False)
 
     # **type**
     #
     # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
-    type = attr.ib(type=str, default="value", order=False, kw_only=True)
+    type: str = attr.ib(default="value", order=False, kw_only=True)
 
     # **parsers**
     #
     # gives the trail of all the functions that have changed this entity in the sequence of application.
-    parsers = attr.ib(
-        type=List[str],
+    parsers: List[str] = attr.ib(
         default=attr.Factory(list),
         validator=attr.validators.instance_of(list),
         order=False,
@@ -63,27 +62,26 @@ class BaseEntity:
     # **score**
     #
     # is the confidence that the range is the entity.
-    score = attr.ib(type=Optional[float], default=None)
+    score: Optional[float] = attr.ib(default=None)
 
     # **alternative_index**
     #
     # is the index of transcript within the ASR output: `List[Utterances]`
     # from which this entity was picked up. This may be None.
-    alternative_index = attr.ib(type=Optional[int], default=None, order=False)
-    alternative_indices = attr.ib(type=Optional[List[int]], default=None, order=False)
+    alternative_index: Optional[int] = attr.ib(default=None, order=False)
+    alternative_indices: Optional[List[int]] = attr.ib(default=None, order=False)
 
     # **latent**
     #
     # Duckling influenced attribute, tells if there is less evidence for an entity if latent is True.
-    latent = attr.ib(type=bool, default=False, order=False)
+    latent: bool = attr.ib(default=False, order=False)
 
     # **values**
     #
     # The parsed value of an entity resides within this attribute.
-    values = attr.ib(
-        type=List[Dict[str, Any]],
+    values: List[Dict[str, Any]] = attr.ib(
         default=attr.Factory(list),
-        validator=attr.validators.optional(attr.validators.instance_of(list)),
+        validator=attr.validators.optional(attr.validators.instance_of(list)), # type: ignore
         repr=False,
         order=False,
     )
@@ -176,8 +174,8 @@ class BaseEntity:
     def from_dict(cls, dict_: Dict[str, Any], reference: Optional[BaseEntity] = None) -> BaseEntity:
         if reference:
             if const.VALUES in dict_ or const.VALUE in dict_:
-                reference.values = None
-                reference.value = None
+                object.__setattr__(reference, const.VALUES, None)
+                object.__setattr__(reference, const.VALUE, None)
             return attr.evolve(reference, **dict_)
         return cls(**dict_)
 

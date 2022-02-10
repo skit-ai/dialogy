@@ -43,5 +43,5 @@ def deserialize_duckling_entity(duckling_entity_dict: Dict[str, Any], alternativ
     elif dimension == const.DURATION:
         return DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
 
-    elif dimension == const.CREDIT_CARD_NUMBER:
+    else: # dimension == const.CREDIT_CARD_NUMBER:
         return CreditCardNumberEntity.from_duckling(duckling_entity_dict, alternative_index)

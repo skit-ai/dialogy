@@ -30,8 +30,8 @@ class CurrencyEntity(NumericalEntity):
         - `type` is the type of the entity which can have values in ["value", "interval"]
     """
 
-    unit = attr.ib(type=str, validator=attr.validators.instance_of(str), kw_only=True)
-    entity_type = attr.ib(default="amount-of-money", kw_only=True)
+    unit: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
+    entity_type: str = attr.ib(default="amount-of-money", validator=attr.validators.instance_of(str), kw_only=True)
 
     def get_value(self) -> Any:
         """

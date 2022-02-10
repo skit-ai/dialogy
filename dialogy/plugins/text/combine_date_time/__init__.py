@@ -107,7 +107,7 @@ class CombineDateTimeOverSlots(Plugin):
 
     def join(
         self, current_entity: TimeEntity, previous_entity: TimeEntity
-    ) -> TimeEntity:
+    ) -> BaseEntity:
         current_turn_datetime = current_entity.get_value()
         previous_turn_datetime = previous_entity.get_value()
 

@@ -34,14 +34,14 @@ class TimeIntervalEntity(TimeEntity):
     type: str = attr.ib(default="value", order=False)
     from_value: Optional[datetime] = attr.ib(default=None, order=False)
     to_value: Optional[datetime] = attr.ib(default=None, order=False)
-    values: Optional[List[Dict[str, Any]]] = attr.ib(default=None, kw_only=True)
+    values: List[Dict[str, Any]] = attr.ib(default=None, kw_only=True)
     value: Dict[str, Any] = attr.ib(default=None, kw_only=True)
 
     @values.validator # type: ignore
     def _check_values(
         self,
         attribute: attr.Attribute, # type: ignore
-        values: Optional[int]
+        values: List[Dict[str, Any]]
     ) -> None:
         if not values:
             return
@@ -66,7 +66,7 @@ class TimeIntervalEntity(TimeEntity):
                 const.TO: {const.VALUE: self.to_value}
             }]
 
-    def collect_datetime_values(self) -> List[str]:
+    def collect_datetime_values(self) -> List[datetime]:
         """
         Collect all datetime values from the entity
 
