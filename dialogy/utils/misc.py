@@ -5,7 +5,6 @@ Import functions:
     - dict_traversal
     - validate_type
 """
-from datetime import datetime
 from functools import reduce
 from typing import Any, Dict, List, Tuple, Union
 
