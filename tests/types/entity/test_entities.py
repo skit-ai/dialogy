@@ -1,7 +1,6 @@
 """
 Tests for entities
 """
-import importlib
 from datetime import datetime
 
 import httpretty
@@ -14,10 +13,11 @@ from dialogy.types.entity import (
     LocationEntity,
     NumericalEntity,
     PeopleEntity,
-    PlasticCurrencyEntity,
+    CreditCardNumberEntity,
     TimeEntity,
     TimeIntervalEntity,
     entity_synthesis,
+    deserialize_duckling_entity
 )
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
@@ -112,11 +112,11 @@ def test_base_entity_value_setter():
         body=body,
         entity_type="basic",
         dim="default",
-        values=[],
+        values=[{"value": 5}],
     )
 
     # Had this not been a deep copy, it would have matched.
-    assert entity.get_value({"value": 5}) == 5, "Should be same"
+    assert entity.get_value() == 5, "Should be same"
 
 
 def test_entity_synthesis():
@@ -141,20 +141,20 @@ def test_entity_synthesis_exception():
 
 def test_entity_values_key_error():
     body = "12th december"
-    entity = BaseEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        dim="default",
-        entity_type="basic",
-        values=[{"key": "value"}],
-    )
     with pytest.raises(KeyError):
+        entity = BaseEntity(
+            range={"from": 0, "to": len(body)},
+            body=body,
+            dim="default",
+            entity_type="basic",
+            values=[{"key": "value"}],
+        )
         entity.get_value()
 
 
 def test_entity_parser_from_dict():
     mock_entity = make_mock_entity()
-    BaseEntity.from_dict(mock_entity)
+    TimeEntity.from_duckling(mock_entity, 1)
 
 
 def test_people_entity_unit_not_str_error():
@@ -189,52 +189,37 @@ def test_location_entity_value_not_int_error():
         )
 
 
-def test_entity_set_value_values_present():
-    body = "four"
-    entity = NumericalEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        dim="default",
-        entity_type="basic",
-        values=[{"value": 4}],
-    )
-    entity.set_value()
-    assert entity.value == 4
-
-
-def test_entity_set_value_values_missing():
-    body = "four"
-    entity = BaseEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        dim="default",
-        entity_type="basic",
-    )
-    entity.set_value(value=4)
-    assert entity.value == 4
-
-
 def test_interval_entity_set_value_values_missing() -> None:
     body = "between 2 to 4 am"
-    value = {
-        "to": {"value": "2021-01-22T05:00:00.000+05:30", "grain": "hour"},
-        "from": {"value": "2021-01-22T02:00:00.000+05:30", "grain": "hour"},
+    d = {
+        'body': 'between 2 to 4 am',
+        'start': 0,
+        'value': {'values': [{'to': {'value': '2022-02-11T05:00:00.000+05:30',
+            'grain': 'hour'},
+            'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'},
+        {'to': {'value': '2022-02-12T05:00:00.000+05:30', 'grain': 'hour'},
+            'from': {'value': '2022-02-12T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'},
+        {'to': {'value': '2022-02-13T05:00:00.000+05:30', 'grain': 'hour'},
+            'from': {'value': '2022-02-13T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'}],
+        'to': {'value': '2022-02-11T05:00:00.000+05:30', 'grain': 'hour'},
+        'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
+        'type': 'interval'},
+        'end': 17,
+        'dim': 'time',
+        'latent': False
     }
-    entity = TimeIntervalEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        entity_type="time",
-        grain="hour",
-        values=[value],
-    )
-    entity.set_value()
-    assert entity.value == value
+
+    entity = TimeIntervalEntity.from_duckling(d, 1)
+    assert entity.get_value() == datetime.fromisoformat('2022-02-11T02:00:00.000+05:30')
 
 
 def test_entity_jsonify() -> None:
     body = "12th december"
     value = "value"
-    values = [{"key": value}]
+    values = [{"value": value}]
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
         body=body,
@@ -242,7 +227,6 @@ def test_entity_jsonify() -> None:
         entity_type="basic",
         values=values,
     )
-    entity.set_value(value)
     entity_json = entity.json()
     assert "dim" not in entity_json
     assert entity_json.get("value") == value
@@ -251,7 +235,7 @@ def test_entity_jsonify() -> None:
 def test_entity_jsonify_unrestricted() -> None:
     body = "12th december"
     value = "value"
-    values = [{"key": value}]
+    values = [{"value": value}]
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
         body=body,
@@ -268,7 +252,7 @@ def test_entity_jsonify_unrestricted() -> None:
 def test_entity_jsonify_skip() -> None:
     body = "12th december"
     value = "value"
-    values = [{"key": value}]
+    values = [{"value": value}]
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
         body=body,
@@ -304,8 +288,7 @@ def test_interval_entity_only_from() -> None:
         grain="hour",
         values=[value],
     )
-    entity.set_value(value=value)
-    assert entity.value == value
+    assert entity.get_value() == datetime.fromisoformat("2021-01-22T02:00:00.000+05:30")
 
 
 def test_interval_entity_only_to() -> None:
@@ -320,8 +303,7 @@ def test_interval_entity_only_to() -> None:
         grain="hour",
         values=[value],
     )
-    entity.set_value(value=value)
-    assert entity.value == value
+    assert entity.get_value() == datetime.fromisoformat("2021-01-22T04:00:00.000+05:30")
 
 
 def test_bad_interval_entity_neither_from_nor_to() -> None:
@@ -335,80 +317,90 @@ def test_bad_interval_entity_neither_from_nor_to() -> None:
         values=[value],
     )
     with pytest.raises(KeyError):
-        entity.get_value(value)
+        entity.get_value()
 
 
 def test_bad_time_entity_invalid_value() -> None:
     body = "4 am"
     value = {"grain": "hour"}
-    entity = TimeEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        entity_type="time",
-        grain="hour",
-        values=[value],
-    )
     with pytest.raises(KeyError):
-        entity.get_value(value)
-
-
-def test_bad_time_entity_no_value() -> None:
-    body = "4 am"
-    with pytest.raises(ValueError):
-        entity = TimeEntity(
+        TimeEntity(
             range={"from": 0, "to": len(body)},
             body=body,
             entity_type="time",
             grain="hour",
-            values=[],
+            values=[value],
         )
+
+
+def test_bad_time_entity_no_value() -> None:
+    body = "4 am"
+    d = {
+        'body': 'at 4oclock',
+        'start': 0,
+        'grain': 'hour',
+        'end': 10,
+        'dim': 'time',
+        'latent': False
+    }
+
+    with pytest.raises(KeyError):
+        TimeEntity.from_duckling(d, 1)
 
 
 def test_time_interval_entity_value_without_range() -> None:
     body = "to 4 am"
-    value = {
-        "to": {"value": "2021-04-17T04:00:00.000+05:30", "grain": "hour"},
-        "type": "interval",
+    d = {
+        'body': 'between 2 to 4 am',
+        'value': {'values': [{'to': {'value': '2022-02-11T05:00:00.000+05:30',
+            'grain': 'hour'},
+            'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'},
+        {'to': {'value': '2022-02-12T05:00:00.000+05:30', 'grain': 'hour'},
+            'from': {'value': '2022-02-12T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'},
+        {'to': {'value': '2022-02-13T05:00:00.000+05:30', 'grain': 'hour'},
+            'from': {'value': '2022-02-13T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'}],
+        'to': {'value': '2022-02-11T05:00:00.000+05:30', 'grain': 'hour'},
+        'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
+        'type': 'interval'},
+        'dim': 'time',
+        'latent': False
     }
-    entity = TimeIntervalEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        entity_type="time",
-        grain="hour",
-        values=[value],
-        value=value,
-    )
-    del entity.value["to"]
-    with pytest.raises(TypeError):
-        entity.set_value(value)
+
+    with pytest.raises(KeyError):
+        TimeIntervalEntity.from_duckling(d, 1)
 
 
 def test_plastic_currency_set_invalid_value():
     with pytest.raises(TypeError):
-        PlasticCurrencyEntity(range={"from": 0, "to": 1}, body="").set_value(None)
+        CreditCardNumberEntity(range={"from": 0, "to": 1}, body="", value=None)
 
 
 def test_plastic_currency_set_no_number():
-    with pytest.raises(KeyError):
-        PlasticCurrencyEntity(range={"from": 0, "to": 1}, body="").set_value(
-            {"issuer": "visa"}
-        )
+    with pytest.raises(TypeError):
+        CreditCardNumberEntity(range={"from": 0, "to": 1}, body="", issuer="visa")
 
 
 def test_plastic_currency_set_no_issuer():
-    with pytest.raises(KeyError):
-        PlasticCurrencyEntity(range={"from": 0, "to": 1}, body="").set_value(
-            {"value": "1234-5678-9012-3456"}
-        )
+    with pytest.raises(TypeError):
+        CreditCardNumberEntity(range={"from": 0, "to": 1}, body="", value="1234-5678-9012-3456")
 
 
 def test_plastic_currency_get_value():
-    body = "My card number is 1234-5678-9012-3456"
-    value = {"value": "1234-5678-9012-3456", "issuer": "visa"}
-    entity = PlasticCurrencyEntity(
-        range={"from": body.index("1"), "to": len(body) - 1}, body=body
-    ).set_value(value)
-    assert entity.get_value() == value["value"]
+    body = "My card number is 4111-1111-1111-1111"
+    d = {
+        'body': '4111-1111-1111-1111',
+        'start': 18,
+        'value': {'value': '4111111111111111', 'issuer': 'visa'},
+        'end': 37,
+        'dim': 'credit-card-number',
+        'latent': False
+    }
+
+    entity = CreditCardNumberEntity.from_duckling(d, 1)
+    assert entity.get_value() == d["value"]["value"]
 
 
 def test_time_interval_entity_get_value() -> None:
@@ -423,30 +415,52 @@ def test_time_interval_entity_get_value() -> None:
         body=body,
         entity_type="time",
         grain="hour",
-        values=[value],
-        value=value,
+        values=[value]
     )
     value = "2021-06-03T15:00:00+05:30"
     assert entity.get_value() == datetime.fromisoformat(value)
 
 
+def test_time_interval_generation() -> None:
+    d = {
+        'body': 'between 2 to 4 am',
+        'value': {'values': [{'to': {'value': '2022-02-11T05:00:00.000+05:30',
+            'grain': 'hour'},
+            'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'},
+        {'to': {'value': '2022-02-12T05:00:00.000+05:30', 'grain': 'hour'},
+            'from': {'value': '2022-02-12T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'},
+        {'to': {'value': '2022-02-13T05:00:00.000+05:30', 'grain': 'hour'},
+            'from': {'value': '2022-02-13T02:00:00.000+05:30', 'grain': 'hour'},
+            'type': 'interval'}],
+        'to': {'value': '2022-02-11T05:00:00.000+05:30', 'grain': 'hour'},
+        'from': {'value': '2022-02-11T02:00:00.000+05:30', 'grain': 'hour'},
+        'type': 'interval'},
+        'dim': 'time',
+        'start': 0,
+        'end': 17,
+        'latent': False
+    }
+    entity = TimeIntervalEntity.from_duckling(d, 1)
+    modification = "2022-02-10T00:00:00.000+05:30"
+    generated = TimeIntervalEntity.from_dict({"value": {"from": modification, "to": "2022-02-11T05:00:00.000+05:30"}}, reference=entity)
+    assert generated.get_value() == datetime.fromisoformat(modification)
+
+
 def test_time_interval_entity_no_value() -> None:
     body = "to 4 am"
-    value = {
-        "to": {"value": "2021-04-17T04:00:00.000+05:30", "grain": "hour"},
-        "type": "interval",
+    d = {
+        'body': 'between 2 to 4 am',
+        'start': 0,
+        'type': 'interval',
+        'end': 17,
+        'dim': 'time',
+        'latent': False
     }
-    entity = TimeIntervalEntity(
-        range={"from": 0, "to": len(body)},
-        body=body,
-        entity_type="time",
-        grain="hour",
-        values=[value],
-        value=value,
-    )
-    entity.values = entity.value
-    with pytest.raises(TypeError):
-        entity.set_value()
+
+    with pytest.raises(KeyError):
+        TimeIntervalEntity.from_duckling(d, 1)
 
 
 @httpretty.activate

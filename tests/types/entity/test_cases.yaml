@@ -152,4 +152,4 @@
         "latent": false
       }
   ]
-  exception: "TypeError"
+  exception: "ValueError"
