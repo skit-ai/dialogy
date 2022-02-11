@@ -178,11 +178,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 </ul>
@@ -269,7 +270,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">dialogy.types.intent package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dialogy.types.intent.html#module-dialogy.types.intent">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogy.types.intent.html#module-dialogy.types.intent">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dialogy.types.intent.html#intent-classification">Intent Classification</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.plugin.html">dialogy.types.plugin package</a><ul>
@@ -298,7 +302,7 @@
 <p>There are few types of significance for an SLU project</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a></p></li>
-<li><p><a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">Entity</span></a></p></li>
+<li><p><span class="xref std std-ref">Entity</span></p></li>
 <li><p><a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a></p></li>
 <li><p><a class="reference internal" href="dialogy.types.signal.html#signal"><span class="std std-ref">Signal</span></a></p></li>
 </ol>
@@ -307,10 +311,10 @@
 <p>This section is a work in progress.</p>
 </div>
 <p>An <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> tells us the general meaning of a sentence.
-A set <a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">Entity</span></a> are significant tokens that can be acted upon by either
+A set <span class="xref std std-ref">Entity</span> are significant tokens that can be acted upon by either
 participants within a conversation.</p>
 <p>We use <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> within <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a> to associate relationship between <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a> and
-<a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">entities</span></a>. You can consider examples like: Reservation of a air ticket requires:</p>
+<span class="xref std std-ref">entities</span>. You can consider examples like: Reservation of a air ticket requires:</p>
 <ul class="simple">
 <li><p>destination</p></li>
 <li><p>origin</p></li>
@@ -319,7 +323,7 @@ participants within a conversation.</p>
 <li><p>travel type (round trip, one-way)</p></li>
 <li><p>number of passengers.</p></li>
 </ul>
-<p>So these <a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">entities</span></a> would be filled within their respective <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> already expected by the
+<p>So these <span class="xref std std-ref">entities</span> would be filled within their respective <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> already expected by the
 reservation <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a>.</p>
 </section>
 </section>

@@ -178,11 +178,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 </ul>
@@ -219,6 +220,12 @@
 <h1>dialogy.base.plugin package<a class="headerlink" href="#dialogy-base-plugin-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.base.plugin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.base.plugin" title="Permalink to this headline">¶</a></h2>
+<section id="abstract-plugin">
+<span id="abstractplugin"></span><h3>Abstract Plugin<a class="headerlink" href="#abstract-plugin" title="Permalink to this headline">¶</a></h3>
+<p>A Plugin transforms the data within the workflow. We use plugins for producing <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a>, <a class="reference internal" href="dialogy.types.entity.base_entity.html#baseentity"><span class="std std-ref">entities</span></a>,
+filling <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> and even preparing intermediate data for other plugins. This package ships the abstract base class for creating
+other plugins. These offer a base for a few already implemented features like <span class="xref std std-ref">book-keeping</span> and <a class="reference internal" href="#guards"><span class="std std-ref">Guards</span></a>.</p>
+</section>
 <section id="writing-plugins">
 <h3>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Permalink to this headline">¶</a></h3>
 <p>We will learn plugin creation by exploring some examples. It is highly advised to read 
@@ -276,7 +283,8 @@ This is assuming that the transcripts are ranked by their confidence scores in t
 <span class="go"> 'timezone': 'UTC',</span>
 <span class="go"> 'slot_tracker': None,</span>
 <span class="go"> 'current_state': None,</span>
-<span class="go"> 'previous_intent': None}</span>
+<span class="go"> 'previous_intent': None,</span>
+<span class="go"> 'history': None}</span>
 
 <span class="gp">In [5]: </span><span class="c1"># we can see that the _greeting_ intent has been set.</span>
 <span class="gp">   ...: </span><span class="n">output</span>
@@ -365,7 +373,8 @@ we will import an existing plugin: <a class="reference internal" href="dialogy.p
 <span class="go"> 'timezone': 'UTC',</span>
 <span class="go"> 'slot_tracker': None,</span>
 <span class="go"> 'current_state': None,</span>
-<span class="go"> 'previous_intent': None}</span>
+<span class="go"> 'previous_intent': None,</span>
+<span class="go"> 'history': None}</span>
 
 <span class="gp">In [10]: </span><span class="n">output</span>
 <span class="gh">Out[10]: </span><span class="go"></span>
@@ -470,7 +479,8 @@ So let’s look at an example where we prevent plugins from execution using <cod
 <span class="go"> 'timezone': 'UTC',</span>
 <span class="go"> 'slot_tracker': None,</span>
 <span class="go"> 'current_state': 'STATE_EXPECTING_NUMBERS',</span>
-<span class="go"> 'previous_intent': None}</span>
+<span class="go"> 'previous_intent': None,</span>
+<span class="go"> 'history': None}</span>
 </pre></div>
 </div>
 <dl class="py class">
@@ -478,7 +488,7 @@ So let’s look at an example where we prevent plugins from execution using <cod
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Abstract class to be implemented by all plugins.</p>
-<dl class="field-list simple" id="plugin-abstract">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_column</strong> (<em>str</em>) – Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</p></li>
@@ -494,7 +504,8 @@ So let’s look at an example where we prevent plugins from execution using <cod
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin.prevent">
 <span class="sig-name descname"><span class="pre">prevent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.prevent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.prevent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decide if the plugin should execute.</p>
-<dl class="field-list simple">
+<p>If this method returns true, the plugin’s utility method will not be called.</p>
+<dl class="field-list simple" id="guards">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>prevent plugin execution if True.</p>
 </dd>
@@ -601,6 +612,7 @@ So let’s look at an example where we prevent plugins from execution using <cod
             <ul>
 <li><a class="reference internal" href="#">dialogy.base.plugin package</a><ul>
 <li><a class="reference internal" href="#module-dialogy.base.plugin">Module contents</a><ul>
+<li><a class="reference internal" href="#abstract-plugin">Abstract Plugin</a></li>
 <li><a class="reference internal" href="#writing-plugins">Writing Plugins</a><ul>
 <li><a class="reference internal" href="#keyword-intent">Keyword Intent</a></li>
 <li><a class="reference internal" href="#heuristic-based-intent">Heuristic based Intent</a></li>

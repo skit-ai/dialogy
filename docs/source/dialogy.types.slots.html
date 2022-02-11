@@ -178,11 +178,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 </ul>
@@ -219,19 +220,13 @@
 <h1>dialogy.types.slots package<a class="headerlink" href="#dialogy-types-slots-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.types.slots">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.slots" title="Permalink to this headline">¶</a></h2>
-<p id="slot">Type definition for Slots.</p>
-<p>Import classes:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Slot</p></li>
-</ul>
-</div></blockquote>
+<p>Type definition for Slots. Read <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> and <a class="reference internal" href="dialogy.plugins.text.slot_filler.html#slot-filling"><span class="std std-ref">Slot Filling</span></a> for details.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.types.slots.Slot">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Slot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/slots.html#Slot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.slots.Slot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Slot Type</p>
-<p>Keys are:
+<p id="slot">Keys are:
 - <cite>name</cite> of the slot
 - <cite>type</cite> is a list of types that can fill this slot
 - <cite>values</cite> list of entities extracted</p>

@@ -1,6 +1,48 @@
 """
-.. _duration_entity:
-Module provides access to an entity type (class) to handle locations.
+.. _DurationEntity:
+
+Duration Entity
+================
+
+Provides the entity class for durations in natural language. This entity is obtained via :ref:`DucklingPlugin<DucklingPlugin>`.
+
+Plugin Walkthrough
+------------------
+
+.. ipython::
+
+    In [1]: from dialogy.plugins import DucklingPlugin
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["duration"],
+       ...:     locale="en_IN",
+       ...:     timezone="Asia/Kolkata",
+       ...: )
+
+    In [3]: duckling_plugin.parse("she said 2h.")
+
+Workflow Integration
+--------------------
+
+.. ipython::
+
+    In [1]: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.workflow import Workflow
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["duration"],
+       ...:     locale="en_IN",
+       ...:     timezone="Asia/Kolkata",
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: _, output = workflow.run(Input(utterances="she said 2h"))
+
+    In [5]: output
 """
 from __future__ import annotations
 

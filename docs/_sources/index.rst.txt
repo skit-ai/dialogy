@@ -179,11 +179,12 @@ Index
    :hidden:
    :caption: Plugins
 
-   Intent Classifier Plugin <./source/dialogy.plugins.text.classification>
+   Intent Classifiers <./source/dialogy.plugins.text.classification>
    Duckling Entities <./source/dialogy.plugins.text.duckling_plugin>
    Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
    Regex Entity Search <./source/dialogy.plugins.text.list_entity_plugin>
    Fuzzy Entity Search <./source/dialogy.plugins.text.list_search_plugin>
+   Entity Scoring <./source/dialogy.base.entity_extractor>
    ASR Featurizer <./source/dialogy.plugins.text.merge_asr_output>
    Slot Filler <./source/dialogy.plugins.text.slot_filler>
 

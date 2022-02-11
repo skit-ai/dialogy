@@ -7,7 +7,7 @@ body {
 }
 
 p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 dl {
@@ -29,7 +29,11 @@ h2 {
 }
 
 h3 {
-    font-size: 1.15rem;
+    font-size: 1rem;
+}
+
+h4 {
+    font-size: 0.85rem;
 }
 
 ol li>p:first-child, ul li>p:last-child {

@@ -1,9 +1,48 @@
 """
-.. _people_entity:
-Module provides access to entity types that can be parsed to obtain numeric values specific to denote people.
+.. _PeopleEntity:
 
-Import classes:
-    - PeopleEntity
+People Entity
+==============
+
+Provides the entity class for representing number of people in natural language. This entity is obtained via :ref:`DucklingPlugin<DucklingPlugin>`.
+
+Plugin Walkthrough
+------------------
+
+.. ipython::
+
+    In [1]: from dialogy.plugins import DucklingPlugin
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["people"],
+       ...:     locale="en_IN",
+       ...:     timezone="Asia/Kolkata",
+       ...: )
+
+    In [3]: duckling_plugin.parse("two kids")
+
+Workflow Integration
+--------------------
+
+.. ipython::
+
+    In [1]: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.workflow import Workflow
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["people"],
+       ...:     locale="en_IN",
+       ...:     timezone="Asia/Kolkata",
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: _, output = workflow.run(Input(utterances="two kids"))
+
+    In [5]: output
 """
 from __future__ import annotations
 

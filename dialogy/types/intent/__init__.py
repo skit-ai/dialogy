@@ -1,10 +1,19 @@
 """
-.. _intent:
-Type definition for `Intent`.
+.. _Intent:
 
-Import classes:
+Intent Classification
+======================
 
-    - Intent
+Automatic categorization of texts into known classes. When solving SLU problems
+the objective is to answer *What was meant?* instead of *"What was said?"*. 
+
+For an example utterance *"I lost my wallet"* a bank's support executives would 
+understand that they must follow the operating procedure for blocking all transaction 
+accounts. We want to train machines to have the ability to interpret these cues.
+
+We call the classes of *meaning* as :code:`Intent`.
+
+We can obtain intents from :ref:`XLMRMultiClass<XLMRMultiClass>` and :ref:`MLPMultiClass<MLPMultiClass>` plugin.
 """
 from __future__ import annotations
 
@@ -25,27 +34,89 @@ class Intent:
 
     # The name of the intent to be used.
     name: str = attr.ib(kw_only=True, order=False)
+    """
+    The description of an intent separated by '_'
+    """
 
     # The confidence of this intent being present in the utterance.
     score: float = attr.ib(kw_only=True, default=0.0, order=True)
+    """
+    A positive real number that represents confidence of this intent
+    being the meaning of an utterance. Higher is better.
+    
+    Should be a value between 0 and 1.
+    """
 
     # In case of an ASR, `alternative_index` points at one of the nth
     # alternatives that help in predictions.
     alternative_index: Optional[int] = attr.ib(kw_only=True, default=None, order=False)
+    """
+    Tells us the index of transcript that yeilds this intent. Since our featurizer
+    concatenates all transcripts, we currently don't have a use for it.
+
+    If we were to predict the intent for each transcript separately and vote, in those
+    cases it would be helpful to log this property.
+    """
 
     # Trail of functions that modify the attributes of an instance.
     parsers: List[str] = attr.ib(kw_only=True, factory=list, order=False, repr=False)
+    """
+    Contains a list of plugins that have created, updated this Intent.
+    """
 
     # Container for holding `List[BaseEntity]`.
     slots: Dict[str, Slot] = attr.ib(
         kw_only=True, factory=dict, order=False, repr=False
     )
+    """
+    Placeholders for :ref:`entities <BaseEntity>` that are relevant to this intent. 
+    More details are available in the doc for :ref:`slots <Slot>`.
+    """
 
     def apply(self, rules: Rule) -> Intent:
         """
-        Create slots using :ref:`rules`.
+        Create slots using rules.
+
+        .. _ApplySlot:
 
         An intent can hold different entities within associated slot-types.
+        We parse rules that describe this mapping and create placeholders within an intent for 
+        holding entities found.
+
+        An example rule would look like:
+
+        .. code:: python
+
+            rules = {
+                "wake_up_alarm": {          # name of the intent.
+                    "datetime_slot": [      # "datetime_slot" is the only slot associated with this intent.
+                        "date",             # Only "date", "time", "datetime" entities can fill the "datetime_slot"
+                        "time",
+                        "datetime"
+                    ]
+                },
+                "ticket_booking": {         # name of the intent.
+                    "origin": [             # A slot that will fill only location type entities.
+                        "location"          # The entity types that can be filled in the slot.
+                    ],
+                    "destination": [        # Another slot that will fill only location type entities.
+                        "location"
+                    ],
+                    "start_date": [
+                        "date"
+                    ],
+                    "end_date": [
+                        "date"
+                    ],
+                    "passengers": [
+                        "people",
+                        "number"
+                    ],
+                    "budget": [
+                        "amount-of-money"
+                    ]
+                }
+            }
 
         :param rules: A configuration for slot names and entity types associated with this instance of Intent.
         :type rules: Rule
@@ -96,6 +167,8 @@ class Intent:
         """
         Update :code:`slots[slot_type].values` with a single entity.
 
+        .. _FillSlot:
+
         We will explore the possibility of sharing/understanding the meaning of multiple entities
         in the same slot type.
 
@@ -143,6 +216,8 @@ class Intent:
     def cleanup(self) -> None:
         """
         Remove slots that were not filled.
+
+        .. _CleanupSlot:
         """
         slot_names = list(self.slots.keys())
         for slot_name in slot_names:

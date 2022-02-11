@@ -155,24 +155,39 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../source/dialogy.base.html">Base</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.base.entity_extractor.html">dialogy.base.entity_extractor package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.base.input.html">dialogy.base.input package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.base.output.html">dialogy.base.output package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.base.plugin.html">dialogy.base.plugin package</a></li>
-</ul>
-</li>
+  <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.numerical.html">Numeric Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.people.html">People Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.slots.html">Slots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.utils.html">Utils</a></li>
 </ul>
 
@@ -251,12 +266,6 @@
 <span class="sd">    :param labels: Required if style is "spacy". If there is a need to extract only a few labels from all the other</span>
 <span class="sd">        `available labels &lt;https://github.com/explosion/spaCy/issues/441#issuecomment-311804705&gt;`_.</span>
 <span class="sd">    :type labels: Optional[List[str]]</span>
-<span class="sd">    :param access: A plugin io utility that allows access to transcripts</span>
-<span class="sd">        :code:`List[str]` within a :ref:`Workflow &lt;workflow&gt;`.</span>
-<span class="sd">    :type access: Optional[PluginFn]</span>
-<span class="sd">    :param mutate: A plugin io utility that allows insertion of :code:`List[BaseEntity]` within a</span>
-<span class="sd">        :ref:`Workflow &lt;workflow&gt;`.</span>
-<span class="sd">    :type mutate: Optional[PluginFn]</span>
 <span class="sd">    :param debug: A flag to set debugging on the plugin methods</span>
 <span class="sd">    :type debug: bool</span>
 <span class="sd">    """</span>

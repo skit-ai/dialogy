@@ -1,3 +1,79 @@
+"""
+The :ref:`Input <Input>` class creates immutable instances that describe the inputs of a single turn of a conversation.
+There are some attributes that may have aggregations of previous turns like the :code:`slot_tracker` or entire :code:`history`.
+
+.. admonition:: Why do I see :ref:`Input <Input>` and :ref:`Output <Output>` as inputs to all :ref:`Plugins <AbstractPlugin>`?
+
+    It is a common pattern for all the plugins to require both as arguments. Since this could be confusing nomenclature, :ref:`Input <Input>`
+    and :ref:`Output <Output>` bear meaning and even separation for the SLU API, **not for** :ref:`Plugins <AbstractPlugin>`.
+
+
+Updates
+-------
+
+While writing plugins, we would need to update the attributes of :ref:`Input <Input>`, the following **doesn't** work!
+
+.. ipython::
+
+    In [1]: from dialogy.base import Input
+       ...: from dialogy.utils import make_unix_ts
+
+    In [2]: # Check the attributes in the object logged below. 
+       ...: input_x = Input(utterances="hello world", lang="hi", timezone="Asia/Kolkata")
+
+    In [3]: input_x
+
+Issues with Frozen Instance Update
+##################################
+
+Now if we try the following:
+
+.. ipython::
+    :okexcept:
+
+    In [4]: input_x.utterances = "hello"
+
+We can see re-assigning values to attributes isn't allowed. 
+
+Updating a frozen instance
+##########################
+
+We have to create new instances, but we have some syntax for it: 
+
+.. ipython::
+
+    In [1]: input_x = Input(utterances="hello world", lang="hi", timezone="Asia/Kolkata")
+
+    In [2]: input_y = Input.from_dict({"utterances": "hello"})
+
+    In [3]: input_y
+
+but by doing this, we lost the :code:`lang` and :code:`timezone` attributes to system defaults.
+
+Reusing an existing instance
+############################
+
+We can re-use an existing instance to create a new.
+This way, we don't have to write every existing property on a previous :ref:`Input <Input>`.
+
+.. ipython::
+
+    In [1]: input_x = Input(utterances="hello world", lang="hi", timezone="Asia/Kolkata")
+
+    In [2]: input_y = Input.from_dict({"utterances": "hello"}, reference=input_x)
+
+    In [3]: input_y
+
+Serialization
+-------------
+
+If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the following:
+
+.. ipython::
+
+    In [4]: input_y.json()
+
+"""
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -13,7 +89,7 @@ class Input:
     """
     .. _Input:
 
-    Represents inputs to a :ref:`Workflow <WorkflowClass>`. This is a frozen class, which means attributes cannot be modified once created.
+    Represents the inputs of the SLU API.
     """
 
     utterances: List[Utterance] = attr.ib(kw_only=True)
@@ -51,7 +127,7 @@ class Input:
         validator=attr.validators.optional(attr.validators.instance_of(list)),
     )
     """
-    Placeholder for the features of an intent classifier.
+    Placeholder for the features of an intent classifier. Reference the following for an example value:
     
     .. code-block:: python
 
@@ -144,6 +220,7 @@ class Input:
     """
     The name of the intent that was predicted by the classifier in (exactly) the previous turn.
     """
+    history: Optional[List[Dict[str, Any]]] = attr.ib(default=None, kw_only=True)
 
     def __attrs_post_init__(self) -> None:
         try:

@@ -178,11 +178,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 </ul>
@@ -219,13 +220,81 @@
 <h1>dialogy.types.entity.time_interval package<a class="headerlink" href="#dialogy-types-entity-time-interval-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.types.entity.time_interval">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.entity.time_interval" title="Permalink to this headline">¶</a></h2>
-<p>Module provides access to entity types that can be parsed to obtain intervals of datetime.</p>
-<dl class="simple">
-<dt>Import classes:</dt><dd><ul class="simple">
-<li><p>TimeIntervalEntity</p></li>
-</ul>
-</dd>
-</dl>
+<section id="time-interval-entity">
+<span id="timeintervalentity"></span><h3>Time Interval Entity<a class="headerlink" href="#time-interval-entity" title="Permalink to this headline">¶</a></h3>
+<p>Provides the entity class for representing time intervals in natural language. This entity is obtained via <a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html#ducklingplugin"><span class="std std-ref">DucklingPlugin</span></a>.</p>
+<section id="plugin-walkthrough">
+<h4>Plugin Walkthrough<a class="headerlink" href="#plugin-walkthrough" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">DucklingPlugin</span>
+
+<span class="gp">In [2]: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
+<span class="gp">   ...: </span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span>
+<span class="gp">   ...: </span>    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">,</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"weekend"</span><span class="p">)</span>
+<span class="go">{'from': '2022-02-11T18:00:00.000+05:30', 'to': '2022-02-14T00:00:00.000+05:30'}</span>
+<span class="gh">Out[3]: </span><span class="go">[TimeIntervalEntity(body='weekend', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, origin='value', entity_type='datetime', grain='hour', type='interval', from_value='2022-02-11T18:00:00.000+05:30', to_value='2022-02-14T00:00:00.000+05:30', values=[{'to': {'value': '2022-02-14T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-11T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-21T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-18T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-28T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-25T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-02-11T18:00:00.000+05:30', 'to': '2022-02-14T00:00:00.000+05:30'})]</span>
+
+<span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"between 4 to 5pm"</span><span class="p">)</span>
+<span class="go">{'from': '2022-02-12T16:00:00.000+05:30', 'to': '2022-02-12T18:00:00.000+05:30'}</span>
+<span class="gh">Out[4]: </span><span class="go">[TimeIntervalEntity(body='between 4 to 5pm', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, origin='value', entity_type='time', grain='hour', type='interval', from_value='2022-02-12T16:00:00.000+05:30', to_value='2022-02-12T18:00:00.000+05:30', values=[{'to': {'value': '2022-02-12T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-12T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-13T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-13T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-14T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-14T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-02-12T16:00:00.000+05:30', 'to': '2022-02-12T18:00:00.000+05:30'})]</span>
+</pre></div>
+</div>
+</section>
+<section id="workflow-integration">
+<h4>Workflow Integration<a class="headerlink" href="#workflow-integration" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">DucklingPlugin</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [2]: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
+<span class="gp">   ...: </span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span>
+<span class="gp">   ...: </span>    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">,</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">duckling_plugin</span><span class="p">])</span>
+
+<span class="gp">In [4]: </span><span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="p">[</span><span class="s2">"weekend"</span><span class="p">,</span> <span class="s2">"between 4 to 5pm"</span><span class="p">]))</span>
+<span class="go">{'from': '2022-02-11T18:00:00.000+05:30', 'to': '2022-02-14T00:00:00.000+05:30'}</span>
+<span class="go">{'from': '2022-02-12T16:00:00.000+05:30', 'to': '2022-02-12T18:00:00.000+05:30'}</span>
+
+<span class="gp">In [5]: </span><span class="n">output</span>
+<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">{'intents': [],</span>
+<span class="go"> 'entities': [{'range': {'start': 0, 'end': 7},</span>
+<span class="go">   'body': 'weekend',</span>
+<span class="go">   'parsers': ['DucklingPlugin'],</span>
+<span class="go">   'score': 0.5,</span>
+<span class="go">   'alternative_index': 0,</span>
+<span class="go">   'entity_type': 'datetime',</span>
+<span class="go">   'grain': 'hour',</span>
+<span class="go">   'type': 'interval',</span>
+<span class="go">   'from_value': '2022-02-11T18:00:00.000+05:30',</span>
+<span class="go">   'to_value': '2022-02-14T00:00:00.000+05:30',</span>
+<span class="go">   'value': {'from': '2022-02-11T18:00:00.000+05:30',</span>
+<span class="go">    'to': '2022-02-14T00:00:00.000+05:30'}},</span>
+<span class="go">  {'range': {'start': 0, 'end': 16},</span>
+<span class="go">   'body': 'between 4 to 5pm',</span>
+<span class="go">   'parsers': ['DucklingPlugin'],</span>
+<span class="go">   'score': 0.5,</span>
+<span class="go">   'alternative_index': 1,</span>
+<span class="go">   'entity_type': 'time',</span>
+<span class="go">   'grain': 'hour',</span>
+<span class="go">   'type': 'interval',</span>
+<span class="go">   'from_value': '2022-02-12T16:00:00.000+05:30',</span>
+<span class="go">   'to_value': '2022-02-12T18:00:00.000+05:30',</span>
+<span class="go">   'value': {'from': '2022-02-12T16:00:00.000+05:30',</span>
+<span class="go">    'to': '2022-02-12T18:00:00.000+05:30'}}]}</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeIntervalEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'number'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time_interval.html#TimeIntervalEntity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity" title="Permalink to this definition">¶</a></dt>
@@ -254,7 +323,8 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.dim">
 <span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'time'</span></em><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.dim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Influenced from Duckling’s convention of dimensions.</p>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.from_duckling">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_duckling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time_interval.html#TimeIntervalEntity.from_duckling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.from_duckling" title="Permalink to this definition">¶</a></dt>
@@ -304,11 +374,13 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.type">
 <span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>One of “value” or “interval”.</p>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.value">
 <span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A single value interpretation from values.</p>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.value_keys">
 <span class="sig-name descname"><span class="pre">value_keys</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'from',</span> <span class="pre">'to',</span> <span class="pre">'type'}</span></em><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.value_keys" title="Permalink to this definition">¶</a></dt>
@@ -316,8 +388,12 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.values">
 <span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Duckling stores value of an entity within a list for some types. We try to keep that as a standard for
+all entities.</p>
 </dd></dl>
+</dd></dl>
+</section>
+</section>
 </section>
 </section>
 
@@ -373,7 +449,14 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.types.entity.time_interval package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.types.entity.time_interval">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.types.entity.time_interval">Module contents</a><ul>
+<li><a class="reference internal" href="#time-interval-entity">Time Interval Entity</a><ul>
+<li><a class="reference internal" href="#plugin-walkthrough">Plugin Walkthrough</a></li>
+<li><a class="reference internal" href="#workflow-integration">Workflow Integration</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

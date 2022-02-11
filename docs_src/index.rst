@@ -179,13 +179,14 @@ Index
    :hidden:
    :caption: Plugins
 
-   Intent Classifier Plugin <./source/dialogy.plugins.text.classification>
+   ASR Featurizer <./source/dialogy.plugins.text.merge_asr_output>
+   Intent Classifiers <./source/dialogy.plugins.text.classification>
    Duckling Entities <./source/dialogy.plugins.text.duckling_plugin>
-   Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
+   Slot Filler <./source/dialogy.plugins.text.slot_filler>
    Regex Entity Search <./source/dialogy.plugins.text.list_entity_plugin>
    Fuzzy Entity Search <./source/dialogy.plugins.text.list_search_plugin>
-   ASR Featurizer <./source/dialogy.plugins.text.merge_asr_output>
-   Slot Filler <./source/dialogy.plugins.text.slot_filler>
+   Entity Scoring <./source/dialogy.base.entity_extractor>
+   Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
 
 .. toctree::
    :maxdepth: 1

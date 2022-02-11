@@ -48,12 +48,6 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
     :param labels: Required if style is "spacy". If there is a need to extract only a few labels from all the other
         `available labels <https://github.com/explosion/spaCy/issues/441#issuecomment-311804705>`_.
     :type labels: Optional[List[str]]
-    :param access: A plugin io utility that allows access to transcripts
-        :code:`List[str]` within a :ref:`Workflow <workflow>`.
-    :type access: Optional[PluginFn]
-    :param mutate: A plugin io utility that allows insertion of :code:`List[BaseEntity]` within a
-        :ref:`Workflow <workflow>`.
-    :type mutate: Optional[PluginFn]
     :param debug: A flag to set debugging on the plugin methods
     :type debug: bool
     """
