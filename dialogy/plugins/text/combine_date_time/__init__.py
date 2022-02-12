@@ -1,4 +1,3 @@
-from math import comb
 from typing import Any, Dict, List, Optional
 
 import attr
@@ -23,7 +22,7 @@ def is_date(entity: BaseEntity) -> bool:
 class CombineDateTimeOverSlots(Plugin):
     """
 
-    .. _combine_date_time_over_slots:
+    .. _CombineDateTimeOverSlots:
 
     Dialog case:
 
@@ -170,6 +169,18 @@ class CombineDateTimeOverSlots(Plugin):
     def combine_time_entities_from_slots(
         self, slot_tracker: Optional[List[Dict[str, Any]]], entities: List[BaseEntity]
     ) -> List[BaseEntity]:
+        """
+        Combines the time entities from the slots with the entities from the current turn.
+
+        .. _combine_time_entities_from_slots:
+
+        :param slot_tracker: The slot tracker from the previous turn.
+        :type slot_tracker: Optional[List[Dict[str, Any]]]
+        :param entities: Entities found in the current turn.
+        :type entities: List[BaseEntity]
+        :return: Combined set of entities.
+        :rtype: List[BaseEntity]
+        """
         previously_filled_time_entity = self.pick_previously_filled_time_entity(
             self.get_tracked_slots(slot_tracker)
         )

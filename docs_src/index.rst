@@ -62,7 +62,7 @@ Listing sections by order of significance. Higher ranking items are helpful in u
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
 |   | :ref:`XLMRMultiClass<xlmr_classifier>`                         | The intent classifier model as a plugin. Requires :code:`input.clf_feature` and returns `List[Intent]`.                   |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-|   | :ref:`CombineDateTimeOverSlots <combine_date_time_over_slots>` | This plugin combines date/time entities tracked by the slot filler (previous turns)                                       |
+|   | :ref:`CombineDateTimeOverSlots <CombineDateTimeOverSlots>`     | This plugin combines date/time entities tracked by the slot filler (previous turns)                                       |
 |   |                                                                | with time/date entities extracted in the current turn.                                                                    |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
 |   | :ref:`WERCalibrationPlugin<calibration_plugin>`                | This plugin can only be used with the proprietary ASR of skit.ai. Uses :code:`lm_score` and :code:`am_score` to           |
