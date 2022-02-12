@@ -172,7 +172,7 @@ class CombineDateTimeOverSlots(Plugin):
         """
         Combines the time entities from the slots with the entities from the current turn.
 
-        .. _combine_time_entities_from_slots:
+        .. _combinetimeentitiesfromslots:
 
         :param slot_tracker: The slot tracker from the previous turn.
         :type slot_tracker: Optional[List[Dict[str, Any]]]

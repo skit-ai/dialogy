@@ -168,12 +168,12 @@ Update Plans
 
 You may need to write plugins that generate an :ref:`Intent <Intent>` or :ref:`BaseEntity <BaseEntity>`, there
 is also a category of plugins that might be required for modifications. Like the :ref:`RuleBasedSlotFillerPlugin <RuleBasedSlotFillerPlugin>`
-or the :ref:`CombineDateTimePlugin <CombineDateTimePlugin>`.
+or the :ref:`CombineDateTimeOverSlots <CombineDateTimeOverSlots>`.
 
 The former updates the :ref:`intents<Intent>` and the latter updates :ref:`time-entities <TimeEntity>`. In these cases, the plugins
 also take into account other values. 
 
-Such as, :ref:`CombineDateTimePlugin <CombineDateTimePlugin>`: 
+Such as, :ref:`CombineDateTimeOverSlots <CombineDateTimeOverSlots>`: 
 
 #. Separates time entities from other entity types.
 #. Combines them over slot presence.
@@ -188,8 +188,8 @@ If your plugin belongs to [1], then you need to set :code:`replace_output=True` 
 
 .. note:: 
 
-    Refer to :ref:`CombineDateTimePlugin <CombineDateTimePlugin>`.
-    It's ref:`combine_time_entities_from_slots <combine_time_entities_from_slots>` method shows where we may need to use
+    Refer to :ref:`CombineDateTimeOverSlots <CombineDateTimeOverSlots>`.
+    It's :ref:`combine_time_entities_from_slots <combinetimeentitiesfromslots>` method shows where we may need to use
     :code:`replace_output=True`.
 
 """

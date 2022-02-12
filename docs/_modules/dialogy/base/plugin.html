@@ -381,6 +381,35 @@
 <span class="sd">       ...: # the MergeASROutputPlugin.</span>
 <span class="sd">       ...: input_</span>
 
+<span class="sd">Update Plans</span>
+<span class="sd">------------</span>
+
+<span class="sd">You may need to write plugins that generate an :ref:`Intent &lt;Intent&gt;` or :ref:`BaseEntity &lt;BaseEntity&gt;`, there</span>
+<span class="sd">is also a category of plugins that might be required for modifications. Like the :ref:`RuleBasedSlotFillerPlugin &lt;RuleBasedSlotFillerPlugin&gt;`</span>
+<span class="sd">or the :ref:`CombineDateTimeOverSlots &lt;CombineDateTimeOverSlots&gt;`.</span>
+
+<span class="sd">The former updates the :ref:`intents&lt;Intent&gt;` and the latter updates :ref:`time-entities &lt;TimeEntity&gt;`. In these cases, the plugins</span>
+<span class="sd">also take into account other values. </span>
+
+<span class="sd">Such as, :ref:`CombineDateTimeOverSlots &lt;CombineDateTimeOverSlots&gt;`: </span>
+
+<span class="sd">#. Separates time entities from other entity types.</span>
+<span class="sd">#. Combines them over slot presence.</span>
+<span class="sd">#. Rebuilds a full entity list.</span>
+
+<span class="sd">This means</span>
+
+<span class="sd">#. Some plugins need to replace the entire set of intents or entities.</span>
+<span class="sd">#. While others need to append their results along with the history of the workflow.</span>
+
+<span class="sd">If your plugin belongs to [1], then you need to set :code:`replace_output=True` in the constructor of your plugin.</span>
+
+<span class="sd">.. note:: </span>
+
+<span class="sd">    Refer to :ref:`CombineDateTimeOverSlots &lt;CombineDateTimeOverSlots&gt;`.</span>
+<span class="sd">    It's :ref:`combine_time_entities_from_slots &lt;combinetimeentitiesfromslots&gt;` method shows where we may need to use</span>
+<span class="sd">    :code:`replace_output=True`.</span>
+
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
@@ -422,6 +451,7 @@
         <span class="n">input_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVES</span><span class="p">,</span>
         <span class="n">output_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_transform</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">replace_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">dest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">guards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -429,6 +459,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">guards</span> <span class="o">=</span> <span class="n">guards</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dest</span> <span class="o">=</span> <span class="n">dest</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">replace_output</span> <span class="o">=</span> <span class="n">replace_output</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_column</span> <span class="o">=</span> <span class="n">input_column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_column</span> <span class="o">=</span> <span class="n">output_column</span> <span class="ow">or</span> <span class="n">input_column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_transform</span> <span class="o">=</span> <span class="n">use_transform</span>
@@ -476,7 +507,7 @@
 
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utility</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">workflow</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">workflow</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">workflow</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_output</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Plugin.prevent"><a class="viewcode-back" href="../../../source/dialogy.base.plugin.html#dialogy.base.plugin.Plugin.prevent">[docs]</a>    <span class="k">def</span> <span class="nf">prevent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">"""</span>

@@ -483,9 +483,35 @@ So let’s look at an example where we prevent plugins from execution using <cod
 <span class="go"> 'history': None}</span>
 </pre></div>
 </div>
+</section>
+<section id="update-plans">
+<h4>Update Plans<a class="headerlink" href="#update-plans" title="Permalink to this headline">¶</a></h4>
+<p>You may need to write plugins that generate an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> or <span class="xref std std-ref">BaseEntity</span>, there
+is also a category of plugins that might be required for modifications. Like the <a class="reference internal" href="dialogy.plugins.text.slot_filler.html#rulebasedslotfillerplugin"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a>
+or the <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinedatetimeoverslots"><span class="std std-ref">CombineDateTimeOverSlots</span></a>.</p>
+<p>The former updates the <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a> and the latter updates <a class="reference internal" href="dialogy.types.entity.time.html#timeentity"><span class="std std-ref">time-entities</span></a>. In these cases, the plugins
+also take into account other values.</p>
+<p>Such as, <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinedatetimeoverslots"><span class="std std-ref">CombineDateTimeOverSlots</span></a>:</p>
+<ol class="arabic simple">
+<li><p>Separates time entities from other entity types.</p></li>
+<li><p>Combines them over slot presence.</p></li>
+<li><p>Rebuilds a full entity list.</p></li>
+</ol>
+<p>This means</p>
+<ol class="arabic simple">
+<li><p>Some plugins need to replace the entire set of intents or entities.</p></li>
+<li><p>While others need to append their results along with the history of the workflow.</p></li>
+</ol>
+<p>If your plugin belongs to [1], then you need to set <code class="code docutils literal notranslate"><span class="pre">replace_output=True</span></code> in the constructor of your plugin.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Refer to <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinedatetimeoverslots"><span class="std std-ref">CombineDateTimeOverSlots</span></a>.
+It’s <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinetimeentitiesfromslots"><span class="std std-ref">combine_time_entities_from_slots</span></a> method shows where we may need to use
+<code class="code docutils literal notranslate"><span class="pre">replace_output=True</span></code>.</p>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Abstract class to be implemented by all plugins.</p>
 <dl class="field-list simple">
@@ -617,6 +643,7 @@ So let’s look at an example where we prevent plugins from execution using <cod
 <li><a class="reference internal" href="#keyword-intent">Keyword Intent</a></li>
 <li><a class="reference internal" href="#heuristic-based-intent">Heuristic based Intent</a></li>
 <li><a class="reference internal" href="#guarding-plugins">Guarding plugins</a></li>
+<li><a class="reference internal" href="#update-plans">Update Plans</a></li>
 </ul>
 </li>
 </ul>

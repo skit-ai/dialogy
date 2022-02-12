@@ -1,5 +1,5 @@
 """
-.. _duckling_plugin:
+.. _DucklingPlugin:
 
 We use `Duckling <https://github.com/facebook/duckling>`_ for parsing values like: :code:`date`, :code:`time`,
 :code:`numbers`, :code:`currency` etc from natural language. The parser will expect Duckling to be running as an http service, and provide

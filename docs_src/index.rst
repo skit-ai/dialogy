@@ -48,7 +48,7 @@ Listing sections by order of significance. Higher ranking items are helpful in u
 |   |                                                                |     def utility(self, input_: Input, output: Output) -> Any:                                                              |
 |   |                                                                |        ...                                                                                                                |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-|   | :ref:`DucklingPlugin<duckling_plugin>`                         | Connects to the Duckling API and returns entities of type:                                                                |
+|   | :ref:`DucklingPlugin<DucklingPlugin>`                          | Connects to the Duckling API and returns entities of type:                                                                |
 |   |                                                                |                                                                                                                           |
 |   |                                                                | #. **date**                                                                                                               |
 |   |                                                                | #. **time**                                                                                                               |

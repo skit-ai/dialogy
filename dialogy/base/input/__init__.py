@@ -172,7 +172,7 @@ class Input:
     """
     This data structure tracks the slots that were filled in previous turns.
     This may come handy if we want to filter or reduce entities depending on our history.
-    We use this in our :ref:`CombineDateTimeOverSlots <combine_date_time_over_slots>` plugin.
+    We use this in our :ref:`CombineDateTimeOverSlots <CombineDateTimeOverSlots>` plugin.
 
     .. code-block:: python
 

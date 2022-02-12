@@ -248,6 +248,8 @@
 <span class="sd">    Let's run through a practical example. We will create a workflow and preset the output to have expected intent and</span>
 <span class="sd">    entities.</span>
 
+<span class="sd">    .. _RuleBasedSlotFillerPlugin:</span>
+
 <span class="sd">    :param rules: A mapping that defines relationship between an intent, its slots and the entities that fill them.</span>
 <span class="sd">    :type rules: Rule</span>
 <span class="sd">    :param fill_multiple: More than one item be allowed to fill a single slot.</span>
@@ -265,6 +267,7 @@
         <span class="n">rules</span><span class="p">:</span> <span class="n">Rule</span><span class="p">,</span>
         <span class="n">dest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">guards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">replace_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">fill_multiple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -280,7 +283,7 @@
         <span class="c1"># ```</span>
         <span class="c1"># rules = {"intent": {"slot_name": "entity_type"}}</span>
         <span class="c1"># ```</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="n">guards</span><span class="o">=</span><span class="n">guards</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="n">guards</span><span class="o">=</span><span class="n">guards</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">replace_output</span><span class="o">=</span><span class="n">replace_output</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span> <span class="n">Rule</span> <span class="o">=</span> <span class="n">rules</span> <span class="ow">or</span> <span class="p">{}</span>
 
         <span class="c1"># fill_multiple</span>
