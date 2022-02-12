@@ -75,4 +75,4 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
 
 
 def unix_ts_to_datetime(reference_time: int, timezone: str = "UTC") -> datetime:
-    return datetime.fromtimestamp(reference_time // 1000, pytz.timezone(timezone))
+    return datetime.fromtimestamp(reference_time / 1000, pytz.timezone(timezone))

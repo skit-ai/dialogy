@@ -311,7 +311,29 @@
   'dim': 'duration',
   'latent': False}]
   reference_time: 1644662968859
-  expected: [{"entity_type": "datetime", "value": "2022-02-12T14:19:28+05:30"}]
+  expected: [{"entity_type": "datetime", "value": "2022-02-12T14:19:28.859000+05:30"}]
+
+- description: "duration entity cast via any intents"
+  input: "I paid 2 hours ago"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    temporal_intents:
+      __any__: "past"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': '2 hours',
+  'start': 0,
+  'value': {'value': 2,
+   'hour': 2,
+   'type': 'value',
+   'unit': 'hour',
+   'normalized': {'value': 7200, 'unit': 'second'}},
+  'end': 7,
+  'dim': 'duration',
+  'latent': False}]
+  reference_time: 1644662968859
+  expected: [{"entity_type": "datetime", "value": "2022-02-12T14:19:28.859000+05:30"}]
+
 
 - description: "duration entity cast via temporal intents"
   input: "will pay after 2 days"
@@ -335,7 +357,7 @@
    'dim': 'duration',
    'latent': False}]
   reference_time: 1644662968859
-  expected: [{"entity_type": "date", "value": "2022-02-14T16:19:28+05:30"}]
+  expected: [{"entity_type": "date", "value": "2022-02-14T16:19:28.859000+05:30"}]
 
 - description: "no entity found."
   input: "there is no spoon"

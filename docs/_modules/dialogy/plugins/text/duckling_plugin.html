@@ -237,7 +237,6 @@
 <span class="sd">       ...:     dimensions=[</span>
 <span class="sd">       ...:         "number",</span>
 <span class="sd">       ...:         "people",</span>
-<span class="sd">       ...:         "date",</span>
 <span class="sd">       ...:         "time",</span>
 <span class="sd">       ...:         "duration",</span>
 <span class="sd">       ...:         "intersect",</span>
@@ -246,12 +245,6 @@
 <span class="sd">       ...:     ],</span>
 <span class="sd">       ...:     # Duckling supports multiple dimensions, by specifying a list, we make sure</span>
 <span class="sd">       ...:     # we are searching for a match within the expected dimensions only.</span>
-<span class="sd">       ...:     locale="en_IN",</span>
-<span class="sd">       ...:     # Duckling supports a set of locales, we need to provide this info to</span>
-<span class="sd">       ...:     # get language specific matches.</span>
-<span class="sd">       ...:     timezone="Asia/Kolkata",</span>
-<span class="sd">       ...:     # Date/Time related entities make this field imperative.</span>
-<span class="sd">       ...:     # use_latent=True,</span>
 <span class="sd">       ...: )</span>
 
 <span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
@@ -271,55 +264,11 @@
 <span class="sd">       ...:    "my credit card number is 4111111111111111",</span>
 <span class="sd">       ...:]</span>
 
-<span class="sd">    In [5]: input_, output = workflow.run(Input(utterances=utterances))</span>
+<span class="sd">    In [5]: %%time</span>
+<span class="sd">       ...: input_, output = workflow.run(Input(utterances=utterances))</span>
 
 <span class="sd">    In [6]: output</span>
 
-<span class="sd">Testing</span>
-<span class="sd">-------</span>
-
-<span class="sd">1. Connect to the `Duckling API &lt;https://github.com/facebook/duckling&gt;`_ either via a docker container or a local setup.</span>
-<span class="sd">2. Boot an IPython session and setup an instance of :ref:`DucklingPlugin &lt;DucklingPlugin&gt;`.</span>
-
-<span class="sd">.. code-block:: python</span>
-<span class="sd">    :linenos:</span>
-
-<span class="sd">    from pprint import pprint</span>
-<span class="sd">    from dialogy.workflow import Workflow</span>
-<span class="sd">    from dialogy.base import Input</span>
-<span class="sd">    from dialogy.plugins import DucklingPlugin</span>
-
-<span class="sd">    duckling_plugin = DucklingPlugin(</span>
-<span class="sd">        dest="output.entities",</span>
-<span class="sd">        locale="en_IN",</span>
-
-<span class="sd">    workflow = Workflow([duckling_plugin])</span>
-<span class="sd">    input_, output = workflow.run(Input(utterances=[[{"transcript": "there are 7 people"}]]))</span>
-
-<span class="sd">    pprint(input_)</span>
-<span class="sd">    # {'clf_feature': [],</span>
-<span class="sd">    #  'current_state': None,</span>
-<span class="sd">    #  'lang': 'en',</span>
-<span class="sd">    #  'latent_entities': False,</span>
-<span class="sd">    #  'locale': 'en_IN',</span>
-<span class="sd">    #  'previous_intent': None,</span>
-<span class="sd">    #  'reference_time': None,</span>
-<span class="sd">    #  'slot_tracker': None,</span>
-<span class="sd">    #  'timezone': 'UTC',</span>
-<span class="sd">    #  'transcripts': ['there are 7 people'],</span>
-<span class="sd">    #  'utterances': [[{'transcript': 'there are 7 people'}]]}</span>
-
-<span class="sd">    pprint(output)</span>
-<span class="sd">    # {'entities': [{'alternative_index': 0,</span>
-<span class="sd">    #                'body': '7 people',</span>
-<span class="sd">    #                'entity_type': 'people',</span>
-<span class="sd">    #                'parsers': ['DucklingPlugin'],</span>
-<span class="sd">    #                'range': {'end': 18, 'start': 10},</span>
-<span class="sd">    #                'score': 1.0,</span>
-<span class="sd">    #                'type': 'value',</span>
-<span class="sd">    #                'unit': '',</span>
-<span class="sd">    #                'value': 7}],</span>
-<span class="sd">    #  'intents': []}</span>
 
 <span class="sd">Testing</span>
 <span class="sd">-------</span>
@@ -340,11 +289,11 @@
 <span class="sd">        dimensions=["people", "time"],</span>
 <span class="sd">        locale="en_IN",</span>
 <span class="sd">        timezone="Asia/Kolkata",</span>
-<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</span>
+<span class="sd">        origin/master</span>
 <span class="sd">    )</span>
 
 <span class="sd">    entities = duckling_plugin.parse(["We are 2 children coming tomorrow at 5 pm"])</span>
-<span class="sd">    print(entities)</span>
+<span class="sd">    pprint(entities)</span>
 <span class="sd">    # [PeopleEntity(</span>
 <span class="sd">    #     body='2 children', </span>
 <span class="sd">    #     type='value', </span>
@@ -370,7 +319,7 @@
 <span class="sd">    # To convert these to dicts:</span>
 
 <span class="sd">    entity_dicts = [entity.json() for entity in entities]</span>
-<span class="sd">    print(entity_dicts)</span>
+<span class="sd">    pprint(entity_dicts)</span>
 <span class="sd">    # [{'range': {'start': 7, 'end': 17},</span>
 <span class="sd">    #     'body': '2 children',</span>
 <span class="sd">    #     'type': 'value',</span>
@@ -391,6 +340,309 @@
 <span class="sd">    #     'grain': 'hour'</span>
 <span class="sd">    # }]</span>
 
+<span class="sd">Guards</span>
+<span class="sd">------</span>
+
+<span class="sd">Like all plugins, the Duckling plugin can be :ref:`guarded &lt;Guards&gt;` by conditions that prevent its execution.</span>
+<span class="sd">You may need this if you want to save on latency and are sure of not expecting entities in those turns. We will use</span>
+<span class="sd">the :ref:`mother of all examples &lt;Mother of all examples&gt;` from above to make the point. We will use the :code:`current_state` to tell the plugin</span>
+<span class="sd">to guard itself in the *"SMALL_TALK"* state.</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+<span class="sd">       ...: from dialogy.plugins import DucklingPlugin</span>
+
+<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
+<span class="sd">       ...:     dest="output.entities",</span>
+<span class="sd">       ...:     dimensions=[</span>
+<span class="sd">       ...:         "number",</span>
+<span class="sd">       ...:         "people",</span>
+<span class="sd">       ...:         "date",</span>
+<span class="sd">       ...:         "time",</span>
+<span class="sd">       ...:         "duration",</span>
+<span class="sd">       ...:         "intersect",</span>
+<span class="sd">       ...:         "amount-of-money",</span>
+<span class="sd">       ...:         "credit-card-number",</span>
+<span class="sd">       ...:     ],</span>
+<span class="sd">       ...:     guards=[lambda i, o: i.current_state == "SMALL_TALK"]</span>
+<span class="sd">       ...: )</span>
+
+<span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
+
+<span class="sd">    In [4]: utterances = [</span>
+<span class="sd">       ...:    "between today 7pm and tomorrow 9pm",</span>
+<span class="sd">       ...:    "can we get up at 6 am",</span>
+<span class="sd">       ...:    "we are 7 people",</span>
+<span class="sd">       ...:    "2 children 1 man 3 girls",</span>
+<span class="sd">       ...:    "can I come now?",</span>
+<span class="sd">       ...:    "can I come tomorrow",</span>
+<span class="sd">       ...:    "how about monday then",</span>
+<span class="sd">       ...:    "call me on 5th march",</span>
+<span class="sd">       ...:    "I want 4 pizzas",</span>
+<span class="sd">       ...:    "2 hours",</span>
+<span class="sd">       ...:    "can I pay $5 instead?",</span>
+<span class="sd">       ...:    "my credit card number is 4111111111111111",</span>
+<span class="sd">       ...:]</span>
+
+<span class="sd">    In [5]: %%time</span>
+<span class="sd">       ...: input_, output = workflow.run(Input(utterances=utterances, current_state="SMALL_TALK"))</span>
+
+<span class="sd">    In [6]: output</span>
+
+<span class="sd">You can notice that the time drops from **ms** to **us** and we produce no entities.</span>
+
+<span class="sd">Filtering Date and Time</span>
+<span class="sd">-----------------------</span>
+
+<span class="sd">There are cases where we run into ambiguity in entity resolution. A fun case happens usually with</span>
+<span class="sd">the Hindi language when someone says *"कल"*. The problem is, *"कल"* could be *"tommorrow"* or *"yesterday"*.</span>
+
+<span class="sd">Problem</span>
+<span class="sd">^^^^^^^</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: import pytz</span>
+<span class="sd">       ...: from datetime import datetime</span>
+<span class="sd">       ...: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+<span class="sd">       ...: from dialogy.plugins import DucklingPlugin</span>
+<span class="sd">       ...: from dialogy.utils import dt2timestamp</span>
+
+<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
+<span class="sd">       ...:     dest="output.entities",</span>
+<span class="sd">       ...:     dimensions=["time"],</span>
+<span class="sd">       ...: )</span>
+
+<span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
+
+<span class="sd">    In [4]: utterances = ["कल"]</span>
+
+<span class="sd">    In [5]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))</span>
+<span class="sd">       ...: reference_time = dt2timestamp(reference_dt)</span>
+
+<span class="sd">    In [5]: input_, output = workflow.run(Input(utterances=utterances, locale="hi_IN", reference_time=reference_time))</span>
+
+<span class="sd">    In [6]: output</span>
+
+<span class="sd">See the two entities? </span>
+
+<span class="sd">- We froze our reference time for 1st Jan 2022 at 12:00:00. </span>
+<span class="sd">- We get 31st December 2021</span>
+<span class="sd">- and 2nd Jan 2022.</span>
+
+<span class="sd">This could be decoded using additional context. Let's assume it is a given that dates can only be in future. Say</span>
+<span class="sd">a flight-booking case.</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: import pytz</span>
+<span class="sd">       ...: from datetime import datetime</span>
+<span class="sd">       ...: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+<span class="sd">       ...: from dialogy.plugins import DucklingPlugin</span>
+<span class="sd">       ...: from dialogy.utils import dt2timestamp</span>
+
+<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
+<span class="sd">       ...:     dest="output.entities",</span>
+<span class="sd">       ...:     dimensions=["time"],</span>
+<span class="sd">       ...:     datetime_filters=DucklingPlugin.FUTURE</span>
+<span class="sd">       ...: )</span>
+
+<span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
+
+<span class="sd">    In [4]: utterances = ["कल"]</span>
+
+<span class="sd">    In [5]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))</span>
+<span class="sd">       ...: reference_time = dt2timestamp(reference_dt)</span>
+
+<span class="sd">    In [5]: input_, output = workflow.run(Input(utterances=utterances, locale="hi_IN", reference_time=reference_time))</span>
+
+<span class="sd">    In [6]: output</span>
+
+<span class="sd">We can use :code:`DucklingPlugin.PAST` for inverse. </span>
+
+<span class="sd">What if the context was within the utterance? Say for payment verification cases, we receive these utterances:</span>
+
+<span class="sd">- *"कल ही कर दी थी"* -- *"I have already paid yesterday"*</span>
+<span class="sd">- *"कल कर दूंगा"* -- *"I will pay tomorrow"*</span>
+
+<span class="sd">We can't filter out either future or past values. In these cases, the `intent &lt;Intents&gt;` carries the context</span>
+<span class="sd">for resolving the entity value. We will look into :ref:`Temporal Intents &lt;Temporal Intents&gt;` for more details.</span>
+
+
+<span class="sd">Temporal Intents</span>
+<span class="sd">-----------------</span>
+
+<span class="sd">Filtering</span>
+<span class="sd">^^^^^^^^^</span>
+
+<span class="sd">There are cases where intents carry a notion of time, repeating an example from above:</span>
+
+<span class="sd">#. *"कल ही कर दी थी"* -- *"I have already paid yesterday"*</span>
+<span class="sd">#. *"कल कर दूंगा"* -- *"I will pay tomorrow"*</span>
+
+<span class="sd">While we can't decode the entity value for "कल" in the above utterances, the correct intent prediction is:</span>
+
+<span class="sd">#. :code:`already_paid`</span>
+<span class="sd">#. :code:`pay_later`</span>
+
+<span class="sd">If we could use this information, we could resolve the entity value for "कल". We will simulate the output</span>
+<span class="sd">to contain appropriate intents using the :code:`set` method of :ref:`workflow &lt;Workflow&gt;`.</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: import pytz</span>
+<span class="sd">       ...: from datetime import datetime</span>
+<span class="sd">       ...: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+<span class="sd">       ...: from dialogy.types import Intent</span>
+<span class="sd">       ...: from dialogy.plugins import DucklingPlugin</span>
+<span class="sd">       ...: from dialogy.utils import dt2timestamp</span>
+
+<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
+<span class="sd">       ...:     dest="output.entities",</span>
+<span class="sd">       ...:     dimensions=["time"],</span>
+<span class="sd">       ...:     temporal_intents={</span>
+<span class="sd">       ...:         "already_paid": DucklingPlugin.FUTURE,</span>
+<span class="sd">       ...:         "pay_later": DucklingPlugin.PAST</span>
+<span class="sd">       ...:     }</span>
+<span class="sd">       ...: )</span>
+
+<span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
+
+<span class="sd">    In [4]: utterances = ["कल ही कर दी थी"]</span>
+<span class="sd">       ...: workflow.set("output.intents", [Intent(name="already_paid", score=1.0)])</span>
+
+<span class="sd">    In [5]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))</span>
+<span class="sd">       ...: reference_time = dt2timestamp(reference_dt)</span>
+<span class="sd">       ...: input_, output = workflow.run(Input(utterances=utterances, locale="hi_IN", reference_time=reference_time))</span>
+
+<span class="sd">    In [6]: output</span>
+
+<span class="sd">    In [7]: utterances = ["कल ही कर दी थी"]</span>
+<span class="sd">       ...: workflow.set("output.intents", [Intent(name="pay_later", score=1.0)])</span>
+<span class="sd">       ...: input_, output = workflow.run(Input(utterances=utterances, locale="hi_IN", reference_time=reference_time))</span>
+
+<span class="sd">    In [6]: output</span>
+
+<span class="sd">Casting</span>
+<span class="sd">^^^^^^^</span>
+
+<span class="sd">We can also use temporal intents to cast certain entities. Machines can act on absolute time values but </span>
+<span class="sd">natural language often has relative units like *"for 2 hours"*. These produce a duration entity.</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: import pytz</span>
+<span class="sd">       ...: from datetime import datetime</span>
+<span class="sd">       ...: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+<span class="sd">       ...: from dialogy.plugins import DucklingPlugin</span>
+<span class="sd">       ...: from dialogy.utils import dt2timestamp</span>
+
+<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
+<span class="sd">       ...:     dest="output.entities",</span>
+<span class="sd">       ...:     dimensions=["duration", "time"],</span>
+<span class="sd">       ...: )</span>
+
+<span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
+
+<span class="sd">    In [4]: utterances = ["for 2h"]</span>
+
+<span class="sd">    In [5]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))</span>
+<span class="sd">       ...: reference_time = dt2timestamp(reference_dt)</span>
+
+<span class="sd">    In [5]: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))</span>
+
+<span class="sd">    In [6]: output</span>
+
+<span class="sd">We understand the duration but we could create an absolute time value using the reference time, but we don't know if duration </span>
+<span class="sd">should be added or removed.</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: import pytz</span>
+<span class="sd">       ...: from datetime import datetime</span>
+<span class="sd">       ...: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+<span class="sd">       ...: from dialogy.types import Intent</span>
+<span class="sd">       ...: from dialogy.plugins import DucklingPlugin</span>
+<span class="sd">       ...: from dialogy.utils import dt2timestamp</span>
+
+<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
+<span class="sd">       ...:     dest="output.entities",</span>
+<span class="sd">       ...:     dimensions=["time", "duration"],</span>
+<span class="sd">       ...:     timezone="Asia/Kolkata",</span>
+<span class="sd">       ...:     temporal_intents={</span>
+<span class="sd">       ...:         "already_paid": DucklingPlugin.FUTURE,</span>
+<span class="sd">       ...:         "pay_later": DucklingPlugin.PAST</span>
+<span class="sd">       ...:     }</span>
+<span class="sd">       ...: )</span>
+
+<span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
+
+<span class="sd">    In [4]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))</span>
+<span class="sd">       ...: reference_time = dt2timestamp(reference_dt)</span>
+<span class="sd">       ...: utterances = ["for 2h"]</span>
+
+<span class="sd">    In [5]: workflow.set("output.intents", [Intent(name="already_paid", score=1.0)])</span>
+<span class="sd">       ...: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))</span>
+
+<span class="sd">    In [6]: output</span>
+
+<span class="sd">    In [7]: workflow.set("output.intents", [Intent(name="pay_later", score=1.0)])</span>
+<span class="sd">       ...: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))</span>
+
+<span class="sd">    In [8]: output</span>
+
+<span class="sd">In case we need to always cast duration as a future or a past value we can do:</span>
+
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: import pytz</span>
+<span class="sd">       ...: from datetime import datetime</span>
+<span class="sd">       ...: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+<span class="sd">       ...: from dialogy.types import Intent</span>
+<span class="sd">       ...: from dialogy.plugins import DucklingPlugin</span>
+<span class="sd">       ...: from dialogy.utils import dt2timestamp</span>
+
+<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
+<span class="sd">       ...:     dest="output.entities",</span>
+<span class="sd">       ...:     dimensions=["time", "duration"],</span>
+<span class="sd">       ...:     timezone="Asia/Kolkata",</span>
+<span class="sd">       ...:     temporal_intents={</span>
+<span class="sd">       ...:         "__any__": DucklingPlugin.FUTURE,</span>
+<span class="sd">       ...:     }</span>
+<span class="sd">       ...: )</span>
+
+<span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
+
+<span class="sd">    In [4]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))</span>
+<span class="sd">       ...: reference_time = dt2timestamp(reference_dt)</span>
+<span class="sd">       ...: utterances = ["for 2h"]</span>
+
+<span class="sd">    In [5]: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))</span>
+
+<span class="sd">    In [6]: output</span>
+
+<span class="sd">    In [7]: duckling_plugin = DucklingPlugin(</span>
+<span class="sd">       ...:     dest="output.entities",</span>
+<span class="sd">       ...:     dimensions=["time", "duration"],</span>
+<span class="sd">       ...:     timezone="Asia/Kolkata",</span>
+<span class="sd">       ...:     temporal_intents={</span>
+<span class="sd">       ...:         "__any__": DucklingPlugin.PAST,</span>
+<span class="sd">       ...:     }</span>
+<span class="sd">       ...: )</span>
+
+<span class="sd">    In [8]: workflow = Workflow([duckling_plugin])</span>
+<span class="sd">       ...: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))</span>
+<span class="sd">       ...: output</span>
+
 <span class="sd">"""</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">operator</span>
@@ -410,22 +662,13 @@
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span>
 <span class="kn">from</span> <span class="nn">dialogy.base.entity_extractor</span> <span class="kn">import</span> <span class="n">EntityScoringMixin</span>
-<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Intent</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity.deserialize</span> <span class="kn">import</span> <span class="n">deserialize_duckling_entity</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">dt2timestamp</span><span class="p">,</span> <span class="n">lang_detect_from_text</span><span class="p">,</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="DucklingPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.duckling_plugin.html#dialogy.plugins.text.duckling_plugin.DucklingPlugin">[docs]</a><span class="k">class</span> <span class="nc">DucklingPlugin</span><span class="p">(</span><span class="n">EntityScoringMixin</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
-<span class="sd">    A :ref:`Plugin&lt;plugin&gt;` for extracting entities using `Duckling &lt;https://github.com/facebook/duckling&gt;`_. Once</span>
-<span class="sd">    instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling</span>
-<span class="sd">    &lt;https://github.com/facebook/duckling&gt;`_.</span>
-
-<span class="sd">    .. _DucklingPlugin:</span>
-
-<span class="sd">    This object when used as a plugin, transforms the :code:`List[Dict[str, Any]]` returned from the API to a</span>
-<span class="sd">    :ref:`BaseEntity&lt;base_entity&gt;` or one of its subclasses.</span>
-
 <span class="sd">    :param dimensions: `Dimensions &lt;https://github.com/facebook/duckling#supported-dimensions&gt;`_. Of the listed</span>
 <span class="sd">    dimensions, we support:</span>
 
@@ -461,14 +704,14 @@
 <span class="sd">    :type url: Optional[str]</span>
 <span class="sd">    """</span>
 
-    <span class="n">FUTURE</span> <span class="o">=</span> <span class="s2">"future"</span>
+    <span class="n">FUTURE</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">FUTURE</span>
     <span class="sd">"""</span>
-<span class="sd">    This selects entity values with scores greater than or equal to the threshold.</span>
+<span class="sd">    Select time entity values with scores greater than or equal to the reference time.</span>
 <span class="sd">    """</span>
 
-    <span class="n">PAST</span> <span class="o">=</span> <span class="s2">"past"</span>
+    <span class="n">PAST</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">PAST</span>
     <span class="sd">"""</span>
-<span class="sd">    This selects entity values with scores less than or equal to the threshold.</span>
+<span class="sd">    Select time entity values with scores lesser than or equal to the reference time.</span>
 <span class="sd">    """</span>
 
     <span class="n">__DATETIME_OPERATION_ALIAS</span> <span class="o">=</span> <span class="p">{</span><span class="n">FUTURE</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">,</span> <span class="n">PAST</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">}</span>
@@ -476,10 +719,11 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">dimensions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"UTC"</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"http://0.0.0.0:8000/parse"</span><span class="p">,</span>
         <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"en_IN"</span><span class="p">,</span>
+        <span class="n">temporal_intents</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">guards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">datetime_filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -508,6 +752,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temporal_intents</span> <span class="o">=</span> <span class="n">temporal_intents</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference_time_column</span> <span class="o">=</span> <span class="n">reference_time_column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datetime_filters</span> <span class="o">=</span> <span class="n">datetime_filters</span>
@@ -662,6 +907,7 @@
         <span class="n">entities_json</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
         <span class="n">alternative_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">duration_cast_operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Create a list of :ref:`BaseEntity &lt;base_entity&gt;` objects from a list of entity dicts.</span>
@@ -675,7 +921,13 @@
 <span class="sd">        """</span>
         <span class="n">deserialized_entities</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">entity_json</span> <span class="ow">in</span> <span class="n">entities_json</span><span class="p">:</span>
-            <span class="n">entity</span> <span class="o">=</span> <span class="n">deserialize_duckling_entity</span><span class="p">(</span><span class="n">entity_json</span><span class="p">,</span> <span class="n">alternative_index</span><span class="p">)</span>
+            <span class="n">entity</span> <span class="o">=</span> <span class="n">deserialize_duckling_entity</span><span class="p">(</span>
+                <span class="n">entity_json</span><span class="p">,</span>
+                <span class="n">alternative_index</span><span class="p">,</span>
+                <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">,</span>
+                <span class="n">timezone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">,</span>
+                <span class="n">duration_cast_operator</span><span class="o">=</span><span class="n">duration_cast_operator</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">entity</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">deserialized_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">deserialized_entities</span>
@@ -780,11 +1032,18 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">list_of_entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]],</span>
         <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"UTC"</span><span class="p">,</span>
+        <span class="n">duration_cast_operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="n">shaped_entities</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">alternative_index</span><span class="p">,</span> <span class="n">entities</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_of_entities</span><span class="p">):</span>
             <span class="n">shaped_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="n">alternative_index</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span>
+                    <span class="n">entities</span><span class="p">,</span>
+                    <span class="n">alternative_index</span><span class="o">=</span><span class="n">alternative_index</span><span class="p">,</span>
+                    <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">,</span>
+                    <span class="n">duration_cast_operator</span><span class="o">=</span><span class="n">duration_cast_operator</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">py_</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">shaped_entities</span><span class="p">)</span></div>
 
@@ -812,45 +1071,64 @@
         <span class="n">locale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_latent</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">intents</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="n">list_of_entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">duration_cast_operator</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">intent</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">intents</span><span class="p">:</span>
+            <span class="n">intent</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">intents</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">Intent</span><span class="p">)</span> <span class="ow">and</span> <span class="n">intent</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_intents</span><span class="p">:</span>
+            <span class="n">duration_cast_operator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datetime_filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_intents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">intent</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">ANY</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_intents</span><span class="p">:</span>
+            <span class="n">duration_cast_operator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_intents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ANY</span><span class="p">)</span>
 
         <span class="n">locale</span> <span class="o">=</span> <span class="n">locale</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">locale</span>
-        <span class="n">reference_time</span> <span class="o">=</span> <span class="n">reference_time</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_time</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_time</span> <span class="o">=</span> <span class="n">reference_time</span> <span class="o">=</span> <span class="n">reference_time</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">transcripts</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transcripts</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">transcripts</span> <span class="o">=</span> <span class="p">[</span><span class="n">transcripts</span><span class="p">]</span>  <span class="c1"># pragma: no cover</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">list_of_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities_concurrent</span><span class="p">(</span>
-                <span class="n">transcripts</span><span class="p">,</span>
-                <span class="n">locale</span><span class="p">,</span>
-                <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">,</span>
-                <span class="n">use_latent</span><span class="o">=</span><span class="n">use_latent</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_entity_classes</span><span class="p">(</span><span class="n">list_of_entities</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">)</span>
-            <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_consensus</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">transcripts</span><span class="p">))</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">value_error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value_error</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">value_error</span></div>
+        <span class="n">list_of_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_entities_concurrent</span><span class="p">(</span>
+            <span class="n">transcripts</span><span class="p">,</span>
+            <span class="n">locale</span><span class="o">=</span><span class="n">locale</span><span class="p">,</span>
+            <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">,</span>
+            <span class="n">use_latent</span><span class="o">=</span><span class="n">use_latent</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_entity_classes</span><span class="p">(</span>
+            <span class="n">list_of_entities</span><span class="p">,</span>
+            <span class="n">reference_time</span><span class="p">,</span>
+            <span class="n">duration_cast_operator</span><span class="o">=</span><span class="n">duration_cast_operator</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_consensus</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">transcripts</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DucklingPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.duckling_plugin.html#dialogy.plugins.text.duckling_plugin.DucklingPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
+<div class="viewcode-block" id="DucklingPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.duckling_plugin.html#dialogy.plugins.text.duckling_plugin.DucklingPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Produces Duckling entities, runs with a :ref:`Workflow's run&lt;workflow_run&gt;` method.</span>
 
-<span class="sd">        :param args: Expects a tuple of :code:`Tuple[natural language for parsing entities, reference time in milliseconds, locale]`</span>
+<span class="sd">        :param argbrightons: Expects a tuple of :code:`Tuple[natural language for parsing entities, reference time in milliseconds, locale]`</span>
 <span class="sd">        :type args: Tuple(Union[str, List[str]], int, str)</span>
 <span class="sd">        :return: A list of duckling entities.</span>
 <span class="sd">        :rtype: List[BaseEntity]</span>
 <span class="sd">        """</span>
         <span class="n">transcripts</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">transcripts</span>
-        <span class="n">reference_time</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">reference_time</span>
-        <span class="n">locale</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">locale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_time</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">reference_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">locale</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">locale</span>
         <span class="n">use_latent</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">latent_entities</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
-            <span class="n">transcripts</span><span class="p">,</span> <span class="n">locale</span><span class="p">,</span> <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">,</span> <span class="n">use_latent</span><span class="o">=</span><span class="n">use_latent</span>
+            <span class="n">transcripts</span><span class="p">,</span>
+            <span class="n">locale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">locale</span><span class="p">,</span>
+            <span class="n">reference_time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_time</span><span class="p">,</span>
+            <span class="n">use_latent</span><span class="o">=</span><span class="n">use_latent</span><span class="p">,</span>
+            <span class="n">intents</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">intents</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="DucklingPlugin.transform"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.duckling_plugin.html#dialogy.plugins.text.duckling_plugin.DucklingPlugin.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>

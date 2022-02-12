@@ -185,11 +185,6 @@ class Plugin(ABC):
     """
         Abstract class to be implemented by all plugins.
 
-    <<<<<<< HEAD
-    =======
-        .. _plugin-abstract:
-
-    >>>>>>> origin/master
         :param input_column: Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES
         :type input_column: str
         :param output_column: Saves transformation in this column for a given dataframe, defaults to None
@@ -235,24 +230,20 @@ class Plugin(ABC):
 
     def __call__(self, workflow: Workflow) -> None:
         """
-        <<<<<<< HEAD
-                Set workflow with output.
+        Set workflow with output.
 
-                This important book-keeping method is called by the workflow.
+        This important book-keeping method is called by the workflow.
 
-                - If the plugin guards evaluate to :code:`True`, we don't run the plugin's business logic.
-                - Otherwise, we obtain the plugins transformation and set it on :code:`self.dest` path within the workflow.
-                    - This path is a string describing :code:`'input'` or :code:`'output'` and their respective attributes separated by a '.'
-                    - like: :code:`"input.transcripts"` or :code:`"output.intents"`.
-                - The workflow takes care of keeping its :ref:`input<Input>` and :ref:`output<Output>` immutable.
+        - If the plugin guards evaluate to :code:`True`, we don't run the plugin's business logic.
+        - Otherwise, we obtain the plugins transformation and set it on :code:`self.dest` path within the workflow.
+            - This path is a string describing :code:`'input'` or :code:`'output'` and their respective attributes separated by a '.'
+            - like: :code:`"input.transcripts"` or :code:`"output.intents"`.
+        - The workflow takes care of keeping its :ref:`input<Input>` and :ref:`output<Output>` immutable.
 
-                .. _PluginBookkeeping:
-        =======
-                Use the plugin's logic and save the result within the workflow.
-        >>>>>>> origin/master
+        .. _PluginBookkeeping:
 
-                :param workflow: An instance of :ref:`Workflow <WorkflowClass>`.
-                :type workflow: Workflow
+        :param workflow: An instance of :ref:`Workflow <WorkflowClass>`.
+        :type workflow: Workflow
         """
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
 
@@ -271,17 +262,14 @@ class Plugin(ABC):
 
     def prevent(self, input_: Input, output: Output) -> bool:
         """
-                Decide if the plugin should execute.
+        Decide if the plugin should execute.
 
-        <<<<<<< HEAD
-                If this method returns true, the plugin's utility method will not be called.
+        If this method returns true, the plugin's utility method will not be called.
 
-                .. _Guards:
+        .. _Guards:
 
-        =======
-        >>>>>>> origin/master
-                :return: prevent plugin execution if True.
-                :rtype: bool
+        :return: prevent plugin execution if True.
+        :rtype: bool
         """
         if not self.guards:
             return False
