@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.1
+
+- [x] feat: `DurationEntity` are cast as `TimeEntity` by default.
+  - [x] `DucklingPlugin` uses temporal intents to understand cast direction i.e. add duration to reference time or subtract.
+- [x]: docs: Heavy addition of examples for types, plugins and base types.
+- [x]: fix: Entity structures are uniform in terms of `value` and `values` attributes.
+- [x]: feat: Guards prevent plugins from running.
+
 ## 0.9.0
 - [x] fix: `entity.entity_type` and `entity.type` hold separate meaning.
 - [x] update: Plugins no longer need `access` or `mutate` functions.

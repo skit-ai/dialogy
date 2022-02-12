@@ -290,6 +290,10 @@
         <span class="k">return</span> <span class="n">dt2timestamp</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">make_tz_aware</span></div>
+
+
+<div class="viewcode-block" id="unix_ts_to_datetime"><a class="viewcode-back" href="../../../source/dialogy.utils.html#dialogy.utils.datetime.unix_ts_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">unix_ts_to_datetime</span><span class="p">(</span><span class="n">reference_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"UTC"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">reference_time</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">))</span></div>
 </pre></div>
         </article>
       </div>

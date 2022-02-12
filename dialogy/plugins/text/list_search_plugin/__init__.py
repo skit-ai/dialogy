@@ -32,8 +32,8 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
     """
      A :ref:`Plugin<plugin>` for extracting entities using spacy or a list of regex patterns.
 
-     .. attention: 
-     
+     .. attention:
+
         This class will undergo a series of refactoring changes. FWIW, :ref:`ListSearchPlugin<ListSearchPlugin>`
         is more more performant in terms of entity capture rates but not as responsive. :code:`ListEntityPlugin`
         is fast. So make choices with bearing this in mind.

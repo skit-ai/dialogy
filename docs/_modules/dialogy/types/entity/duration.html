@@ -264,12 +264,16 @@
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity.base_entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity.time</span> <span class="kn">import</span> <span class="n">TimeEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">unix_ts_to_datetime</span>
 
 
 <div class="viewcode-block" id="DurationEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.duration.html#dialogy.types.entity.duration.DurationEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
@@ -303,7 +307,39 @@
             <span class="n">values</span><span class="o">=</span><span class="p">[{</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">:</span> <span class="n">value</span><span class="p">}],</span>
             <span class="n">unit</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">UNIT</span><span class="p">],</span>
             <span class="n">normalized</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">NORMALIZED</span><span class="p">],</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="DurationEntity.to_time_entity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.duration.html#dialogy.types.entity.duration.DurationEntity.to_time_entity">[docs]</a>    <span class="k">def</span> <span class="nf">to_time_entity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">reference_unix_ts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">duration_cast_operator</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEntity</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Converts a duration entity to a time entity.</span>
+<span class="sd">        """</span>
+        <span class="n">reference_datetime</span> <span class="o">=</span> <span class="n">unix_ts_to_datetime</span><span class="p">(</span><span class="n">reference_unix_ts</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">duration_cast_operator</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">FUTURE</span><span class="p">:</span>
+            <span class="n">operation</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span>
+        <span class="k">elif</span> <span class="n">duration_cast_operator</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">PAST</span><span class="p">:</span>
+            <span class="n">operation</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">sub</span>
+
+        <span class="n">value_dt</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span>
+            <span class="n">reference_datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normalized</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value_dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+        <span class="n">entity</span> <span class="o">=</span> <span class="n">TimeEntity</span><span class="p">(</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">{</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">START</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">START</span><span class="p">],</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="n">body</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="p">,</span>
+            <span class="n">dim</span><span class="o">=</span><span class="s2">"time"</span><span class="p">,</span>
+            <span class="n">alternative_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alternative_index</span><span class="p">,</span>
+            <span class="n">latent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">latent</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="p">[{</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">:</span> <span class="n">value</span><span class="p">}],</span>
+            <span class="n">grain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">entity</span><span class="o">.</span><span class="n">set_entity_type</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">entity</span></div></div>
 </pre></div>
         </article>
       </div>

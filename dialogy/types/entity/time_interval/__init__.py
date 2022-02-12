@@ -141,8 +141,6 @@ class TimeIntervalEntity(TimeEntity):
         :rtype: Optional[datetime]
         """
         value = self.value.get(const.FROM) or self.value.get(const.TO)
-
-        print(self.value)
         if value:
             return datetime.fromisoformat(value)
         else:

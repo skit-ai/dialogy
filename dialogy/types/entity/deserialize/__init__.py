@@ -1,10 +1,10 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from dialogy import constants as const
+from dialogy.types.entity.amount_of_money import CurrencyEntity
 from dialogy.types.entity.base_entity import BaseEntity
 from dialogy.types.entity.credit_card_number import CreditCardNumberEntity
 from dialogy.types.entity.duration import DurationEntity
-from dialogy.types.entity.amount_of_money import CurrencyEntity
 from dialogy.types.entity.numerical import NumericalEntity
 from dialogy.types.entity.people import PeopleEntity
 from dialogy.types.entity.time import TimeEntity
@@ -12,7 +12,11 @@ from dialogy.types.entity.time_interval import TimeIntervalEntity
 
 
 def deserialize_duckling_entity(
-    duckling_entity_dict: Dict[str, Any], alternative_index: int
+    duckling_entity_dict: Dict[str, Any],
+    alternative_index: int,
+    reference_time: Optional[int] = None,
+    timezone: str = "UTC",
+    duration_cast_operator: Optional[str] = None,
 ) -> BaseEntity:
     keys = tuple(sorted(duckling_entity_dict.keys()))
     if keys != const.DUCKLING_ENTITY_KEYS:
@@ -55,8 +59,12 @@ def deserialize_duckling_entity(
         return NumericalEntity.from_duckling(duckling_entity_dict, alternative_index)
 
     elif dimension == const.DURATION:
-        return DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
-
+        entity = DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
+        if duration_cast_operator and reference_time:
+            return entity.to_time_entity(
+                reference_time, timezone, duration_cast_operator
+            )
+        return entity
     else:  # dimension == const.CREDIT_CARD_NUMBER:
         return CreditCardNumberEntity.from_duckling(
             duckling_entity_dict, alternative_index

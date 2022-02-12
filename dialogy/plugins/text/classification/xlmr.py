@@ -279,5 +279,3 @@ class XLMRMultiClass(Plugin):
 
     def utility(self, input: Input, _: Output) -> List[Intent]:
         return self.inference(input.clf_feature)
-
-

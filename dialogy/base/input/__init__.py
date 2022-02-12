@@ -127,11 +127,7 @@ class Input:
         validator=attr.validators.optional(attr.validators.instance_of(list)),
     )
     """
-<<<<<<< HEAD
-    Placeholder for the features of an intent classifier. Reference the following for an example value:
-=======
     Placeholder for the features of an intent classifier.
->>>>>>> origin/master
     
     .. code-block:: python
 

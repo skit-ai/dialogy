@@ -222,7 +222,7 @@
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.entity.duration" title="Permalink to this headline">¶</a></h2>
 <section id="duration-entity">
 <span id="durationentity"></span><h3>Duration Entity<a class="headerlink" href="#duration-entity" title="Permalink to this headline">¶</a></h3>
-<p>Provides the entity class for durations in natural language. This entity is obtained via <a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html#ducklingplugin"><span class="std std-ref">DucklingPlugin</span></a>.</p>
+<p>Provides the entity class for durations in natural language. This entity is obtained via <span class="xref std std-ref">DucklingPlugin</span>.</p>
 <section id="plugin-walkthrough">
 <h4>Plugin Walkthrough<a class="headerlink" href="#plugin-walkthrough" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">DucklingPlugin</span>
@@ -302,6 +302,16 @@ to get to a date that’s 2 days ahead.</p>
 <dt class="sig sig-object py" id="dialogy.types.entity.duration.DurationEntity.normalized">
 <span class="sig-name descname"><span class="pre">normalized</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.duration.DurationEntity.normalized" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.entity.duration.DurationEntity.to_time_entity">
+<span class="sig-name descname"><span class="pre">to_time_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_unix_ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_cast_operator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/duration.html#DurationEntity.to_time_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.duration.DurationEntity.to_time_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a duration entity to a time entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeEntity</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.duration.DurationEntity.unit">
 <span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.duration.DurationEntity.unit" title="Permalink to this definition">¶</a></dt>

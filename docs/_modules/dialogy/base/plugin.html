@@ -401,25 +401,20 @@
 
 <div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../../source/dialogy.base.plugin.html#dialogy.base.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">"""</span>
-<span class="sd">    Abstract class to be implemented by all plugins.</span>
+<span class="sd">        Abstract class to be implemented by all plugins.</span>
 
-<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
-<span class="sd">=======</span>
-<span class="sd">    .. _plugin-abstract:</span>
-
-<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</span>
-<span class="sd">    :param input_column: Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</span>
-<span class="sd">    :type input_column: str</span>
-<span class="sd">    :param output_column: Saves transformation in this column for a given dataframe, defaults to None</span>
-<span class="sd">    :type output_column: Optional[str]</span>
-<span class="sd">    :param use_transform: Should the transformation be applied while training?, defaults to False</span>
-<span class="sd">    :type use_transform: bool</span>
-<span class="sd">    :param dest: The path where plugin output should be saved., defaults to None</span>
-<span class="sd">    :type dest: Optional[str]</span>
-<span class="sd">    :param guards: A list of functions that evaluate to bool, defaults to None</span>
-<span class="sd">    :type guards: Optional[List[Guard]]</span>
-<span class="sd">    :param debug: Should we print debug logs?, defaults to False</span>
-<span class="sd">    :type debug: bool, optional</span>
+<span class="sd">        :param input_column: Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</span>
+<span class="sd">        :type input_column: str</span>
+<span class="sd">        :param output_column: Saves transformation in this column for a given dataframe, defaults to None</span>
+<span class="sd">        :type output_column: Optional[str]</span>
+<span class="sd">        :param use_transform: Should the transformation be applied while training?, defaults to False</span>
+<span class="sd">        :type use_transform: bool</span>
+<span class="sd">        :param dest: The path where plugin output should be saved., defaults to None</span>
+<span class="sd">        :type dest: Optional[str]</span>
+<span class="sd">        :param guards: A list of functions that evaluate to bool, defaults to None</span>
+<span class="sd">        :type guards: Optional[List[Guard]]</span>
+<span class="sd">        :param debug: Should we print debug logs?, defaults to False</span>
+<span class="sd">        :type debug: bool, optional</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -453,7 +448,6 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
-<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
 <span class="sd">        Set workflow with output.</span>
 
 <span class="sd">        This important book-keeping method is called by the workflow.</span>
@@ -465,9 +459,6 @@
 <span class="sd">        - The workflow takes care of keeping its :ref:`input&lt;Input&gt;` and :ref:`output&lt;Output&gt;` immutable.</span>
 
 <span class="sd">        .. _PluginBookkeeping:</span>
-<span class="sd">=======</span>
-<span class="sd">        Use the plugin's logic and save the result within the workflow.</span>
-<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</span>
 
 <span class="sd">        :param workflow: An instance of :ref:`Workflow &lt;WorkflowClass&gt;`.</span>
 <span class="sd">        :type workflow: Workflow</span>
@@ -491,13 +482,10 @@
         <span class="sd">"""</span>
 <span class="sd">        Decide if the plugin should execute.</span>
 
-<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
 <span class="sd">        If this method returns true, the plugin's utility method will not be called.</span>
 
 <span class="sd">        .. _Guards:</span>
 
-<span class="sd">=======</span>
-<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</span>
 <span class="sd">        :return: prevent plugin execution if True.</span>
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        """</span>

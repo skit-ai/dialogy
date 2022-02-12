@@ -80,7 +80,7 @@ class Intent:
         .. _ApplySlot:
 
         An intent can hold different entities within associated slot-types.
-        We parse rules that describe this mapping and create placeholders within an intent for 
+        We parse rules that describe this mapping and create placeholders within an intent for
         holding entities found.
 
         An example rule would look like:
