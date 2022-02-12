@@ -366,8 +366,6 @@
 <span class="sd">        :raises AttributeError: In case the labelencoder is not available.</span>
 <span class="sd">        :return: A list of intents corresponding to texts.</span>
 <span class="sd">        :rtype: List[Intent]</span>
-
-
 <span class="sd">        """</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Classifier input:</span><span class="se">\n</span><span class="si">{</span><span class="n">texts</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">fallback_output</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fallback_label</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

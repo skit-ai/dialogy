@@ -19,7 +19,7 @@ Dialogy
     :target: https://badge.fury.io/py/dialogy
 
 
-Dialogy is a library for building and managing SLU applications.
+`Dialogy <https://github.com/skit-ai/dialogy>`_ is a library for building and managing SLU applications.
 
 Topics 📄
 #########

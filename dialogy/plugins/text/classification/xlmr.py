@@ -148,8 +148,6 @@ class XLMRMultiClass(Plugin):
         :raises AttributeError: In case the labelencoder is not available.
         :return: A list of intents corresponding to texts.
         :rtype: List[Intent]
-
-
         """
         logger.debug(f"Classifier input:\n{texts}")
         fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
