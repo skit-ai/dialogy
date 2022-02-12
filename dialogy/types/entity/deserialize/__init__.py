@@ -1,10 +1,10 @@
 from typing import Any, Dict, Optional
 
 from dialogy import constants as const
+from dialogy.types.entity.amount_of_money import CurrencyEntity
 from dialogy.types.entity.base_entity import BaseEntity
 from dialogy.types.entity.credit_card_number import CreditCardNumberEntity
 from dialogy.types.entity.duration import DurationEntity
-from dialogy.types.entity.amount_of_money import CurrencyEntity
 from dialogy.types.entity.numerical import NumericalEntity
 from dialogy.types.entity.people import PeopleEntity
 from dialogy.types.entity.time import TimeEntity
@@ -61,7 +61,9 @@ def deserialize_duckling_entity(
     elif dimension == const.DURATION:
         entity = DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
         if cast_duration_as_time and not reference_time:
-            raise ValueError("Reference time must be provided when casting duration as time.")
+            raise ValueError(
+                "Reference time must be provided when casting duration as time."
+            )
         if cast_duration_as_time and reference_time:
             return entity.to_time_entity(reference_time, timezone)
         return entity

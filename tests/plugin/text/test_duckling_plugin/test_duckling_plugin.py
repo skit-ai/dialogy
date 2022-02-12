@@ -1,6 +1,6 @@
-from http.client import REQUESTED_RANGE_NOT_SATISFIABLE
 import operator
 import time
+from http.client import REQUESTED_RANGE_NOT_SATISFIABLE
 
 import httpretty
 import pandas as pd
@@ -122,6 +122,7 @@ def test_duckling_connection_error() -> None:
     workflow = Workflow([duckling_plugin])
     with pytest.raises(requests.exceptions.ConnectionError):
         workflow.run(Input(utterances="test", locale=locale))
+
 
 def test_max_workers_greater_than_zero() -> None:
     """Checks that "ValueError: max_workers must be greater than 0" is not raised when there are no transcriptions

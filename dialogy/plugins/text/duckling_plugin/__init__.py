@@ -464,7 +464,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 alternative_index,
                 reference_time=reference_time,
                 timezone=self.timezone,
-                cast_duration_as_time=self.cast_duration_as_time
+                cast_duration_as_time=self.cast_duration_as_time,
             )
             entity.add_parser(self)
             deserialized_entities.append(entity)
@@ -570,7 +570,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self,
         list_of_entities: List[List[Dict[str, Any]]],
         reference_time: Optional[int] = None,
-        timezone: str = "UTC"
+        timezone: str = "UTC",
     ) -> List[BaseEntity]:
         shaped_entities = []
         for (alternative_index, entities) in enumerate(list_of_entities):

@@ -41,6 +41,7 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
     In [3]: output.json()
 """
 from __future__ import annotations
+
 from typing import Any, Dict, List, Optional
 
 import attr

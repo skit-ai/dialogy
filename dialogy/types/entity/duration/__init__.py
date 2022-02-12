@@ -45,8 +45,9 @@ Workflow Integration
     In [5]: output
 """
 from __future__ import annotations
-from typing import Any, Dict
+
 from datetime import timedelta
+from typing import Any, Dict
 
 import attr
 
@@ -98,13 +99,16 @@ class DurationEntity(BaseEntity):
         value = value_dt.isoformat()
 
         entity = TimeEntity(
-            range={const.START: self.range[const.START], const.END: self.range[const.END]},
+            range={
+                const.START: self.range[const.START],
+                const.END: self.range[const.END],
+            },
             body=self.body,
             dim="time",
             alternative_index=self.alternative_index,
             latent=self.latent,
             values=[{const.VALUE: value}],
-            grain=self.unit
+            grain=self.unit,
         )
         entity.set_entity_type()
         return entity
