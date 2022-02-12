@@ -459,7 +459,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         except requests.exceptions.ConnectionError as connection_error:
             logger.error(f"Duckling server is turned off?: {connection_error}")
             logger.error(pformat(body))
-            return {const.IDX: sort_idx, const.VALUE: []}
+            raise requests.exceptions.ConnectionError from connection_error
 
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
