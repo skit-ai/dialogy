@@ -340,7 +340,7 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.08333333333333333,</span>
 <span class="go">   'alternative_index': 4,</span>
-<span class="go">   'value': '2022-02-12T15:36:49.949+05:30',</span>
+<span class="go">   'value': '2022-02-12T15:59:37.281+05:30',</span>
 <span class="go">   'entity_type': 'datetime',</span>
 <span class="go">   'grain': 'second'},</span>
 <span class="go">  {'range': {'start': 11, 'end': 19},</span>
@@ -431,60 +431,105 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="linenos"> 5</span>
 <span class="linenos"> 6</span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
 <span class="linenos"> 7</span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">duckling_plugin</span><span class="p">])</span>
+<span class="linenos">11</span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="p">[[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"there are 7 people"</span><span class="p">}]]))</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="n">pprint</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span>
+<span class="linenos">14</span><span class="c1"># {'clf_feature': [],</span>
+<span class="linenos">15</span><span class="c1">#  'current_state': None,</span>
+<span class="linenos">16</span><span class="c1">#  'lang': 'en',</span>
+<span class="linenos">17</span><span class="c1">#  'latent_entities': False,</span>
+<span class="linenos">18</span><span class="c1">#  'locale': 'en_IN',</span>
+<span class="linenos">19</span><span class="c1">#  'previous_intent': None,</span>
+<span class="linenos">20</span><span class="c1">#  'reference_time': None,</span>
+<span class="linenos">21</span><span class="c1">#  'slot_tracker': None,</span>
+<span class="linenos">22</span><span class="c1">#  'timezone': 'UTC',</span>
+<span class="linenos">23</span><span class="c1">#  'transcripts': ['there are 7 people'],</span>
+<span class="linenos">24</span><span class="c1">#  'utterances': [[{'transcript': 'there are 7 people'}]]}</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+<span class="linenos">27</span><span class="c1"># {'entities': [{'alternative_index': 0,</span>
+<span class="linenos">28</span><span class="c1">#                'body': '7 people',</span>
+<span class="linenos">29</span><span class="c1">#                'entity_type': 'people',</span>
+<span class="linenos">30</span><span class="c1">#                'parsers': ['DucklingPlugin'],</span>
+<span class="linenos">31</span><span class="c1">#                'range': {'end': 18, 'start': 10},</span>
+<span class="linenos">32</span><span class="c1">#                'score': 1.0,</span>
+<span class="linenos">33</span><span class="c1">#                'type': 'value',</span>
+<span class="linenos">34</span><span class="c1">#                'unit': '',</span>
+<span class="linenos">35</span><span class="c1">#                'value': 7}],</span>
+<span class="linenos">36</span><span class="c1">#  'intents': []}</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Testing<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Connect to the <a class="reference external" href="https://github.com/facebook/duckling">Duckling API</a> either via a docker container or a local setup.</p></li>
+<li><p>Boot an IPython session and setup an instance of <a class="reference internal" href="#ducklingplugin"><span class="std std-ref">DucklingPlugin</span></a>.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="linenos"> 4</span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">DucklingPlugin</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
+<span class="linenos"> 7</span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">,</span>
 <span class="linenos"> 8</span>    <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"people"</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">],</span>
 <span class="linenos"> 9</span>    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
 <span class="linenos">10</span>    <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">,</span>
-<span class="linenos">11</span><span class="p">)</span>
-<span class="linenos">12</span>
-<span class="linenos">13</span><span class="n">entities</span> <span class="o">=</span> <span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">([</span><span class="s2">"We are 2 children coming tomorrow at 5 pm"</span><span class="p">])</span>
-<span class="linenos">14</span><span class="nb">print</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
-<span class="linenos">15</span><span class="c1"># [PeopleEntity(</span>
-<span class="linenos">16</span><span class="c1">#     body='2 children', </span>
-<span class="linenos">17</span><span class="c1">#     type='value', </span>
-<span class="linenos">18</span><span class="c1">#     parsers=['DucklingPlugin'], </span>
-<span class="linenos">19</span><span class="c1">#     score=1.0, </span>
-<span class="linenos">20</span><span class="c1">#     alternative_index=0,</span>
-<span class="linenos">21</span><span class="c1">#     alternative_indices=[0, 0], </span>
-<span class="linenos">22</span><span class="c1">#     latent=False, </span>
-<span class="linenos">23</span><span class="c1">#     value=2, </span>
-<span class="linenos">24</span><span class="c1">#     origin='value', </span>
-<span class="linenos">25</span><span class="c1">#     unit='child',</span>
-<span class="linenos">26</span><span class="c1">#     entity_type='people')</span>
-<span class="linenos">27</span><span class="c1"># ,TimeEntity(</span>
-<span class="linenos">28</span><span class="c1">#     body='tomorrow at 5 pm', </span>
-<span class="linenos">29</span><span class="c1">#     type='value', </span>
-<span class="linenos">30</span><span class="c1">#     parsers=['DucklingPlugin'], </span>
-<span class="linenos">31</span><span class="c1">#     score=1.0, </span>
-<span class="linenos">32</span><span class="c1">#     alternative_index=0, </span>
-<span class="linenos">33</span><span class="c1">#     alternative_indices=[0],</span>
-<span class="linenos">34</span><span class="c1">#     latent=False, </span>
-<span class="linenos">35</span><span class="c1">#     value='2022-02-11T17:00:00.000+05:30', origin='value', entity_type='datetime', grain='hour')]</span>
-<span class="linenos">36</span>
-<span class="linenos">37</span><span class="c1"># To convert these to dicts:</span>
-<span class="linenos">38</span>
-<span class="linenos">39</span><span class="n">entity_dicts</span> <span class="o">=</span> <span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">]</span>
-<span class="linenos">40</span><span class="nb">print</span><span class="p">(</span><span class="n">entity_dicts</span><span class="p">)</span>
-<span class="linenos">41</span><span class="c1"># [{'range': {'start': 7, 'end': 17},</span>
-<span class="linenos">42</span><span class="c1">#     'body': '2 children',</span>
-<span class="linenos">43</span><span class="c1">#     'type': 'value',</span>
-<span class="linenos">44</span><span class="c1">#     'parsers': ['DucklingPlugin'],</span>
-<span class="linenos">45</span><span class="c1">#     'score': 1.0,</span>
-<span class="linenos">46</span><span class="c1">#     'alternative_index': 0,</span>
-<span class="linenos">47</span><span class="c1">#     'value': 2,</span>
-<span class="linenos">48</span><span class="c1">#     'unit': 'child',</span>
-<span class="linenos">49</span><span class="c1">#     'entity_type': 'people'},</span>
-<span class="linenos">50</span><span class="c1"># {'range': {'start': 38, 'end': 54},</span>
-<span class="linenos">51</span><span class="c1">#     'body': 'tomorrow at 5 pm',</span>
-<span class="linenos">52</span><span class="c1">#     'type': 'value',</span>
-<span class="linenos">53</span><span class="c1">#     'parsers': ['DucklingPlugin'],</span>
-<span class="linenos">54</span><span class="c1">#     'score': 1.0,</span>
-<span class="linenos">55</span><span class="c1">#     'alternative_index': 0,</span>
-<span class="linenos">56</span><span class="c1">#     'value': '2022-02-11T17:00:00.000+05:30',</span>
-<span class="linenos">57</span><span class="c1">#     'entity_type': 'datetime',</span>
-<span class="linenos">58</span><span class="c1">#     'grain': 'hour'</span>
-<span class="linenos">59</span><span class="c1"># }]</span>
 </pre></div>
 </div>
+<dl>
+<dt>&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</dt><dd><p>)</p>
+<p>entities = duckling_plugin.parse([“We are 2 children coming tomorrow at 5 pm”])
+print(entities)
+# [PeopleEntity(
+#     body=’2 children’, 
+#     type=’value’, 
+#     parsers=[‘DucklingPlugin’], 
+#     score=1.0, 
+#     alternative_index=0,
+#     alternative_indices=[0, 0], 
+#     latent=False, 
+#     value=2, 
+#     origin=’value’, 
+#     unit=’child’,
+#     entity_type=’people’)
+# ,TimeEntity(
+#     body=’tomorrow at 5 pm’, 
+#     type=’value’, 
+#     parsers=[‘DucklingPlugin’], 
+#     score=1.0, 
+#     alternative_index=0, 
+#     alternative_indices=[0],
+#     latent=False, 
+#     value=’2022-02-11T17:00:00.000+05:30’, origin=’value’, entity_type=’datetime’, grain=’hour’)]</p>
+<p># To convert these to dicts:</p>
+<p>entity_dicts = [entity.json() for entity in entities]
+print(entity_dicts)
+# [{‘range’: {‘start’: 7, ‘end’: 17},
+#     ‘body’: ‘2 children’,
+#     ‘type’: ‘value’,
+#     ‘parsers’: [‘DucklingPlugin’],
+#     ‘score’: 1.0,
+#     ‘alternative_index’: 0,
+#     ‘value’: 2,
+#     ‘unit’: ‘child’,
+#     ‘entity_type’: ‘people’},
+# {‘range’: {‘start’: 38, ‘end’: 54},
+#     ‘body’: ‘tomorrow at 5 pm’,
+#     ‘type’: ‘value’,
+#     ‘parsers’: [‘DucklingPlugin’],
+#     ‘score’: 1.0,
+#     ‘alternative_index’: 0,
+#     ‘value’: ‘2022-02-11T17:00:00.000+05:30’,
+#     ‘entity_type’: ‘datetime’,
+#     ‘grain’: ‘hour’
+# }]</p>
+</dd>
+</dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.plugins.text.duckling_plugin.DucklingPlugin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DucklingPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://0.0.0.0:8000/parse'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activate_latent_entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_time_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reftime'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/duckling_plugin.html#DucklingPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.duckling_plugin.DucklingPlugin" title="Permalink to this definition">¶</a></dt>
@@ -492,7 +537,7 @@ means to connect from the implementation here. Here’s a big example for variou
 <p>A <span class="xref std std-ref">Plugin</span> for extracting entities using <a class="reference external" href="https://github.com/facebook/duckling">Duckling</a>. Once
 instantiated, a <code class="code docutils literal notranslate"><span class="pre">duckling_parser</span></code> object will interface to an http server, running <a class="reference external" href="https://github.com/facebook/duckling">Duckling</a>.</p>
 <p id="ducklingplugin">This object when used as a plugin, transforms the <code class="code docutils literal notranslate"><span class="pre">List[Dict[str,</span> <span class="pre">Any]]</span></code> returned from the API to a
-<span class="xref std std-ref">BaseEntity</span> or one of its subclasses.</p>
+<a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">BaseEntity</span></a> or one of its subclasses.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dimensions</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – <a class="reference external" href="https://github.com/facebook/duckling#supported-dimensions">Dimensions</a>. Of the listed</p>
@@ -716,6 +761,7 @@ where we expect sorting, filtering by other attributes as well. This method is a
 <li><a class="reference internal" href="#module-dialogy.plugins.text.duckling_plugin">Module contents</a><ul>
 <li><a class="reference internal" href="#mother-of-all-examples">Mother of all examples</a></li>
 <li><a class="reference internal" href="#testing">Testing</a></li>
+<li><a class="reference internal" href="#id1">Testing</a></li>
 </ul>
 </li>
 </ul>

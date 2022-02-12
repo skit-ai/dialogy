@@ -177,14 +177,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -217,50 +217,11 @@
         <article role="main">
           <h1>Source code for dialogy.types.entity.numerical</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">.. _NumericalEntity:</span>
+<span class="sd">.. _numerical_entity:</span>
+<span class="sd">Module provides access to entity types that can be parsed to obtain numeric values.</span>
 
-<span class="sd">Numerical Entity</span>
-<span class="sd">================</span>
-
-<span class="sd">Provides the entity class for numbers in natural language. This entity is obtained via :ref:`DucklingPlugin&lt;DucklingPlugin&gt;`.</span>
-
-<span class="sd">Plugin Walkthrough</span>
-<span class="sd">------------------</span>
-
-<span class="sd">.. ipython::</span>
-
-<span class="sd">    In [1]: from dialogy.plugins import DucklingPlugin</span>
-
-<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
-<span class="sd">       ...:     dest="output.entities",</span>
-<span class="sd">       ...:     dimensions=["number"],</span>
-<span class="sd">       ...:     locale="en_IN",</span>
-<span class="sd">       ...:     timezone="Asia/Kolkata",</span>
-<span class="sd">       ...: )</span>
-
-<span class="sd">    In [3]: duckling_plugin.parse("three fours are twelve.")</span>
-
-<span class="sd">Workflow Integration</span>
-<span class="sd">--------------------</span>
-
-<span class="sd">.. ipython::</span>
-
-<span class="sd">    In [1]: from dialogy.base import Input</span>
-<span class="sd">       ...: from dialogy.plugins import DucklingPlugin</span>
-<span class="sd">       ...: from dialogy.workflow import Workflow</span>
-
-<span class="sd">    In [2]: duckling_plugin = DucklingPlugin(</span>
-<span class="sd">       ...:     dest="output.entities",</span>
-<span class="sd">       ...:     dimensions=["number"],</span>
-<span class="sd">       ...:     locale="en_IN",</span>
-<span class="sd">       ...:     timezone="Asia/Kolkata",</span>
-<span class="sd">       ...: )</span>
-
-<span class="sd">    In [3]: workflow = Workflow([duckling_plugin])</span>
-
-<span class="sd">    In [4]: _, output = workflow.run(Input(utterances="three fours are twelve."))</span>
-
-<span class="sd">    In [5]: output</span>
+<span class="sd">Import classes:</span>
+<span class="sd">    - NumericalEntity</span>
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 

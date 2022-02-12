@@ -217,62 +217,21 @@
         <article role="main">
           <h1>Source code for dialogy.types.entity.keyword</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">.. _CreditCardNumberEntity</span>
+<span class="sd">.. _keyword_entity:</span>
 
-<span class="sd">Keword Entity</span>
-<span class="sd">==============</span>
+<span class="sd">Module provides access to an entity type (class) to contain keyword extraction based entites.</span>
+<span class="sd">These entities originate from token lookups, regex, etc.</span>
 
-<span class="sd">Provides the entity class for entities generated via patterns or tokens.</span>
-<span class="sd">This entity is obtained via :ref:`ListSearchPlugin&lt;ListSearchPlugin&gt;` and :ref:`ListSearchPlugin&lt;ListSearchPlugin&gt;`.</span>
-
-<span class="sd">Plugin Walkthrough</span>
-<span class="sd">------------------</span>
-
-<span class="sd">.. ipython::</span>
-
-<span class="sd">    In [1]: from dialogy.plugins import ListEntityPlugin</span>
-
-<span class="sd">    In [2]: entity_extractor = ListEntityPlugin(</span>
-<span class="sd">       ...: dest="output.entities",</span>
-<span class="sd">       ...: input_column="data",</span>
-<span class="sd">       ...: output_column="entities",</span>
-<span class="sd">       ...: use_transform=True,</span>
-<span class="sd">       ...: style="regex",</span>
-<span class="sd">       ...: candidates={"fruits": {"apple": [r"apples?"], "orange": [r"oranges?"]}},</span>
-<span class="sd">       ...: )</span>
-
-<span class="sd">    In [3]: entity_extractor.get_entities(["lets not compare apples to oranges!"])</span>
-
-<span class="sd">Workflow Integration</span>
-<span class="sd">--------------------</span>
-
-<span class="sd">.. ipython::</span>
-
-<span class="sd">    In [1]: from dialogy.base import Input</span>
-<span class="sd">       ...: from dialogy.plugins import ListEntityPlugin</span>
-<span class="sd">       ...: from dialogy.workflow import Workflow</span>
-
-<span class="sd">    In [2]: entity_extractor = ListEntityPlugin(</span>
-<span class="sd">       ...:   dest="output.entities",</span>
-<span class="sd">       ...:   input_column="data",</span>
-<span class="sd">       ...:   output_column="entities",</span>
-<span class="sd">       ...:   use_transform=True,</span>
-<span class="sd">       ...:   style="regex",</span>
-<span class="sd">       ...:   candidates={"fruits": {"apple": [r"apples?"], "orange": [r"oranges?"]}},</span>
-<span class="sd">       ...: )</span>
-
-<span class="sd">    In [3]: workflow = Workflow([entity_extractor])</span>
-
-<span class="sd">    In [4]: _, output = workflow.run(Input(utterances="lets not compare apples to oranges!"))</span>
-
-<span class="sd">    In [5]: output</span>
+<span class="sd">Import classes:</span>
+<span class="sd">    - KeywordEntity</span>
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity.base_entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
 
 

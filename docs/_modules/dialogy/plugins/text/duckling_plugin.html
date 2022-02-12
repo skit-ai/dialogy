@@ -291,9 +291,56 @@
 
 <span class="sd">    duckling_plugin = DucklingPlugin(</span>
 <span class="sd">        dest="output.entities",</span>
+<span class="sd">        locale="en_IN",</span>
+
+<span class="sd">    workflow = Workflow([duckling_plugin])</span>
+<span class="sd">    input_, output = workflow.run(Input(utterances=[[{"transcript": "there are 7 people"}]]))</span>
+
+<span class="sd">    pprint(input_)</span>
+<span class="sd">    # {'clf_feature': [],</span>
+<span class="sd">    #  'current_state': None,</span>
+<span class="sd">    #  'lang': 'en',</span>
+<span class="sd">    #  'latent_entities': False,</span>
+<span class="sd">    #  'locale': 'en_IN',</span>
+<span class="sd">    #  'previous_intent': None,</span>
+<span class="sd">    #  'reference_time': None,</span>
+<span class="sd">    #  'slot_tracker': None,</span>
+<span class="sd">    #  'timezone': 'UTC',</span>
+<span class="sd">    #  'transcripts': ['there are 7 people'],</span>
+<span class="sd">    #  'utterances': [[{'transcript': 'there are 7 people'}]]}</span>
+
+<span class="sd">    pprint(output)</span>
+<span class="sd">    # {'entities': [{'alternative_index': 0,</span>
+<span class="sd">    #                'body': '7 people',</span>
+<span class="sd">    #                'entity_type': 'people',</span>
+<span class="sd">    #                'parsers': ['DucklingPlugin'],</span>
+<span class="sd">    #                'range': {'end': 18, 'start': 10},</span>
+<span class="sd">    #                'score': 1.0,</span>
+<span class="sd">    #                'type': 'value',</span>
+<span class="sd">    #                'unit': '',</span>
+<span class="sd">    #                'value': 7}],</span>
+<span class="sd">    #  'intents': []}</span>
+
+<span class="sd">Testing</span>
+<span class="sd">-------</span>
+
+<span class="sd">1. Connect to the `Duckling API &lt;https://github.com/facebook/duckling&gt;`_ either via a docker container or a local setup.</span>
+<span class="sd">2. Boot an IPython session and setup an instance of :ref:`DucklingPlugin &lt;DucklingPlugin&gt;`.</span>
+
+<span class="sd">.. code-block:: python</span>
+<span class="sd">    :linenos:</span>
+
+<span class="sd">    from pprint import pprint</span>
+<span class="sd">    from dialogy.workflow import Workflow</span>
+<span class="sd">    from dialogy.base import Input</span>
+<span class="sd">    from dialogy.plugins import DucklingPlugin</span>
+
+<span class="sd">    duckling_plugin = DucklingPlugin(</span>
+<span class="sd">        dest="output.entities",</span>
 <span class="sd">        dimensions=["people", "time"],</span>
 <span class="sd">        locale="en_IN",</span>
 <span class="sd">        timezone="Asia/Kolkata",</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</span>
 <span class="sd">    )</span>
 
 <span class="sd">    entities = duckling_plugin.parse(["We are 2 children coming tomorrow at 5 pm"])</span>
@@ -677,7 +724,7 @@
         <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">connection_error</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Duckling server is turned off?: </span><span class="si">{</span><span class="n">connection_error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
-            <span class="k">return</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">IDX</span><span class="p">:</span> <span class="n">sort_idx</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">:</span> <span class="p">[]}</span>
+            <span class="k">raise</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="kn">from</span> <span class="nn">connection_error</span>
 
         <span class="c1"># Control flow reaching here would mean the API call wasn't successful.</span>
         <span class="c1"># To prevent rest of the things from crashing, we will raise an exception.</span>

@@ -138,7 +138,8 @@ Clone the repository. We use [`poetry <https://python-poetry.org/>`_] to setup d
    poetry install
    make test
 
-Ensure tests are passing before you start working on your PRs.
+- Ensure tests are passing before you start working on your PRs.
+- Duckling server should be running for docs to produce code-blocks.
 
 [`Read more <https://github.com/skit-ai/dialogy/blob/master/CONTRIBUTING.md>`_]
 

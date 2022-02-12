@@ -222,7 +222,7 @@
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.base.plugin" title="Permalink to this headline">¶</a></h2>
 <section id="abstract-plugin">
 <span id="abstractplugin"></span><h3>Abstract Plugin<a class="headerlink" href="#abstract-plugin" title="Permalink to this headline">¶</a></h3>
-<p>A Plugin transforms the data within the workflow. We use plugins for producing <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a>, <a class="reference internal" href="dialogy.types.entity.base_entity.html#baseentity"><span class="std std-ref">entities</span></a>,
+<p>A Plugin transforms the data within the workflow. We use plugins for producing <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a>, <span class="xref std std-ref">entities</span>,
 filling <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> and even preparing intermediate data for other plugins. This package ships the abstract base class for creating
 other plugins. These offer a base for a few already implemented features like <span class="xref std std-ref">book-keeping</span> and <a class="reference internal" href="#guards"><span class="std std-ref">Guards</span></a>.</p>
 </section>
@@ -487,30 +487,76 @@ So let’s look at an example where we prevent plugins from execution using <cod
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>Abstract class to be implemented by all plugins.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_column</strong> (<em>str</em>) – Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</p></li>
-<li><p><strong>output_column</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – Saves transformation in this column for a given dataframe, defaults to None</p></li>
-<li><p><strong>use_transform</strong> (<em>bool</em>) – Should the transformation be applied while training?, defaults to False</p></li>
-<li><p><strong>dest</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The path where plugin output should be saved., defaults to None</p></li>
-<li><p><strong>guards</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Guard</em><em>]</em><em>]</em>) – A list of functions that evaluate to bool, defaults to None</p></li>
-<li><p><strong>debug</strong> (<em>bool</em><em>, </em><em>optional</em>) – Should we print debug logs?, defaults to False</p></li>
-</ul>
+<blockquote>
+<div><p>Abstract class to be implemented by all plugins.</p>
+</div></blockquote>
+<blockquote>
+<div></div></blockquote>
+<dl class="simple" id="plugin-abstract">
+<dt>&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param input_column</dt>
+<dd class="field-odd"><p>Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</p>
+</dd>
+<dt class="field-even">type input_column</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">param output_column</dt>
+<dd class="field-odd"><p>Saves transformation in this column for a given dataframe, defaults to None</p>
+</dd>
+<dt class="field-even">type output_column</dt>
+<dd class="field-even"><p>Optional[str]</p>
+</dd>
+<dt class="field-odd">param use_transform</dt>
+<dd class="field-odd"><p>Should the transformation be applied while training?, defaults to False</p>
+</dd>
+<dt class="field-even">type use_transform</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">param dest</dt>
+<dd class="field-odd"><p>The path where plugin output should be saved., defaults to None</p>
+</dd>
+<dt class="field-even">type dest</dt>
+<dd class="field-even"><p>Optional[str]</p>
+</dd>
+<dt class="field-odd">param guards</dt>
+<dd class="field-odd"><p>A list of functions that evaluate to bool, defaults to None</p>
+</dd>
+<dt class="field-even">type guards</dt>
+<dd class="field-even"><p>Optional[List[Guard]]</p>
+</dd>
+<dt class="field-odd">param debug</dt>
+<dd class="field-odd"><p>Should we print debug logs?, defaults to False</p>
+</dd>
+<dt class="field-even">type debug</dt>
+<dd class="field-even"><p>bool, optional</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin.prevent">
 <span class="sig-name descname"><span class="pre">prevent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.prevent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.prevent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decide if the plugin should execute.</p>
-<p>If this method returns true, the plugin’s utility method will not be called.</p>
-<dl class="field-list simple" id="guards">
-<dt class="field-odd">Returns</dt>
+<dd><blockquote>
+<div><p>Decide if the plugin should execute.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</dt><dd><p>If this method returns true, the plugin’s utility method will not be called.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</dt><dd><dl class="field-list simple">
+<dt class="field-odd">return</dt>
 <dd class="field-odd"><p>prevent plugin execution if True.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">rtype</dt>
 <dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>

@@ -220,7 +220,14 @@
 <h1>dialogy.types.entity.base_entity package<a class="headerlink" href="#dialogy-types-entity-base-entity-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.types.entity.base_entity">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.entity.base_entity" title="Permalink to this headline">¶</a></h2>
-<p id="baseentity">Module provides access to a base class to create other entities.</p>
+<p>Module provides access to a base class to create other entities.</p>
+<p>These methods of this class that are supposed to be overridden:
+- validate
+- get_value</p>
+<p>Import classes:</p>
+<ul class="simple">
+<li><p>BaseEntity</p></li>
+</ul>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/base_entity.html#BaseEntity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity" title="Permalink to this definition">¶</a></dt>
@@ -249,10 +256,7 @@ This only helps in debugging and has no production utility.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.alternative_index">
 <span class="sig-name descname"><span class="pre">alternative_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.alternative_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>The index of transcript within the ASR output: <cite>List[Utterances]</cite>
-from which this entity was picked up. This may be None if the entity was generated
-from a different sources.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.alternative_indices">
 <span class="sig-name descname"><span class="pre">alternative_indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.alternative_indices" title="Permalink to this definition">¶</a></dt>
@@ -260,8 +264,7 @@ from a different sources.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.body">
 <span class="sig-name descname"><span class="pre">body</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.body" title="Permalink to this definition">¶</a></dt>
-<dd><p>The string from which the entity is extracted.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/base_entity.html#BaseEntity.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.copy" title="Permalink to this definition">¶</a></dt>
@@ -273,29 +276,17 @@ from a different sources.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.dim">
 <span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.dim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Influenced from Duckling’s convention of dimensions.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.entity_type">
 <span class="sig-name descname"><span class="pre">entity_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.entity_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Describes the type of the value of an entity. Could be one of “time”, “date”, “people”, “number”, etc.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.from_dict">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/base_entity.html#BaseEntity.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.from_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deserializer</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A dictionary that describes attributes of an entity within its keys. At least partially.</p></li>
-<li><p><strong>reference</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><em>BaseEntity</em></a><em>]</em><em>, </em><em>optional</em>) – An instance that should be used for retaining other attributes, defaults to None</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new :ref:<a href="#id1"><span class="problematic" id="id2">`</span></a>BaseEntity&lt;BaseEntity&gt;</p>
-</dd>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEntity</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -349,46 +340,31 @@ Defaults to None.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.latent">
 <span class="sig-name descname"><span class="pre">latent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.latent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Duckling influenced attribute, <code class="code docutils literal notranslate"><span class="pre">True</span></code> means this entity’s type wasn’t a strict match.
-Example: “may” is latent hint for a month in English, because it is also a modal.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.parsers">
 <span class="sig-name descname"><span class="pre">parsers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.parsers" title="Permalink to this definition">¶</a></dt>
-<dd><p>The trail of all the functions that have created/updated this entity at any point.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.range">
 <span class="sig-name descname"><span class="pre">range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.range" title="Permalink to this definition">¶</a></dt>
-<dd><p>The location of an entity marked via start and end indices on the string.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">body</span> <span class="o">=</span> <span class="s2">"i'll come by 4 pm"</span>
-<span class="n">entity</span> <span class="o">=</span> <span class="s2">"4 pm"</span>
-<span class="nb">range</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"start"</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">:</span> <span class="mi">17</span><span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.score">
 <span class="sig-name descname"><span class="pre">score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.score" title="Permalink to this definition">¶</a></dt>
-<dd><p>A positive real number that describes the confidence that the range contains the correct entity.
-A value between 0 and 1.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.type">
 <span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>One of “value” or “interval”.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.value">
 <span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.value" title="Permalink to this definition">¶</a></dt>
-<dd><p>A single value interpretation from values.</p>
-</dd></dl>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.BaseEntity.values">
 <span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.base_entity.BaseEntity.values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Duckling stores value of an entity within a list for some types. We try to keep that as a standard for
-all entities.</p>
-</dd></dl>
+<dd></dd></dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="dialogy.types.entity.base_entity.entity_synthesis">
