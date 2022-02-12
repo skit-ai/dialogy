@@ -45,13 +45,15 @@ Workflow Integration
     In [5]: output
 """
 from __future__ import annotations
-
-from typing import Any, Dict, Optional
+from typing import Any, Dict
+from datetime import timedelta
 
 import attr
 
 from dialogy import constants as const
-from dialogy.types import BaseEntity
+from dialogy.types.entity.base_entity import BaseEntity
+from dialogy.types.entity.time import TimeEntity
+from dialogy.utils import unix_ts_to_datetime
 
 
 @attr.s
@@ -86,3 +88,23 @@ class DurationEntity(BaseEntity):
             unit=d[const.VALUE][const.UNIT],
             normalized=d[const.VALUE][const.NORMALIZED],
         )
+
+    def to_time_entity(self, reference_unix_ts: int, timezone: str) -> TimeEntity:
+        """
+        Converts a duration entity to a time entity.
+        """
+        reference_datetime = unix_ts_to_datetime(reference_unix_ts, timezone=timezone)
+        value = reference_datetime + timedelta(seconds=self.normalized[const.VALUE])
+        value = value.isoformat()
+
+        entity = TimeEntity(
+            range={const.START: self.range[const.START], const.END: self.range[const.END]},
+            body=self.body,
+            dim="time",
+            alternative_index=self.alternative_index,
+            latent=self.latent,
+            values=[{const.VALUE: value}],
+            grain=self.unit
+        )
+        entity.set_entity_type()
+        return entity

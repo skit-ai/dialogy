@@ -126,7 +126,7 @@ Testing
     )
 
     entities = duckling_plugin.parse(["We are 2 children coming tomorrow at 5 pm"])
-    print(entities)
+    pprint(entities)
     # [PeopleEntity(
     #     body='2 children', 
     #     type='value', 
@@ -152,7 +152,7 @@ Testing
     # To convert these to dicts:
 
     entity_dicts = [entity.json() for entity in entities]
-    print(entity_dicts)
+    pprint(entity_dicts)
     # [{'range': {'start': 7, 'end': 17},
     #     'body': '2 children',
     #     'type': 'value',
@@ -262,6 +262,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         timeout: float = 0.5,
         url: str = "http://0.0.0.0:8000/parse",
         locale: str = "en_IN",
+        cast_duration_as_time: bool = True,
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         datetime_filters: Optional[str] = None,
@@ -290,6 +291,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.timeout = timeout
         self.threshold = threshold
         self.url = url
+        self.cast_duration_as_time = cast_duration_as_time
         self.reference_time: Optional[int] = None
         self.reference_time_column = reference_time_column
         self.datetime_filters = datetime_filters
@@ -457,7 +459,13 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         """
         deserialized_entities = []
         for entity_json in entities_json:
-            entity = deserialize_duckling_entity(entity_json, alternative_index)
+            entity = deserialize_duckling_entity(
+                entity_json,
+                alternative_index,
+                reference_time=reference_time,
+                timezone=self.timezone,
+                cast_duration_as_time=self.cast_duration_as_time
+            )
             entity.add_parser(self)
             deserialized_entities.append(entity)
         return deserialized_entities
@@ -562,6 +570,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self,
         list_of_entities: List[List[Dict[str, Any]]],
         reference_time: Optional[int] = None,
+        timezone: str = "UTC"
     ) -> List[BaseEntity]:
         shaped_entities = []
         for (alternative_index, entities) in enumerate(list_of_entities):

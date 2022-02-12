@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
@@ -12,7 +12,11 @@ from dialogy.types.entity.time_interval import TimeIntervalEntity
 
 
 def deserialize_duckling_entity(
-    duckling_entity_dict: Dict[str, Any], alternative_index: int
+    duckling_entity_dict: Dict[str, Any],
+    alternative_index: int,
+    reference_time: Optional[int] = None,
+    timezone: str = "UTC",
+    cast_duration_as_time: bool = False,
 ) -> BaseEntity:
     keys = tuple(sorted(duckling_entity_dict.keys()))
     if keys != const.DUCKLING_ENTITY_KEYS:
@@ -55,8 +59,10 @@ def deserialize_duckling_entity(
         return NumericalEntity.from_duckling(duckling_entity_dict, alternative_index)
 
     elif dimension == const.DURATION:
-        return DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
-
+        entity = DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
+        if cast_duration_as_time:
+            return entity.to_time_entity(reference_time, timezone)
+        return entity
     else:  # dimension == const.CREDIT_CARD_NUMBER:
         return CreditCardNumberEntity.from_duckling(
             duckling_entity_dict, alternative_index

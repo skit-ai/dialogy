@@ -253,6 +253,7 @@
     dimensions: ["people", "time", "date", "duration"]
     locale: "en_IN"
     timezone: "Asia/Kolkata"
+    cast_duration_as_time: False
   mock_entity_json: [{'body': '2 hours',
   'start': 0,
   'value': {'value': 2,
@@ -263,7 +264,46 @@
   'end': 7,
   'dim': 'duration',
   'latent': False}]
+  reference_time: 1644662968859
   expected: [{"entity_type": "duration"}]
+
+- description: "duration entity"
+  input: "2 hours"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': '2 hours',
+  'start': 0,
+  'value': {'value': 2,
+   'hour': 2,
+   'type': 'value',
+   'unit': 'hour',
+   'normalized': {'value': 7200, 'unit': 'second'}},
+  'end': 7,
+  'dim': 'duration',
+  'latent': False}]
+  reference_time: 1644662968859
+  expected: [{"entity_type": "datetime"}]
+
+- description: "duration entity"
+  input: "2 days"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': '2 days',
+   'start': 0,
+   'value': {'value': 2,
+    'day': 2,
+    'type': 'value',
+    'unit': 'day',
+    'normalized': {'value': 172800, 'unit': 'second'}},
+   'end': 6,
+   'dim': 'duration',
+   'latent': False}]
+  reference_time: 1644662968859
+  expected: [{"entity_type": "date"}]
 
 - description: "no entity found."
   input: "there is no spoon"

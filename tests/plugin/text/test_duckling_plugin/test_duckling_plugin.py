@@ -193,10 +193,6 @@ def test_plugin_working_cases(payload) -> None:
             assert output["entities"] == []
 
         for i, entity in enumerate(output["entities"]):
-            from pprint import pprint
-
-            pprint(entity)
-            pprint(expected_types)
             expected_entity_type = expected_types[i]["entity_type"]
             assert entity["entity_type"] == expected_entity_type
     else:
