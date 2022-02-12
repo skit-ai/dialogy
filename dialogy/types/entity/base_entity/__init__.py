@@ -1,7 +1,14 @@
 """
-.. _BaseEntity:
-
+.. _base_entity:
 Module provides access to a base class to create other entities.
+
+These methods of this class that are supposed to be overridden:
+- validate
+- get_value
+
+Import classes:
+
+- BaseEntity
 """
 from __future__ import annotations
 
@@ -23,67 +30,54 @@ class BaseEntity:
     Its intended purpose is to define a base for all entity types.
     """
 
+    # **range**
+    #
+    # is the character range in the alternative where the entity is parsed.
     range: Dict[str, int] = attr.ib(repr=False, order=False, kw_only=True)
-    """
-    The location of an entity marked via start and end indices on the string.
 
-    .. code:: python
-
-        body = "i'll come by 4 pm"
-        entity = "4 pm"
-        range = {"start": 13, "end": 17}
-    """
-
+    # **body**
+    #
+    # is the string from which the entity is extracted.
     body: str = attr.ib(validator=attr.validators.instance_of(str), order=False)
-    """
-    The string from which the entity is extracted.
-    """
 
+    # **dim**
+    #
+    # is influenced from Duckling's convention of categorization.
     dim: Optional[str] = attr.ib(default=None, repr=False, order=False)
-    """
-    Influenced from Duckling's convention of dimensions.
-    """
 
+    # **type**
+    #
+    # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
     type: str = attr.ib(default="value", order=False, kw_only=True)
-    """
-    One of "value" or "interval".
-    """
 
+    # **parsers**
+    #
+    # gives the trail of all the functions that have changed this entity in the sequence of application.
     parsers: List[str] = attr.ib(
         default=attr.Factory(list),
         validator=attr.validators.instance_of(list),
         order=False,
     )
-    """
-    The trail of all the functions that have created/updated this entity at any point.
-    """
 
     # **score**
     #
-    # is 
+    # is the confidence that the range is the entity.
     score: Optional[float] = attr.ib(default=None)
-    """
-    A positive real number that describes the confidence that the range contains the correct entity.
-    A value between 0 and 1.
-    """
 
     # **alternative_index**
     #
+    # is the index of transcript within the ASR output: `List[Utterances]`
+    # from which this entity was picked up. This may be None.
     alternative_index: Optional[int] = attr.ib(default=None, order=False)
-    """
-    The index of transcript within the ASR output: `List[Utterances]`
-    from which this entity was picked up. This may be None if the entity was generated
-    from a different sources.
-    """
-
     alternative_indices: Optional[List[int]] = attr.ib(default=None, order=False)
 
+    # **latent**
+    #
+    # Duckling influenced attribute, tells if there is less evidence for an entity if latent is True.
     latent: bool = attr.ib(default=False, order=False)
-    """
-    Duckling influenced attribute, :code:`True` means this entity's type wasn't a strict match.
-    Example: "may" is latent hint for a month in English, because it is also a modal.
-    """
-    
+
+    # **values**
+    #
     # The parsed value of an entity resides within this attribute.
     values: List[Dict[str, Any]] = attr.ib(
         default=attr.Factory(list),
@@ -91,21 +85,14 @@ class BaseEntity:
         repr=False,
         order=False,
     )
-    """
-    Duckling stores value of an entity within a list for some types. We try to keep that as a standard for
-    all entities.
-    """
 
+    # **values**
+    #
+    # A single value interpretation from values.
     value: Any = attr.ib(default=None, order=False)
-    """
-    A single value interpretation from values.
-    """
-    
+
     # **entity_type**
     entity_type: Optional[str] = attr.ib(default=None, repr=False, order=False)
-    """
-    Describes the type of the value of an entity. Could be one of "time", "date", "people", "number", etc.
-    """
 
     def __attrs_post_init__(self) -> None:
         if self.values and not self.value:
@@ -187,16 +174,6 @@ class BaseEntity:
     def from_dict(
         cls, dict_: Dict[str, Any], reference: Optional[BaseEntity] = None
     ) -> BaseEntity:
-        """
-        Deserializer
-
-        :param dict_: A dictionary that describes attributes of an entity within its keys. At least partially.
-        :type dict_: Dict[str, Any]
-        :param reference: An instance that should be used for retaining other attributes, defaults to None
-        :type reference: Optional[BaseEntity], optional
-        :return: A new :ref:`BaseEntity<BaseEntity>
-        :rtype: BaseEntity
-        """
         if reference:
             if const.VALUES in dict_ or const.VALUE in dict_:
                 object.__setattr__(reference, const.VALUES, None)

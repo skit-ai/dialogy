@@ -1,48 +1,9 @@
 """
-.. _NumericalEntity:
+.. _numerical_entity:
+Module provides access to entity types that can be parsed to obtain numeric values.
 
-Numerical Entity
-================
-
-Provides the entity class for numbers in natural language. This entity is obtained via :ref:`DucklingPlugin<DucklingPlugin>`.
-
-Plugin Walkthrough
-------------------
-
-.. ipython::
-
-    In [1]: from dialogy.plugins import DucklingPlugin
-
-    In [2]: duckling_plugin = DucklingPlugin(
-       ...:     dest="output.entities",
-       ...:     dimensions=["number"],
-       ...:     locale="en_IN",
-       ...:     timezone="Asia/Kolkata",
-       ...: )
-
-    In [3]: duckling_plugin.parse("three fours are twelve.")
-
-Workflow Integration
---------------------
-
-.. ipython::
-
-    In [1]: from dialogy.base import Input
-       ...: from dialogy.plugins import DucklingPlugin
-       ...: from dialogy.workflow import Workflow
-
-    In [2]: duckling_plugin = DucklingPlugin(
-       ...:     dest="output.entities",
-       ...:     dimensions=["number"],
-       ...:     locale="en_IN",
-       ...:     timezone="Asia/Kolkata",
-       ...: )
-
-    In [3]: workflow = Workflow([duckling_plugin])
-
-    In [4]: _, output = workflow.run(Input(utterances="three fours are twelve."))
-
-    In [5]: output
+Import classes:
+    - NumericalEntity
 """
 from __future__ import annotations
 

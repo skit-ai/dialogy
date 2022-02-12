@@ -185,6 +185,11 @@ class Plugin(ABC):
     """
     Abstract class to be implemented by all plugins.
 
+<<<<<<< HEAD
+=======
+    .. _plugin-abstract:
+
+>>>>>>> origin/master
     :param input_column: Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES
     :type input_column: str
     :param output_column: Saves transformation in this column for a given dataframe, defaults to None
@@ -230,6 +235,7 @@ class Plugin(ABC):
 
     def __call__(self, workflow: Workflow) -> None:
         """
+<<<<<<< HEAD
         Set workflow with output.
 
         This important book-keeping method is called by the workflow.
@@ -241,6 +247,9 @@ class Plugin(ABC):
         - The workflow takes care of keeping its :ref:`input<Input>` and :ref:`output<Output>` immutable.
 
         .. _PluginBookkeeping:
+=======
+        Use the plugin's logic and save the result within the workflow.
+>>>>>>> origin/master
 
         :param workflow: An instance of :ref:`Workflow <WorkflowClass>`.
         :type workflow: Workflow
@@ -264,10 +273,13 @@ class Plugin(ABC):
         """
         Decide if the plugin should execute.
 
+<<<<<<< HEAD
         If this method returns true, the plugin's utility method will not be called.
 
         .. _Guards:
 
+=======
+>>>>>>> origin/master
         :return: prevent plugin execution if True.
         :rtype: bool
         """

@@ -1,53 +1,13 @@
 """
-.. _CurrencyEntity
+.. _currency_entity:
+Module provides access to entity types that can be parsed to currencies and their value.
 
-Currency Entity
-===============
-
-Provides the entity class for currency values expressed in natural language. This entity is obtained via :ref:`DucklingPlugin<DucklingPlugin>`.
-
-Plugin Walkthrough
-------------------
-
-.. ipython::
-
-    In [1]: from dialogy.plugins import DucklingPlugin
-
-    In [2]: duckling_plugin = DucklingPlugin(
-       ...:     dest="output.entities",
-       ...:     dimensions=["amount-of-money"],
-       ...:     locale="en_IN",
-       ...:     timezone="Asia/Kolkata",
-       ...: )
-
-    In [3]: duckling_plugin.parse("five dollars is 5 dollars.")
-
-Workflow Integration
---------------------
-
-.. ipython::
-
-    In [1]: from dialogy.base import Input
-       ...: from dialogy.plugins import DucklingPlugin
-       ...: from dialogy.workflow import Workflow
-
-    In [2]: duckling_plugin = DucklingPlugin(
-       ...:     dest="output.entities",
-       ...:     dimensions=["amount-of-money"],
-       ...:     locale="en_IN",
-       ...:     timezone="Asia/Kolkata",
-       ...: )
-
-    In [3]: workflow = Workflow([duckling_plugin])
-
-    In [4]: _, output = workflow.run(Input(utterances="five dollars and 25 cents."))
-
-    In [5]: output
-
+Import classes:
+    - CurrencyEntity
 """
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import attr
 
@@ -58,6 +18,17 @@ from dialogy.types.entity.numerical import NumericalEntity
 @attr.s
 class CurrencyEntity(NumericalEntity):
     """
+    Numerical Entity Type
+
+    Use this type for handling all entities that can be parsed to obtain:
+    - numbers
+    - date
+    - time
+    - datetime
+
+    Attributes:
+        - `dim` dimension of the entity from duckling parser
+        - `type` is the type of the entity which can have values in ["value", "interval"]
     """
 
     unit: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)

@@ -73,9 +73,56 @@ Testing
 
     duckling_plugin = DucklingPlugin(
         dest="output.entities",
+        locale="en_IN",
+
+    workflow = Workflow([duckling_plugin])
+    input_, output = workflow.run(Input(utterances=[[{"transcript": "there are 7 people"}]]))
+
+    pprint(input_)
+    # {'clf_feature': [],
+    #  'current_state': None,
+    #  'lang': 'en',
+    #  'latent_entities': False,
+    #  'locale': 'en_IN',
+    #  'previous_intent': None,
+    #  'reference_time': None,
+    #  'slot_tracker': None,
+    #  'timezone': 'UTC',
+    #  'transcripts': ['there are 7 people'],
+    #  'utterances': [[{'transcript': 'there are 7 people'}]]}
+
+    pprint(output)
+    # {'entities': [{'alternative_index': 0,
+    #                'body': '7 people',
+    #                'entity_type': 'people',
+    #                'parsers': ['DucklingPlugin'],
+    #                'range': {'end': 18, 'start': 10},
+    #                'score': 1.0,
+    #                'type': 'value',
+    #                'unit': '',
+    #                'value': 7}],
+    #  'intents': []}
+
+Testing
+-------
+
+1. Connect to the `Duckling API <https://github.com/facebook/duckling>`_ either via a docker container or a local setup.
+2. Boot an IPython session and setup an instance of :ref:`DucklingPlugin <DucklingPlugin>`.
+
+.. code-block:: python
+    :linenos:
+
+    from pprint import pprint
+    from dialogy.workflow import Workflow
+    from dialogy.base import Input
+    from dialogy.plugins import DucklingPlugin
+
+    duckling_plugin = DucklingPlugin(
+        dest="output.entities",
         dimensions=["people", "time"],
         locale="en_IN",
         timezone="Asia/Kolkata",
+>>>>>>> origin/master
     )
 
     entities = duckling_plugin.parse(["We are 2 children coming tomorrow at 5 pm"])

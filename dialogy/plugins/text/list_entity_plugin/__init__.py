@@ -88,6 +88,8 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
 
     .. _ListEntityPlugin:
 
+    .. _ListEntityPlugin:
+
     :param style: One of ["regex", "spacy"]
     :type style: Optional[str]
     :param candidates: Required if style is "regex", this is a :code:`dict` that shows a mapping of entity
