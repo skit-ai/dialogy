@@ -247,13 +247,12 @@
   'latent': False}]
   expected: [{"entity_type":"time"}]
 
-- description: "duration entity"
+- description: "duration entity without auto type cast"
   input: "2 hours"
   duckling:
     dimensions: ["people", "time", "date", "duration"]
     locale: "en_IN"
     timezone: "Asia/Kolkata"
-    cast_duration_as_time: False
   mock_entity_json: [{'body': '2 hours',
   'start': 0,
   'value': {'value': 2,
@@ -267,13 +266,17 @@
   reference_time: 1644662968859
   expected: [{"entity_type": "duration"}]
 
-- description: "duration entity fails if reference time is missing"
+- description: "duration entity casting fails if reference time is missing"
   input: "2 hours"
+  output:
+    intents:
+      - name: "already_paid"
   duckling:
     dimensions: ["people", "time", "date", "duration"]
     locale: "en_IN"
     timezone: "Asia/Kolkata"
-    cast_duration_as_time: True
+    temporal_intents:
+      already_paid: "past"
   mock_entity_json: [{'body': '2 hours',
   'start': 0,
   'value': {'value': 2,
@@ -284,13 +287,18 @@
   'end': 7,
   'dim': 'duration',
   'latent': False}]
-  exception: "ValueError"
+  exception: "TypeError"
 
-- description: "duration entity"
-  input: "2 hours"
+- description: "duration entity cast via temporal intents"
+  input: "I paid 2 hours ago"
+  output: 
+    intents: 
+      - name: "already_paid"
   duckling:
     dimensions: ["people", "time", "date", "duration"]
     locale: "en_IN"
+    temporal_intents:
+      already_paid: "past"
     timezone: "Asia/Kolkata"
   mock_entity_json: [{'body': '2 hours',
   'start': 0,
@@ -303,14 +311,19 @@
   'dim': 'duration',
   'latent': False}]
   reference_time: 1644662968859
-  expected: [{"entity_type": "datetime"}]
+  expected: [{"entity_type": "datetime", "value": "2022-02-12T14:19:28+05:30"}]
 
-- description: "duration entity"
-  input: "2 days"
+- description: "duration entity cast via temporal intents"
+  input: "will pay after 2 days"
+  output:
+    intents:
+      - name: "pay_later"
   duckling:
     dimensions: ["people", "time", "date", "duration"]
     locale: "en_IN"
     timezone: "Asia/Kolkata"
+    temporal_intents:
+      pay_later: "future"
   mock_entity_json: [{'body': '2 days',
    'start': 0,
    'value': {'value': 2,
@@ -322,7 +335,7 @@
    'dim': 'duration',
    'latent': False}]
   reference_time: 1644662968859
-  expected: [{"entity_type": "date"}]
+  expected: [{"entity_type": "date", "value": "2022-02-14T16:19:28+05:30"}]
 
 - description: "no entity found."
   input: "there is no spoon"

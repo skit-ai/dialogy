@@ -36,6 +36,8 @@ AMOUNT_OF_MONEY = "amount-of-money"
 DURATION = "duration"
 CREDIT_CARD_NUMBER = "credit-card-number"
 
+FUTURE = "future"
+PAST = "past"
 
 DUCKLING_DIMS = [PEOPLE, NUMBER, AMOUNT_OF_MONEY, DURATION, CREDIT_CARD_NUMBER, TIME]
 

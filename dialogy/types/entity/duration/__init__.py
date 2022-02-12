@@ -46,6 +46,7 @@ Workflow Integration
 """
 from __future__ import annotations
 
+import operator
 from datetime import timedelta
 from typing import Any, Dict
 
@@ -90,12 +91,17 @@ class DurationEntity(BaseEntity):
             normalized=d[const.VALUE][const.NORMALIZED],
         )
 
-    def to_time_entity(self, reference_unix_ts: int, timezone: str) -> TimeEntity:
+    def to_time_entity(self, reference_unix_ts: int, timezone: str, duration_cast_operator: str) -> TimeEntity:
         """
         Converts a duration entity to a time entity.
         """
         reference_datetime = unix_ts_to_datetime(reference_unix_ts, timezone=timezone)
-        value_dt = reference_datetime + timedelta(seconds=self.normalized[const.VALUE])
+        if duration_cast_operator == const.FUTURE:
+            operation = operator.add
+        elif duration_cast_operator == const.PAST:
+            operation = operator.sub
+
+        value_dt = operation(reference_datetime, timedelta(seconds=self.normalized[const.VALUE]))
         value = value_dt.isoformat()
 
         entity = TimeEntity(

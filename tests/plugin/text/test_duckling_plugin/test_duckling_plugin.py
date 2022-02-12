@@ -7,9 +7,9 @@ import pandas as pd
 import pytest
 import requests
 
-from dialogy.base import Input
+from dialogy.base import Input, Output
 from dialogy.plugins import DucklingPlugin
-from dialogy.types import BaseEntity, KeywordEntity, TimeEntity
+from dialogy.types import BaseEntity, KeywordEntity, TimeEntity, Intent
 from dialogy.utils import make_unix_ts
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
@@ -161,14 +161,16 @@ def test_plugin_working_cases(payload) -> None:
     An end-to-end example showing how to use `DucklingPlugin` with a `Workflow`.
     """
     body = payload["input"]
+    output = payload.get("output", {})
     mock_entity_json = payload["mock_entity_json"]
-    expected_types = payload.get("expected")
+    expected = payload.get("expected")
     exception = payload.get("exception")
     duckling_args = payload.get("duckling")
     response_code = payload.get("response_code", 200)
     locale = payload.get("locale")
     reference_time = payload.get("reference_time")
     use_latent = payload.get("use_latent")
+    intent = None
 
     duckling_plugin = DucklingPlugin(dest="output.entities", **duckling_args)
 
@@ -181,7 +183,11 @@ def test_plugin_working_cases(payload) -> None:
     if isinstance(reference_time, str):
         reference_time = make_unix_ts("Asia/Kolkata")(reference_time)
 
-    if expected_types is not None:
+    if "intents" in output:
+        intents = [Intent(name=output["intents"][0]["name"], score=1.0)]
+        workflow.set("output.intents", intents)
+
+    if expected is not None:
         input_ = Input(
             utterances=body,
             locale=locale,
@@ -194,8 +200,10 @@ def test_plugin_working_cases(payload) -> None:
             assert output["entities"] == []
 
         for i, entity in enumerate(output["entities"]):
-            expected_entity_type = expected_types[i]["entity_type"]
+            expected_entity_type = expected[i]["entity_type"]
             assert entity["entity_type"] == expected_entity_type
+            if "value" in expected[i]:
+                assert entity["value"] == expected[i]["value"]
     else:
         with pytest.raises(EXCEPTIONS[exception]):
             input_ = Input(
