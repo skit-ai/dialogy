@@ -140,9 +140,9 @@ class Workflow:
                 self.output = Output.from_dict({attribute: value}, reference=self.output)
             else:
                 if attribute == const.INTENTS:
-                    previous_value = self.output.intents
+                    previous_value = self.output.intents # type: ignore
                 elif attribute == const.ENTITIES:
-                    previous_value = self.output.entities
+                    previous_value = self.output.entities # type: ignore
                 else:
                     raise ValueError(f"Unknown attribute {attribute} tracked on Output.")
 
