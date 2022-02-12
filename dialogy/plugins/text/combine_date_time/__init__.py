@@ -91,6 +91,7 @@ class CombineDateTimeOverSlots(Plugin):
         guards: Optional[List[Guard]] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
+        replace_output: bool = True,
         use_transform: bool = False,
         trigger_intents: Optional[List[str]] = None,
         debug: bool = False,
@@ -98,6 +99,7 @@ class CombineDateTimeOverSlots(Plugin):
         super().__init__(
             dest=dest,
             guards=guards,
+            replace_output=replace_output,
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,

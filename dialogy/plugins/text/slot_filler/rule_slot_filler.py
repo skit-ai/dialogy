@@ -47,6 +47,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         rules: Rule,
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
+        replace_output: bool = True,
         fill_multiple: bool = True,
         debug: bool = False,
     ) -> None:
@@ -62,7 +63,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # ```
         # rules = {"intent": {"slot_name": "entity_type"}}
         # ```
-        super().__init__(dest=dest, guards=guards, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug, replace_output=replace_output)
         self.rules: Rule = rules or {}
 
         # fill_multiple

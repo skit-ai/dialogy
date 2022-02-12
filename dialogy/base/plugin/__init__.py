@@ -163,6 +163,35 @@ So let's look at an example where we prevent plugins from execution using :code:
        ...: # the MergeASROutputPlugin.
        ...: input_
 
+Update Plans
+------------
+
+You may need to write plugins that generate an :ref:`Intent <Intent>` or :ref:`BaseEntity <BaseEntity>`, there
+is also a category of plugins that might be required for modifications. Like the :ref:`RuleBasedSlotFillerPlugin <RuleBasedSlotFillerPlugin>`
+or the :ref:`CombineDateTimePlugin <CombineDateTimePlugin>`.
+
+The former updates the :ref:`intents<Intent>` and the latter updates :ref:`time-entities <TimeEntity>`. In these cases, the plugins
+also take into account other values. 
+
+Such as, :ref:`CombineDateTimePlugin <CombineDateTimePlugin>`: 
+
+#. Separates time entities from other entity types.
+#. Combines them over slot presence.
+#. Rebuilds a full entity list.
+
+This means
+
+#. Some plugins need to replace the entire set of intents or entities.
+#. While others need to append their results along with the history of the workflow.
+
+If your plugin belongs to [1], then you need to set :code:`replace_output=True` in the constructor of your plugin.
+
+.. note:: 
+
+    Refer to :ref:`CombineDateTimePlugin <CombineDateTimePlugin>`.
+    It's ref:`combine_time_entities_from_slots <combine_time_entities_from_slots>` method shows where we may need to use
+    :code:`replace_output=True`.
+
 """
 from __future__ import annotations
 
@@ -204,6 +233,7 @@ class Plugin(ABC):
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
+        replace_output: bool = False,
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
@@ -211,6 +241,7 @@ class Plugin(ABC):
         self.debug = debug
         self.guards = guards
         self.dest = dest
+        self.replace_output = replace_output
         self.input_column = input_column
         self.output_column = output_column or input_column
         self.use_transform = use_transform
@@ -258,7 +289,7 @@ class Plugin(ABC):
 
         value = self.utility(workflow.input, workflow.output)
         if value is not None and isinstance(self.dest, str):
-            workflow.set(self.dest, value)
+            workflow.set(self.dest, value, self.replace_output)
 
     def prevent(self, input_: Input, output: Output) -> bool:
         """
