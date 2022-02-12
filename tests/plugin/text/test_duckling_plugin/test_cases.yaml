@@ -267,6 +267,25 @@
   reference_time: 1644662968859
   expected: [{"entity_type": "duration"}]
 
+- description: "duration entity fails if reference time is missing"
+  input: "2 hours"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+    cast_duration_as_time: True
+  mock_entity_json: [{'body': '2 hours',
+  'start': 0,
+  'value': {'value': 2,
+   'hour': 2,
+   'type': 'value',
+   'unit': 'hour',
+   'normalized': {'value': 7200, 'unit': 'second'}},
+  'end': 7,
+  'dim': 'duration',
+  'latent': False}]
+  exception: "ValueError"
+
 - description: "duration entity"
   input: "2 hours"
   duckling:

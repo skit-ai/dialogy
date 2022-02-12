@@ -60,7 +60,9 @@ def deserialize_duckling_entity(
 
     elif dimension == const.DURATION:
         entity = DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
-        if cast_duration_as_time:
+        if cast_duration_as_time and not reference_time:
+            raise ValueError("Reference time must be provided when casting duration as time.")
+        if cast_duration_as_time and reference_time:
             return entity.to_time_entity(reference_time, timezone)
         return entity
     else:  # dimension == const.CREDIT_CARD_NUMBER:

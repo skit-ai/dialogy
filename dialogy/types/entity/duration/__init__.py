@@ -94,8 +94,8 @@ class DurationEntity(BaseEntity):
         Converts a duration entity to a time entity.
         """
         reference_datetime = unix_ts_to_datetime(reference_unix_ts, timezone=timezone)
-        value = reference_datetime + timedelta(seconds=self.normalized[const.VALUE])
-        value = value.isoformat()
+        value_dt = reference_datetime + timedelta(seconds=self.normalized[const.VALUE])
+        value = value_dt.isoformat()
 
         entity = TimeEntity(
             range={const.START: self.range[const.START], const.END: self.range[const.END]},
