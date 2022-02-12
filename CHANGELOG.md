@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.9.2
+- [x] fix: Plugins don't overwrite the Output object unless they are _meant_ to.
+
 ## 0.9.1
 
 - [x] feat: `DurationEntity` are cast as `TimeEntity` by default.
