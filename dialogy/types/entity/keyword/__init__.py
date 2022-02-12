@@ -35,12 +35,12 @@ Workflow Integration
        ...: from dialogy.workflow import Workflow
 
     In [2]: entity_extractor = ListEntityPlugin(
-       ...: dest="output.entities",
-       ...: input_column="data",
-       ...: output_column="entities",
-       ...: use_transform=True,
-       ...: style="regex",
-       ...: candidates={"fruits": {"apple": [r"apples?"], "orange": [r"oranges?"]}},
+       ...:   dest="output.entities",
+       ...:   input_column="data",
+       ...:   output_column="entities",
+       ...:   use_transform=True,
+       ...:   style="regex",
+       ...:   candidates={"fruits": {"apple": [r"apples?"], "orange": [r"oranges?"]}},
        ...: )
 
     In [3]: workflow = Workflow([entity_extractor])

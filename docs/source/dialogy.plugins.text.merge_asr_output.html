@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.slot_filler package" href="dialogy.plugins.text.slot_filler.html" /><link rel="prev" title="dialogy.base.entity_extractor package" href="dialogy.base.entity_extractor.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.classification package" href="dialogy.plugins.text.classification.html" /><link rel="prev" title="dialogy.types.slots package" href="dialogy.types.slots.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
         <title>dialogy.plugins.text.merge_asr_output package - dialogy 0.9.1 documentation</title>
@@ -178,14 +178,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -220,25 +220,40 @@
 <h1>dialogy.plugins.text.merge_asr_output package<a class="headerlink" href="#dialogy-plugins-text-merge-asr-output-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.plugins.text.merge_asr_output">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.merge_asr_output" title="Permalink to this headline">¶</a></h2>
-<p>We expect ASR transcripts to be the most common inputs to the system. Since there is a chance that we can improve the
-performance by asking the ASR to provide more information in the form of multiple alternatives. The problem though, is
-they can’t be used as it is. Models that can operate on text data, need them to be vectorized. These vectors have
-semantic significance, where different text inputs imply different vectors. If their semantic differences are modeled
-well, we can expect these vectors to be similar or dissimilar just like the text that was used to create them.</p>
-<p>The problem with transcripts is, there <strong>will</strong> be noise in the transcripts, since we asked for <code class="code docutils literal notranslate"><span class="pre">N</span></code> transcripts,
-by definition, an ASR will provide N unique transcripts. The noise may in fact be inconsequential for downstream NLP
-tasks, but we have noticed that there are certain inputs owing to audio artifacts or state of LMs tend to have a great
-impact on the transcription.</p>
-<p>This module will ship a simple concatenation strategy to address this problem. The NLP model should be expected to
-handle documents (<code class="code docutils literal notranslate"><span class="pre">List[str]</span></code>) instead of single text. The plugin then will be able to produce a <code class="code docutils literal notranslate"><span class="pre">str</span></code> by
-simply concatenation of each transcript.</p>
-<p>This may not be very helpful, there is a <a class="reference internal" href="dialogy.plugins.text.voting.html#vote-plugin"><span class="std std-ref">VotePlugin</span></a> under development so use it with caution. It may
-help with precision at the cost of recall.</p>
+<p>We use classifiers for prediction of <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a>, utterances from an ASR are prominent features
+for the task. We featurize the utterances by concatenation of all transcripts.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">MergeASROutputPlugin</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [2]: </span><span class="n">merge_asr_output_plugin</span> <span class="o">=</span> <span class="n">MergeASROutputPlugin</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">"input.clf_feature"</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">merge_asr_output_plugin</span><span class="p">])</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">input_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="p">[</span><span class="s2">"we will come by 7 pm"</span><span class="p">,</span> <span class="s2">" will come by 7 pm"</span><span class="p">]))</span>
+
+<span class="gp">In [4]: </span><span class="n">input_</span>
+<span class="gh">Out[4]: </span><span class="go"></span>
+<span class="go">{'utterances': ['we will come by 7 pm', ' will come by 7 pm'],</span>
+<span class="go"> 'reference_time': None,</span>
+<span class="go"> 'latent_entities': False,</span>
+<span class="go"> 'transcripts': ['we will come by 7 pm', ' will come by 7 pm'],</span>
+<span class="go"> 'clf_feature': ['&lt;s&gt; we will come by 7 pm &lt;/s&gt; &lt;s&gt;  will come by 7 pm &lt;/s&gt;'],</span>
+<span class="go"> 'lang': 'en',</span>
+<span class="go"> 'locale': 'en_IN',</span>
+<span class="go"> 'timezone': 'UTC',</span>
+<span class="go"> 'slot_tracker': None,</span>
+<span class="go"> 'current_state': None,</span>
+<span class="go"> 'previous_intent': None,</span>
+<span class="go"> 'history': None}</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.plugins.text.merge_asr_output.MergeASROutputPlugin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MergeASROutputPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/merge_asr_output.html#MergeASROutputPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.merge_asr_output.MergeASROutputPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
-<p id="merge-asr-output-plugin">Working details are covered in <a class="reference internal" href="#merge-asr-output"><span class="std std-ref">merge_asr_output</span></a>.</p>
+<p id="mergeasroutputplugin">Working details are covered in <a class="reference internal" href="#mergeasroutputplugin"><span class="std std-ref">MergeASROutputPlugin</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>Plugin</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p>
@@ -318,23 +333,23 @@ by this function.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="dialogy.plugins.text.slot_filler.html">
+          <a class="next-page" href="dialogy.plugins.text.classification.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">dialogy.plugins.text.slot_filler package</div>
+                <div class="title">dialogy.plugins.text.classification package</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="dialogy.base.entity_extractor.html">
+          <a class="prev-page" href="dialogy.types.slots.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">dialogy.base.entity_extractor package</div>
+                <div class="title">dialogy.types.slots package</div>
                 
               </div>
             </a>

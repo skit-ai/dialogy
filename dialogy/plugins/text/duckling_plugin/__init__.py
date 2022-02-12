@@ -1,59 +1,61 @@
 """
 .. _duckling_plugin:
 
-This module exposes a parser for `Duckling <https://github.com/facebook/duckling>`_.
+We use `Duckling <https://github.com/facebook/duckling>`_ for parsing values like: :code:`date`, :code:`time`,
+:code:`numbers`, :code:`currency` etc from natural language. The parser will expect Duckling to be running as an http service, and provide
+means to connect from the implementation here. Here's a big example for various duckling entities.
 
-`Duckling <https://github.com/facebook/duckling>`_ helps parsing values like: :code:`date`, :code:`time`,
-:code:`numbers`, :code:`currency` etc. The parser will expect Duckling to be running as an http service, and provide
-means to connect from the implementation here.
+Mother of all examples
+----------------------
 
-.. code-block:: python
-    :linenos:
+.. ipython::
 
-    from pprint import pprint
-    from dialogy.workflow import Workflow
-    from dialogy.base import Input
-    from dialogy.plugins import DucklingPlugin
+    In [1]: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
 
-    duckling_plugin = DucklingPlugin(
-        dest="output.entities",
-        dimensions=["people"],
-        # Duckling supports multiple dimensions, by specifying a list, we make sure
-        # we are searching for a match within the expected dimensions only.
-        locale="en_IN",
-        # Duckling supports a set of locales, we need to provide this info to
-        # get language specific matches.
-        timezone="Asia/Kolkata",
-        # Date/Time related entities make this field imperative.
-    )
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=[
+       ...:         "number",
+       ...:         "people",
+       ...:         "date",
+       ...:         "time",
+       ...:         "duration",
+       ...:         "intersect",
+       ...:         "amount-of-money",
+       ...:         "credit-card-number",
+       ...:     ],
+       ...:     # Duckling supports multiple dimensions, by specifying a list, we make sure
+       ...:     # we are searching for a match within the expected dimensions only.
+       ...:     locale="en_IN",
+       ...:     # Duckling supports a set of locales, we need to provide this info to
+       ...:     # get language specific matches.
+       ...:     timezone="Asia/Kolkata",
+       ...:     # Date/Time related entities make this field imperative.
+       ...:     # use_latent=True,
+       ...: )
 
-    workflow = Workflow([duckling_plugin])
-    input_, output = workflow.run(Input(utterances=[[{"transcript": "there are 7 people"}]]))
+    In [3]: workflow = Workflow([duckling_plugin])
 
-    pprint(input_)
-    # {'clf_feature': [],
-    #  'current_state': None,
-    #  'lang': 'en',
-    #  'latent_entities': False,
-    #  'locale': 'en_IN',
-    #  'previous_intent': None,
-    #  'reference_time': None,
-    #  'slot_tracker': None,
-    #  'timezone': 'UTC',
-    #  'transcripts': ['there are 7 people'],
-    #  'utterances': [[{'transcript': 'there are 7 people'}]]}
+    In [4]: utterances = [
+       ...:    "between today 7pm and tomorrow 9pm",
+       ...:    "can we get up at 6 am",
+       ...:    "we are 7 people",
+       ...:    "2 children 1 man 3 girls",
+       ...:    "can I come now?",
+       ...:    "can I come tomorrow",
+       ...:    "how about monday then",
+       ...:    "call me on 5th march",
+       ...:    "I want 4 pizzas",
+       ...:    "2 hours",
+       ...:    "can I pay $5 instead?",
+       ...:    "my credit card number is 4111111111111111",
+       ...:]
 
-    pprint(output)
-    # {'entities': [{'alternative_index': 0,
-    #                'body': '7 people',
-    #                'entity_type': 'people',
-    #                'parsers': ['DucklingPlugin'],
-    #                'range': {'end': 18, 'start': 10},
-    #                'score': 1.0,
-    #                'type': 'value',
-    #                'unit': '',
-    #                'value': 7}],
-    #  'intents': []}
+    In [5]: input_, output = workflow.run(Input(utterances=utterances))
+
+    In [6]: output
 
 Testing
 -------

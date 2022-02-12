@@ -177,14 +177,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -250,8 +250,11 @@
     <span class="sd">"""</span>
 <span class="sd">     A :ref:`Plugin&lt;plugin&gt;` for extracting entities using spacy or a list of regex patterns.</span>
 
-<span class="sd">    .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy</span>
-<span class="sd">                and regex based entity parsers.</span>
+<span class="sd">     .. attention: </span>
+<span class="sd">     </span>
+<span class="sd">        This class will undergo a series of refactoring changes. FWIW, :ref:`ListSearchPlugin&lt;ListSearchPlugin&gt;`</span>
+<span class="sd">        is more more performant in terms of entity capture rates but not as responsive. :code:`ListEntityPlugin`</span>
+<span class="sd">        is fast. So make choices with bearing this in mind.</span>
 
 <span class="sd">    .. _ListSearchPlugin:</span>
 

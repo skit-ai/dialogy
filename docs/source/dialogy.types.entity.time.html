@@ -178,14 +178,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -236,7 +236,7 @@
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"tomorrow"</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-12T00:00:00.000+05:30', origin='value', entity_type='date', grain='day')]</span>
+<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-13T00:00:00.000+05:30', origin='value', entity_type='date', grain='day')]</span>
 
 <span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"monday"</span><span class="p">)</span>
 <span class="gh">Out[4]: </span><span class="go">[TimeEntity(body='monday', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-14T00:00:00.000+05:30', origin='value', entity_type='date', grain='day')]</span>
@@ -274,7 +274,7 @@
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.3333333333333333,</span>
 <span class="go">   'alternative_index': 0,</span>
-<span class="go">   'value': '2022-02-12T00:00:00.000+05:30',</span>
+<span class="go">   'value': '2022-02-13T00:00:00.000+05:30',</span>
 <span class="go">   'entity_type': 'date',</span>
 <span class="go">   'grain': 'day'},</span>
 <span class="go">  {'range': {'start': 0, 'end': 6},</span>

@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.list_search_plugin package" href="dialogy.plugins.text.list_search_plugin.html" /><link rel="prev" title="dialogy.plugins.text.lb_plugin package" href="dialogy.plugins.text.lb_plugin.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.list_search_plugin package" href="dialogy.plugins.text.list_search_plugin.html" /><link rel="prev" title="dialogy.plugins.text.slot_filler package" href="dialogy.plugins.text.slot_filler.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
         <title>dialogy.plugins.text.list_entity_plugin package - dialogy 0.9.1 documentation</title>
@@ -178,14 +178,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -220,17 +220,90 @@
 <h1>dialogy.plugins.text.list_entity_plugin package<a class="headerlink" href="#dialogy-plugins-text-list-entity-plugin-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.plugins.text.list_entity_plugin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.list_entity_plugin" title="Permalink to this headline">¶</a></h2>
-<p id="list-entity-plugin">Module needs refactor. We are currently keeping all strategies bundled as methods as opposed to SearchStrategyClasses.</p>
-<p>Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We can ship individual plugins but at the
-same time, the difference is just configuration of each of these tools/services. There is another difference of
-intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting
-all other entities. So that their <code class="code docutils literal notranslate"><span class="pre">from_dict(...)</span></code> methods are pristine and involve no shape hacking.</p>
+<section id="regex-search">
+<h3>Regex Search<a class="headerlink" href="#regex-search" title="Permalink to this headline">¶</a></h3>
+<p>We have often seen certain keywords that gain significance in an SLU project. These keywords are 
+easy to extract via patterns and are often used to create entities. The <a class="reference internal" href="#listentityplugin"><span class="std std-ref">ListEntityPlugin</span></a>
+helps in this task, it requires a pattern-map, we call it <code class="code docutils literal notranslate"><span class="pre">candidates</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">ListEntityPlugin</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [2]: </span><span class="n">candidates</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">   ...: </span>     <span class="s2">"colours"</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">   ...: </span>         <span class="s2">"red"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"crimson"</span><span class="p">,</span> <span class="s2">"ruby"</span><span class="p">,</span> <span class="s2">"raspberry"</span><span class="p">],</span>
+<span class="gp">   ...: </span>         <span class="s2">"blue"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"blue"</span><span class="p">,</span> <span class="s2">"azure"</span><span class="p">,</span> <span class="s2">"indigo"</span><span class="p">,</span> <span class="s2">"navy"</span><span class="p">],</span>
+<span class="gp">   ...: </span>         <span class="s2">"green"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"green"</span><span class="p">,</span> <span class="s2">"emerald"</span><span class="p">,</span> <span class="s2">"jade"</span><span class="p">,</span> <span class="s2">"teal"</span><span class="p">],</span>
+<span class="gp">   ...: </span>     <span class="p">},</span> 
+<span class="gp">   ...: </span>   <span class="p">}</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">list_entity_plugin</span> <span class="o">=</span> <span class="n">ListEntityPlugin</span><span class="p">(</span>
+<span class="gp">   ...: </span>  <span class="n">candidates</span><span class="o">=</span><span class="n">candidates</span><span class="p">,</span>
+<span class="gp">   ...: </span>  <span class="n">style</span><span class="o">=</span><span class="s2">"regex"</span><span class="p">,</span>
+<span class="gp">   ...: </span>  <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">list_entity_plugin</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"I want an emerald green shirt"</span><span class="p">))</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [4]: </span><span class="n">output</span>
+<span class="gh">Out[4]: </span><span class="go"></span>
+<span class="go">{'intents': [],</span>
+<span class="go"> 'entities': [{'range': {'start': 18, 'end': 23},</span>
+<span class="go">   'body': 'green',</span>
+<span class="go">   'type': 'colours',</span>
+<span class="go">   'parsers': ['ListEntityPlugin'],</span>
+<span class="go">   'score': 1.0,</span>
+<span class="go">   'alternative_index': 0,</span>
+<span class="go">   'value': 'green',</span>
+<span class="go">   'entity_type': 'colours',</span>
+<span class="go">   '_meta': {}}]}</span>
+</pre></div>
+</div>
+</section>
+<section id="spacy-ner">
+<h3>Spacy NER<a class="headerlink" href="#spacy-ner" title="Permalink to this headline">¶</a></h3>
+<p>We also allow using <a class="reference external" href="https://spacy.io/usage/spacy-101#annotations-ner">spacy’s NER</a>. This has to be passed within the
+<code class="code docutils literal notranslate"><span class="pre">spacy_nlp</span></code> attribute.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">spacy</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">ListEntityPlugin</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [2]: </span><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"en_core_web_sm"</span><span class="p">)</span>
+
+<span class="gp">In [3]: </span><span class="n">list_entity_plugin</span> <span class="o">=</span> <span class="n">ListEntityPlugin</span><span class="p">(</span>
+<span class="gp">   ...: </span>  <span class="n">spacy_nlp</span><span class="o">=</span><span class="n">nlp</span><span class="p">,</span>
+<span class="gp">   ...: </span>  <span class="n">style</span><span class="o">=</span><span class="s2">"spacy"</span><span class="p">,</span>
+<span class="gp">   ...: </span>  <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">list_entity_plugin</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"Need a place to stay in New Delhi."</span><span class="p">))</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [4]: </span><span class="n">output</span>
+<span class="gh">Out[4]: </span><span class="go"></span>
+<span class="go">{'intents': [],</span>
+<span class="go"> 'entities': [{'range': {'start': 24, 'end': 33},</span>
+<span class="go">   'body': 'New Delhi',</span>
+<span class="go">   'type': 'GPE',</span>
+<span class="go">   'parsers': ['ListEntityPlugin'],</span>
+<span class="go">   'score': 1.0,</span>
+<span class="go">   'alternative_index': 0,</span>
+<span class="go">   'value': 'New Delhi',</span>
+<span class="go">   'entity_type': 'GPE',</span>
+<span class="go">   '_meta': {}}]}</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.plugins.text.list_entity_plugin.ListEntityPlugin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ListEntityPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">style=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidates=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacy_nlp=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column='alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags=RegexFlag.None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_entity_plugin.html#ListEntityPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.base.entity_extractor.html#dialogy.base.entity_extractor.EntityScoringMixin" title="dialogy.base.entity_extractor.EntityScoringMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.entity_extractor.EntityScoringMixin</span></code></a>, <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
 <blockquote>
-<div><p>A <span class="xref std std-ref">Plugin</span> for extracting entities using spacy or a list of regex patterns.</p>
+<div><p>A <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugin</span></a> for extracting entities using spacy or a list of regex patterns.</p>
 </div></blockquote>
 <dl class="field-list simple" id="listentityplugin">
 <dt class="field-odd">Parameters</dt>
@@ -238,7 +311,7 @@ all other entities. So that their <code class="code docutils literal notranslate
 <li><p><strong>style</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – One of [“regex”, “spacy”]</p></li>
 <li><p><strong>candidates</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>]</em>) – Required if style is “regex”, this is a <code class="code docutils literal notranslate"><span class="pre">dict</span></code> that shows a mapping of entity
 values and their patterns.</p></li>
-<li><p><strong>spacy_nlp</strong> (<em>Any</em>) – Required if style is “spacy”, this is a
+<li><p><strong>spacy_nlp</strong> (<em>Any</em>) – Required if style is “spacy”, requires is a
 <a class="reference external" href="https://spacy.io/usage/spacy-101#annotations-ner">spacy model</a>.</p></li>
 <li><p><strong>labels</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Required if style is “spacy”. If there is a need to extract only a few labels from all the other
 <a class="reference external" href="https://github.com/explosion/spaCy/issues/441#issuecomment-311804705">available labels</a>.</p></li>
@@ -332,6 +405,7 @@ values and their patterns.</p></li>
 </dd></dl>
 </section>
 </section>
+</section>
 
         </article>
       </div>
@@ -347,14 +421,14 @@ values and their patterns.</p></li>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="dialogy.plugins.text.lb_plugin.html">
+          <a class="prev-page" href="dialogy.plugins.text.slot_filler.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">dialogy.plugins.text.lb_plugin package</div>
+                <div class="title">dialogy.plugins.text.slot_filler package</div>
                 
               </div>
             </a>
@@ -385,7 +459,11 @@ values and their patterns.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.plugins.text.list_entity_plugin package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.plugins.text.list_entity_plugin">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.list_entity_plugin">Module contents</a><ul>
+<li><a class="reference internal" href="#regex-search">Regex Search</a></li>
+<li><a class="reference internal" href="#spacy-ner">Spacy NER</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

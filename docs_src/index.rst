@@ -37,7 +37,7 @@ Listing sections by order of significance. Higher ranking items are helpful in u
 | 3 | :ref:`Workflow <WorkflowClass>`                                | A workflow *has* an :code:`Input` and an :code:`Output`. It also *contains* :code:`plugins`.                              |
 |   |                                                                | The :code:`run(...)` produces the inference API's response.                                                               |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| 4 | :ref:`Plugin <plugin-abstract>`                                | The base (abstract) class for all plugins.                                                                                |
+| 4 | :ref:`Plugin <AbstractPlugin>`                                 | The base (abstract) class for all plugins.                                                                                |
 |   |                                                                |                                                                                                                           |
 |   |                                                                | [:ref:`how to write plugins <Writing Plugins>`]                                                                           |
 |   |                                                                |                                                                                                                           |
