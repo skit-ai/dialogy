@@ -137,17 +137,27 @@ class Workflow:
         elif dest == "output" and isinstance(value, list):
 
             if replace:
-                self.output = Output.from_dict({attribute: value}, reference=self.output)
+                self.output = Output.from_dict(
+                    {attribute: value}, reference=self.output
+                )
             else:
                 if attribute == const.INTENTS:
-                    previous_value = self.output.intents # type: ignore
+                    previous_value = self.output.intents  # type: ignore
                 elif attribute == const.ENTITIES:
-                    previous_value = self.output.entities # type: ignore
+                    previous_value = self.output.entities  # type: ignore
                 else:
-                    raise ValueError(f"Unknown attribute {attribute} tracked on Output.")
+                    raise ValueError(
+                        f"Unknown attribute {attribute} tracked on Output."
+                    )
 
-                combined_value = sorted(previous_value + value, key=lambda parse: parse.score or 0, reverse=True)
-                self.output = Output.from_dict({attribute: combined_value}, reference=self.output)
+                combined_value = sorted(
+                    previous_value + value,
+                    key=lambda parse: parse.score or 0,
+                    reverse=True,
+                )
+                self.output = Output.from_dict(
+                    {attribute: combined_value}, reference=self.output
+                )
 
         elif dest == "output":
             raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")

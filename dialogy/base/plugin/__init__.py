@@ -212,20 +212,20 @@ Guard = Callable[[Input, Output], bool]
 
 class Plugin(ABC):
     """
-        Abstract class to be implemented by all plugins.
+    Abstract class to be implemented by all plugins.
 
-        :param input_column: Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES
-        :type input_column: str
-        :param output_column: Saves transformation in this column for a given dataframe, defaults to None
-        :type output_column: Optional[str]
-        :param use_transform: Should the transformation be applied while training?, defaults to False
-        :type use_transform: bool
-        :param dest: The path where plugin output should be saved., defaults to None
-        :type dest: Optional[str]
-        :param guards: A list of functions that evaluate to bool, defaults to None
-        :type guards: Optional[List[Guard]]
-        :param debug: Should we print debug logs?, defaults to False
-        :type debug: bool, optional
+    :param input_column: Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES
+    :type input_column: str
+    :param output_column: Saves transformation in this column for a given dataframe, defaults to None
+    :type output_column: Optional[str]
+    :param use_transform: Should the transformation be applied while training?, defaults to False
+    :type use_transform: bool
+    :param dest: The path where plugin output should be saved., defaults to None
+    :type dest: Optional[str]
+    :param guards: A list of functions that evaluate to bool, defaults to None
+    :type guards: Optional[List[Guard]]
+    :param debug: Should we print debug logs?, defaults to False
+    :type debug: bool, optional
     """
 
     def __init__(
