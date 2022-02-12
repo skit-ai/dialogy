@@ -408,7 +408,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         entities_json: List[Dict[str, Any]],
         alternative_index: int = 0,
         reference_time: Optional[int] = None,
-        duration_cast_operator: Optional[str] = None
+        duration_cast_operator: Optional[str] = None,
     ) -> List[BaseEntity]:
         """
         Create a list of :ref:`BaseEntity <base_entity>` objects from a list of entity dicts.
@@ -427,7 +427,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 alternative_index,
                 reference_time=reference_time,
                 timezone=self.timezone,
-                duration_cast_operator=duration_cast_operator
+                duration_cast_operator=duration_cast_operator,
             )
             entity.add_parser(self)
             deserialized_entities.append(entity)
@@ -534,7 +534,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         list_of_entities: List[List[Dict[str, Any]]],
         reference_time: Optional[int] = None,
         timezone: str = "UTC",
-        duration_cast_operator: Optional[str] = None
+        duration_cast_operator: Optional[str] = None,
     ) -> List[BaseEntity]:
         shaped_entities = []
         for (alternative_index, entities) in enumerate(list_of_entities):
@@ -543,7 +543,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                     entities,
                     alternative_index=alternative_index,
                     reference_time=reference_time,
-                    duration_cast_operator=duration_cast_operator
+                    duration_cast_operator=duration_cast_operator,
                 )
             )
         return py_.flatten(shaped_entities)
@@ -589,7 +589,11 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             reference_time=reference_time,
             use_latent=use_latent,
         )
-        entities = self.apply_entity_classes(list_of_entities, reference_time, duration_cast_operator=duration_cast_operator)
+        entities = self.apply_entity_classes(
+            list_of_entities,
+            reference_time,
+            duration_cast_operator=duration_cast_operator,
+        )
         entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(entities)
 
@@ -613,14 +617,16 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             intent, *_ = output.intents
 
         if isinstance(intent, Intent) and intent.name in self.temporal_intents:
-            duration_cast_operator = self.datetime_filters = self.temporal_intents.get(intent.name)
+            duration_cast_operator = self.datetime_filters = self.temporal_intents.get(
+                intent.name
+            )
 
         return self.parse(
             transcripts,
             locale=self.locale,
             reference_time=self.reference_time,
             use_latent=use_latent,
-            duration_cast_operator=duration_cast_operator
+            duration_cast_operator=duration_cast_operator,
         )
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:

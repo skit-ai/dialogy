@@ -91,7 +91,9 @@ class DurationEntity(BaseEntity):
             normalized=d[const.VALUE][const.NORMALIZED],
         )
 
-    def to_time_entity(self, reference_unix_ts: int, timezone: str, duration_cast_operator: str) -> TimeEntity:
+    def to_time_entity(
+        self, reference_unix_ts: int, timezone: str, duration_cast_operator: str
+    ) -> TimeEntity:
         """
         Converts a duration entity to a time entity.
         """
@@ -101,7 +103,9 @@ class DurationEntity(BaseEntity):
         elif duration_cast_operator == const.PAST:
             operation = operator.sub
 
-        value_dt = operation(reference_datetime, timedelta(seconds=self.normalized[const.VALUE]))
+        value_dt = operation(
+            reference_datetime, timedelta(seconds=self.normalized[const.VALUE])
+        )
         value = value_dt.isoformat()
 
         entity = TimeEntity(
