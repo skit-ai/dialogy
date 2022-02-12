@@ -3,6 +3,8 @@ name = "dialogy"
 version = "0.9.1"
 description = "Dialogy is a library for building and managing SLU applications."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/skit-ai/dialogy"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.10"
