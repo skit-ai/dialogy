@@ -32,8 +32,11 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
     """
      A :ref:`Plugin<plugin>` for extracting entities using spacy or a list of regex patterns.
 
-    .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy
-                and regex based entity parsers.
+     .. attention: 
+     
+        This class will undergo a series of refactoring changes. FWIW, :ref:`ListSearchPlugin<ListSearchPlugin>`
+        is more more performant in terms of entity capture rates but not as responsive. :code:`ListEntityPlugin`
+        is fast. So make choices with bearing this in mind.
 
     .. _ListSearchPlugin:
 
@@ -48,12 +51,6 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
     :param labels: Required if style is "spacy". If there is a need to extract only a few labels from all the other
         `available labels <https://github.com/explosion/spaCy/issues/441#issuecomment-311804705>`_.
     :type labels: Optional[List[str]]
-    :param access: A plugin io utility that allows access to transcripts
-        :code:`List[str]` within a :ref:`Workflow <workflow>`.
-    :type access: Optional[PluginFn]
-    :param mutate: A plugin io utility that allows insertion of :code:`List[BaseEntity]` within a
-        :ref:`Workflow <workflow>`.
-    :type mutate: Optional[PluginFn]
     :param debug: A flag to set debugging on the plugin methods
     :type debug: bool
     """

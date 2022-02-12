@@ -155,24 +155,39 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../source/dialogy.base.html">Base</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.base.entity_extractor.html">dialogy.base.entity_extractor package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.base.input.html">dialogy.base.input package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.base.output.html">dialogy.base.output package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/dialogy.base.plugin.html">dialogy.base.plugin package</a></li>
-</ul>
-</li>
+  <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.numerical.html">Numeric Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.people.html">People Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.slots.html">Slots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.utils.html">Utils</a></li>
 </ul>
 
@@ -202,14 +217,62 @@
         <article role="main">
           <h1>Source code for dialogy.plugins.text.list_entity_plugin</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">.. _list_entity_plugin:</span>
+<span class="sd">Regex Search</span>
+<span class="sd">-------------</span>
 
-<span class="sd">Module needs refactor. We are currently keeping all strategies bundled as methods as opposed to SearchStrategyClasses.</span>
+<span class="sd">We have often seen certain keywords that gain significance in an SLU project. These keywords are </span>
+<span class="sd">easy to extract via patterns and are often used to create entities. The :ref:`ListEntityPlugin&lt;ListEntityPlugin&gt;`</span>
+<span class="sd">helps in this task, it requires a pattern-map, we call it :code:`candidates`.</span>
 
-<span class="sd">Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We can ship individual plugins but at the</span>
-<span class="sd">same time, the difference is just configuration of each of these tools/services. There is another difference of</span>
-<span class="sd">intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting</span>
-<span class="sd">all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.plugins import ListEntityPlugin</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+
+<span class="sd">    In [2]: candidates = {</span>
+<span class="sd">       ...:      "colours": {</span>
+<span class="sd">       ...:          "red": ["red", "crimson", "ruby", "raspberry"],</span>
+<span class="sd">       ...:          "blue": ["blue", "azure", "indigo", "navy"],</span>
+<span class="sd">       ...:          "green": ["green", "emerald", "jade", "teal"],</span>
+<span class="sd">       ...:      }, </span>
+<span class="sd">       ...:    }</span>
+
+<span class="sd">    In [2]: list_entity_plugin = ListEntityPlugin(</span>
+<span class="sd">       ...:   candidates=candidates,</span>
+<span class="sd">       ...:   style="regex",</span>
+<span class="sd">       ...:   dest="output.entities"</span>
+<span class="sd">       ...: )</span>
+<span class="sd">       ...: workflow = Workflow([list_entity_plugin])</span>
+<span class="sd">       ...: _, output = workflow.run(Input(utterances="I want an emerald green shirt"))</span>
+
+<span class="sd">    In [3]: output</span>
+
+<span class="sd">Spacy NER</span>
+<span class="sd">-----------</span>
+
+<span class="sd">We also allow using `spacy's NER &lt;https://spacy.io/usage/spacy-101#annotations-ner&gt;`_. This has to be passed within the</span>
+<span class="sd">:code:`spacy_nlp` attribute.</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: import spacy</span>
+<span class="sd">       ...: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.plugins import ListEntityPlugin</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+
+<span class="sd">    In [2]: nlp = spacy.load("en_core_web_sm")</span>
+
+<span class="sd">    In [3]: list_entity_plugin = ListEntityPlugin(</span>
+<span class="sd">       ...:   spacy_nlp=nlp,</span>
+<span class="sd">       ...:   style="spacy",</span>
+<span class="sd">       ...:   dest="output.entities"</span>
+<span class="sd">       ...: )</span>
+<span class="sd">       ...: workflow = Workflow([list_entity_plugin])</span>
+<span class="sd">       ...: _, output = workflow.run(Input(utterances="Need a place to stay in New Delhi."))</span>
+
+<span class="sd">    In [3]: output</span>
 <span class="sd">"""</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
@@ -233,10 +296,15 @@
 
 <div class="viewcode-block" id="ListEntityPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin">[docs]</a><span class="k">class</span> <span class="nc">ListEntityPlugin</span><span class="p">(</span><span class="n">EntityScoringMixin</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
-<span class="sd">     A :ref:`Plugin&lt;plugin&gt;` for extracting entities using spacy or a list of regex patterns.</span>
+<span class="sd">     A :ref:`Plugin&lt;AbstractPlugin&gt;` for extracting entities using spacy or a list of regex patterns.</span>
 
-<span class="sd">     .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy</span>
-<span class="sd">        and regex based entity parsers.</span>
+<span class="sd">     .. attention: </span>
+<span class="sd">     </span>
+<span class="sd">        This class will undergo a series of refactoring changes. FWIW, :ref:`ListSearchPlugin&lt;ListSearchPlugin&gt;`</span>
+<span class="sd">        is more more performant in terms of entity capture rates but not as responsive. :code:`ListEntityPlugin`</span>
+<span class="sd">        is fast. So make choices with bearing this in mind.</span>
+
+<span class="sd">    .. _ListEntityPlugin:</span>
 
 <span class="sd">    .. _ListEntityPlugin:</span>
 
@@ -245,18 +313,12 @@
 <span class="sd">    :param candidates: Required if style is "regex", this is a :code:`dict` that shows a mapping of entity</span>
 <span class="sd">        values and their patterns.</span>
 <span class="sd">    :type candidates: Optional[Dict[str, List[str]]]</span>
-<span class="sd">    :param spacy_nlp: Required if style is "spacy", this is a</span>
+<span class="sd">    :param spacy_nlp: Required if style is "spacy", requires is a</span>
 <span class="sd">        `spacy model &lt;https://spacy.io/usage/spacy-101#annotations-ner&gt;`_.</span>
 <span class="sd">    :type spacy_nlp: Any</span>
 <span class="sd">    :param labels: Required if style is "spacy". If there is a need to extract only a few labels from all the other</span>
 <span class="sd">        `available labels &lt;https://github.com/explosion/spaCy/issues/441#issuecomment-311804705&gt;`_.</span>
 <span class="sd">    :type labels: Optional[List[str]]</span>
-<span class="sd">    :param access: A plugin io utility that allows access to transcripts</span>
-<span class="sd">        :code:`List[str]` within a :ref:`Workflow &lt;workflow&gt;`.</span>
-<span class="sd">    :type access: Optional[PluginFn]</span>
-<span class="sd">    :param mutate: A plugin io utility that allows insertion of :code:`List[BaseEntity]` within a</span>
-<span class="sd">        :ref:`Workflow &lt;workflow&gt;`.</span>
-<span class="sd">    :type mutate: Optional[PluginFn]</span>
 <span class="sd">    :param debug: A flag to set debugging on the plugin methods</span>
 <span class="sd">    :type debug: bool</span>
 <span class="sd">    """</span>

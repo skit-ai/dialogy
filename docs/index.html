@@ -178,13 +178,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -221,7 +222,7 @@
 <a class="reference external image-reference" href="https://coveralls.io/github/skit-ai/dialogy?branch=master"><img alt="https://coveralls.io/repos/github/skit-ai/dialogy/badge.svg?branch=master" src="https://coveralls.io/repos/github/skit-ai/dialogy/badge.svg?branch=master"/></a>
 <a class="reference external image-reference" href="https://www.codacy.com/gh/skit-ai/dialogy/dashboard?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=Vernacular-ai/dialogy&amp;amp;utm_campaign=Badge_Grade"><img alt="https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c" src="https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c"/></a>
 <a class="reference external image-reference" href="https://badge.fury.io/py/dialogy"><img alt="https://badge.fury.io/py/dialogy.svg" src="https://badge.fury.io/py/dialogy.svg"/></a>
-<p>Dialogy is a library for building and managing SLU applications.</p>
+<p><a class="reference external" href="https://github.com/skit-ai/dialogy">Dialogy</a> is a library for building and managing SLU applications.</p>
 <section id="topics">
 <h2>Topics 📄<a class="headerlink" href="#topics" title="Permalink to this headline">¶</a></h2>
 <p>Listing sections by order of significance. Higher ranking items are helpful in understanding items that are ranked lower.</p>
@@ -252,7 +253,7 @@
 The <code class="code docutils literal notranslate"><span class="pre">run(...)</span></code> produces the inference API’s response.</p></td>
 </tr>
 <tr class="row-odd"><td><p>4</p></td>
-<td><p><a class="reference internal" href="source/dialogy.base.plugin.html#plugin-abstract"><span class="std std-ref">Plugin</span></a></p></td>
+<td><p><a class="reference internal" href="source/dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugin</span></a></p></td>
 <td><p>The base (abstract) class for all plugins.</p>
 <p>[<a class="reference internal" href="source/dialogy.base.plugin.html#writing-plugins"><span class="std std-ref">how to write plugins</span></a>]</p>
 <p>This class requires creation of a utility method of the following signature:</p>
@@ -355,7 +356,10 @@ poetry install
 make <span class="nb">test</span>
 </pre></div>
 </div>
-<p>Ensure tests are passing before you start working on your PRs.</p>
+<ul class="simple">
+<li><p>Ensure tests are passing before you start working on your PRs.</p></li>
+<li><p>Duckling server should be running for docs to produce code-blocks.</p></li>
+</ul>
 <p>[<a class="reference external" href="https://github.com/skit-ai/dialogy/blob/master/CONTRIBUTING.md">Read more</a>]</p>
 </section>
 </section>

@@ -1,5 +1,46 @@
-from __future__ import annotations
+"""
+The :ref:`Output <Output>` class creates immutable instances that describe the output of a single turn of a conversation.
+The output contains 
 
+#. :code:`List[Intent]` sorted in descending order of confidence scores.
+#. :code:`List[BaseEntity]` in an arbitrary order.
+
+We don't require the :code:`List[BaseEntity]` apart from logging purposes. We fill relevant entities within :ref:`slots <Slot>`
+of the predicted :ref:`Intent<Intent>`. Currently this is done only for the :ref:`Intent<Intent>` with the highest confidence score.
+That's because currently, we only process a single trigger from the SLU API (at the dialog manager), which is an :ref:`Intent<Intent>`.
+
+.. admonition:: Why do I see :ref:`Input <Input>` and :ref:`Output <Output>` as inputs to all :ref:`Plugins <AbstractPlugin>`?
+
+    It is a common pattern for all the plugins to require both as arguments. Since this could be confusing nomenclature, :ref:`Input <Input>`
+    and :ref:`Output <Output>` bear meaning and even separation for the SLU API, **not for** :ref:`Plugins <AbstractPlugin>`.
+
+Setting Output
+--------------
+
+Just like :ref:`Input <Input>`, :ref:`Output <Output>` is also an immutable class.
+
+#. **Don't change the attribute elements in place.** It would work for now
+   but even types like `Intent` and `BaseEntity` will soon become immutable as well.
+
+#. Plugins that produce output must always produce a :code:`List[Intent]` or :code:`List[BaseEntity]`.
+   Say, returning a single :code:`Intent` would break validations on the output class.
+
+
+Serialization
+-------------
+
+If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the following:
+
+.. ipython::
+
+    In [1]: from dialogy.base import Output
+       ...: from dialogy.types import Intent
+
+    In [2]: output = Output(intents=[Intent(name="_greeting_", score=1.0)])
+
+    In [3]: output.json()
+"""
+from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 import attr
@@ -10,11 +51,9 @@ from dialogy.types import BaseEntity, Intent
 @attr.frozen
 class Output:
     """
-    Represents outputs from a :ref:`Workflow <WorkflowClass>`.
+    Represents output of the SLU API.
 
     .. _Output:
-
-    This is a frozen class, which means items cannot be modified once created.
     """
 
     intents: List[Intent] = attr.ib(default=attr.Factory(list), kw_only=True)

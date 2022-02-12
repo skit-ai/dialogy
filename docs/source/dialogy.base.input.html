@@ -178,13 +178,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -219,18 +220,116 @@
 <h1>dialogy.base.input package<a class="headerlink" href="#dialogy-base-input-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.base.input">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.base.input" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a> class creates immutable instances that describe the inputs of a single turn of a conversation.
+There are some attributes that may have aggregations of previous turns like the <code class="code docutils literal notranslate"><span class="pre">slot_tracker</span></code> or entire <code class="code docutils literal notranslate"><span class="pre">history</span></code>.</p>
+<div class="admonition-why-do-i-see-ref-input-input-and-ref-output-output-as-inputs-to-all-ref-plugins-abstractplugin admonition">
+<p class="admonition-title">Why do I see <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a> and <a class="reference internal" href="dialogy.base.output.html#output"><span class="std std-ref">Output</span></a> as inputs to all <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugins</span></a>?</p>
+<p>It is a common pattern for all the plugins to require both as arguments. Since this could be confusing nomenclature, <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a>
+and <a class="reference internal" href="dialogy.base.output.html#output"><span class="std std-ref">Output</span></a> bear meaning and even separation for the SLU API, <strong>not for</strong> <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugins</span></a>.</p>
+</div>
+<section id="updates">
+<h3>Updates<a class="headerlink" href="#updates" title="Permalink to this headline">¶</a></h3>
+<p>While writing plugins, we would need to update the attributes of <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a>, the following <strong>doesn’t</strong> work!</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">make_unix_ts</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [2]: </span><span class="c1"># Check the attributes in the object logged below. </span>
+<span class="gp">   ...: </span><span class="n">input_x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">"hi"</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">input_x</span>
+<span class="gh">Out[3]: </span><span class="go">Input(utterances='hello world', reference_time=None, latent_entities=False, transcripts=['hello world'], clf_feature=[], lang='hi', locale='en_IN', timezone='Asia/Kolkata', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
+</pre></div>
+</div>
+<section id="issues-with-frozen-instance-update">
+<h4>Issues with Frozen Instance Update<a class="headerlink" href="#issues-with-frozen-instance-update" title="Permalink to this headline">¶</a></h4>
+<p>Now if we try the following:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">input_x</span><span class="o">.</span><span class="n">utterances</span> <span class="o">=</span> <span class="s2">"hello"</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">FrozenInstanceError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Input</span> <span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">input_x</span><span class="o">.</span><span class="n">utterances</span> <span class="o">=</span> <span class="s2">"hello"</span>
+
+<span class="nn">File ~/miniconda3/envs/dialogy/lib/python3.9/site-packages/attr/_make.py:553,</span> in <span class="ni">_frozen_setattrs</span><span class="nt">(self, name, value)</span>
+<span class="g g-Whitespace">    </span><span class="mi">549</span> <span class="k">def</span> <span class="nf">_frozen_setattrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">550</span>     <span class="sd">"""</span>
+<span class="g g-Whitespace">    </span><span class="mi">551</span><span class="sd">     Attached to frozen classes as __setattr__.</span>
+<span class="g g-Whitespace">    </span><span class="mi">552</span><span class="sd">     """</span>
+<span class="ne">--&gt; </span><span class="mi">553</span>     <span class="k">raise</span> <span class="n">FrozenInstanceError</span><span class="p">()</span>
+
+<span class="ne">FrozenInstanceError</span>: 
+</pre></div>
+</div>
+<p>We can see re-assigning values to attributes isn’t allowed.</p>
+</section>
+<section id="updating-a-frozen-instance">
+<h4>Updating a frozen instance<a class="headerlink" href="#updating-a-frozen-instance" title="Permalink to this headline">¶</a></h4>
+<p>We have to create new instances, but we have some syntax for it:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">input_x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">"hi"</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">input_y</span> <span class="o">=</span> <span class="n">Input</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">"utterances"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">})</span>
+
+<span class="gp">In [7]: </span><span class="n">input_y</span>
+<span class="gh">Out[7]: </span><span class="go">Input(utterances='hello', reference_time=None, latent_entities=False, transcripts=['hello'], clf_feature=[], lang='en', locale='en_IN', timezone='UTC', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
+</pre></div>
+</div>
+<p>but by doing this, we lost the <code class="code docutils literal notranslate"><span class="pre">lang</span></code> and <code class="code docutils literal notranslate"><span class="pre">timezone</span></code> attributes to system defaults.</p>
+</section>
+<section id="reusing-an-existing-instance">
+<h4>Reusing an existing instance<a class="headerlink" href="#reusing-an-existing-instance" title="Permalink to this headline">¶</a></h4>
+<p>We can re-use an existing instance to create a new.
+This way, we don’t have to write every existing property on a previous <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">input_x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">"hi"</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">)</span>
+
+<span class="gp">In [9]: </span><span class="n">input_y</span> <span class="o">=</span> <span class="n">Input</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">"utterances"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">},</span> <span class="n">reference</span><span class="o">=</span><span class="n">input_x</span><span class="p">)</span>
+
+<span class="gp">In [10]: </span><span class="n">input_y</span>
+<span class="gh">Out[10]: </span><span class="go">Input(utterances='hello', reference_time=None, latent_entities=False, transcripts=['hello'], clf_feature=[], lang='hi', locale='en_IN', timezone='Asia/Kolkata', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="serialization">
+<h3>Serialization<a class="headerlink" href="#serialization" title="Permalink to this headline">¶</a></h3>
+<p>If there is a need to represent an <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a> as a <cite>dict</cite> we can do the following:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">input_y</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="gh">Out[1]: </span><span class="go"></span>
+<span class="go">{'utterances': 'hello',</span>
+<span class="go"> 'reference_time': None,</span>
+<span class="go"> 'latent_entities': False,</span>
+<span class="go"> 'transcripts': ['hello'],</span>
+<span class="go"> 'clf_feature': [],</span>
+<span class="go"> 'lang': 'hi',</span>
+<span class="go"> 'locale': 'en_IN',</span>
+<span class="go"> 'timezone': 'Asia/Kolkata',</span>
+<span class="go"> 'slot_tracker': None,</span>
+<span class="go"> 'current_state': None,</span>
+<span class="go"> 'previous_intent': None,</span>
+<span class="go"> 'history': None}</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.base.input.Input">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcripts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utterances</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent_entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clf_feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/input.html#Input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.input.Input" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcripts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utterances</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent_entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clf_feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/input.html#Input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.input.Input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p id="input">Represents inputs to a <a class="reference internal" href="dialogy.workflow.html#workflowclass"><span class="std std-ref">Workflow</span></a>. This is a frozen class, which means attributes cannot be modified once created.</p>
+<p id="input">Represents the inputs of the SLU API.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.base.input.Input.clf_feature">
 <span class="sig-name descname"><span class="pre">clf_feature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.clf_feature" title="Permalink to this definition">¶</a></dt>
-<dd><p>Placeholder for the features of an intent classifier.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">"&lt;s&gt; I want to book a flight &lt;/s&gt; &lt;s&gt; I want to book flights &lt;/s&gt; &lt;s&gt; I want to book a flight to Paris &lt;/s&gt;"</span><span class="p">]</span>
+<dd><dl class="simple">
+<dt>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</dt><dd><p>Placeholder for the features of an intent classifier. Reference the following for an example value:</p>
+</dd>
+</dl>
+<blockquote>
+<div><p>Placeholder for the features of an intent classifier.</p>
+</div></blockquote>
+<p>&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">"&lt;s&gt; I want to book a flight &lt;/s&gt; &lt;s&gt; I want to book flights &lt;/s&gt; &lt;s&gt; I want to book a flight to Paris &lt;/s&gt;"</span><span class="p">]</span>
 </pre></div>
 </div>
+</div></blockquote>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.base.input.Input.current_state">
@@ -256,6 +355,10 @@
 </dd>
 </dl>
 </dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.base.input.Input.history">
+<span class="sig-name descname"><span class="pre">history</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.base.input.Input.json">
 <span class="sig-name descname"><span class="pre">json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/input.html#Input.json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.input.Input.json" title="Permalink to this definition">¶</a></dt>
@@ -360,6 +463,7 @@ Each hypothesis is a <code class="code docutils literal notranslate"><span class
 </dd></dl>
 </section>
 </section>
+</section>
 
         </article>
       </div>
@@ -413,7 +517,16 @@ Each hypothesis is a <code class="code docutils literal notranslate"><span class
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.base.input package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.base.input">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.base.input">Module contents</a><ul>
+<li><a class="reference internal" href="#updates">Updates</a><ul>
+<li><a class="reference internal" href="#issues-with-frozen-instance-update">Issues with Frozen Instance Update</a></li>
+<li><a class="reference internal" href="#updating-a-frozen-instance">Updating a frozen instance</a></li>
+<li><a class="reference internal" href="#reusing-an-existing-instance">Reusing an existing instance</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#serialization">Serialization</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

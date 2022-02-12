@@ -100,7 +100,9 @@ We respect high-quality well-documented and tested code. To that effect we:
 
 - Lint using `isort`, `pycln` and `black`.
 - Test using `pytest`. Expect differing test inputs via parameterized sources.
+- Duckling server should be running for docs to produce code-blocks.
 - Automatic documentation using `sphinx`, so please produce docstrings accordingly it will greatly help the documentation quality.
+- Ensure tests are passing before you start working on your PRs.
 - Create a fork of the project so that the CI pipeline isn't clogged.
 - Commits must always be [readable and helpful](https://www.conventionalcommits.org/en/v1.0.0/).
 - Sign your commits.

@@ -1,21 +1,19 @@
 """
-We expect ASR transcripts to be the most common inputs to the system. Since there is a chance that we can improve the
-performance by asking the ASR to provide more information in the form of multiple alternatives. The problem though, is
-they can't be used as it is. Models that can operate on text data, need them to be vectorized. These vectors have
-semantic significance, where different text inputs imply different vectors. If their semantic differences are modeled
-well, we can expect these vectors to be similar or dissimilar just like the text that was used to create them.
+We use classifiers for prediction of :ref:`intents<Intent>`, utterances from an ASR are prominent features
+for the task. We featurize the utterances by concatenation of all transcripts.
 
-The problem with transcripts is, there **will** be noise in the transcripts, since we asked for :code:`N` transcripts,
-by definition, an ASR will provide N unique transcripts. The noise may in fact be inconsequential for downstream NLP
-tasks, but we have noticed that there are certain inputs owing to audio artifacts or state of LMs tend to have a great
-impact on the transcription.
+.. ipython::
 
-This module will ship a simple concatenation strategy to address this problem. The NLP model should be expected to
-handle documents (:code:`List[str]`) instead of single text. The plugin then will be able to produce a :code:`str` by
-simply concatenation of each transcript.
+    In [1]: from dialogy.workflow import Workflow
+       ...: from dialogy.plugins import MergeASROutputPlugin
+       ...: from dialogy.base import Input
 
-This may not be very helpful, there is a :ref:`VotePlugin <vote_plugin>` under development so use it with caution. It may
-help with precision at the cost of recall.
+    In [2]: merge_asr_output_plugin = MergeASROutputPlugin(dest="input.clf_feature")
+       ...: workflow = Workflow([merge_asr_output_plugin])
+
+    In [3]: input_, _ = workflow.run(Input(utterances=["we will come by 7 pm", " will come by 7 pm"]))
+
+    In [4]: input_
 """
 import json
 import traceback
@@ -76,9 +74,9 @@ def merge_asr_output(utterances: Any) -> List[str]:
 
 class MergeASROutputPlugin(Plugin):
     """
-    .. _merge_asr_output_plugin:
+    .. _MergeASROutputPlugin:
 
-    Working details are covered in :ref:`merge_asr_output <merge_asr_output>`.
+    Working details are covered in :ref:`MergeASROutputPlugin<MergeASROutputPlugin>`.
 
     :param Plugin: [description]
     :type Plugin: [type]

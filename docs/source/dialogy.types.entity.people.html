@@ -178,13 +178,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -219,13 +220,49 @@
 <h1>dialogy.types.entity.people package<a class="headerlink" href="#dialogy-types-entity-people-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.types.entity.people">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.entity.people" title="Permalink to this headline">¶</a></h2>
-<p>Module provides access to entity types that can be parsed to obtain numeric values specific to denote people.</p>
-<dl class="simple">
-<dt>Import classes:</dt><dd><ul class="simple">
-<li><p>PeopleEntity</p></li>
-</ul>
-</dd>
-</dl>
+<section id="people-entity">
+<span id="peopleentity"></span><h3>People Entity<a class="headerlink" href="#people-entity" title="Permalink to this headline">¶</a></h3>
+<p>Provides the entity class for representing number of people in natural language. This entity is obtained via <a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html#ducklingplugin"><span class="std std-ref">DucklingPlugin</span></a>.</p>
+<section id="plugin-walkthrough">
+<h4>Plugin Walkthrough<a class="headerlink" href="#plugin-walkthrough" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">DucklingPlugin</span>
+
+<span class="gp">In [2]: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
+<span class="gp">   ...: </span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"people"</span><span class="p">],</span>
+<span class="gp">   ...: </span>    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">,</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"two kids"</span><span class="p">)</span>
+<span class="gh">Out[3]: </span><span class="go">[]</span>
+</pre></div>
+</div>
+</section>
+<section id="workflow-integration">
+<h4>Workflow Integration<a class="headerlink" href="#workflow-integration" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">DucklingPlugin</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [2]: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
+<span class="gp">   ...: </span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"people"</span><span class="p">],</span>
+<span class="gp">   ...: </span>    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">,</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">duckling_plugin</span><span class="p">])</span>
+
+<span class="gp">In [4]: </span><span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"two kids"</span><span class="p">))</span>
+
+<span class="gp">In [5]: </span><span class="n">output</span>
+<span class="gh">Out[5]: </span><span class="go">{'intents': [], 'entities': []}</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.types.entity.people.PeopleEntity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PeopleEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'people'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/people.html#PeopleEntity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.people.PeopleEntity" title="Permalink to this definition">¶</a></dt>
@@ -249,6 +286,8 @@
 </dl>
 </dd></dl>
 </dd></dl>
+</section>
+</section>
 </section>
 </section>
 
@@ -304,7 +343,14 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.types.entity.people package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.types.entity.people">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.types.entity.people">Module contents</a><ul>
+<li><a class="reference internal" href="#people-entity">People Entity</a><ul>
+<li><a class="reference internal" href="#plugin-walkthrough">Plugin Walkthrough</a></li>
+<li><a class="reference internal" href="#workflow-integration">Workflow Integration</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

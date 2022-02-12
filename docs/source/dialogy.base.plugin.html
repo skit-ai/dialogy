@@ -178,13 +178,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -219,6 +220,12 @@
 <h1>dialogy.base.plugin package<a class="headerlink" href="#dialogy-base-plugin-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.base.plugin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.base.plugin" title="Permalink to this headline">¶</a></h2>
+<section id="abstract-plugin">
+<span id="abstractplugin"></span><h3>Abstract Plugin<a class="headerlink" href="#abstract-plugin" title="Permalink to this headline">¶</a></h3>
+<p>A Plugin transforms the data within the workflow. We use plugins for producing <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a>, <span class="xref std std-ref">entities</span>,
+filling <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> and even preparing intermediate data for other plugins. This package ships the abstract base class for creating
+other plugins. These offer a base for a few already implemented features like <span class="xref std std-ref">book-keeping</span> and <a class="reference internal" href="#guards"><span class="std std-ref">Guards</span></a>.</p>
+</section>
 <section id="writing-plugins">
 <h3>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Permalink to this headline">¶</a></h3>
 <p>We will learn plugin creation by exploring some examples. It is highly advised to read 
@@ -276,7 +283,8 @@ This is assuming that the transcripts are ranked by their confidence scores in t
 <span class="go"> 'timezone': 'UTC',</span>
 <span class="go"> 'slot_tracker': None,</span>
 <span class="go"> 'current_state': None,</span>
-<span class="go"> 'previous_intent': None}</span>
+<span class="go"> 'previous_intent': None,</span>
+<span class="go"> 'history': None}</span>
 
 <span class="gp">In [5]: </span><span class="c1"># we can see that the _greeting_ intent has been set.</span>
 <span class="gp">   ...: </span><span class="n">output</span>
@@ -295,7 +303,7 @@ This is assuming that the transcripts are ranked by their confidence scores in t
 <h4>Heuristic based Intent<a class="headerlink" href="#heuristic-based-intent" title="Permalink to this headline">¶</a></h4>
 <p>This problem requires us to predict <em>_greeting_</em> if the word <code class="code docutils literal notranslate"><span class="pre">"hello"</span></code>
 is present at least 6 times across all utterances. To help us with this, 
-we will import an existing plugin: <a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html#merge-asr-output-plugin"><span class="std std-ref">MergeASROutputPlugin</span></a>.</p>
+we will import an existing plugin: <span class="xref std std-ref">MergeASROutputPlugin</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">MergeASROutputPlugin</span>
 <span class="gp">   ...: </span>
@@ -365,7 +373,8 @@ we will import an existing plugin: <a class="reference internal" href="dialogy.p
 <span class="go"> 'timezone': 'UTC',</span>
 <span class="go"> 'slot_tracker': None,</span>
 <span class="go"> 'current_state': None,</span>
-<span class="go"> 'previous_intent': None}</span>
+<span class="go"> 'previous_intent': None,</span>
+<span class="go"> 'history': None}</span>
 
 <span class="gp">In [10]: </span><span class="n">output</span>
 <span class="gh">Out[10]: </span><span class="go"></span>
@@ -470,36 +479,84 @@ So let’s look at an example where we prevent plugins from execution using <cod
 <span class="go"> 'timezone': 'UTC',</span>
 <span class="go"> 'slot_tracker': None,</span>
 <span class="go"> 'current_state': 'STATE_EXPECTING_NUMBERS',</span>
-<span class="go"> 'previous_intent': None}</span>
+<span class="go"> 'previous_intent': None,</span>
+<span class="go"> 'history': None}</span>
 </pre></div>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>Abstract class to be implemented by all plugins.</p>
-<dl class="field-list simple" id="plugin-abstract">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_column</strong> (<em>str</em>) – Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</p></li>
-<li><p><strong>output_column</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – Saves transformation in this column for a given dataframe, defaults to None</p></li>
-<li><p><strong>use_transform</strong> (<em>bool</em>) – Should the transformation be applied while training?, defaults to False</p></li>
-<li><p><strong>dest</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The path where plugin output should be saved., defaults to None</p></li>
-<li><p><strong>guards</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Guard</em><em>]</em><em>]</em>) – A list of functions that evaluate to bool, defaults to None</p></li>
-<li><p><strong>debug</strong> (<em>bool</em><em>, </em><em>optional</em>) – Should we print debug logs?, defaults to False</p></li>
-</ul>
+<blockquote>
+<div><p>Abstract class to be implemented by all plugins.</p>
+</div></blockquote>
+<blockquote>
+<div></div></blockquote>
+<dl class="simple" id="plugin-abstract">
+<dt>&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param input_column</dt>
+<dd class="field-odd"><p>Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</p>
+</dd>
+<dt class="field-even">type input_column</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">param output_column</dt>
+<dd class="field-odd"><p>Saves transformation in this column for a given dataframe, defaults to None</p>
+</dd>
+<dt class="field-even">type output_column</dt>
+<dd class="field-even"><p>Optional[str]</p>
+</dd>
+<dt class="field-odd">param use_transform</dt>
+<dd class="field-odd"><p>Should the transformation be applied while training?, defaults to False</p>
+</dd>
+<dt class="field-even">type use_transform</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">param dest</dt>
+<dd class="field-odd"><p>The path where plugin output should be saved., defaults to None</p>
+</dd>
+<dt class="field-even">type dest</dt>
+<dd class="field-even"><p>Optional[str]</p>
+</dd>
+<dt class="field-odd">param guards</dt>
+<dd class="field-odd"><p>A list of functions that evaluate to bool, defaults to None</p>
+</dd>
+<dt class="field-even">type guards</dt>
+<dd class="field-even"><p>Optional[List[Guard]]</p>
+</dd>
+<dt class="field-odd">param debug</dt>
+<dd class="field-odd"><p>Should we print debug logs?, defaults to False</p>
+</dd>
+<dt class="field-even">type debug</dt>
+<dd class="field-even"><p>bool, optional</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin.prevent">
 <span class="sig-name descname"><span class="pre">prevent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.prevent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.prevent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decide if the plugin should execute.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dd><blockquote>
+<div><p>Decide if the plugin should execute.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</dt><dd><p>If this method returns true, the plugin’s utility method will not be called.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</dt><dd><dl class="field-list simple">
+<dt class="field-odd">return</dt>
 <dd class="field-odd"><p>prevent plugin execution if True.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">rtype</dt>
 <dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -601,6 +658,7 @@ So let’s look at an example where we prevent plugins from execution using <cod
             <ul>
 <li><a class="reference internal" href="#">dialogy.base.plugin package</a><ul>
 <li><a class="reference internal" href="#module-dialogy.base.plugin">Module contents</a><ul>
+<li><a class="reference internal" href="#abstract-plugin">Abstract Plugin</a></li>
 <li><a class="reference internal" href="#writing-plugins">Writing Plugins</a><ul>
 <li><a class="reference internal" href="#keyword-intent">Keyword Intent</a></li>
 <li><a class="reference internal" href="#heuristic-based-intent">Heuristic based Intent</a></li>

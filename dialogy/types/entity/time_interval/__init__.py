@@ -1,9 +1,50 @@
 """
-.. _time_interval_entity:
-Module provides access to entity types that can be parsed to obtain intervals of datetime.
+.. _TimeIntervalEntity:
 
-Import classes:
-    - TimeIntervalEntity
+Time Interval Entity
+====================
+
+Provides the entity class for representing time intervals in natural language. This entity is obtained via :ref:`DucklingPlugin<DucklingPlugin>`.
+
+Plugin Walkthrough
+------------------
+
+.. ipython::
+
+    In [1]: from dialogy.plugins import DucklingPlugin
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["time"],
+       ...:     locale="en_IN",
+       ...:     timezone="Asia/Kolkata",
+       ...: )
+
+    In [3]: duckling_plugin.parse("weekend")
+
+    In [4]: duckling_plugin.parse("between 4 to 5pm")
+
+Workflow Integration
+--------------------
+
+.. ipython::
+
+    In [1]: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.workflow import Workflow
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["time"],
+       ...:     locale="en_IN",
+       ...:     timezone="Asia/Kolkata",
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: _, output = workflow.run(Input(utterances=["weekend", "between 4 to 5pm"]))
+
+    In [5]: output
 """
 from __future__ import annotations
 

@@ -19,7 +19,7 @@ Dialogy
     :target: https://badge.fury.io/py/dialogy
 
 
-Dialogy is a library for building and managing SLU applications.
+`Dialogy <https://github.com/skit-ai/dialogy>`_ is a library for building and managing SLU applications.
 
 Topics 📄
 #########
@@ -37,7 +37,7 @@ Listing sections by order of significance. Higher ranking items are helpful in u
 | 3 | :ref:`Workflow <WorkflowClass>`                                | A workflow *has* an :code:`Input` and an :code:`Output`. It also *contains* :code:`plugins`.                              |
 |   |                                                                | The :code:`run(...)` produces the inference API's response.                                                               |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| 4 | :ref:`Plugin <plugin-abstract>`                                | The base (abstract) class for all plugins.                                                                                |
+| 4 | :ref:`Plugin <AbstractPlugin>`                                 | The base (abstract) class for all plugins.                                                                                |
 |   |                                                                |                                                                                                                           |
 |   |                                                                | [:ref:`how to write plugins <Writing Plugins>`]                                                                           |
 |   |                                                                |                                                                                                                           |
@@ -138,7 +138,8 @@ Clone the repository. We use [`poetry <https://python-poetry.org/>`_] to setup d
    poetry install
    make test
 
-Ensure tests are passing before you start working on your PRs.
+- Ensure tests are passing before you start working on your PRs.
+- Duckling server should be running for docs to produce code-blocks.
 
 [`Read more <https://github.com/skit-ai/dialogy/blob/master/CONTRIBUTING.md>`_]
 
@@ -179,13 +180,14 @@ Index
    :hidden:
    :caption: Plugins
 
-   Intent Classifier Plugin <./source/dialogy.plugins.text.classification>
+   ASR Featurizer <./source/dialogy.plugins.text.merge_asr_output>
+   Intent Classifiers <./source/dialogy.plugins.text.classification>
    Duckling Entities <./source/dialogy.plugins.text.duckling_plugin>
-   Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
+   Slot Filler <./source/dialogy.plugins.text.slot_filler>
    Regex Entity Search <./source/dialogy.plugins.text.list_entity_plugin>
    Fuzzy Entity Search <./source/dialogy.plugins.text.list_search_plugin>
-   ASR Featurizer <./source/dialogy.plugins.text.merge_asr_output>
-   Slot Filler <./source/dialogy.plugins.text.slot_filler>
+   Entity Scoring <./source/dialogy.base.entity_extractor>
+   Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
 
 .. toctree::
    :maxdepth: 1

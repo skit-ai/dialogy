@@ -155,24 +155,39 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/dialogy.base.html">Base</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.base.entity_extractor.html">dialogy.base.entity_extractor package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.base.input.html">dialogy.base.input package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.base.output.html">dialogy.base.output package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">dialogy.base.plugin package</a></li>
-</ul>
-</li>
+  <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.numerical.html">Numeric Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.people.html">People Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.slots.html">Slots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.utils.html">Utils</a></li>
 </ul>
 
@@ -201,8 +216,49 @@
         </div>
         <article role="main">
           <h1>Source code for dialogy.base.output</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="sd">"""</span>
+<span class="sd">The :ref:`Output &lt;Output&gt;` class creates immutable instances that describe the output of a single turn of a conversation.</span>
+<span class="sd">The output contains </span>
 
+<span class="sd">#. :code:`List[Intent]` sorted in descending order of confidence scores.</span>
+<span class="sd">#. :code:`List[BaseEntity]` in an arbitrary order.</span>
+
+<span class="sd">We don't require the :code:`List[BaseEntity]` apart from logging purposes. We fill relevant entities within :ref:`slots &lt;Slot&gt;`</span>
+<span class="sd">of the predicted :ref:`Intent&lt;Intent&gt;`. Currently this is done only for the :ref:`Intent&lt;Intent&gt;` with the highest confidence score.</span>
+<span class="sd">That's because currently, we only process a single trigger from the SLU API (at the dialog manager), which is an :ref:`Intent&lt;Intent&gt;`.</span>
+
+<span class="sd">.. admonition:: Why do I see :ref:`Input &lt;Input&gt;` and :ref:`Output &lt;Output&gt;` as inputs to all :ref:`Plugins &lt;AbstractPlugin&gt;`?</span>
+
+<span class="sd">    It is a common pattern for all the plugins to require both as arguments. Since this could be confusing nomenclature, :ref:`Input &lt;Input&gt;`</span>
+<span class="sd">    and :ref:`Output &lt;Output&gt;` bear meaning and even separation for the SLU API, **not for** :ref:`Plugins &lt;AbstractPlugin&gt;`.</span>
+
+<span class="sd">Setting Output</span>
+<span class="sd">--------------</span>
+
+<span class="sd">Just like :ref:`Input &lt;Input&gt;`, :ref:`Output &lt;Output&gt;` is also an immutable class.</span>
+
+<span class="sd">#. **Don't change the attribute elements in place.** It would work for now</span>
+<span class="sd">   but even types like `Intent` and `BaseEntity` will soon become immutable as well.</span>
+
+<span class="sd">#. Plugins that produce output must always produce a :code:`List[Intent]` or :code:`List[BaseEntity]`.</span>
+<span class="sd">   Say, returning a single :code:`Intent` would break validations on the output class.</span>
+
+
+<span class="sd">Serialization</span>
+<span class="sd">-------------</span>
+
+<span class="sd">If there is a need to represent an :ref:`Input&lt;Input&gt;` as a `dict` we can do the following:</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: from dialogy.base import Output</span>
+<span class="sd">       ...: from dialogy.types import Intent</span>
+
+<span class="sd">    In [2]: output = Output(intents=[Intent(name="_greeting_", score=1.0)])</span>
+
+<span class="sd">    In [3]: output.json()</span>
+<span class="sd">"""</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
@@ -213,11 +269,9 @@
 <div class="viewcode-block" id="Output"><a class="viewcode-back" href="../../../source/dialogy.base.output.html#dialogy.base.output.Output">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">frozen</span>
 <span class="k">class</span> <span class="nc">Output</span><span class="p">:</span>
     <span class="sd">"""</span>
-<span class="sd">    Represents outputs from a :ref:`Workflow &lt;WorkflowClass&gt;`.</span>
+<span class="sd">    Represents output of the SLU API.</span>
 
 <span class="sd">    .. _Output:</span>
-
-<span class="sd">    This is a frozen class, which means items cannot be modified once created.</span>
 <span class="sd">    """</span>
 
     <span class="n">intents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

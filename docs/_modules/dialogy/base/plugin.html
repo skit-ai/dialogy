@@ -155,24 +155,39 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/dialogy.base.html">Base</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.base.entity_extractor.html">dialogy.base.entity_extractor package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.base.input.html">dialogy.base.input package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.base.output.html">dialogy.base.output package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">dialogy.base.plugin package</a></li>
-</ul>
-</li>
+  <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.numerical.html">Numeric Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.people.html">People Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.slots.html">Slots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.classification.html">Intent Classifier Plugin</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.utils.html">Utils</a></li>
 </ul>
 
@@ -202,6 +217,15 @@
         <article role="main">
           <h1>Source code for dialogy.base.plugin</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
+<span class="sd">.. _AbstractPlugin:</span>
+
+<span class="sd">Abstract Plugin</span>
+<span class="sd">===============</span>
+
+<span class="sd">A Plugin transforms the data within the workflow. We use plugins for producing :ref:`intents &lt;Intent&gt;`, :ref:`entities &lt;BaseEntity&gt;`,</span>
+<span class="sd">filling :ref:`slots &lt;Slot&gt;` and even preparing intermediate data for other plugins. This package ships the abstract base class for creating</span>
+<span class="sd">other plugins. These offer a base for a few already implemented features like :ref:`book-keeping &lt;PluginBookkeeping&gt;` and :ref:`Guards&lt;Guards&gt;`.</span>
+
 <span class="sd">Writing Plugins</span>
 <span class="sd">================</span>
 
@@ -379,8 +403,11 @@
     <span class="sd">"""</span>
 <span class="sd">    Abstract class to be implemented by all plugins.</span>
 
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="sd">=======</span>
 <span class="sd">    .. _plugin-abstract:</span>
 
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</span>
 <span class="sd">    :param input_column: Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</span>
 <span class="sd">    :type input_column: str</span>
 <span class="sd">    :param output_column: Saves transformation in this column for a given dataframe, defaults to None</span>
@@ -426,7 +453,21 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="sd">        Set workflow with output.</span>
+
+<span class="sd">        This important book-keeping method is called by the workflow.</span>
+
+<span class="sd">        - If the plugin guards evaluate to :code:`True`, we don't run the plugin's business logic.</span>
+<span class="sd">        - Otherwise, we obtain the plugins transformation and set it on :code:`self.dest` path within the workflow.</span>
+<span class="sd">            - This path is a string describing :code:`'input'` or :code:`'output'` and their respective attributes separated by a '.'</span>
+<span class="sd">            - like: :code:`"input.transcripts"` or :code:`"output.intents"`.</span>
+<span class="sd">        - The workflow takes care of keeping its :ref:`input&lt;Input&gt;` and :ref:`output&lt;Output&gt;` immutable.</span>
+
+<span class="sd">        .. _PluginBookkeeping:</span>
+<span class="sd">=======</span>
 <span class="sd">        Use the plugin's logic and save the result within the workflow.</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</span>
 
 <span class="sd">        :param workflow: An instance of :ref:`Workflow &lt;WorkflowClass&gt;`.</span>
 <span class="sd">        :type workflow: Workflow</span>
@@ -450,6 +491,13 @@
         <span class="sd">"""</span>
 <span class="sd">        Decide if the plugin should execute.</span>
 
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="sd">        If this method returns true, the plugin's utility method will not be called.</span>
+
+<span class="sd">        .. _Guards:</span>
+
+<span class="sd">=======</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/master</span>
 <span class="sd">        :return: prevent plugin execution if True.</span>
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        """</span>
