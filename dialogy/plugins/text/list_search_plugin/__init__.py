@@ -174,7 +174,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             sentence = nlp(query).sentences[0]
             value = ""
             pos_tags = ["PROPN", "NOUN", "ADP"]
-            result_dict = {}
+        
             for word in sentence.words:
                 if word.upos in pos_tags:
                     if value == "":
