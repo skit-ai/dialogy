@@ -30,21 +30,17 @@ def test_not_supported_lang():
         l.get_entities(["........."], "te")
 
 
-def test_entity_not_found():
+def test_entity_not_found_and_keyerror():
     l = ListSearchPlugin(
         dest="output.entities",
         fuzzy_threshold=0.4,
         fuzzy_dp_config={"en": {"location": {"delhi": "Delhi"}}},
     )
+    # testing entity not found
     assert l.get_entities(["I live in punjab"], "en") == []
-
-def test_keyerror():
-    l = ListSearchPlugin(
-        dest="output.entities",
-        fuzzy_threshold=0.4,
-        fuzzy_dp_config={"en": {"location": {"delhi": "Delhi"}}},
-    )
+    # testing keyrror
     assert l.get_entities(["ramchandra k hathiyar"], "en") == []
+
 
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
