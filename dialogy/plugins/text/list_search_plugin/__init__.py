@@ -13,8 +13,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import stanza
 from loguru import logger
-from thefuzz import fuzz
-from thefuzz import process
+from thefuzz import fuzz, process
 
 from dialogy import constants as const
 from dialogy.base import Guard, Input, Output, Plugin
@@ -191,7 +190,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             if value != "":
                 matches = process.extract(value, entity_patterns)
                 match_output = match_dict[matches[0][0]]
-                match_score = matches[0][1]/100
+                match_score = matches[0][1] / 100
                 if match_score > self.fuzzy_threshold:
                     return (
                         value,

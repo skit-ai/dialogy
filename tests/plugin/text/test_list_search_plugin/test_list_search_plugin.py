@@ -42,7 +42,6 @@ def test_entity_not_found_and_keyerror():
     assert l.get_entities(["ramchandra k hathiyar"], "en") == []
 
 
-
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_get_list_entities(payload):
     input_ = payload.get("input")
