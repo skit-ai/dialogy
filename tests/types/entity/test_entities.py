@@ -1,7 +1,9 @@
 """
 Tests for entities
 """
+from ast import Num
 from datetime import datetime
+from unicodedata import numeric
 
 import httpretty
 import pytest
@@ -14,10 +16,12 @@ from dialogy.types import (
     PeopleEntity,
     TimeEntity,
     TimeIntervalEntity,
+    NumericalEntity,
     entity_synthesis,
 )
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
+from dialogy.utils import dt2timestamp
 
 
 class MockPlugin(Plugin):
@@ -410,6 +414,22 @@ def test_plastic_currency_get_value():
 
     entity = CreditCardNumberEntity.from_duckling(d, 1)
     assert entity.get_value() == d["value"]["value"]
+
+
+def test_numerical_entity_as_time() -> None:
+    reference_time = dt2timestamp(datetime.fromisoformat("2021-01-22T02:00:00.000+05:30"))
+    numeric_entity = NumericalEntity(value=4, body="4", range={"start": 0, "end": 1})
+    time_entity = TimeEntity(body="4", range={"start": 0, "end": 1}, value="2021-01-04T02:00:00.000+05:30", grain="hour")
+    print(numeric_entity.as_time(reference_time, "Asia/Kolkata"))
+    assert numeric_entity.as_time(reference_time, "Asia/Kolkata").get_value() == time_entity.get_value()
+
+
+def test_numerical_entity_fails_for_invalid_replace() -> None:
+    reference_time = dt2timestamp(datetime.fromisoformat("2021-01-22T02:00:00.000+05:30"))
+    numeric_entity = NumericalEntity(value=4, body="4", range={"start": 0, "end": 1})
+    
+    with pytest.raises(RuntimeError):
+        numeric_entity.as_time(reference_time, "Asia/Kolkata", replace="minute")
 
 
 def test_time_interval_entity_get_value() -> None:
