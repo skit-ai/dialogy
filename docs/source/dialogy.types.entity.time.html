@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.time_interval package" href="dialogy.types.entity.time_interval.html" /><link rel="prev" title="dialogy.types.entity.people package" href="dialogy.types.entity.people.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.time package - dialogy 0.9.1 documentation</title>
+        <title>dialogy.types.entity.time package - dialogy 0.9.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.2 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.1 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -161,7 +161,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.base.plugin.html">Base Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.plugin.html">Plugin</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul class="current">
@@ -186,6 +186,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -236,13 +237,13 @@
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"tomorrow"</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-14T00:00:00.000+05:30', origin='value', entity_type='date', grain='day')]</span>
+<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-16T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
 
 <span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"monday"</span><span class="p">)</span>
-<span class="gh">Out[4]: </span><span class="go">[TimeEntity(body='monday', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-14T00:00:00.000+05:30', origin='value', entity_type='date', grain='day')]</span>
+<span class="gh">Out[4]: </span><span class="go">[TimeEntity(body='monday', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-21T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
 
 <span class="gp">In [5]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"27th jan"</span><span class="p">)</span>
-<span class="gh">Out[5]: </span><span class="go">[TimeEntity(body='27th jan', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2023-01-27T00:00:00.000+05:30', origin='value', entity_type='date', grain='day')]</span>
+<span class="gh">Out[5]: </span><span class="go">[TimeEntity(body='27th jan', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2023-01-27T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
 </pre></div>
 </div>
 </section>
@@ -272,9 +273,18 @@
 <span class="go">   'body': 'tomorrow',</span>
 <span class="go">   'type': 'value',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.6666666666666666,</span>
+<span class="go">   'score': 0.3333333333333333,</span>
 <span class="go">   'alternative_index': 0,</span>
-<span class="go">   'value': '2022-02-14T00:00:00.000+05:30',</span>
+<span class="go">   'value': '2022-02-16T00:00:00.000+05:30',</span>
+<span class="go">   'entity_type': 'date',</span>
+<span class="go">   'grain': 'day'},</span>
+<span class="go">  {'range': {'start': 0, 'end': 6},</span>
+<span class="go">   'body': 'monday',</span>
+<span class="go">   'type': 'value',</span>
+<span class="go">   'parsers': ['DucklingPlugin'],</span>
+<span class="go">   'score': 0.3333333333333333,</span>
+<span class="go">   'alternative_index': 1,</span>
+<span class="go">   'value': '2022-02-21T00:00:00.000+05:30',</span>
 <span class="go">   'entity_type': 'date',</span>
 <span class="go">   'grain': 'day'},</span>
 <span class="go">  {'range': {'start': 0, 'end': 8},</span>
@@ -290,8 +300,8 @@
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'number'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="dialogy.types.entity.numerical.html#dialogy.types.entity.numerical.NumericalEntity" title="dialogy.types.entity.numerical.NumericalEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.types.entity.numerical.NumericalEntity</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></code></a></p>
 <p>Entities that can be parsed to obtain date, time or datetime values.</p>
 <p>Example sentences that contain the entity are:
 - “I have a flight at 6 am.”
@@ -299,18 +309,6 @@
 - “I have a flight at 6 am today.”</p>
 <p>Attributes:
 - <cite>grain</cite> tells us the smallest unit of time in the utterance</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.alternative_index">
-<span class="sig-name descname"><span class="pre">alternative_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.alternative_index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.alternative_indices">
-<span class="sig-name descname"><span class="pre">alternative_indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.alternative_indices" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.body">
-<span class="sig-name descname"><span class="pre">body</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.body" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.collect_datetime_values">
 <span class="sig-name descname"><span class="pre">collect_datetime_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.collect_datetime_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.collect_datetime_values" title="Permalink to this definition">¶</a></dt>
@@ -326,11 +324,7 @@
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.dim">
-<span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'time'</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.dim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.entity_type">
-<span class="sig-name descname"><span class="pre">entity_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.entity_type" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.dim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.from_duckling">
@@ -364,6 +358,10 @@
 </dd>
 </dl>
 </dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.grain">
+<span class="sig-name descname"><span class="pre">grain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.grain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.is_uniq_date_from_values">
 <span class="sig-name descname"><span class="pre">is_uniq_date_from_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.is_uniq_date_from_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.is_uniq_date_from_values" title="Permalink to this definition">¶</a></dt>
@@ -406,20 +404,8 @@ We pair these dates and check the difference is 1 week long (7 days).</p>
 </dl>
 </dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.latent">
-<span class="sig-name descname"><span class="pre">latent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.latent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.parsers">
-<span class="sig-name descname"><span class="pre">parsers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.parsers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.range">
-<span class="sig-name descname"><span class="pre">range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.range" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.score">
-<span class="sig-name descname"><span class="pre">score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.score" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.origin">
+<span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.origin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.set_entity_type">
@@ -469,18 +455,6 @@ else the entity type is TIME.</p>
 </dd>
 </dl>
 </dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.value">
-<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.values">
-<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 </dd></dl>
 </section>
 </section>

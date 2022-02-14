@@ -92,7 +92,7 @@ class BaseEntity:
     value: Any = attr.ib(default=None, order=False)
 
     # **entity_type**
-    entity_type: Optional[str] = attr.ib(default=None, repr=False, order=False)
+    entity_type: Optional[str] = attr.ib(default=None, repr=True, order=False)
 
     def __attrs_post_init__(self) -> None:
         if self.values and not self.value:
