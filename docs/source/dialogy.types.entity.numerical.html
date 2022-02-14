@@ -313,7 +313,7 @@ The default assumption is to use the number as <code class="code docutils litera
 <span class="gp">In [4]: </span><span class="n">entities</span> <span class="o">=</span> <span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"12"</span><span class="p">)</span>
 
 <span class="gp">In [5]: </span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">as_time</span><span class="p">(</span><span class="n">reference_time</span><span class="p">,</span> <span class="s2">"Asia/Kolkata"</span><span class="p">)</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">]</span>
-<span class="gh">Out[5]: </span><span class="go">[TimeEntity(body='12', type='value', parsers=[], score=None, alternative_index=0, alternative_indices=None, latent=False, value=datetime.datetime(2022, 1, 12, 11, 37, tzinfo=&lt;DstTzInfo 'Asia/Kolkata' IST+5:30:00 STD&gt;), entity_type='date', origin='value', dim='time', grain='day')]</span>
+<span class="gh">Out[5]: </span><span class="go">[TimeEntity(body='12', type='value', parsers=[], score=None, alternative_index=0, alternative_indices=None, latent=False, value='2022-01-12T11:37:00+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
 </pre></div>
 </div>
 <dl class="py class">

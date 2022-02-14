@@ -280,9 +280,7 @@
     <span class="k">elif</span> <span class="n">dimension</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">DURATION</span><span class="p">:</span>
         <span class="n">entity</span> <span class="o">=</span> <span class="n">DurationEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">,</span> <span class="n">alternative_index</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">duration_cast_operator</span> <span class="ow">and</span> <span class="n">reference_time</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">as_time</span><span class="p">(</span>
-                <span class="n">reference_time</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">duration_cast_operator</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">as_time</span><span class="p">(</span><span class="n">reference_time</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">duration_cast_operator</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">entity</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># dimension == const.CREDIT_CARD_NUMBER:</span>
         <span class="k">return</span> <span class="n">CreditCardNumberEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span>

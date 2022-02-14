@@ -298,8 +298,8 @@
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
@@ -344,16 +344,22 @@
             <span class="n">latent</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">LATENT</span><span class="p">],</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="NumericalEntity.as_time"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.numerical.html#dialogy.types.entity.numerical.NumericalEntity.as_time">[docs]</a>    <span class="k">def</span> <span class="nf">as_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference_unix_ts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="s2">"day"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEntity</span><span class="p">:</span>
+<div class="viewcode-block" id="NumericalEntity.as_time"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.numerical.html#dialogy.types.entity.numerical.NumericalEntity.as_time">[docs]</a>    <span class="k">def</span> <span class="nf">as_time</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">reference_unix_ts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"day"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEntity</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Converts a duration entity to a time entity.</span>
 
 <span class="sd">        .. _number_entity_as_time:</span>
 <span class="sd">        """</span>
-        <span class="n">reference_datetime</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">unix_ts_to_datetime</span><span class="p">(</span><span class="n">reference_unix_ts</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span><span class="p">)</span>
+        <span class="n">reference_datetime</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">unix_ts_to_datetime</span><span class="p">(</span>
+            <span class="n">reference_unix_ts</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">replace</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HOUR</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">MONTH</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected replace to be one of </span><span class="si">{</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HOUR</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">MONTH</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">reference_datetime</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">replace</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">})</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Expected replace to be one of </span><span class="si">{</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HOUR</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">MONTH</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">reference_datetime</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">replace</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">})</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
 
         <span class="n">entity</span> <span class="o">=</span> <span class="n">TimeEntity</span><span class="p">(</span>
             <span class="nb">range</span><span class="o">=</span><span class="p">{</span>

@@ -245,8 +245,6 @@
 </li>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.alternative_index">(KeywordEntity attribute)</a>
 </li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.alternative_index">(TimeEntity attribute)</a>
-</li>
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
@@ -254,8 +252,6 @@
 
         <ul>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.alternative_indices">(KeywordEntity attribute)</a>
-</li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.alternative_indices">(TimeEntity attribute)</a>
 </li>
         </ul></li>
         <li><a href="source/dialogy.types.intent.html#dialogy.types.intent.Intent.apply">apply() (Intent method)</a>
@@ -284,12 +280,12 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity">BaseEntity (class in dialogy.types.entity.base_entity)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity.body">body (BaseEntity attribute)</a>
 
         <ul>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.body">(KeywordEntity attribute)</a>
-</li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.body">(TimeEntity attribute)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -788,8 +784,6 @@
 </li>
           <li><a href="source/dialogy.types.entity.people.html#dialogy.types.entity.people.PeopleEntity.entity_type">(PeopleEntity attribute)</a>
 </li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.entity_type">(TimeEntity attribute)</a>
-</li>
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
@@ -873,10 +867,10 @@
 </li>
         <li><a href="source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid">get_gridsearch_grid() (MLPMultiClass method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.plugins.text.duckling_plugin.html#dialogy.plugins.text.duckling_plugin.DucklingPlugin.get_operator">get_operator() (DucklingPlugin method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.plugins.text.combine_date_time.html#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.get_tracked_slots">get_tracked_slots() (CombineDateTimeOverSlots method)</a>
 </li>
         <li><a href="source/dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity.get_value">get_value() (BaseEntity method)</a>
@@ -890,6 +884,8 @@
 </li>
         </ul></li>
         <li><a href="source/dialogy.cli.html#dialogy.cli.workflow.get_workflow">get_workflow() (in module dialogy.cli.workflow)</a>
+</li>
+        <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.grain">grain (TimeEntity attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1014,15 +1010,13 @@
         <ul>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.latent">(KeywordEntity attribute)</a>
 </li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.latent">(TimeEntity attribute)</a>
-</li>
         </ul></li>
         <li><a href="source/dialogy.base.input.html#dialogy.base.input.Input.latent_entities">latent_entities (Input attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.plugins.text.list_entity_plugin.html#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin">ListEntityPlugin (class in dialogy.plugins.text.list_entity_plugin)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.plugins.text.list_search_plugin.html#dialogy.plugins.text.list_search_plugin.ListSearchPlugin">ListSearchPlugin (class in dialogy.plugins.text.list_search_plugin)</a>
 </li>
         <li><a href="source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.load">load() (MLPMultiClass method)</a>
@@ -1210,8 +1204,12 @@
   <h2>O</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity.origin">origin (TimeIntervalEntity attribute)</a>
+        <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.origin">origin (TimeEntity attribute)</a>
+
+        <ul>
+          <li><a href="source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity.origin">(TimeIntervalEntity attribute)</a>
 </li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.base.output.html#dialogy.base.output.Output">Output (class in dialogy.base.output)</a>
@@ -1235,17 +1233,15 @@
 </li>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.parsers">(KeywordEntity attribute)</a>
 </li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.parsers">(TimeEntity attribute)</a>
-</li>
         </ul></li>
         <li><a href="source/dialogy.plugins.text.duckling_plugin.html#dialogy.plugins.text.duckling_plugin.DucklingPlugin.PAST">PAST (DucklingPlugin attribute)</a>
 </li>
         <li><a href="source/dialogy.types.entity.people.html#dialogy.types.entity.people.PeopleEntity">PeopleEntity (class in dialogy.types.entity.people)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.plugins.text.combine_date_time.html#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.pick_previously_filled_time_entity">pick_previously_filled_time_entity() (CombineDateTimeOverSlots method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/dialogy.base.plugin.html#dialogy.base.plugin.Plugin">Plugin (class in dialogy.base.plugin)</a>
 </li>
         <li><a href="source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.plugins">plugins (Workflow attribute)</a>
@@ -1272,8 +1268,6 @@
 
         <ul>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.range">(KeywordEntity attribute)</a>
-</li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.range">(TimeEntity attribute)</a>
 </li>
         </ul></li>
         <li><a href="source/dialogy.plugins.text.lb_plugin.html#dialogy.plugins.text.lb_plugin.DucklingPluginLB.reference_time">reference_time (DucklingPluginLB attribute)</a>
@@ -1318,8 +1312,6 @@
           <li><a href="source/dialogy.types.intent.html#dialogy.types.intent.Intent.score">(Intent attribute)</a>
 </li>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.score">(KeywordEntity attribute)</a>
-</li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.score">(TimeEntity attribute)</a>
 </li>
         </ul></li>
         <li><a href="source/dialogy.plugins.text.list_search_plugin.html#dialogy.plugins.text.list_search_plugin.ListSearchPlugin.search_regex">search_regex() (ListSearchPlugin method)</a>
@@ -1378,10 +1370,10 @@
         </ul></li>
         <li><a href="source/dialogy.cli.html#dialogy.cli.workflow.train_workflow">train_workflow() (in module dialogy.cli.workflow)</a>
 </li>
-        <li><a href="source/dialogy.base.input.html#dialogy.base.input.Input.transcripts">transcripts (Input attribute)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="source/dialogy.base.input.html#dialogy.base.input.Input.transcripts">transcripts (Input attribute)</a>
+</li>
         <li><a href="source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.CalibrationModel.transform">transform() (CalibrationModel method)</a>
 
         <ul>
@@ -1404,8 +1396,6 @@
 
         <ul>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.type">(KeywordEntity attribute)</a>
-</li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.type">(TimeEntity attribute)</a>
 </li>
           <li><a href="source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity.type">(TimeIntervalEntity attribute)</a>
 </li>
@@ -1491,8 +1481,6 @@
 </li>
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.value">(KeywordEntity attribute)</a>
 </li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.value">(TimeEntity attribute)</a>
-</li>
           <li><a href="source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity.value">(TimeIntervalEntity attribute)</a>
 </li>
         </ul></li>
@@ -1508,8 +1496,6 @@
           <li><a href="source/dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity.values">(KeywordEntity attribute)</a>
 </li>
           <li><a href="source/dialogy.types.slots.html#dialogy.types.slots.Slot.values">(Slot attribute)</a>
-</li>
-          <li><a href="source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.values">(TimeEntity attribute)</a>
 </li>
           <li><a href="source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity.values">(TimeIntervalEntity attribute)</a>
 </li>
