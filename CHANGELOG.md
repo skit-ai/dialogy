@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.3
+
+- [x] update: Numerical entities can be casted as time.
+
 ## 0.9.2
 - [x] fix: Plugins don't overwrite the Output object unless they are _meant_ to.
 
