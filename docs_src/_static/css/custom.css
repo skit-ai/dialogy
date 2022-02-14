@@ -4,6 +4,8 @@
 body {
     --font-stack: "Open Sans", sans-serif;
     --font-stack--monospace: "Roboto Mono", monospace;
+    --sidebar-item-spacing-horizontal: 0.5rem;
+    --sidebar-item-spacing-vertical: 0.2rem;
 }
 
 p {

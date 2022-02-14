@@ -1,4 +1,6 @@
 """
+.. _Input:
+
 The :ref:`Input <Input>` class creates immutable instances that describe the inputs of a single turn of a conversation.
 There are some attributes that may have aggregations of previous turns like the :code:`slot_tracker` or entire :code:`history`.
 
@@ -87,8 +89,6 @@ from dialogy.utils import is_unix_ts, normalize
 @attr.frozen
 class Input:
     """
-    .. _Input:
-
     Represents the inputs of the SLU API.
     """
 

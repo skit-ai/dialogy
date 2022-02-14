@@ -61,7 +61,7 @@ def deserialize_duckling_entity(
     elif dimension == const.DURATION:
         entity = DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
         if duration_cast_operator and reference_time:
-            return entity.to_time_entity(
+            return entity.as_time(
                 reference_time, timezone, duration_cast_operator
             )
         return entity

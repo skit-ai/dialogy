@@ -57,11 +57,11 @@ import attr
 import pydash as py_
 
 from dialogy import constants as const
-from dialogy.types.entity.numerical import NumericalEntity
+from dialogy.types.entity.base_entity import BaseEntity
 
 
 @attr.s
-class TimeEntity(NumericalEntity):
+class TimeEntity(BaseEntity):
     """
     Entities that can be parsed to obtain date, time or datetime values.
 
@@ -73,8 +73,8 @@ class TimeEntity(NumericalEntity):
     Attributes:
     - `grain` tells us the smallest unit of time in the utterance
     """
-
-    dim = "time"
+    origin = attr.ib(default="value")
+    dim = attr.ib(default="time")
     grain = attr.ib(type=str, default=None, validator=attr.validators.instance_of(str))
 
     def get_value(self) -> Any:

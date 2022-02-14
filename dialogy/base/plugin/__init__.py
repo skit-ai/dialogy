@@ -11,8 +11,10 @@ other plugins. These offer a base for a few already implemented features like :r
 Writing Plugins
 ================
 
-We will learn plugin creation by exploring some examples. It is highly advised to read 
-the :ref:`Input <Input>` and :ref:`Output <Output>` sections first.
+.. attention::
+
+    We will learn plugin creation by exploring some examples. **It is highly advised to read 
+    the** :ref:`Input <Input>` and :ref:`Output <Output>` **sections first.**
 
 Keyword Intent
 ----------------

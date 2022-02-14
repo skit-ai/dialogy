@@ -68,6 +68,9 @@ Listing sections by order of significance. Higher ranking items are helpful in u
 |   | :ref:`WERCalibrationPlugin<calibration_plugin>`                | This plugin can only be used with the proprietary ASR of skit.ai. Uses :code:`lm_score` and :code:`am_score` to           |
 |   |                                                                | detect if the current set of code:`input.utterances` are too noisy for the intent classifier to use.                      |
 +---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+|   | :ref:`CombineDateTimeOverSlots<CombineDateTimeOverSlots>`      | This plugin can only be used with the proprietary ASR of skit.ai. Uses :code:`lm_score` and :code:`am_score` to           |
+|   |                                                                | detect if the current set of code:`input.utterances` are too noisy for the intent classifier to use.                      |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
 
 
 Installation
@@ -157,7 +160,7 @@ Index
    Input <./source/dialogy.base.input>
    Output <./source/dialogy.base.output>
    Workflow <./source/dialogy.workflow>
-   Base Plugin <./source/dialogy.base.plugin>
+   Plugin <./source/dialogy.base.plugin>
 
 .. toctree::
    :maxdepth: 1
@@ -188,6 +191,7 @@ Index
    Fuzzy Entity Search <./source/dialogy.plugins.text.list_search_plugin>
    Entity Scoring <./source/dialogy.base.entity_extractor>
    Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
+   Combine DateTime Over Slots <./source/dialogy.plugins.text.combine_date_time>
 
 .. toctree::
    :maxdepth: 1

@@ -91,7 +91,7 @@ class DurationEntity(BaseEntity):
             normalized=d[const.VALUE][const.NORMALIZED],
         )
 
-    def to_time_entity(
+    def as_time(
         self, reference_unix_ts: int, timezone: str, duration_cast_operator: str
     ) -> TimeEntity:
         """

@@ -1,4 +1,6 @@
 """
+.. _Output:
+
 The :ref:`Output <Output>` class creates immutable instances that describe the output of a single turn of a conversation.
 The output contains 
 
@@ -53,8 +55,6 @@ from dialogy.types import BaseEntity, Intent
 class Output:
     """
     Represents output of the SLU API.
-
-    .. _Output:
     """
 
     intents: List[Intent] = attr.ib(default=attr.Factory(list), kw_only=True)

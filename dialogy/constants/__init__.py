@@ -1,5 +1,8 @@
 """Module provides Constants to be used throughtout the project."""
 
+from locale import DAY_1
+
+
 DEFAULT_NAMESPACE = "vernacular-ai"
 DEFAULT_PROJECT_TEMPLATE = "dialogy-template-simple-transformers"
 
@@ -28,7 +31,9 @@ DUCKLING_TIME_INTERVAL_ENTITY_KEYS = (
 DATE = "date"
 TIME = "time"
 DATETIME = "datetime"
-
+HOUR = "hour"
+DAY = "day"
+MONTH = "month"
 
 PEOPLE = "people"
 NUMBER = "number"

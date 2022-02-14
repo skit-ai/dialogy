@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.constants - dialogy 0.9.1 documentation</title>
+        <title>dialogy.constants - dialogy 0.9.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">dialogy 0.9.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">dialogy 0.9.2 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.1 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,7 +160,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.base.input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.base.plugin.html">Base Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.base.plugin.html">Plugin</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
@@ -185,6 +185,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -218,6 +219,9 @@
           <h1>Source code for dialogy.constants</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Module provides Constants to be used throughtout the project."""</span>
 
+<span class="kn">from</span> <span class="nn">locale</span> <span class="kn">import</span> <span class="n">DAY_1</span>
+
+
 <span class="n">DEFAULT_NAMESPACE</span> <span class="o">=</span> <span class="s2">"vernacular-ai"</span>
 <span class="n">DEFAULT_PROJECT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"dialogy-template-simple-transformers"</span>
 
@@ -246,7 +250,9 @@
 <span class="n">DATE</span> <span class="o">=</span> <span class="s2">"date"</span>
 <span class="n">TIME</span> <span class="o">=</span> <span class="s2">"time"</span>
 <span class="n">DATETIME</span> <span class="o">=</span> <span class="s2">"datetime"</span>
-
+<span class="n">HOUR</span> <span class="o">=</span> <span class="s2">"hour"</span>
+<span class="n">DAY</span> <span class="o">=</span> <span class="s2">"day"</span>
+<span class="n">MONTH</span> <span class="o">=</span> <span class="s2">"month"</span>
 
 <span class="n">PEOPLE</span> <span class="o">=</span> <span class="s2">"people"</span>
 <span class="n">NUMBER</span> <span class="o">=</span> <span class="s2">"number"</span>
