@@ -73,6 +73,7 @@ class TimeEntity(BaseEntity):
     Attributes:
     - `grain` tells us the smallest unit of time in the utterance
     """
+
     origin: str = attr.ib(default="value")
     dim: str = attr.ib(default="time")
     grain: str = attr.ib(default=None, validator=attr.validators.instance_of(str))

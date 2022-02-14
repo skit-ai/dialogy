@@ -13,15 +13,15 @@ from dialogy.plugins import DucklingPlugin
 from dialogy.types import (
     BaseEntity,
     CreditCardNumberEntity,
+    NumericalEntity,
     PeopleEntity,
     TimeEntity,
     TimeIntervalEntity,
-    NumericalEntity,
     entity_synthesis,
 )
+from dialogy.utils import dt2timestamp
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
-from dialogy.utils import dt2timestamp
 
 
 class MockPlugin(Plugin):
@@ -417,17 +417,29 @@ def test_plastic_currency_get_value():
 
 
 def test_numerical_entity_as_time() -> None:
-    reference_time = dt2timestamp(datetime.fromisoformat("2021-01-22T02:00:00.000+05:30"))
+    reference_time = dt2timestamp(
+        datetime.fromisoformat("2021-01-22T02:00:00.000+05:30")
+    )
     numeric_entity = NumericalEntity(value=4, body="4", range={"start": 0, "end": 1})
-    time_entity = TimeEntity(body="4", range={"start": 0, "end": 1}, value="2021-01-04T02:00:00.000+05:30", grain="hour")
+    time_entity = TimeEntity(
+        body="4",
+        range={"start": 0, "end": 1},
+        value="2021-01-04T02:00:00.000+05:30",
+        grain="hour",
+    )
     print(numeric_entity.as_time(reference_time, "Asia/Kolkata"))
-    assert numeric_entity.as_time(reference_time, "Asia/Kolkata").get_value() == time_entity.get_value()
+    assert (
+        numeric_entity.as_time(reference_time, "Asia/Kolkata").get_value()
+        == time_entity.get_value()
+    )
 
 
 def test_numerical_entity_fails_for_invalid_replace() -> None:
-    reference_time = dt2timestamp(datetime.fromisoformat("2021-01-22T02:00:00.000+05:30"))
+    reference_time = dt2timestamp(
+        datetime.fromisoformat("2021-01-22T02:00:00.000+05:30")
+    )
     numeric_entity = NumericalEntity(value=4, body="4", range={"start": 0, "end": 1})
-    
+
     with pytest.raises(RuntimeError):
         numeric_entity.as_time(reference_time, "Asia/Kolkata", replace="minute")
 

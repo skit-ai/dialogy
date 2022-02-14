@@ -79,8 +79,8 @@ The default assumption is to use the number as :code:`day` but we can also repla
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
 from datetime import datetime
+from typing import Any, Dict, Optional
 
 import attr
 
@@ -125,15 +125,21 @@ class NumericalEntity(BaseEntity):
             latent=d[const.LATENT],
         )
 
-    def as_time(self, reference_unix_ts: int, timezone: str, replace: str = "day") -> TimeEntity:
+    def as_time(
+        self, reference_unix_ts: int, timezone: str, replace: str = "day"
+    ) -> TimeEntity:
         """
         Converts a duration entity to a time entity.
 
         .. _number_entity_as_time:
         """
-        reference_datetime: datetime = unix_ts_to_datetime(reference_unix_ts, timezone=timezone)
+        reference_datetime: datetime = unix_ts_to_datetime(
+            reference_unix_ts, timezone=timezone
+        )
         if replace not in [const.HOUR, const.DAY, const.MONTH]:
-            raise RuntimeError(f"Expected replace to be one of {[const.HOUR, const.DAY, const.MONTH]}")
+            raise RuntimeError(
+                f"Expected replace to be one of {[const.HOUR, const.DAY, const.MONTH]}"
+            )
         value = reference_datetime.replace(**{replace: self.value}).isoformat()
 
         entity = TimeEntity(

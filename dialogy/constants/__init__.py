@@ -2,7 +2,6 @@
 
 from locale import DAY_1
 
-
 DEFAULT_NAMESPACE = "vernacular-ai"
 DEFAULT_PROJECT_TEMPLATE = "dialogy-template-simple-transformers"
 
