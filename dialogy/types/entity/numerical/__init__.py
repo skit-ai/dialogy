@@ -125,7 +125,7 @@ class NumericalEntity(BaseEntity):
             latent=d[const.LATENT],
         )
 
-    def as_time(self, reference_unix_ts: int, timezone: str, replace="day") -> TimeEntity:
+    def as_time(self, reference_unix_ts: int, timezone: str, replace: str = "day") -> TimeEntity:
         """
         Converts a duration entity to a time entity.
 
