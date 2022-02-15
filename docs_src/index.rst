@@ -161,13 +161,15 @@ Index
    Output <./source/dialogy.base.output>
    Workflow <./source/dialogy.workflow>
    Plugin <./source/dialogy.base.plugin>
+   Intent <./source/dialogy.types.intent>
+   Entity <./source/dialogy.types.entity.base_entity>
+   Slots <./source/dialogy.types.slots>
 
 .. toctree::
    :maxdepth: 1
    :hidden:
    :caption: Types
 
-   Intent <./source/dialogy.types.intent>
    Pattern Entity <./source/dialogy.types.entity.keyword>
    Currency Entity <./source/dialogy.types.entity.amount_of_money>
    Credit Card Number Entity <./source/dialogy.types.entity.credit_card_number>
@@ -176,7 +178,6 @@ Index
    Time Entity <./source/dialogy.types.entity.time>
    Time Interval Entity <./source/dialogy.types.entity.time_interval>
    Duration Entity <./source/dialogy.types.entity.duration>
-   Slots <./source/dialogy.types.slots>
 
 .. toctree::
    :maxdepth: 1

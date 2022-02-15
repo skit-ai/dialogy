@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.keyword package" href="dialogy.types.entity.keyword.html" /><link rel="prev" title="dialogy.base.plugin package" href="dialogy.base.plugin.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.base_entity package" href="dialogy.types.entity.base_entity.html" /><link rel="prev" title="dialogy.base.plugin package" href="dialogy.base.plugin.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.intent package - dialogy 0.9.2 documentation</title>
+        <title>dialogy.types.intent package - dialogy 0.9.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.2 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -157,15 +157,17 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
-<ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Intent</a></li>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -174,7 +176,6 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -390,7 +391,7 @@ being the meaning of an utterance. Higher is better.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.intent.Intent.slots">
 <span class="sig-name descname"><span class="pre">slots</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="dialogy.types.slots.html#dialogy.types.slots.Slot" title="dialogy.types.slots.Slot"><span class="pre">dialogy.types.slots.Slot</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.Intent.slots" title="Permalink to this definition">¶</a></dt>
-<dd><p>Placeholders for <span class="xref std std-ref">entities</span> that are relevant to this intent. 
+<dd><p>Placeholders for <a class="reference internal" href="dialogy.types.entity.base_entity.html#baseentity"><span class="std std-ref">entities</span></a> that are relevant to this intent. 
 More details are available in the doc for <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a>.</p>
 </dd></dl>
 </dd></dl>
@@ -403,12 +404,12 @@ More details are available in the doc for <a class="reference internal" href="di
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="dialogy.types.entity.keyword.html">
+          <a class="next-page" href="dialogy.types.entity.base_entity.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">dialogy.types.entity.keyword package</div>
+                <div class="title">dialogy.types.entity.base_entity package</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -472,5 +473,7 @@ More details are available in the doc for <a class="reference internal" href="di
     <script src="../_static/scripts/furo.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

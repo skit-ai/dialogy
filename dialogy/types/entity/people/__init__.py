@@ -51,11 +51,11 @@ from typing import Any, Dict, Optional
 import attr
 
 from dialogy import constants as const
-from dialogy.types.entity.numerical import NumericalEntity
+from dialogy.types.entity.base_entity import BaseEntity
 
 
 @attr.s
-class PeopleEntity(NumericalEntity):
+class PeopleEntity(BaseEntity):
     """
     A variant of numerical entity which addresses collections of people.
 

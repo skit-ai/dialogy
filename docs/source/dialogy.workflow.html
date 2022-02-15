@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.base.plugin package" href="dialogy.base.plugin.html" /><link rel="prev" title="dialogy.base.output package" href="dialogy.base.output.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.workflow package - dialogy 0.9.2 documentation</title>
+        <title>dialogy.workflow package - dialogy 0.9.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.2 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -162,10 +162,12 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -174,7 +176,6 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -248,8 +249,44 @@ aren’t required and add to bloat.</p>
 <li><p>Slot tracker</p></li>
 </ul>
 <p>as <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">inputs</span></a>, parses these, produces a few intermediates and finally returns the <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intent</span></a> 
-and optionally <span class="xref std std-ref">entities</span>. Details will be documented within the specific plugins.</p>
-</section>
+and optionally <a class="reference internal" href="dialogy.types.entity.base_entity.html#baseentity"><span class="std std-ref">entities</span></a>. Details will be documented within the specific plugins.</p>
+<div class="mermaid">
+            classDiagram
+    direction TB
+    Workflow --&gt; "1" Input: has
+    Workflow --&gt; "1" Output: has
+    Workflow --&gt; "many" Plugin: has
+
+    class Workflow {
+        Workflow: +Input input
+        Workflow: +Output output
+        Workflow: +set(path: str, value: Any)
+        Workflow: +run(input: Input)
+    }
+
+    class Input {
+        +List~Utterance~ utterance
+        +int reference_time
+        +str current_state
+        +str lang
+        +str locale
+        +dict slot_tracker
+        +str timezone
+        +dict json()
+    }
+
+    class Output {
+        +List~Intent~ intents
+        +List~BaseEntity~ entities
+        +dict json()
+    }
+
+    &lt;&lt;abstract&gt;&gt; Plugin
+    class Plugin {
+        +str dest
+        *any utility(input: Input, output: Output)
+    }
+        </div></section>
 <section id="how-does-it-do-it">
 <h3>How does it do it?<a class="headerlink" href="#how-does-it-do-it" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -258,7 +295,38 @@ and optionally <span class="xref std std-ref">entities</span>. Details will be d
 <li><p>The plugins can save their output within the workflow’s <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">input</span></a> or <a class="reference internal" href="dialogy.base.output.html#output"><span class="std std-ref">output</span></a>.</p></li>
 <li><p>After execution of all plugins, the <a class="reference internal" href="#workflowclass"><span class="std std-ref">workflow</span></a> returns a pair of serialized <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">input</span></a> and <a class="reference internal" href="dialogy.base.output.html#output"><span class="std std-ref">output</span></a>.</p></li>
 </ul>
-<dl class="py class">
+<div class="mermaid">
+            flowchart TB
+
+    subgraph Workflow
+
+        subgraph input
+            utterance
+            reference_time
+        end
+
+        subgraph output
+            intents
+            entities
+        end
+
+        input --&gt; plugin
+        output --&gt; plugin
+        plugin --&gt;|update| input
+        plugin --&gt;|update| output
+        plugin --&gt;|foreach| plugin
+
+    end
+    output --&gt; output_json
+    input --&gt; input_json
+
+    output_json --&gt; workflow_output
+    input_json --&gt; workflow_output
+
+    subgraph Response
+        output_json
+    end
+        </div><dl class="py class">
 <dt class="sig sig-object py" id="dialogy.workflow.workflow.Workflow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Workflow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/workflow/workflow.html#Workflow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.workflow.workflow.Workflow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -461,5 +529,7 @@ should override this method. All trainable plugins manage their data validation
     <script src="../_static/scripts/furo.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

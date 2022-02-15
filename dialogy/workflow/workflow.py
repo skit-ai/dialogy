@@ -28,6 +28,46 @@ Produce the response for a single turn of a conversation. It recieves (not an ex
 as :ref:`inputs<Input>`, parses these, produces a few intermediates and finally returns the :ref:`intent <Intent>` 
 and optionally :ref:`entities <BaseEntity>`. Details will be documented within the specific plugins.
 
+.. mermaid::
+
+    classDiagram
+        direction TB
+        Workflow --> "1" Input: has
+        Workflow --> "1" Output: has
+        Workflow --> "many" Plugin: has
+
+        class Workflow {
+            Workflow: +Input input
+            Workflow: +Output output
+            Workflow: +set(path: str, value: Any)
+            Workflow: +run(input: Input)
+        }
+
+        class Input {
+            +List~Utterance~ utterance
+            +int reference_time
+            +str current_state
+            +str lang
+            +str locale
+            +dict slot_tracker
+            +str timezone
+            +dict json()
+        }
+
+        class Output {
+            +List~Intent~ intents
+            +List~BaseEntity~ entities
+            +dict json()
+        }
+
+        <<abstract>> Plugin
+        class Plugin {
+            +str dest
+            *any utility(input: Input, output: Output)
+        }
+
+
+
 How does it do it?
 ------------------
 
@@ -35,6 +75,41 @@ How does it do it?
 - The sequence describes the order in which :ref:`plugins <AbstractPlugin>` are run.
 - The plugins can save their output within the workflow's :ref:`input<Input>` or :ref:`output<Output>`.
 - After execution of all plugins, the :ref:`workflow <WorkflowClass>` returns a pair of serialized :ref:`input<Input>` and :ref:`output<Output>`.
+
+
+.. mermaid::
+
+    flowchart TB
+
+        subgraph Workflow
+
+            subgraph input
+                utterance
+                reference_time
+            end
+
+            subgraph output
+                intents
+                entities
+            end
+
+            input --> plugin
+            output --> plugin
+            plugin -->|update| input
+            plugin -->|update| output
+            plugin -->|foreach| plugin
+
+        end
+        output --> output_json
+        input --> input_json
+
+        output_json --> workflow_output
+        input_json --> workflow_output
+
+        subgraph Response
+            output_json
+        end
+
 """
 from __future__ import annotations
 
