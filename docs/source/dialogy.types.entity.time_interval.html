@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.duration package" href="dialogy.types.entity.duration.html" /><link rel="prev" title="dialogy.types.entity.time package" href="dialogy.types.entity.time.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.time_interval package - dialogy 0.9.2 documentation</title>
+        <title>dialogy.types.entity.time_interval package - dialogy 0.9.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.2 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -162,10 +162,12 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -174,7 +176,6 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -240,7 +241,7 @@
 <span class="gh">Out[3]: </span><span class="go">[TimeIntervalEntity(body='weekend', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='datetime', origin='value', dim='time', grain='hour', type='interval', from_value='2022-02-18T18:00:00.000+05:30', to_value='2022-02-21T00:00:00.000+05:30', values=[{'to': {'value': '2022-02-21T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-18T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-28T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-25T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-03-07T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-03-04T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-02-18T18:00:00.000+05:30', 'to': '2022-02-21T00:00:00.000+05:30'})]</span>
 
 <span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"between 4 to 5pm"</span><span class="p">)</span>
-<span class="gh">Out[4]: </span><span class="go">[TimeIntervalEntity(body='between 4 to 5pm', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='time', origin='value', dim='time', grain='hour', type='interval', from_value='2022-02-15T16:00:00.000+05:30', to_value='2022-02-15T18:00:00.000+05:30', values=[{'to': {'value': '2022-02-15T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-15T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-16T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-16T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-17T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-17T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-02-15T16:00:00.000+05:30', 'to': '2022-02-15T18:00:00.000+05:30'})]</span>
+<span class="gh">Out[4]: </span><span class="go">[TimeIntervalEntity(body='between 4 to 5pm', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='time', origin='value', dim='time', grain='hour', type='interval', from_value='2022-02-16T16:00:00.000+05:30', to_value='2022-02-16T18:00:00.000+05:30', values=[{'to': {'value': '2022-02-16T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-16T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-17T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-17T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-02-18T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-02-18T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-02-16T16:00:00.000+05:30', 'to': '2022-02-16T18:00:00.000+05:30'})]</span>
 </pre></div>
 </div>
 </section>
@@ -286,10 +287,10 @@
 <span class="go">   'entity_type': 'time',</span>
 <span class="go">   'grain': 'hour',</span>
 <span class="go">   'type': 'interval',</span>
-<span class="go">   'from_value': '2022-02-15T16:00:00.000+05:30',</span>
-<span class="go">   'to_value': '2022-02-15T18:00:00.000+05:30',</span>
-<span class="go">   'value': {'from': '2022-02-15T16:00:00.000+05:30',</span>
-<span class="go">    'to': '2022-02-15T18:00:00.000+05:30'}}]}</span>
+<span class="go">   'from_value': '2022-02-16T16:00:00.000+05:30',</span>
+<span class="go">   'to_value': '2022-02-16T18:00:00.000+05:30',</span>
+<span class="go">   'value': {'from': '2022-02-16T16:00:00.000+05:30',</span>
+<span class="go">    'to': '2022-02-16T18:00:00.000+05:30'}}]}</span>
 </pre></div>
 </div>
 <dl class="py class">
@@ -467,5 +468,7 @@
     <script src="../_static/scripts/furo.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

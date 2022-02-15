@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.workflow.workflow - dialogy 0.9.2 documentation</title>
+        <title>dialogy.workflow.workflow - dialogy 0.9.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.9.2 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.2 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,11 +160,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -173,7 +175,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -185,6 +186,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -246,6 +248,46 @@
 <span class="sd">as :ref:`inputs&lt;Input&gt;`, parses these, produces a few intermediates and finally returns the :ref:`intent &lt;Intent&gt;` </span>
 <span class="sd">and optionally :ref:`entities &lt;BaseEntity&gt;`. Details will be documented within the specific plugins.</span>
 
+<span class="sd">.. mermaid::</span>
+
+<span class="sd">    classDiagram</span>
+<span class="sd">        direction TB</span>
+<span class="sd">        Workflow --&gt; "1" Input: has</span>
+<span class="sd">        Workflow --&gt; "1" Output: has</span>
+<span class="sd">        Workflow --&gt; "many" Plugin: has</span>
+
+<span class="sd">        class Workflow {</span>
+<span class="sd">            Workflow: +Input input</span>
+<span class="sd">            Workflow: +Output output</span>
+<span class="sd">            Workflow: +set(path: str, value: Any)</span>
+<span class="sd">            Workflow: +run(input: Input)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        class Input {</span>
+<span class="sd">            +List~Utterance~ utterance</span>
+<span class="sd">            +int reference_time</span>
+<span class="sd">            +str current_state</span>
+<span class="sd">            +str lang</span>
+<span class="sd">            +str locale</span>
+<span class="sd">            +dict slot_tracker</span>
+<span class="sd">            +str timezone</span>
+<span class="sd">            +dict json()</span>
+<span class="sd">        }</span>
+
+<span class="sd">        class Output {</span>
+<span class="sd">            +List~Intent~ intents</span>
+<span class="sd">            +List~BaseEntity~ entities</span>
+<span class="sd">            +dict json()</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &lt;&lt;abstract&gt;&gt; Plugin</span>
+<span class="sd">        class Plugin {</span>
+<span class="sd">            +str dest</span>
+<span class="sd">            *any utility(input: Input, output: Output)</span>
+<span class="sd">        }</span>
+
+
+
 <span class="sd">How does it do it?</span>
 <span class="sd">------------------</span>
 
@@ -253,6 +295,41 @@
 <span class="sd">- The sequence describes the order in which :ref:`plugins &lt;AbstractPlugin&gt;` are run.</span>
 <span class="sd">- The plugins can save their output within the workflow's :ref:`input&lt;Input&gt;` or :ref:`output&lt;Output&gt;`.</span>
 <span class="sd">- After execution of all plugins, the :ref:`workflow &lt;WorkflowClass&gt;` returns a pair of serialized :ref:`input&lt;Input&gt;` and :ref:`output&lt;Output&gt;`.</span>
+
+
+<span class="sd">.. mermaid::</span>
+
+<span class="sd">    flowchart TB</span>
+
+<span class="sd">        subgraph Workflow</span>
+
+<span class="sd">            subgraph input</span>
+<span class="sd">                utterance</span>
+<span class="sd">                reference_time</span>
+<span class="sd">            end</span>
+
+<span class="sd">            subgraph output</span>
+<span class="sd">                intents</span>
+<span class="sd">                entities</span>
+<span class="sd">            end</span>
+
+<span class="sd">            input --&gt; plugin</span>
+<span class="sd">            output --&gt; plugin</span>
+<span class="sd">            plugin --&gt;|update| input</span>
+<span class="sd">            plugin --&gt;|update| output</span>
+<span class="sd">            plugin --&gt;|foreach| plugin</span>
+
+<span class="sd">        end</span>
+<span class="sd">        output --&gt; output_json</span>
+<span class="sd">        input --&gt; input_json</span>
+
+<span class="sd">        output_json --&gt; workflow_output</span>
+<span class="sd">        input_json --&gt; workflow_output</span>
+
+<span class="sd">        subgraph Response</span>
+<span class="sd">            output_json</span>
+<span class="sd">        end</span>
+
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
@@ -506,5 +583,7 @@
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

@@ -12,11 +12,11 @@ from typing import Any, Dict, Optional
 import attr
 
 from dialogy import constants as const
-from dialogy.types.entity.numerical import NumericalEntity
+from dialogy.types.entity.base_entity import BaseEntity
 
 
 @attr.s
-class CurrencyEntity(NumericalEntity):
+class CurrencyEntity(BaseEntity):
     """
     Numerical Entity Type
 

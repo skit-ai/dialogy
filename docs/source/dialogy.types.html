@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types package - dialogy 0.9.2 documentation</title>
+        <title>dialogy.types package - dialogy 0.9.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.2 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -162,10 +162,12 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -174,7 +176,6 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -303,7 +304,7 @@
 <p>There are few types of significance for an SLU project</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a></p></li>
-<li><p><a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">Entity</span></a></p></li>
+<li><p><span class="xref std std-ref">Entity</span></p></li>
 <li><p><a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">Slot</span></a></p></li>
 <li><p><a class="reference internal" href="dialogy.types.signal.html#signal"><span class="std std-ref">Signal</span></a></p></li>
 </ol>
@@ -312,10 +313,10 @@
 <p>This section is a work in progress.</p>
 </div>
 <p>An <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> tells us the general meaning of a sentence.
-A set <a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">Entity</span></a> are significant tokens that can be acted upon by either
+A set <span class="xref std std-ref">Entity</span> are significant tokens that can be acted upon by either
 participants within a conversation.</p>
 <p>We use <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> within <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a> to associate relationship between <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a> and
-<a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">entities</span></a>. You can consider examples like: Reservation of a air ticket requires:</p>
+<span class="xref std std-ref">entities</span>. You can consider examples like: Reservation of a air ticket requires:</p>
 <ul class="simple">
 <li><p>destination</p></li>
 <li><p>origin</p></li>
@@ -324,7 +325,7 @@ participants within a conversation.</p>
 <li><p>travel type (round trip, one-way)</p></li>
 <li><p>number of passengers.</p></li>
 </ul>
-<p>So these <a class="reference internal" href="dialogy.types.entity.base_entity.html#base-entity"><span class="std std-ref">entities</span></a> would be filled within their respective <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> already expected by the
+<p>So these <span class="xref std std-ref">entities</span> would be filled within their respective <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> already expected by the
 reservation <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a>.</p>
 </section>
 </section>
@@ -383,5 +384,7 @@ reservation <a class="reference internal" href="dialogy.types.intent.html#intent
     <script src="../_static/scripts/furo.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

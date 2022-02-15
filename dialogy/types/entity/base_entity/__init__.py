@@ -1,14 +1,79 @@
 """
-.. _base_entity:
+.. _BaseEntity:
+
 Module provides access to a base class to create other entities.
 
-These methods of this class that are supposed to be overridden:
-- validate
-- get_value
 
-Import classes:
+.. mermaid::
 
-- BaseEntity
+    classDiagram
+        direction LR
+        BaseEntity --|> NumericalEntity
+        BaseEntity --|> CreditCardNumberEntity
+        BaseEntity --|> CurrencyEntity    
+        BaseEntity --|> TimeEntity
+        BaseEntity --|> KeywordEntity
+        BaseEntity --|> DurationEntity
+        BaseEntity --|> PeopleEntity
+
+        TimeEntity --|> TimeIntervalEntity
+
+        NumericalEntity ..> TimeEntity: as_time
+        DurationEntity ..> TimeEntity: as_time
+
+        class BaseEntity {
+            +Dict[str, int] range
+            +str body
+            +str dim
+            +int alternative_index
+            +str type
+            +str entity_type
+            +float score
+            +Any value
+            +List~Any~ values
+            +List~str~ parsers
+            +bool latent
+            +Any get_value()
+            +Dict[str, Any] json()
+            $BaseEntity from_dict(d)
+        }
+
+        class CurrencyEntity {
+            +str unit
+            +Any get_value()
+            +CurrencyEntity from_duckling(d)
+        }
+
+        class CreditCardNumberEntity {
+            +str issuer
+            +from_duckling(d: dict, idx: int)
+            +CreditCardNumberEntity from_duckling(d)
+        }
+
+        class KeywordEntity {
+        }
+
+        class DurationEntity {
+            +str unit
+            +dict normalized
+            +DurationEntity from_duckling(d)
+        }
+
+        class NumericalEntity {
+            +NumericalEntity from_duckling(d)
+        }
+
+        class PeopleEntity {
+            +str unit
+            +PeopleEntity from_duckling(d)
+        }
+
+        class TimeEntity {
+            +str grain
+            +datetime get_value()
+            +TimeEntity from_duckling(d)
+        }
+
 """
 from __future__ import annotations
 
