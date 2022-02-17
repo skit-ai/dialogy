@@ -59,7 +59,7 @@ def test_slot_filling() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # so we are checking if the `entity_1_slot` is filled by our mock entity.
-    assert intent["slots"]["entity_1_slot"]["values"][0] == entity.json()
+    assert intent["slots"][0]["values"][0] == entity.json()
 
 
 def test_slot_no_fill() -> None:
@@ -95,7 +95,7 @@ def test_slot_no_fill() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # we can see that the `entity_2_slot` is not filled by our mock entity.
-    assert "entity_1_slot" not in output[const.INTENTS][0]["slots"]
+    assert len(output[const.INTENTS][0]["slots"]) == 0
 
 
 def test_slot_invalid_intents() -> None:
@@ -180,10 +180,10 @@ def test_slot_dual_fill() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [
+    assert output[const.INTENTS][0]["slots"][0]["values"] == [
         entity_1.json()
     ]
-    assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [
+    assert output[const.INTENTS][0]["slots"][1]["values"] == [
         entity_2.json()
     ]
 
@@ -232,10 +232,10 @@ def test_slot_filling_multiple() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [
+    assert output[const.INTENTS][0]["slots"][0]["values"] == [
         entity_1.json()
     ]
-    assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [
+    assert output[const.INTENTS][0]["slots"][1]["values"] == [
         entity_2.json()
     ]
 
@@ -283,7 +283,7 @@ def test_slot_competition_fill_multiple() -> None:
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
 
-    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [
+    assert output[const.INTENTS][0]["slots"][0]["values"] == [
         entity_1.json(),
         entity_2.json(),
     ]

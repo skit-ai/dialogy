@@ -240,5 +240,5 @@ class Intent:
             "alternative_index": self.alternative_index,
             "score": self.score,
             "parsers": self.parsers,
-            "slots": {slot_name: slot.json() for slot_name, slot in self.slots.items()},
+            "slots": [slot.json() for slot in self.slots.values()],
         }
