@@ -148,6 +148,7 @@ class NumericalEntity(BaseEntity):
                 const.END: self.range[const.END],
             },
             body=self.body,
+            score=self.score,
             dim="time",
             alternative_index=self.alternative_index,
             latent=self.latent,

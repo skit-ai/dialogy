@@ -113,6 +113,7 @@ class DurationEntity(BaseEntity):
                 const.START: self.range[const.START],
                 const.END: self.range[const.END],
             },
+            score=self.score,
             body=self.body,
             dim="time",
             alternative_index=self.alternative_index,
