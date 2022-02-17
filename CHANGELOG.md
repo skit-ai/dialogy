@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.4
+
+- [x] fix: Slot structure need not be redefined in templates.
+- [x] update: Type-casted Time entities acquire score from the original (Numerical, Duration) entities.
+
 ## 0.9.3
 
 - [x] update: Numerical entities can be casted as time.
