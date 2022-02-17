@@ -100,6 +100,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         self.entity_types: Dict[Any, Any] = {}
         self.nlp: Dict[Any, Any] = {}
         self.fuzzy_threshold = fuzzy_threshold
+        self.entity_patterns: Dict[Any, Any] = {}
 
         if self.style == const.FUZZY_DP:
             self.fuzzy_init()
@@ -120,6 +121,11 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             self.nlp[lang_code] = stanza.Pipeline(
                 lang=lang_code, tokenize_pretokenized=True
             )
+            self.entity_patterns[lang_code] = {}
+            for entity_type in self.entity_types[lang_code]:
+                self.entity_patterns[lang_code][entity_type] = list(
+                    self.entity_dict[lang_code][entity_type].keys()
+                )
 
     def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:
         """
@@ -174,7 +180,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             sentence = nlp(query).sentences[0]
             value = ""
             pos_tags = ["PROPN", "NOUN", "ADP"]
-        
+
             for word in sentence.words:
                 if word.upos in pos_tags:
                     if value == "":
@@ -216,17 +222,13 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         match = []
         query = transcript
 
-        entity_patterns = {}
         entity_match_dict = {}
         for entity_type in self.entity_types[lang]:
-            entity_patterns[entity_type] = list(
-                self.entity_dict[lang][entity_type].keys()
-            )
             entity_match_dict[entity_type] = self.entity_dict[lang][entity_type]
             match_entity = self.search_regex(
                 query,
                 entity_type,
-                entity_patterns[entity_type],
+                self.entity_patterns[lang][entity_type],
                 entity_match_dict[entity_type],
             )
 
@@ -235,7 +237,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                     query,
                     self.nlp[lang],
                     entity_type,
-                    entity_patterns[entity_type],
+                    self.entity_patterns[lang][entity_type],
                     entity_match_dict[entity_type],
                 )
             match.append(match_entity)
