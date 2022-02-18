@@ -9,7 +9,7 @@ intermediate structure that the DucklingPlugin expects. We need to prevent the i
 all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.
 """
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Pattern
 
 import stanza
 from loguru import logger
@@ -154,7 +154,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         self,
         query: str,
         entity_type: str = "",
-        entity_patterns: List[re.Pattern] = [re.compile(r"", re.UNICODE)],
+        entity_patterns: List[Pattern] = [re.compile(r"", re.UNICODE)],
         match_dict: Dict[Any, Any] = {},
     ) -> Tuple[Text, Label, Value, Span, Score]:
         max_length = 0
