@@ -1,16 +1,60 @@
 """
-.. _list_Search_plugin_
+.. _ListSearchPlugin_
 
+Fuzzy Search
+--------------
+We have often seen certain keywords that gain significance in an SLU project. These keywords are 
+easy to extract via patterns and are often used to create entities.These patterns shouldn't be
+frequently and parser should be able to handle ASR noise and multi token issues.
+The :ref:`ListSearchPlugin<ListSearchPlugin>`
+helps in this task, it requires a pattern-map, we call it :code:`fuzzy_dp_config`.
+
+.. ipython::
+
+    In [1]: from dialogy.base import Input, Output
+    ...: from dialogy.plugins import ListSearchPlugin
+    ...: from dialogy.workflow import Workflow
+
+    In [2]: fuzzy_dp_config={
+    ...:             "en": {
+    ...:                 "location": {
+    ...:                     "delhi": "Delhi"
+    ...:                 }
+    ...:             }
+    ...:         }
+
+    In [3]:  l = ListSearchPlugin(
+    ...:         dest="output.entities",
+    ...:         fuzzy_threshold=0.4,
+    ...:         fuzzy_dp_config=fuzzy_dp_config)
+
+    In [4]: workflow = Workflow([l])
+
+    In [5]: _, output = workflow.run(Input(utterances="I live in deli"))
+
+    In [6]: output
+    Out[6]: 
+        {'intents': [],
+        'entities': [{'range': {'start': 7, 'end': 14},
+        'body': 'in deli ',
+        'type': 'location',
+        'parsers': ['ListSearchPlugin', 'ListSearchPlugin'],
+        'score': 1.0,
+        'alternative_index': 0,
+        'value': 'Delhi',
+        'entity_type': 'location',
+        '_meta': {}}]}
+Note
+---------
 Module needs refactor. We are currently keeping all strategies bundled as methods as opposed to SearchStrategyClasses.
 
 Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We can ship individual plugins but at the
 same time, the difference is just configuration of each of these tools/services. There is another difference of
 intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting
 all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.
-
 """
 import re
-from typing import Any, Dict, List, Optional, Tuple, Pattern
+from typing import Any, Dict, List, Optional, Pattern, Tuple
 
 import stanza
 from loguru import logger
@@ -39,21 +83,10 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
 
     :param style: One of ["regex", "spacy"]
     :type style: Optional[str]
-    :param candidates: Required if style is "regex", this is a :code:`dict` that shows a mapping of entity
-        values and their patterns.
-    :type candidates: Optional[Dict[str, List[str]]]
-    :param spacy_nlp: Required if style is "spacy", this is a
-        `spacy model <https://spacy.io/usage/spacy-101#annotations-ner>`_.
-    :type spacy_nlp: Any
-    :param labels: Required if style is "spacy". If there is a need to extract only a few labels from all the other
-        `available labels <https://github.com/explosion/spaCy/issues/441#issuecomment-311804705>`_.
-    :type labels: Optional[List[str]]
-    :param access: A plugin io utility that allows access to transcripts
-        :code:`List[str]` within a :ref:`Workflow <workflow>`.
-    :type access: Optional[PluginFn]
-    :param mutate: A plugin io utility that allows insertion of :code:`List[BaseEntity]` within a
-        :ref:`Workflow <workflow>`.
-    :type mutate: Optional[PluginFn]
+    :param fuzzy_dp_config: shows a mapping on enity values and their corresponding matches, is required
+    :type fuzzy_dp_config: Dict[Any, Any]
+    :fuzzy_threshold : is used for confidence thresholding of entities, matches below this threshold would not be returned
+    :param fuzzy_threshold : Optional[float]
     :param debug: A flag to set debugging on the plugin methods
     :type debug: bool
     """
