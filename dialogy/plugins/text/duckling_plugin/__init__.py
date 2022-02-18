@@ -1,49 +1,429 @@
 """
-.. _duckling_plugin:
+.. _DucklingPlugin:
 
-This module exposes a parser for `Duckling <https://github.com/facebook/duckling>`_.
+We use `Duckling <https://github.com/facebook/duckling>`_ for parsing values like: :code:`date`, :code:`time`,
+:code:`numbers`, :code:`currency` etc from natural language. The parser will expect Duckling to be running as an http service, and provide
+means to connect from the implementation here. Here's a big example for various duckling entities.
 
-`Duckling <https://github.com/facebook/duckling>`_ helps parsing values like: :code:`date`, :code:`time`,
-:code:`numbers`, :code:`currency` etc. The parser will expect Duckling to be running as an http service, and provide
-means to connect from the implementation here.
+Mother of all examples
+----------------------
+
+.. ipython::
+
+    In [1]: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=[
+       ...:         "number",
+       ...:         "people",
+       ...:         "time",
+       ...:         "duration",
+       ...:         "intersect",
+       ...:         "amount-of-money",
+       ...:         "credit-card-number",
+       ...:     ],
+       ...:     # Duckling supports multiple dimensions, by specifying a list, we make sure
+       ...:     # we are searching for a match within the expected dimensions only.
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: utterances = [
+       ...:    "between today 7pm and tomorrow 9pm",
+       ...:    "can we get up at 6 am",
+       ...:    "we are 7 people",
+       ...:    "2 children 1 man 3 girls",
+       ...:    "can I come now?",
+       ...:    "can I come tomorrow",
+       ...:    "how about monday then",
+       ...:    "call me on 5th march",
+       ...:    "I want 4 pizzas",
+       ...:    "2 hours",
+       ...:    "can I pay $5 instead?",
+       ...:    "my credit card number is 4111111111111111",
+       ...:]
+
+    In [5]: %%time
+       ...: input_, output = workflow.run(Input(utterances=utterances))
+
+    In [6]: output
+
+
+Testing
+-------
+
+1. Connect to the `Duckling API <https://github.com/facebook/duckling>`_ either via a docker container or a local setup.
+2. Boot an IPython session and setup an instance of :ref:`DucklingPlugin <DucklingPlugin>`.
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 4, 30
 
+    from pprint import pprint
     from dialogy.workflow import Workflow
-
-    def update_workflow(workflow, entities):
-        workflow.input["duckling_entities"] = entities
+    from dialogy.base import Input
+    from dialogy.plugins import DucklingPlugin
 
     duckling_plugin = DucklingPlugin(
-        access=lambda workflow: (workflow.input["sentence"], workflow.input["reftime"], workflow.input["locale"])
-        # the access method guides the plugin to data within a workflow.
-        # in this case, the `input` property of a workflow is expected
-        # to be a `dict` with a key named "sentence". Check line 30.
-        mutate=update_workflow,
-        # the mutate method guides the plugin to place the processed output
-        # somewhere on the workflow.
-        dimensions=["people"],
-        # Duckling supports multiple dimensions, by specifying a list, we make sure
-        # we are searching for a match within the expected dimensions only.
+        dest="output.entities",
+        dimensions=["people", "time"],
         locale="en_IN",
-        # Duckling supports a set of locales, we need to provide this info to
-        # get language specific matches.
         timezone="Asia/Kolkata",
-        # Date/Time related entities make this field imperative.
-    )() # ⬅️ the instance is also getting called.
-    # Notice that we instantiate the class and also
-    # invoke __call__ method of the instance.
-    # The returned value from the instance is the plugin.
-    #
-    # This is a standard pattern across all plugins.
+        origin/master
+    )
 
-    workflow = Workflow(preprocessors=[duckling_plugin])
-    workflow.run(input_={"sentence": "there are 7 people"})
-    # Once an input is run through the workflow as on line 30,
-    # we can expect the plugin mutation to create an artifact
-    # as per line 4.
+    entities = duckling_plugin.parse(["We are 2 children coming tomorrow at 5 pm"])
+    pprint(entities)
+    # [PeopleEntity(
+    #     body='2 children', 
+    #     type='value', 
+    #     parsers=['DucklingPlugin'], 
+    #     score=1.0, 
+    #     alternative_index=0,
+    #     alternative_indices=[0, 0], 
+    #     latent=False, 
+    #     value=2, 
+    #     origin='value', 
+    #     unit='child',
+    #     entity_type='people')
+    # ,TimeEntity(
+    #     body='tomorrow at 5 pm', 
+    #     type='value', 
+    #     parsers=['DucklingPlugin'], 
+    #     score=1.0, 
+    #     alternative_index=0, 
+    #     alternative_indices=[0],
+    #     latent=False, 
+    #     value='2022-02-11T17:00:00.000+05:30', origin='value', entity_type='datetime', grain='hour')]
+
+    # To convert these to dicts:
+
+    entity_dicts = [entity.json() for entity in entities]
+    pprint(entity_dicts)
+    # [{'range': {'start': 7, 'end': 17},
+    #     'body': '2 children',
+    #     'type': 'value',
+    #     'parsers': ['DucklingPlugin'],
+    #     'score': 1.0,
+    #     'alternative_index': 0,
+    #     'value': 2,
+    #     'unit': 'child',
+    #     'entity_type': 'people'},
+    # {'range': {'start': 38, 'end': 54},
+    #     'body': 'tomorrow at 5 pm',
+    #     'type': 'value',
+    #     'parsers': ['DucklingPlugin'],
+    #     'score': 1.0,
+    #     'alternative_index': 0,
+    #     'value': '2022-02-11T17:00:00.000+05:30',
+    #     'entity_type': 'datetime',
+    #     'grain': 'hour'
+    # }]
+
+Guards
+------
+
+Like all plugins, the Duckling plugin can be :ref:`guarded <Guards>` by conditions that prevent its execution.
+You may need this if you want to save on latency and are sure of not expecting entities in those turns. We will use
+the :ref:`mother of all examples <Mother of all examples>` from above to make the point. We will use the :code:`current_state` to tell the plugin
+to guard itself in the *"SMALL_TALK"* state.
+
+.. ipython::
+
+    In [1]: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=[
+       ...:         "number",
+       ...:         "people",
+       ...:         "date",
+       ...:         "time",
+       ...:         "duration",
+       ...:         "intersect",
+       ...:         "amount-of-money",
+       ...:         "credit-card-number",
+       ...:     ],
+       ...:     guards=[lambda i, o: i.current_state == "SMALL_TALK"]
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: utterances = [
+       ...:    "between today 7pm and tomorrow 9pm",
+       ...:    "can we get up at 6 am",
+       ...:    "we are 7 people",
+       ...:    "2 children 1 man 3 girls",
+       ...:    "can I come now?",
+       ...:    "can I come tomorrow",
+       ...:    "how about monday then",
+       ...:    "call me on 5th march",
+       ...:    "I want 4 pizzas",
+       ...:    "2 hours",
+       ...:    "can I pay $5 instead?",
+       ...:    "my credit card number is 4111111111111111",
+       ...:]
+
+    In [5]: %%time
+       ...: input_, output = workflow.run(Input(utterances=utterances, current_state="SMALL_TALK"))
+
+    In [6]: output
+
+You can notice that the time drops from **ms** to **us** and we produce no entities.
+
+Filtering Date and Time
+-----------------------
+
+There are cases where we run into ambiguity in entity resolution. A fun case happens usually with
+the Hindi language when someone says *"कल"*. The problem is, *"कल"* could be *"tommorrow"* or *"yesterday"*.
+
+Problem
+^^^^^^^
+
+.. ipython::
+
+    In [1]: import pytz
+       ...: from datetime import datetime
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.utils import dt2timestamp
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["time"],
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: utterances = ["कल"]
+
+    In [5]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))
+       ...: reference_time = dt2timestamp(reference_dt)
+
+    In [5]: input_, output = workflow.run(Input(utterances=utterances, locale="hi_IN", reference_time=reference_time))
+
+    In [6]: output
+
+See the two entities? 
+
+- We froze our reference time for 1st Jan 2022 at 12:00:00. 
+- We get 31st December 2021
+- and 2nd Jan 2022.
+
+This could be decoded using additional context. Let's assume it is a given that dates can only be in future. Say
+a flight-booking case.
+
+.. ipython::
+
+    In [1]: import pytz
+       ...: from datetime import datetime
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.utils import dt2timestamp
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["time"],
+       ...:     datetime_filters=DucklingPlugin.FUTURE
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: utterances = ["कल"]
+
+    In [5]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))
+       ...: reference_time = dt2timestamp(reference_dt)
+
+    In [5]: input_, output = workflow.run(Input(utterances=utterances, locale="hi_IN", reference_time=reference_time))
+
+    In [6]: output
+
+We can use :code:`DucklingPlugin.PAST` for inverse. 
+
+What if the context was within the utterance? Say for payment verification cases, we receive these utterances:
+
+- *"कल ही कर दी थी"* -- *"I have already paid yesterday"*
+- *"कल कर दूंगा"* -- *"I will pay tomorrow"*
+
+We can't filter out either future or past values. In these cases, the `intent <Intents>` carries the context
+for resolving the entity value. We will look into :ref:`Temporal Intents <Temporal Intents>` for more details.
+
+
+Temporal Intents
+-----------------
+
+Filtering
+^^^^^^^^^
+
+There are cases where intents carry a notion of time, repeating an example from above:
+
+#. *"कल ही कर दी थी"* -- *"I have already paid yesterday"*
+#. *"कल कर दूंगा"* -- *"I will pay tomorrow"*
+
+While we can't decode the entity value for "कल" in the above utterances, the correct intent prediction is:
+
+#. :code:`already_paid`
+#. :code:`pay_later`
+
+If we could use this information, we could resolve the entity value for "कल". We will simulate the output
+to contain appropriate intents using the :code:`set` method of :ref:`workflow <Workflow>`.
+
+.. ipython::
+
+    In [1]: import pytz
+       ...: from datetime import datetime
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.types import Intent
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.utils import dt2timestamp
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["time"],
+       ...:     temporal_intents={
+       ...:         "already_paid": DucklingPlugin.FUTURE,
+       ...:         "pay_later": DucklingPlugin.PAST
+       ...:     }
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: utterances = ["कल ही कर दी थी"]
+       ...: workflow.set("output.intents", [Intent(name="already_paid", score=1.0)])
+
+    In [5]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))
+       ...: reference_time = dt2timestamp(reference_dt)
+       ...: input_, output = workflow.run(Input(utterances=utterances, locale="hi_IN", reference_time=reference_time))
+
+    In [6]: output
+
+    In [7]: utterances = ["कल ही कर दी थी"]
+       ...: workflow.set("output.intents", [Intent(name="pay_later", score=1.0)])
+       ...: input_, output = workflow.run(Input(utterances=utterances, locale="hi_IN", reference_time=reference_time))
+
+    In [6]: output
+
+Casting
+^^^^^^^
+
+We can also use temporal intents to cast certain entities. Machines can act on absolute time values but 
+natural language often has relative units like *"for 2 hours"*. These produce a duration entity.
+
+.. ipython::
+
+    In [1]: import pytz
+       ...: from datetime import datetime
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.utils import dt2timestamp
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["duration", "time"],
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: utterances = ["for 2h"]
+
+    In [5]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))
+       ...: reference_time = dt2timestamp(reference_dt)
+
+    In [5]: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))
+
+    In [6]: output
+
+We understand the duration but we could create an absolute time value using the reference time, but we don't know if duration 
+should be added or removed.
+
+.. ipython::
+
+    In [1]: import pytz
+       ...: from datetime import datetime
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.types import Intent
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.utils import dt2timestamp
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["time", "duration"],
+       ...:     timezone="Asia/Kolkata",
+       ...:     temporal_intents={
+       ...:         "already_paid": DucklingPlugin.FUTURE,
+       ...:         "pay_later": DucklingPlugin.PAST
+       ...:     }
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))
+       ...: reference_time = dt2timestamp(reference_dt)
+       ...: utterances = ["for 2h"]
+
+    In [5]: workflow.set("output.intents", [Intent(name="already_paid", score=1.0)])
+       ...: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))
+
+    In [6]: output
+
+    In [7]: workflow.set("output.intents", [Intent(name="pay_later", score=1.0)])
+       ...: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))
+
+    In [8]: output
+
+In case we need to always cast duration as a future or a past value we can do:
+
+
+.. ipython::
+
+    In [1]: import pytz
+       ...: from datetime import datetime
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.types import Intent
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.utils import dt2timestamp
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["time", "duration"],
+       ...:     timezone="Asia/Kolkata",
+       ...:     temporal_intents={
+       ...:         "__any__": DucklingPlugin.FUTURE,
+       ...:     }
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: reference_dt = datetime(2022, 1, 1, 12, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))
+       ...: reference_time = dt2timestamp(reference_dt)
+       ...: utterances = ["for 2h"]
+
+    In [5]: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))
+
+    In [6]: output
+
+    In [7]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["time", "duration"],
+       ...:     timezone="Asia/Kolkata",
+       ...:     temporal_intents={
+       ...:         "__any__": DucklingPlugin.PAST,
+       ...:     }
+       ...: )
+
+    In [8]: workflow = Workflow([duckling_plugin])
+       ...: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))
+       ...: output
 
 """
 import json
@@ -58,28 +438,19 @@ import pandas as pd
 import pydash as py_
 import pytz
 import requests
-from numpy import isin
 from pytz.tzinfo import BaseTzInfo
 from tqdm import tqdm
 
 from dialogy import constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.constants import EntityKeys
-from dialogy.types import PluginFn
-from dialogy.types.entity import BaseEntity, dimension_entity_map
+from dialogy.types import BaseEntity, Intent
+from dialogy.types.entity.deserialize import deserialize_duckling_entity
 from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
 
 
 class DucklingPlugin(EntityScoringMixin, Plugin):
     """
-    A :ref:`Plugin<plugin>` for extracting entities using `Duckling <https://github.com/facebook/duckling>`_. Once
-    instantiated, a :code:`duckling_parser` object will interface to an http server, running `Duckling
-    <https://github.com/facebook/duckling>`_.
-
-    This object when used as a plugin, transforms the :code:`List[Dict[str, Any]]` returned from the API to a
-    :ref:`BaseEntity<base_entity>` or one of its subclasses.
-
     :param dimensions: `Dimensions <https://github.com/facebook/duckling#supported-dimensions>`_. Of the listed
     dimensions, we support:
 
@@ -115,18 +486,30 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
     :type url: Optional[str]
     """
 
+    FUTURE = const.FUTURE
+    """
+    Select time entity values with scores greater than or equal to the reference time.
+    """
+
+    PAST = const.PAST
+    """
+    Select time entity values with scores lesser than or equal to the reference time.
+    """
+
+    __DATETIME_OPERATION_ALIAS = {FUTURE: operator.ge, PAST: operator.le}
+
     def __init__(
         self,
         dimensions: List[str],
-        timezone: str,
+        timezone: str = "UTC",
         timeout: float = 0.5,
         url: str = "http://0.0.0.0:8000/parse",
         locale: str = "en_IN",
+        temporal_intents: Optional[Dict[str, str]] = None,
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         datetime_filters: Optional[str] = None,
         threshold: Optional[float] = None,
-        entity_map: Optional[Dict[str, Any]] = None,
         activate_latent_entities: Union[Callable[..., bool], bool] = False,
         reference_time_column: str = const.REFERENCE_TIME,
         input_column: str = const.ALTERNATIVES,
@@ -151,6 +534,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.timeout = timeout
         self.threshold = threshold
         self.url = url
+        self.temporal_intents = temporal_intents or {}
         self.reference_time: Optional[int] = None
         self.reference_time_column = reference_time_column
         self.datetime_filters = datetime_filters
@@ -165,10 +549,6 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.headers: Dict[str, str] = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
-
-        self.dimension_entity_map: Dict[str, Dict[str, Any]]
-        entity_map = entity_map or {}
-        self.dimension_entity_map = {**dimension_entity_map, **entity_map}
 
     def __set_timezone(self) -> Optional[BaseTzInfo]:
         """
@@ -266,8 +646,8 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 " a valid comparison operator here: https://docs.python.org/3/library/operator.html"
             )
 
-        if filter_type in self.DATETIME_OPERATION_ALIAS:
-            operation = self.DATETIME_OPERATION_ALIAS[filter_type]
+        if filter_type in self.__DATETIME_OPERATION_ALIAS:
+            operation = self.__DATETIME_OPERATION_ALIAS[filter_type]
         else:
             operation = self.get_operator(filter_type)
 
@@ -305,7 +685,11 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         return super().apply_filters(entities)
 
     def _reshape(
-        self, entities_json: List[Dict[str, Any]], alternative_index: int = 0
+        self,
+        entities_json: List[Dict[str, Any]],
+        alternative_index: int = 0,
+        reference_time: Optional[int] = None,
+        duration_cast_operator: Optional[str] = None,
     ) -> List[BaseEntity]:
         """
         Create a list of :ref:`BaseEntity <base_entity>` objects from a list of entity dicts.
@@ -317,62 +701,18 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :return: A list of objects subclassed from :ref:`BaseEntity <base_entity>`
         :rtype: Optional[List[BaseEntity]]
         """
-        entity_object_list: List[BaseEntity] = []
-        duckling_entity: BaseEntity
-        try:
-            # For each entity dict:
-            for entity in entities_json:
-                if entity[EntityKeys.DIM] == EntityKeys.CREDIT_CARD_NUMBER:
-                    cls = self.dimension_entity_map[entity[EntityKeys.DIM]][
-                        EntityKeys.VALUE
-                    ]
-                    duckling_entity = cls.from_dict(entity)
-                    duckling_entity.add_parser(self)
-                    # Depending on the type of entity, the value is searched and filled.
-                    duckling_entity.alternative_index = alternative_index
-                    # Collect the entity object in a list.
-                    entity_object_list.append(duckling_entity)
-
-                elif entity[EntityKeys.VALUE][EntityKeys.TYPE] in [
-                    EntityKeys.VALUE,
-                    EntityKeys.DURATION,
-                    EntityKeys.INTERVAL,
-                ]:
-                    # We can auto convert dict forms of duckling entities to dialogy entity classes only if they are
-                    # known in advance. We currently support only the types in the condition above.
-                    if entity[EntityKeys.VALUE][EntityKeys.TYPE] == EntityKeys.INTERVAL:
-                        # Duckling entities with interval type have a different structure for value(s).
-                        # They have a need to express units in "from", "to" format.
-                        cls = self.dimension_entity_map[entity[EntityKeys.DIM]][
-                            EntityKeys.INTERVAL
-                        ]
-                    else:
-                        cls = self.dimension_entity_map[entity[EntityKeys.DIM]][
-                            EntityKeys.VALUE
-                        ]
-                        # The most appropriate class is picked for making an object from the dict.
-                    duckling_entity = cls.from_dict(entity)
-                    duckling_entity.add_parser(self)
-                    # Depending on the type of entity, the value is searched and filled.
-                    duckling_entity.set_value()
-                    duckling_entity.alternative_index = alternative_index
-                    # Collect the entity object in a list.
-                    entity_object_list.append(duckling_entity)
-                else:
-                    # Raised only if an unsupported `dimension` is used.
-                    raise NotImplementedError(
-                        f"Entities with value.type {entity['value']['type']} are"
-                        " not implemented. Report this"
-                        " issue here: https://github.com/Vernacular-ai/dialogy/issues"
-                    )
-        except KeyError as key_error:
-            # Being vary of structural changes in the API or entity dicts.
-            # Under normal circumstances this error shouldn't be raised.
-            logger.debug(traceback.format_exc())
-            raise KeyError(
-                f"Missing key {key_error} in entity {entity}."
-            ) from key_error
-        return entity_object_list
+        deserialized_entities = []
+        for entity_json in entities_json:
+            entity = deserialize_duckling_entity(
+                entity_json,
+                alternative_index,
+                reference_time=reference_time,
+                timezone=self.timezone,
+                duration_cast_operator=duration_cast_operator,
+            )
+            entity.add_parser(self)
+            deserialized_entities.append(entity)
+        return deserialized_entities
 
     def _get_entities(
         self,
@@ -412,13 +752,13 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 # A list of dicts or an empty list.
                 return {const.IDX: sort_idx, const.VALUE: response.json()}
         except requests.exceptions.Timeout as timeout_exception:
-            logger.error(f"Duckling timed out: {timeout_exception}")
-            logger.error(pformat(body))
-            return {const.IDX: sort_idx, const.VALUE: []}
+            logger.error(f"Duckling timed out: {timeout_exception}")  # pragma: no cover
+            logger.error(pformat(body))  # pragma: no cover
+            return {const.IDX: sort_idx, const.VALUE: []}  # pragma: no cover
         except requests.exceptions.ConnectionError as connection_error:
             logger.error(f"Duckling server is turned off?: {connection_error}")
             logger.error(pformat(body))
-            return {const.IDX: sort_idx, const.VALUE: []}
+            raise requests.exceptions.ConnectionError from connection_error
 
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
@@ -471,11 +811,22 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         ]
 
     def apply_entity_classes(
-        self, list_of_entities: List[List[Dict[str, Any]]]
+        self,
+        list_of_entities: List[List[Dict[str, Any]]],
+        reference_time: Optional[int] = None,
+        timezone: str = "UTC",
+        duration_cast_operator: Optional[str] = None,
     ) -> List[BaseEntity]:
         shaped_entities = []
         for (alternative_index, entities) in enumerate(list_of_entities):
-            shaped_entities.append(self._reshape(entities, alternative_index))
+            shaped_entities.append(
+                self._reshape(
+                    entities,
+                    alternative_index=alternative_index,
+                    reference_time=reference_time,
+                    duration_cast_operator=duration_cast_operator,
+                )
+            )
         return py_.flatten(shaped_entities)
 
     def validate(
@@ -496,50 +847,70 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             raise TypeError(f"Expected {input_} to be a List[str] or str.")
         return self
 
-    def extract(
+    def parse(
         self,
         transcripts: Union[str, List[str]],
-        locale: str,
+        locale: Optional[str] = None,
         reference_time: Optional[int] = None,
         use_latent: Union[Callable[..., bool], bool] = False,
+        intents: Optional[List[Intent]] = None,
     ) -> List[BaseEntity]:
         list_of_entities: List[List[Dict[str, Any]]] = []
         entities: List[BaseEntity] = []
+        duration_cast_operator = None
+        intent = None
 
+        if intents:
+            intent, *_ = intents
+
+        if isinstance(intent, Intent) and intent.name in self.temporal_intents:
+            duration_cast_operator = self.datetime_filters = self.temporal_intents.get(
+                intent.name
+            )
+
+        if const.ANY in self.temporal_intents:
+            duration_cast_operator = self.temporal_intents.get(const.ANY)
+
+        locale = locale or self.locale
+        self.reference_time = reference_time = reference_time or self.reference_time
         self.validate(transcripts, reference_time)
-        self.reference_time = reference_time
-
         if isinstance(transcripts, str):
             transcripts = [transcripts]  # pragma: no cover
 
-        try:
-            list_of_entities = self._get_entities_concurrent(
-                transcripts,
-                locale,
-                reference_time=reference_time,
-                use_latent=use_latent,
-            )
-            entities = self.apply_entity_classes(list_of_entities)
-            entities = self.entity_consensus(entities, len(transcripts))
-            return self.apply_filters(entities)
-        except ValueError as value_error:
-            raise ValueError(str(value_error)) from value_error
+        list_of_entities = self._get_entities_concurrent(
+            transcripts,
+            locale=locale,
+            reference_time=reference_time,
+            use_latent=use_latent,
+        )
+        entities = self.apply_entity_classes(
+            list_of_entities,
+            reference_time,
+            duration_cast_operator=duration_cast_operator,
+        )
+        entities = self.entity_consensus(entities, len(transcripts))
+        return self.apply_filters(entities)
 
-    def utility(self, input: Input, _: Output) -> List[BaseEntity]:
+    def utility(self, input: Input, output: Output) -> List[BaseEntity]:
         """
         Produces Duckling entities, runs with a :ref:`Workflow's run<workflow_run>` method.
 
-        :param args: Expects a tuple of :code:`Tuple[natural language for parsing entities, reference time in milliseconds, locale]`
+        :param argbrightons: Expects a tuple of :code:`Tuple[natural language for parsing entities, reference time in milliseconds, locale]`
         :type args: Tuple(Union[str, List[str]], int, str)
         :return: A list of duckling entities.
         :rtype: List[BaseEntity]
         """
         transcripts = input.transcripts
-        reference_time = input.reference_time
-        locale = input.locale
+        self.reference_time = input.reference_time
+        self.locale = input.locale or self.locale
         use_latent = input.latent_entities
-        return self.extract(
-            transcripts, locale, reference_time=reference_time, use_latent=use_latent
+
+        return self.parse(
+            transcripts,
+            locale=self.locale,
+            reference_time=self.reference_time,
+            use_latent=use_latent,
+            intents=output.intents,
         )
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
@@ -573,7 +944,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                     f"{reference_time=} should be isoformat date or unix timestamp integer."
                 )
             transcripts = self.make_transform_values(row[self.input_column])
-            entities = self.extract(
+            entities = self.parse(
                 transcripts,
                 lang_detect_from_text(self.input_column),
                 reference_time=reference_time,

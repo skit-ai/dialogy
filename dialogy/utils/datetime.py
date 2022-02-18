@@ -36,6 +36,16 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
     """
     Convert date in ISO 8601 format to unix ms timestamp.
 
+    .. _make_unix_ts:
+
+    .. ipython ::
+
+        In [1]: from dialogy.utils.datetime import make_unix_ts
+
+        In [2]: ts = make_unix_ts("Asia/Kolkata")("2022-02-07T19:39:39.537827")
+
+        In [3]: ts == 1644241599537
+
     :param tz: A timezone string, defaults to "UTC"
     :type tz: Optional[str], optional
     :return: A callable that converts a date in ISO 8601 format to unix ms timestamp.
@@ -62,3 +72,7 @@ def make_unix_ts(tz: str = "UTC") -> Callable[[str], int]:
         return dt2timestamp(dt)
 
     return make_tz_aware
+
+
+def unix_ts_to_datetime(reference_time: int, timezone: str = "UTC") -> datetime:
+    return datetime.fromtimestamp(reference_time / 1000, pytz.timezone(timezone))

@@ -13,11 +13,11 @@
       - type: "GPE"
         value: "Delhi"
   expected:
-    - type: "GPE"
+    - entity_type: "GPE"
       value: "New Delhi"
-    - type: "GPE"
+    - entity_type: "GPE"
       value: "Panipat"
-    - type: "GPE"
+    - entity_type: "GPE"
       value: "Delhi"
   config:
     debug: false
@@ -27,9 +27,9 @@
   input:
     - text: "i want to parse a token in delhi"
   expected:
-    - type: "some_entity_type"
+    - entity_type: "some_entity_type"
       value: "entity_value"
-    - type: "location"
+    - entity_type: "location"
       value: "delhi"
   config:
     debug: false
@@ -49,7 +49,7 @@
   input:
     - text: "bhadrak"
   expected:
-    - type: "constituency_name"
+    - entity_type: "constituency_name"
       value: "bhadrak"
   config:
     debug: false
@@ -74,7 +74,7 @@
       - type: "GPE"
         value: "Delhi"
   expected:
-    - type: "ORG"
+    - entity_type: "ORG"
       value: "Google"
   config:
     style: spacy
@@ -160,6 +160,6 @@
         - online|debit card|credit card|bhim upi|upi|amazon pay
         - ऑनलाइन|डेबिट वार्ड|क्रेडिट कार्ड|भीम उपआयी|उपआयी|अमेज़न पे
   expected:
-    - type: "payment"
+    - entity_type: "payment"
       value: "online"
       score: 0.9

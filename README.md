@@ -5,7 +5,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/03ab1c93c9354def81de73ba04b0d94c)](https://www.codacy.com/gh/skit-ai/dialogy/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Vernacular-ai/dialogy&amp;utm_campaign=Badge_Grade)
 [![PyPI version](https://badge.fury.io/py/dialogy.svg)](https://badge.fury.io/py/dialogy)
 
-Dialogy is a library for building SLU applications.
+Dialogy is a library for building and managing SLU applications.
 [Documentation](https://skit-ai.github.io/dialogy/)
 
 ## Installation
@@ -14,7 +14,8 @@ Dialogy is a library for building SLU applications.
 pip install dialogy
 ```
 
-Dialogy's CLI supports building and migration of projects.
+Dialogy's CLI supports building and migration of projects. Migration is hard because a few modules need a forced update but a few others
+should be retained by the developer. The lack of this expression makes it hard to migrate smoothly. Building new projects should be fairly simple.
 
 ```txt
 dialogy -h
@@ -49,31 +50,52 @@ optional arguments:
   --master              Download the template's master branch (HEAD) instead of the latest tag.
 ```
 
-## Concepts
+## Building
 
-There are a few key concepts to build a machine-learning `Workflow`(s) using Dialogy.
-All the effects comprising pre-processing, classification, scoring, ranking, etc are governed by `Plugin`(s).
+To build SLU pipelines using Dialogy, you would need to understand the building blocks.
 
-### Workflow
+1. Input
+2. Output
+3. Plugin
+4. Workflow 
 
-A workflow has these objectives.
+### Input
 
-1. Allow interactions between different plugins.
+A class that contains initial values / placeholders for the pipeline.
 
-2. Isolating plugins from each other. A plugin can't access another in the chain.
+### Output
 
-3. Storing the information till the end of the execution of plugin chain.
+A class that contains the results / placeholders for the pipeline.
 
 ### Plugin
 
-A plugin transforms data. Depending on its utility, a plugin may have phases of operation.
+- A Plugin is an abstract class with an abstract method `def utility(i: Input, o: Output) -> Any`.
+- Initialize your class with artifact paths, reading files, loading models, etc. 
+- At runtime we call the `utility` method to get the results.
 
-- Bulk transformation during training phase.
+### Workflow
 
-- Inference or Transformation
+- A workflow is a map over all the plugins in a sequence, as desired by the pipeline creator. 
+- The workflow iterates over each plugin, calls its `utility` method.
+- Each plugin sets the value within the workflow automatically.
 
 ## Test
 
 ```shell
 make test
 ```
+
+## Contributors
+
+Clone the repository. We use [poetry](https://python-poetry.org/) to setup dependencies.
+
+```shell
+git clone git@github.com:skit-ai/dialogy.git
+cd dialogy
+# Activate your virtualenv, you can also let poetry take care of it.
+poetry install
+make test
+```
+Ensure tests are passing before you start working on your PRs.
+
+[read here](https://github.com/skit-ai/dialogy/blob/master/CONTRIBUTING.md)

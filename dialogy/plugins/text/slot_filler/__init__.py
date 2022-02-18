@@ -14,6 +14,6 @@ tells us if any of these are related to each other.
 As per the current design, an :ref:`Intent <intent>` can contain a number of :ref:`Slot <slot>`. A :ref:`Slot <slot>`
 fills an entity of a pre-defined type.
 
-- A :ref:`Slot <slot>` configured to fill a :ref:`TimeEntity <time_entity>` will not fill a :ref:`LocationEntity <location_entity>`.
+- A :ref:`Slot <slot>` configured to fill a :ref:`TimeEntity <time_entity>` will not fill a :ref:`KeywordEntity <KeywordEntity>`.
 - A :ref:`Slot <slot>` will not fill more than one entity even if the type matches, unless :code:`fill_multiple` is provided.
 """

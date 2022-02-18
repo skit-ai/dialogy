@@ -1,11 +1,5 @@
 """
-.. _slot:
-
-Type definition for Slots.
-
-Import classes:
-
-    - Slot
+Type definition for Slots. Read :ref:`Intent<Intent>` and :ref:`Slot Filling<Slot Filling>` for details.
 """
 from __future__ import annotations
 
@@ -13,13 +7,15 @@ from typing import Any, Dict, List
 
 import attr
 
-import dialogy.constants as const
-from dialogy.types.entity import BaseEntity
+from dialogy.types import BaseEntity
 
 
 @attr.s
 class Slot:
-    """Slot Type
+    """
+    Slot Type
+
+    .. _Slot:
 
     Keys are:
     - `name` of the slot

@@ -55,7 +55,7 @@
   'end': 17,
   'dim': 'time',
   'latent': False}]
-  exception: "TypeError"
+  exception: "ValueError"
 
 - description: "people entity with a missing value."
   input: "3 people"
@@ -70,7 +70,7 @@
     "dim": "people",
     "latent": False
   }]
-  exception: "KeyError"
+  exception: "ValueError"
 
 - description: "numerical entity test"
   input: "4 items"
@@ -182,6 +182,25 @@
   'end': 20,
   'dim': 'time',
   'latent': False}]
+  exception: "TypeError"
+
+- description: "Test datetime entity type"
+  input: "can we come tomorrow"
+  duckling:
+    dimensions: ["time"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': 'now',
+   'start': 12,
+   'value': {'values': [{'value': '2022-02-10T22:57:02.381+05:30',
+      'grain': 'second',
+      'type': 'value'}],
+    'value': '2022-02-10T22:57:02.381+05:30',
+    'grain': 'second',
+    'type': 'value'},
+   'end': 15,
+   'dim': 'time',
+   'latent': False}]
   expected: [{"entity_type": "datetime"}]
 
 - description: "time interval entity with only from value."
@@ -228,7 +247,7 @@
   'latent': False}]
   expected: [{"entity_type":"time"}]
 
-- description: "duration entity"
+- description: "duration entity without auto type cast"
   input: "2 hours"
   duckling:
     dimensions: ["people", "time", "date", "duration"]
@@ -244,7 +263,101 @@
   'end': 7,
   'dim': 'duration',
   'latent': False}]
+  reference_time: 1644662968859
   expected: [{"entity_type": "duration"}]
+
+- description: "duration entity casting fails if reference time is missing"
+  input: "2 hours"
+  output:
+    intents:
+      - name: "already_paid"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+    temporal_intents:
+      already_paid: "past"
+  mock_entity_json: [{'body': '2 hours',
+  'start': 0,
+  'value': {'value': 2,
+   'hour': 2,
+   'type': 'value',
+   'unit': 'hour',
+   'normalized': {'value': 7200, 'unit': 'second'}},
+  'end': 7,
+  'dim': 'duration',
+  'latent': False}]
+  exception: "TypeError"
+
+- description: "duration entity cast via temporal intents"
+  input: "I paid 2 hours ago"
+  output: 
+    intents: 
+      - name: "already_paid"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    temporal_intents:
+      already_paid: "past"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': '2 hours',
+  'start': 0,
+  'value': {'value': 2,
+   'hour': 2,
+   'type': 'value',
+   'unit': 'hour',
+   'normalized': {'value': 7200, 'unit': 'second'}},
+  'end': 7,
+  'dim': 'duration',
+  'latent': False}]
+  reference_time: 1644662968859
+  expected: [{"entity_type": "datetime", "value": "2022-02-12T14:19:28.859000+05:30"}]
+
+- description: "duration entity cast via any intents"
+  input: "I paid 2 hours ago"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    temporal_intents:
+      __any__: "past"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{'body': '2 hours',
+  'start': 0,
+  'value': {'value': 2,
+   'hour': 2,
+   'type': 'value',
+   'unit': 'hour',
+   'normalized': {'value': 7200, 'unit': 'second'}},
+  'end': 7,
+  'dim': 'duration',
+  'latent': False}]
+  reference_time: 1644662968859
+  expected: [{"entity_type": "datetime", "value": "2022-02-12T14:19:28.859000+05:30"}]
+
+
+- description: "duration entity cast via temporal intents"
+  input: "will pay after 2 days"
+  output:
+    intents:
+      - name: "pay_later"
+  duckling:
+    dimensions: ["people", "time", "date", "duration"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+    temporal_intents:
+      pay_later: "future"
+  mock_entity_json: [{'body': '2 days',
+   'start': 0,
+   'value': {'value': 2,
+    'day': 2,
+    'type': 'value',
+    'unit': 'day',
+    'normalized': {'value': 172800, 'unit': 'second'}},
+   'end': 6,
+   'dim': 'duration',
+   'latent': False}]
+  reference_time: 1644662968859
+  expected: [{"entity_type": "date", "value": "2022-02-14T16:19:28.859000+05:30"}]
 
 - description: "no entity found."
   input: "there is no spoon"
@@ -312,10 +425,10 @@
     "start": 67,
     "value": {"value": 3, "type": "foobar", "unit": "person"},
     "end": 75,
-    "dim": "number",
+    "dim": "foobar",
     "latent": False,
   }]
-  exception: "NotImplementedError"
+  exception: "ValueError"
 
 - description: "Incorrect timezone"
   input: "i need it at 5 am"

@@ -21,46 +21,56 @@ def is_date(entity: BaseEntity) -> bool:
 
 class CombineDateTimeOverSlots(Plugin):
     """
+
+    .. _CombineDateTimeOverSlots:
+
     Dialog case:
 
     Assume that at the moment of dialog the date is 15th December 2019.
 
-    [1] BOT: When do you want to visit?
-    [2] USER: Day after tomorrow        # entity = {'type': 'date', 'value': '2019-12-17'}
-    [3] BOT: At what time?
-    [4] USER: 3 pm                      # entity = {'type': 'time', 'value': '2019-12-15T15:00:00+0000'}
+    +---+------+----------------------------+-------------------------------------------------------+
+    |   |      |          utterance         |                         entity                        |
+    +===+======+============================+=======================================================+
+    | 1 | BOT  | When do you want to visit? |                                                       |
+    +---+------+----------------------------+-------------------------------------------------------+
+    | 2 | USER | Day after tomorrow         |        {'type': 'date', 'value': '2019-12-17'}        |
+    +---+------+----------------------------+-------------------------------------------------------+
+    | 3 | BOT  | At what time?              |                                                       |
+    +---+------+----------------------------+-------------------------------------------------------+
+    | 4 | USER | 3 pm                       | {'type': 'time', 'value': '2019-12-15T15:00:00+0000'} |
+    +---+------+----------------------------+-------------------------------------------------------+
 
     We want to use the slots such that the date from interaction [2] and the time from interaction [4] are combined into a single entity.
 
     We receive this as a tracked slot:
 
-    ```json
-    [{
-        "name": "_callback_",
-        "slots": [{
-            "name": "callback_datetime",
-            "type": [
-                "time",
-                "date",
-                "datetime"
-            ],
-            "values": [{
-                "alternative_index": 0,
-                "body": "tomorrow",
-                "entity_type": "date",
-                "grain": "day",
-                "parsers": ["duckling"],
-                "range": {
-                    "end": 8,
-                    "start": 0
-                },
-                "score": null,
-                "type": "value",
-                "value": "2021-10-15T00:00:00+05:30"
+    .. code-block:: json
+
+        [{
+            "name": "_callback_",
+            "slots": [{
+                "name": "callback_datetime",
+                "type": [
+                    "time",
+                    "date",
+                    "datetime"
+                ],
+                "values": [{
+                    "alternative_index": 0,
+                    "body": "tomorrow",
+                    "entity_type": "date",
+                    "grain": "day",
+                    "parsers": ["duckling"],
+                    "range": {
+                        "end": 8,
+                        "start": 0
+                    },
+                    "score": null,
+                    "type": "value",
+                    "value": "2021-10-15T00:00:00+05:30"
+                }]
             }]
         }]
-    }]
-    ```
 
     At interaction [4] we would have a TimeEntity from DucklingPlugin but as we can see, the tracked slot provides us
     previously filled values as json.
@@ -80,6 +90,7 @@ class CombineDateTimeOverSlots(Plugin):
         guards: Optional[List[Guard]] = None,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
+        replace_output: bool = True,
         use_transform: bool = False,
         trigger_intents: Optional[List[str]] = None,
         debug: bool = False,
@@ -87,6 +98,7 @@ class CombineDateTimeOverSlots(Plugin):
         super().__init__(
             dest=dest,
             guards=guards,
+            replace_output=replace_output,
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
@@ -96,7 +108,7 @@ class CombineDateTimeOverSlots(Plugin):
 
     def join(
         self, current_entity: TimeEntity, previous_entity: TimeEntity
-    ) -> TimeEntity:
+    ) -> BaseEntity:
         current_turn_datetime = current_entity.get_value()
         previous_turn_datetime = previous_entity.get_value()
 
@@ -114,9 +126,8 @@ class CombineDateTimeOverSlots(Plugin):
             )
         else:
             return current_entity
-
-        return attr.evolve(
-            current_entity, **{const.EntityKeys.VALUE: combined_value.isoformat()}
+        return TimeEntity.from_dict(
+            {const.VALUE: combined_value.isoformat()}, current_entity
         )
 
     def get_tracked_slots(
@@ -143,13 +154,13 @@ class CombineDateTimeOverSlots(Plugin):
         if not tracked_slots:
             return None
 
-        filled_entities_json = tracked_slots[0][const.EntityKeys.VALUES]
+        filled_entities_json = tracked_slots[0][const.VALUES]
 
         if not filled_entities_json or not isinstance(filled_entities_json, list):
             return None
 
         filled_entity_json, *_ = filled_entities_json
-        filled_entity_json[const.EntityKeys.VALUES] = [
+        filled_entity_json[const.VALUES] = [
             {const.VALUE: filled_entity_json[const.VALUE]}
         ]
 
@@ -158,6 +169,18 @@ class CombineDateTimeOverSlots(Plugin):
     def combine_time_entities_from_slots(
         self, slot_tracker: Optional[List[Dict[str, Any]]], entities: List[BaseEntity]
     ) -> List[BaseEntity]:
+        """
+        Combines the time entities from the slots with the entities from the current turn.
+
+        .. _combinetimeentitiesfromslots:
+
+        :param slot_tracker: The slot tracker from the previous turn.
+        :type slot_tracker: Optional[List[Dict[str, Any]]]
+        :param entities: Entities found in the current turn.
+        :type entities: List[BaseEntity]
+        :return: Combined set of entities.
+        :rtype: List[BaseEntity]
+        """
         previously_filled_time_entity = self.pick_previously_filled_time_entity(
             self.get_tracked_slots(slot_tracker)
         )

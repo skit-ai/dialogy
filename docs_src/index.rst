@@ -18,33 +18,59 @@ Dialogy
 .. image:: https://badge.fury.io/py/dialogy.svg
     :target: https://badge.fury.io/py/dialogy
 
-Dialogy is a batteries-included opinionated framework to build machine-learning solutions for speech applications.
 
--   Plugin-based: Makes it easy to import/export components to other projects.
--   Stack-agnostic: No assumptions made on ML stack; your choice of machine learning library will not be affected by using Dialogy.
--   Progressive: Minimal boilerplate writing to let you focus on your machine learning problems.
+`Dialogy <https://github.com/skit-ai/dialogy>`_ is a library for building and managing SLU applications.
 
-Sections 📄
-------------
-1. :ref:`Index<genindex>`
-2. Popular Sections
+Topics 📄
+#########
 
-   1. :ref:`Workflow<workflow>`
-   2. :ref:`Plugin<Plugin>`
-         1. :ref:`DucklingPlugin<duckling_plugin>`
-         2. :ref:`MergeASROutput<merge_asr_output>`
-         3. :ref:`WERCalibrationPlugin<calibration_plugin>`
-         4. :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>`
-         5. :ref:`VotePlugin<vote_plugin>`
-         6. :ref:`XLMRMultiClass<xlmr_classifier>`
+Listing sections by order of significance. Higher ranking items are helpful in understanding items that are ranked lower.
 
-3. All Modules
 
-   .. toctree::
-      :maxdepth: 1
-      :glob:
-
-      ../source/dialogy.*
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+|   |                                                                |                                                        Description                                                        |
++===+================================================================+===========================================================================================================================+
+| 1 | :ref:`Input <Input>`                                           | A fundamental unit that describes the inputs (along with their derivates) of the inference API.                           |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| 2 | :ref:`Output <Output>`                                         | A fundamental unit that describes the output of the inference API.                                                        |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| 3 | :ref:`Workflow <WorkflowClass>`                                | A workflow *has* an :code:`Input` and an :code:`Output`. It also *contains* :code:`plugins`.                              |
+|   |                                                                | The :code:`run(...)` produces the inference API's response.                                                               |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| 4 | :ref:`Plugin <AbstractPlugin>`                                 | The base (abstract) class for all plugins.                                                                                |
+|   |                                                                |                                                                                                                           |
+|   |                                                                | [:ref:`how to write plugins <Writing Plugins>`]                                                                           |
+|   |                                                                |                                                                                                                           |
+|   |                                                                | This class requires creation of a utility method of the following signature:                                              |
+|   |                                                                |                                                                                                                           |
+|   |                                                                | .. code:: python                                                                                                          |
+|   |                                                                |                                                                                                                           |
+|   |                                                                |     def utility(self, input_: Input, output: Output) -> Any:                                                              |
+|   |                                                                |        ...                                                                                                                |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+|   | :ref:`DucklingPlugin<DucklingPlugin>`                          | Connects to the Duckling API and returns entities of type:                                                                |
+|   |                                                                |                                                                                                                           |
+|   |                                                                | #. **date**                                                                                                               |
+|   |                                                                | #. **time**                                                                                                               |
+|   |                                                                | #. **duration**                                                                                                           |
+|   |                                                                | #. **number**                                                                                                             |
+|   |                                                                | #. **people**                                                                                                             |
+|   |                                                                | #. **credit-card-number**                                                                                                 |
+|   |                                                                | #. **amount-of-money**                                                                                                    |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+|   | :ref:`MergeASROutput<merge_asr_output>`                        | Featurizer for the intent classifier model. Concatenates :code:`input.utterances`.                                        |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+|   | :ref:`XLMRMultiClass<xlmr_classifier>`                         | The intent classifier model as a plugin. Requires :code:`input.clf_feature` and returns `List[Intent]`.                   |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+|   | :ref:`CombineDateTimeOverSlots <CombineDateTimeOverSlots>`     | This plugin combines date/time entities tracked by the slot filler (previous turns)                                       |
+|   |                                                                | with time/date entities extracted in the current turn.                                                                    |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+|   | :ref:`WERCalibrationPlugin<calibration_plugin>`                | This plugin can only be used with the proprietary ASR of skit.ai. Uses :code:`lm_score` and :code:`am_score` to           |
+|   |                                                                | detect if the current set of code:`input.utterances` are too noisy for the intent classifier to use.                      |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+|   | :ref:`CombineDateTimeOverSlots<CombineDateTimeOverSlots>`      | This plugin can only be used with the proprietary ASR of skit.ai. Uses :code:`lm_score` and :code:`am_score` to           |
+|   |                                                                | detect if the current set of code:`input.utterances` are too noisy for the intent classifier to use.                      |
++---+----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
 
 
 Installation
@@ -61,19 +87,116 @@ Test
 
    make test
 
-FAQs
------
+Getting started
+---------------
 
-Starting projects
-**************************
+Dialogy's CLI supports building and migration of projects. Migration is hard because a few modules need a forced update but a few others
+should be retained by the developer. The lack of this expression makes it hard to migrate smoothly. Building new projects should be fairly simple.
 
-We have a `template <https://github.com/Vernacular-ai/dialogy-template-simple-transformers>`_
-that can help you get started with a SLU project.
+.. code-block:: bash
+
+   dialogy -h
+   usage: dialogy [-h] {create,update,train} ...
+
+   positional arguments:
+   {create,update,train}
+                           Dialogy project utilities.
+      create              Create a new project.
+      update              Migrate an existing project to the latest template version.
+      train               Train a workflow.
+
+   optional arguments:
+   -h, --help            show this help message and exit
+
+Project Creation
+----------------
+
+.. code-block:: bash
+
+   dialogy create -h
+   usage: dialogy create [-h] [--template TEMPLATE] [--dry-run] [--namespace NAMESPACE] [--master] project
+
+   positional arguments:
+   project               A directory with this name will be created at the root of command invocation.
+
+   optional arguments:
+   -h, --help            show this help message and exit
+   --template TEMPLATE
+   --dry-run             Make no change to the directory structure.
+   --namespace NAMESPACE
+                           The github/gitlab user or organization name where the template project lies.
+   --master              Download the template's master branch (HEAD) instead of the latest tag.
+
+
+Contributors
+------------
+
+Clone the repository. We use [`poetry <https://python-poetry.org/>`_] to setup dependencies.
 
 .. code-block:: shell
 
-   dialogy create <your_project_name> dialogy-template-simple-transformers
+   git clone git@github.com:skit-ai/dialogy.git
+   cd dialogy
+   # Activate your virtualenv/conda/poetry.
+   poetry install
+   make test
 
-An interactive session will collect a few details and create a project scaffolding ready to use.
+- Ensure tests are passing before you start working on your PRs.
+- Duckling server should be running for docs to produce code-blocks.
 
-.. note:: Popular workflow sub-classes will be accepted after code-review.
+[`Read more <https://github.com/skit-ai/dialogy/blob/master/CONTRIBUTING.md>`_]
+
+Index
+#######
+
+:ref:`Index<genindex>`
+
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Basics
+
+   Input <./source/dialogy.base.input>
+   Output <./source/dialogy.base.output>
+   Workflow <./source/dialogy.workflow>
+   Plugin <./source/dialogy.base.plugin>
+   Intent <./source/dialogy.types.intent>
+   Entity <./source/dialogy.types.entity.base_entity>
+   Slots <./source/dialogy.types.slots>
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Types
+
+   Pattern Entity <./source/dialogy.types.entity.keyword>
+   Currency Entity <./source/dialogy.types.entity.amount_of_money>
+   Credit Card Number Entity <./source/dialogy.types.entity.credit_card_number>
+   Numeric Entity <./source/dialogy.types.entity.numerical>
+   People Entity <./source/dialogy.types.entity.people>
+   Time Entity <./source/dialogy.types.entity.time>
+   Time Interval Entity <./source/dialogy.types.entity.time_interval>
+   Duration Entity <./source/dialogy.types.entity.duration>
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Plugins
+
+   ASR Featurizer <./source/dialogy.plugins.text.merge_asr_output>
+   Intent Classifiers <./source/dialogy.plugins.text.classification>
+   Duckling Entities <./source/dialogy.plugins.text.duckling_plugin>
+   Slot Filler <./source/dialogy.plugins.text.slot_filler>
+   Regex Entity Search <./source/dialogy.plugins.text.list_entity_plugin>
+   Fuzzy Entity Search <./source/dialogy.plugins.text.list_search_plugin>
+   Entity Scoring <./source/dialogy.base.entity_extractor>
+   Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
+   Combine DateTime Over Slots <./source/dialogy.plugins.text.combine_date_time>
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Misc
+
+   Utils <./source/dialogy.utils>

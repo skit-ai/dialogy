@@ -72,6 +72,15 @@ def test_workflow_invalid_set_path():
         workflow.set("invalid.path", [])
 
 
+def test_workflow_invalid_set_attribute():
+    """
+    We can't set invalid values in workflow.
+    """
+    workflow = Workflow()
+    with pytest.raises(ValueError):
+        workflow.set("output.invalid", [])
+
+
 def test_workflow_invalid_set_value():
     """
     We can't set invalid values in workflow.

@@ -64,8 +64,8 @@ class CanonicalizationPlugin(Plugin):
             if entity.alternative_index is None or not entity.alternative_indices:
                 entity  # pylint: disable=pointless-statement
                 continue
-            start = entity.range[const.EntityKeys.START]
-            end = entity.range[const.EntityKeys.END]
+            start = entity.range[const.START]
+            end = entity.range[const.END]
             transcript = transcripts[entity.alternative_index]
             canon = f"{transcript[:start]}{get_entity_type(entity)}{transcript[end:]}"
             for idx in entity.alternative_indices:

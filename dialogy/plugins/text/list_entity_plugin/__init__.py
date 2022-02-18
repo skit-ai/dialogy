@@ -1,12 +1,62 @@
 """
-.. _list_entity_plugin:
+.. _ListEntityPlugin:
 
-Module needs refactor. We are currently keeping all strategies bundled as methods as opposed to SearchStrategyClasses.
+Regex Search
+-------------
 
-Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We can ship individual plugins but at the
-same time, the difference is just configuration of each of these tools/services. There is another difference of
-intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting
-all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.
+We have often seen certain keywords that gain significance in an SLU project. These keywords are 
+easy to extract via patterns and are often used to create entities. The :ref:`ListEntityPlugin<ListEntityPlugin>`
+helps in this task, it requires a pattern-map, we call it :code:`candidates`.
+
+
+.. ipython::
+
+    In [1]: from dialogy.workflow import Workflow
+       ...: from dialogy.plugins import ListEntityPlugin
+       ...: from dialogy.base import Input
+
+    In [2]: candidates = {
+       ...:      "colours": {
+       ...:          "red": ["red", "crimson", "ruby", "raspberry"],
+       ...:          "blue": ["blue", "azure", "indigo", "navy"],
+       ...:          "green": ["green", "emerald", "jade", "teal"],
+       ...:      }, 
+       ...:    }
+
+    In [2]: list_entity_plugin = ListEntityPlugin(
+       ...:   candidates=candidates,
+       ...:   style="regex",
+       ...:   dest="output.entities"
+       ...: )
+       ...: workflow = Workflow([list_entity_plugin])
+       ...: _, output = workflow.run(Input(utterances="I want an emerald green shirt"))
+
+    In [3]: output
+
+Spacy NER
+-----------
+
+We also allow using `spacy's NER <https://spacy.io/usage/spacy-101#annotations-ner>`_. This has to be passed within the
+:code:`spacy_nlp` attribute.
+
+.. ipython::
+
+    In [1]: import spacy
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.plugins import ListEntityPlugin
+       ...: from dialogy.base import Input
+
+    In [2]: nlp = spacy.load("en_core_web_sm")
+
+    In [3]: list_entity_plugin = ListEntityPlugin(
+       ...:   spacy_nlp=nlp,
+       ...:   style="spacy",
+       ...:   dest="output.entities"
+       ...: )
+       ...: workflow = Workflow([list_entity_plugin])
+       ...: _, output = workflow.run(Input(utterances="Need a place to stay in New Delhi."))
+
+    In [3]: output
 """
 import re
 from pprint import pformat
@@ -30,28 +80,25 @@ MatchType = List[Tuple[Text, Label, Value, Span]]
 
 class ListEntityPlugin(EntityScoringMixin, Plugin):
     """
-     A :ref:`Plugin<plugin>` for extracting entities using spacy or a list of regex patterns.
+     A :ref:`Plugin<AbstractPlugin>` for extracting entities using spacy or a list of regex patterns.
 
-     .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy
-        and regex based entity parsers.
+     .. attention:
+
+        This class will undergo a series of refactoring changes. FWIW, :ref:`ListSearchPlugin<ListSearchPlugin>`
+        is more more performant in terms of entity capture rates but not as responsive. :code:`ListEntityPlugin`
+        is fast. So make choices with bearing this in mind.
 
     :param style: One of ["regex", "spacy"]
     :type style: Optional[str]
     :param candidates: Required if style is "regex", this is a :code:`dict` that shows a mapping of entity
         values and their patterns.
     :type candidates: Optional[Dict[str, List[str]]]
-    :param spacy_nlp: Required if style is "spacy", this is a
+    :param spacy_nlp: Required if style is "spacy", requires is a
         `spacy model <https://spacy.io/usage/spacy-101#annotations-ner>`_.
     :type spacy_nlp: Any
     :param labels: Required if style is "spacy". If there is a need to extract only a few labels from all the other
         `available labels <https://github.com/explosion/spaCy/issues/441#issuecomment-311804705>`_.
     :type labels: Optional[List[str]]
-    :param access: A plugin io utility that allows access to transcripts
-        :code:`List[str]` within a :ref:`Workflow <workflow>`.
-    :type access: Optional[PluginFn]
-    :param mutate: A plugin io utility that allows insertion of :code:`List[BaseEntity]` within a
-        :ref:`Workflow <workflow>`.
-    :type mutate: Optional[PluginFn]
     :param debug: A flag to set debugging on the plugin methods
     :type debug: bool
     """
@@ -187,25 +234,25 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         for i, matches_on_transcript in enumerate(matches_on_transcripts):
             for text, label, value, span in matches_on_transcript:
                 entity_dict = {
-                    "start": span[0],
-                    "end": span[1],
-                    "body": text,
-                    "dim": label,
-                    "parsers": [self.__class__.__name__],
-                    "score": 0,
-                    "alternative_index": i,
-                    "latent": False,
-                    "__group": f"{label}_{text}",
-                    "type": label,
-                    "entity_type": label,
-                    "value": {
-                        "values": [{"value": value}],
+                    const.RANGE: {
+                        const.START: span[0],
+                        const.END: span[1],
                     },
+                    const.BODY: text,
+                    const.DIM: label,
+                    const.SCORE: 0,
+                    const.ALTERNATIVE_INDEX: i,
+                    const.LATENT: False,
+                    "__group": f"{label}_{text}",
+                    const.TYPE: label,
+                    const.ENTITY_TYPE: label,
+                    const.VALUE: value,
+                    const.VALUES: [{const.VALUE: value}],
                 }
 
                 del entity_dict["__group"]
                 entity_ = KeywordEntity.from_dict(entity_dict)
-                entity_.add_parser(self).set_value()
+                entity_.add_parser(self)
                 entities.append(entity_)
 
         logger.debug("Parsed entities")

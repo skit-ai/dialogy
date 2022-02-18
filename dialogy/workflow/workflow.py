@@ -1,52 +1,115 @@
 """
-.. _workflow:
+The :ref:`Workflow<WorkflowClass>` represents a black box for an SLU microservice, and its terminals, :ref:`input <Input>` and :ref:`output <Output>`
+represent request response structure of the SLU API.
 
-A :code:`workflow` is supposed to run tasks that can be anticipated well in advance.
+.. note::
 
-Here are few demo's where you can see mock :code:`workflow` in action.
+    The :ref:`Input<Input>` has some extra properties that aren't part of the SLU API.
+    We have kept reserves for intermediates, and flattened as most other nested inputs 
+    aren't required and add to bloat.
 
-- :ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>`
-- :ref:`VotePlugin<vote_plugin>`
-- :ref:`DucklingPlugin<duckling_plugin>`
+.. attention::
 
-A workflow is a hollow conduit, think of a vertically hanging pipe without any medium. If you were to drop a block of ...
-`anything`? through it, it would pass through with a thud on the ground `(yes we assumed gravity)`.
+    :ref:`Input<Input>` and :ref:`Output<Output>` instances are immutable.
 
-Structure
-----------
+What does it do?
+----------------
 
-A workflow allows flexibility, that's why. There is very little structure to it. We have:
+Produce the response for a single turn of a conversation. It recieves (not an exhaustive list):
 
-- input
-- output
-- plugins
+- Utterance.
+- Timezone
+- Language code
+- Locale
+- Current State of the conversation
+- Slot tracker
 
-Apart from these, we expect at the core, an inference function with machine learning models. Which ones? A N Y ones.
-As long as you have the compute, there is no restriction. Use statistical models or DL or a bunch of conditions,
-your :ref:`Workflow <Workflow>` won't judge you.
 
-Advantages
------------
+as :ref:`inputs<Input>`, parses these, produces a few intermediates and finally returns the :ref:`intent <Intent>` 
+and optionally :ref:`entities <BaseEntity>`. Details will be documented within the specific plugins.
 
-The :ref:`Plugin<plugin>` concept takes care of the sauciness 🍅 of this project. Any functionality can be bundled into
-a :ref:`Plugin<plugin>` and they are portable over to foreign workflows. A :ref:`Plugin<plugin>` proxies inputs through
-an :code:`access` function (an argument to every :ref:`Plugin<plugin>`) and relays output through a :code:`mutate`
-function (another argument for every :ref:`Plugin<plugin>`). These two functions define interactions between many many
-(sic) :ref:`Plugins<plugin>` without knowing the inner workings of a :ref:`Workflow <workflow>`.
+.. mermaid::
 
-Take a look at :ref:`DucklingPlugin <duckling_plugin>`, this plugin handles inputs, manages the default :code:`json` output
-into neatly bundled :ref:`BaseEntity <base_entity>` and other similar classes. Another plugin
-:ref:`RuleBasedSlotFillerPlugin<rule_slot_filler>` takes care of slot names and the entity types that should be filled
-within.
+    classDiagram
+        direction TB
+        Workflow --> "1" Input: has
+        Workflow --> "1" Output: has
+        Workflow --> "many" Plugin: has
 
-If your classifier predicts an :ref:`Intent<intent>` with :ref:`Slots<slot>` supporting any of those entities, then
-slot-filling is not a worry.
+        class Workflow {
+            Workflow: +Input input
+            Workflow: +Output output
+            Workflow: +set(path: str, value: Any)
+            Workflow: +run(input: Input)
+        }
 
-The aim of this project is to be largest supplier of plugins for SLU applications.
+        class Input {
+            +List~Utterance~ utterance
+            +int reference_time
+            +str current_state
+            +str lang
+            +str locale
+            +dict slot_tracker
+            +str timezone
+            +dict json()
+        }
 
-.. warning:: The :ref:`Workflow<workflow>` class is not supposed to be used as it is. Ideally it should have been an
-    abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden
-    to offer flexibility of use.
+        class Output {
+            +List~Intent~ intents
+            +List~BaseEntity~ entities
+            +dict json()
+        }
+
+        <<abstract>> Plugin
+        class Plugin {
+            +str dest
+            *any utility(input: Input, output: Output)
+        }
+
+
+
+How does it do it?
+------------------
+
+- A workflow contains a sequence of :ref:`plugins <AbstractPlugin>`. The sequence is important.
+- The sequence describes the order in which :ref:`plugins <AbstractPlugin>` are run.
+- The plugins can save their output within the workflow's :ref:`input<Input>` or :ref:`output<Output>`.
+- After execution of all plugins, the :ref:`workflow <WorkflowClass>` returns a pair of serialized :ref:`input<Input>` and :ref:`output<Output>`.
+
+
+.. mermaid::
+
+    flowchart TB
+
+        subgraph Workflow
+
+            subgraph input
+                utterance
+                reference_time
+            end
+
+            subgraph output
+                intents
+                entities
+            end
+
+            input --> plugin
+            output --> plugin
+            plugin -->|update| input
+            plugin -->|update| output
+            plugin -->|foreach| plugin
+
+        end
+        output --> output_json
+        input --> input_json
+
+        output_json --> workflow_output
+        input_json --> workflow_output
+
+        subgraph Response
+            output_json
+        end
+
 """
 from __future__ import annotations
 
@@ -68,20 +131,9 @@ from dialogy.utils.logger import logger
 @attr.s
 class Workflow:
     """
-    This is a light but fairly flexible workflow for building a machine learning pipeline.
+    SLU API blackbox.
 
-    Requirements
-    - A list of pre-processing functions.
-    - A list of post-processing functions.
-
-    Abstract classes put constraints on method signatures which isn't desired because a couple of methods
-    here could use more arguments, say, `load_model()` requires `path` and `version` and in some other cases
-    `path`, `version` and `language`.
-
-    :param plugins: A list of functions to execute before inference.
-    :type plugins: Optional[List[PluginFn]]
-    :param debug: log level shifts to debug if True.
-    :type debug: bool
+    .. _WorkflowClass:
     """
 
     plugins = attr.ib(
@@ -89,20 +141,40 @@ class Workflow:
         type=List[Plugin],
         validator=attr.validators.instance_of(list),
     )
+    """
+    List of :ref:`plugins <AbstractPlugin>`.
+    """
+
     input: Optional[Input] = attr.ib(
         default=None,
         kw_only=True,
         validator=attr.validators.optional(attr.validators.instance_of(Input)),
     )
+    """
+    Represents the SLU API request object. A few nested properties and intermediates are flattened out
+    for readability.
+    """
+
     output: Optional[Output] = attr.ib(
         default=None,
         kw_only=True,
         validator=attr.validators.optional(attr.validators.instance_of(Output)),
     )
+    """
+    Represents the SLU API response object.
+    """
+
     debug = attr.ib(
         type=bool, default=False, validator=attr.validators.instance_of(bool)
     )
+    """
+    Switch on/off the debug logs for the workflow.
+    """
     lock: Lock
+    """
+    A :ref:`workflow <WorkflowClass>` isn't thread-safe by itself. We need locks
+    to prevent race conditions.
+    """
     NON_SERIALIZABLE_FIELDS = [const.PLUGINS, const.DEBUG, const.LOCK]
 
     def __attrs_post_init__(self) -> None:
@@ -119,9 +191,12 @@ class Workflow:
         self.input = None
         self.output = Output()
 
-    def set(self, path: str, value: Any) -> Workflow:
+    def set(self, path: str, value: Any, replace: bool = False) -> Workflow:
         """
         Set attribute path with value.
+
+        This method (re)-sets the input or output object without losing information
+        from previous instances.
 
         :param path: A '.' separated attribute path.
         :type path: str
@@ -135,7 +210,30 @@ class Workflow:
         if dest == "input":
             self.input = Input.from_dict({attribute: value}, reference=self.input)
         elif dest == "output" and isinstance(value, list):
-            self.output = Output.from_dict({attribute: value}, reference=self.output)
+
+            if replace:
+                self.output = Output.from_dict(
+                    {attribute: value}, reference=self.output
+                )
+            else:
+                if attribute == const.INTENTS:
+                    previous_value = self.output.intents  # type: ignore
+                elif attribute == const.ENTITIES:
+                    previous_value = self.output.entities  # type: ignore
+                else:
+                    raise ValueError(
+                        f"Unknown attribute {attribute} tracked on Output."
+                    )
+
+                combined_value = sorted(
+                    previous_value + value,
+                    key=lambda parse: parse.score or 0,
+                    reverse=True,
+                )
+                self.output = Output.from_dict(
+                    {attribute: combined_value}, reference=self.output
+                )
+
         elif dest == "output":
             raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
         else:

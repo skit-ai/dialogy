@@ -22,6 +22,9 @@ from dialogy.utils import load_file, logger, save_file
 class XLMRMultiClass(Plugin):
     """
     This plugin provides a classifier based on `XLM-Roberta <https://arxiv.org/abs/1911.02116>`.
+
+    .. _XLMRMultiClass:
+    The use_state flag in the XLMRMultiClass plugin is used to enable the use of state variable as the part of the text input.
     """
 
     def __init__(
@@ -138,6 +141,7 @@ class XLMRMultiClass(Plugin):
     def inference(self, texts: Optional[List[str]]) -> List[Intent]:
         """
         Predict the intent of a list of texts.
+        If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.
 
         :param texts: A list of strings, derived from ASR transcripts.
         :type texts: List[str]
@@ -215,6 +219,7 @@ class XLMRMultiClass(Plugin):
         Train an intent-classifier on the provided training data.
 
         The training is skipped if the data-format is not valid.
+        While training with the use_state flag as true, make sure that the state column is the part of the training_data dataframe
         :param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
         :type training_data: pd.DataFrame
         """

@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.9.4
+
+- [x] fix: Slot structure need not be redefined in templates.
+- [x] update: Type-casted Time entities acquire score from the original (Numerical, Duration) entities.
+
+## 0.9.3
+
+- [x] update: Numerical entities can be casted as time.
+
+## 0.9.2
+- [x] fix: Plugins don't overwrite the Output object unless they are _meant_ to.
+
+## 0.9.1
+
+- [x] feat: `DurationEntity` are cast as `TimeEntity` by default.
+  - [x] `DucklingPlugin` uses temporal intents to understand cast direction i.e. add duration to reference time or subtract.
+- [x]: docs: Heavy addition of examples for types, plugins and base types.
+- [x]: fix: Entity structures are uniform in terms of `value` and `values` attributes.
+- [x]: feat: Guards prevent plugins from running.
+
+## 0.9.0
+- [x] fix: `entity.entity_type` and `entity.type` hold separate meaning.
+- [x] update: Plugins no longer need `access` or `mutate` functions.
+- [x] update: `Workflow` has `Input` and `Output` objects.
+
 ## 0.8.11
 - [x] feat: plugin to merge previously tracked datetime entities with currently extracted datetime entities. 
 - [x] feat: New entity type credit-card / debit-card supported via `PlasticCurrencyEntity`.
