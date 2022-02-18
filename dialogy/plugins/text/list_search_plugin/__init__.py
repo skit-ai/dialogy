@@ -26,6 +26,7 @@ Span = Tuple[int, int]
 Value = str
 Score = float
 MatchType = List[Tuple[Text, Label, Value, Span, Score]]  # adding score for each entity
+PatternList = List[Pattern[Any]]
 
 
 class ListSearchPlugin(EntityScoringMixin, Plugin):
@@ -154,7 +155,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         self,
         query: str,
         entity_type: str = "",
-        entity_patterns: List[Pattern] = [re.compile(r"", re.UNICODE)],
+        entity_patterns: PatternList = [re.compile(r"", re.UNICODE)],
         match_dict: Dict[Any, Any] = {},
     ) -> Tuple[Text, Label, Value, Span, Score]:
         max_length = 0
