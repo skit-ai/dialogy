@@ -7,6 +7,7 @@ Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We 
 same time, the difference is just configuration of each of these tools/services. There is another difference of
 intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting
 all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.
+
 """
 import re
 from typing import Any, Dict, List, Optional, Tuple, Pattern
