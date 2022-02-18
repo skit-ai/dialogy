@@ -101,6 +101,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         self.nlp: Dict[Any, Any] = {}
         self.fuzzy_threshold = fuzzy_threshold
         self.entity_patterns: Dict[Any, Any] = {}
+        self.compiled_patterns: Dict[Any, Any] = {}
 
         if self.style == const.FUZZY_DP:
             self.fuzzy_init()
@@ -122,10 +123,15 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                 lang=lang_code, tokenize_pretokenized=True
             )
             self.entity_patterns[lang_code] = {}
+            self.compiled_patterns[lang_code] = {}
             for entity_type in self.entity_types[lang_code]:
                 self.entity_patterns[lang_code][entity_type] = list(
                     self.entity_dict[lang_code][entity_type].keys()
                 )
+                self.compiled_patterns[lang_code][entity_type] = [
+                    re.compile(r"\b" + pattern + r"\b")
+                    for pattern in self.entity_patterns[lang_code][entity_type]
+                ]
 
     def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:
         """
@@ -148,14 +154,14 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         self,
         query: str,
         entity_type: str = "",
-        entity_patterns: List[str] = [""],
+        entity_patterns: List[re.Pattern] = [re.compile(r"", re.UNICODE)],
         match_dict: Dict[Any, Any] = {},
     ) -> Tuple[Text, Label, Value, Span, Score]:
         max_length = 0
         final_match = None
 
         for pattern in entity_patterns:
-            result = re.search(pattern, query)
+            result = pattern.search(query)
             if result:
                 match_value = match_dict[result.group()]
                 match_len = len(match_value)
@@ -194,9 +200,13 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                     """
                     value = value + str(word.text) + " "
             if value != "":
-                matches = process.extract(value, entity_patterns)
-                match_output = match_dict[matches[0][0]]
-                match_score = matches[0][1] / 100
+                matches = process.extractOne(value, entity_patterns)
+                match_output = match_dict[
+                    matches[0]
+                ]  # extracting highest confidence match from tuple
+                match_score = (
+                    matches[1] / 100
+                )  # extracting the associated confidence score and scaling it down to (0,1) range.
                 if match_score > self.fuzzy_threshold:
                     return (
                         value,
@@ -228,7 +238,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             match_entity = self.search_regex(
                 query,
                 entity_type,
-                self.entity_patterns[lang][entity_type],
+                self.compiled_patterns[lang][entity_type],
                 entity_match_dict[entity_type],
             )
 
