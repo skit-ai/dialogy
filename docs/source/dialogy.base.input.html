@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.base.output package" href="dialogy.base.output.html" /><link rel="prev" title="Dialogy" href="../index.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.base.input package - dialogy 0.9.3 documentation</title>
+        <title>dialogy.base.input package - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -220,241 +220,8 @@
         <article role="main">
           <section id="dialogy-base-input-package">
 <h1>dialogy.base.input package<a class="headerlink" href="#dialogy-base-input-package" title="Permalink to this headline">¶</a></h1>
-<section id="module-dialogy.base.input">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.base.input" title="Permalink to this headline">¶</a></h2>
-<p id="input">The <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a> class creates immutable instances that describe the inputs of a single turn of a conversation.
-There are some attributes that may have aggregations of previous turns like the <code class="code docutils literal notranslate"><span class="pre">slot_tracker</span></code> or entire <code class="code docutils literal notranslate"><span class="pre">history</span></code>.</p>
-<div class="admonition-why-do-i-see-ref-input-input-and-ref-output-output-as-inputs-to-all-ref-plugins-abstractplugin admonition">
-<p class="admonition-title">Why do I see <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a> and <a class="reference internal" href="dialogy.base.output.html#output"><span class="std std-ref">Output</span></a> as inputs to all <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugins</span></a>?</p>
-<p>It is a common pattern for all the plugins to require both as arguments. Since this could be confusing nomenclature, <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a>
-and <a class="reference internal" href="dialogy.base.output.html#output"><span class="std std-ref">Output</span></a> bear meaning and even separation for the SLU API, <strong>not for</strong> <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugins</span></a>.</p>
-</div>
-<section id="updates">
-<h3>Updates<a class="headerlink" href="#updates" title="Permalink to this headline">¶</a></h3>
-<p>While writing plugins, we would need to update the attributes of <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a>, the following <strong>doesn’t</strong> work!</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
-<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">make_unix_ts</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [2]: </span><span class="c1"># Check the attributes in the object logged below. </span>
-<span class="gp">   ...: </span><span class="n">input_x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">"hi"</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">)</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [3]: </span><span class="n">input_x</span>
-<span class="gh">Out[3]: </span><span class="go">Input(utterances='hello world', reference_time=None, latent_entities=False, transcripts=['hello world'], clf_feature=[], lang='hi', locale='en_IN', timezone='Asia/Kolkata', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
-</pre></div>
-</div>
-<section id="issues-with-frozen-instance-update">
-<h4>Issues with Frozen Instance Update<a class="headerlink" href="#issues-with-frozen-instance-update" title="Permalink to this headline">¶</a></h4>
-<p>Now if we try the following:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">input_x</span><span class="o">.</span><span class="n">utterances</span> <span class="o">=</span> <span class="s2">"hello"</span>
-<span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">FrozenInstanceError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Input</span> <span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">input_x</span><span class="o">.</span><span class="n">utterances</span> <span class="o">=</span> <span class="s2">"hello"</span>
-
-<span class="nn">File ~/miniconda3/envs/dialogy/lib/python3.9/site-packages/attr/_make.py:553,</span> in <span class="ni">_frozen_setattrs</span><span class="nt">(self, name, value)</span>
-<span class="g g-Whitespace">    </span><span class="mi">549</span> <span class="k">def</span> <span class="nf">_frozen_setattrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">550</span>     <span class="sd">"""</span>
-<span class="g g-Whitespace">    </span><span class="mi">551</span><span class="sd">     Attached to frozen classes as __setattr__.</span>
-<span class="g g-Whitespace">    </span><span class="mi">552</span><span class="sd">     """</span>
-<span class="ne">--&gt; </span><span class="mi">553</span>     <span class="k">raise</span> <span class="n">FrozenInstanceError</span><span class="p">()</span>
-
-<span class="ne">FrozenInstanceError</span>: 
-</pre></div>
-</div>
-<p>We can see re-assigning values to attributes isn’t allowed.</p>
-</section>
-<section id="updating-a-frozen-instance">
-<h4>Updating a frozen instance<a class="headerlink" href="#updating-a-frozen-instance" title="Permalink to this headline">¶</a></h4>
-<p>We have to create new instances, but we have some syntax for it:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">input_x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">"hi"</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">)</span>
-
-<span class="gp">In [6]: </span><span class="n">input_y</span> <span class="o">=</span> <span class="n">Input</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">"utterances"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">})</span>
-
-<span class="gp">In [7]: </span><span class="n">input_y</span>
-<span class="gh">Out[7]: </span><span class="go">Input(utterances='hello', reference_time=None, latent_entities=False, transcripts=['hello'], clf_feature=[], lang='en', locale='en_IN', timezone='UTC', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
-</pre></div>
-</div>
-<p>but by doing this, we lost the <code class="code docutils literal notranslate"><span class="pre">lang</span></code> and <code class="code docutils literal notranslate"><span class="pre">timezone</span></code> attributes to system defaults.</p>
-</section>
-<section id="reusing-an-existing-instance">
-<h4>Reusing an existing instance<a class="headerlink" href="#reusing-an-existing-instance" title="Permalink to this headline">¶</a></h4>
-<p>We can re-use an existing instance to create a new.
-This way, we don’t have to write every existing property on a previous <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">input_x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">"hi"</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">)</span>
-
-<span class="gp">In [9]: </span><span class="n">input_y</span> <span class="o">=</span> <span class="n">Input</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">"utterances"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">},</span> <span class="n">reference</span><span class="o">=</span><span class="n">input_x</span><span class="p">)</span>
-
-<span class="gp">In [10]: </span><span class="n">input_y</span>
-<span class="gh">Out[10]: </span><span class="go">Input(utterances='hello', reference_time=None, latent_entities=False, transcripts=['hello'], clf_feature=[], lang='hi', locale='en_IN', timezone='Asia/Kolkata', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="serialization">
-<h3>Serialization<a class="headerlink" href="#serialization" title="Permalink to this headline">¶</a></h3>
-<p>If there is a need to represent an <a class="reference internal" href="#input"><span class="std std-ref">Input</span></a> as a <cite>dict</cite> we can do the following:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">input_y</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<span class="gh">Out[1]: </span><span class="go"></span>
-<span class="go">{'utterances': 'hello',</span>
-<span class="go"> 'reference_time': None,</span>
-<span class="go"> 'latent_entities': False,</span>
-<span class="go"> 'transcripts': ['hello'],</span>
-<span class="go"> 'clf_feature': [],</span>
-<span class="go"> 'lang': 'hi',</span>
-<span class="go"> 'locale': 'en_IN',</span>
-<span class="go"> 'timezone': 'Asia/Kolkata',</span>
-<span class="go"> 'slot_tracker': None,</span>
-<span class="go"> 'current_state': None,</span>
-<span class="go"> 'previous_intent': None,</span>
-<span class="go"> 'history': None}</span>
-</pre></div>
-</div>
-<dl class="py class">
-<dt class="sig sig-object py" id="dialogy.base.input.Input">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcripts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utterances</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent_entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clf_feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/input.html#Input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.input.Input" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represents the inputs of the SLU API.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.clf_feature">
-<span class="sig-name descname"><span class="pre">clf_feature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.clf_feature" title="Permalink to this definition">¶</a></dt>
-<dd><p>Placeholder for the features of an intent classifier.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">"&lt;s&gt; I want to book a flight &lt;/s&gt; &lt;s&gt; I want to book flights &lt;/s&gt; &lt;s&gt; I want to book a flight to Paris &lt;/s&gt;"</span><span class="p">]</span>
-</pre></div>
-</div>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.current_state">
-<span class="sig-name descname"><span class="pre">current_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.current_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Points at the active state (or node) within the conversation graph.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.from_dict">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/input.html#Input.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.input.Input.from_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new <a class="reference internal" href="#input">Input</a> instance from a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>d</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A dictionary such that keys are a subset of <a class="reference internal" href="#input">Input</a> attributes.</p></li>
-<li><p><strong>reference</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#dialogy.base.input.Input" title="dialogy.base.input.Input"><em>Input</em></a><em>]</em><em>, </em><em>optional</em>) – An existing <a class="reference internal" href="#input">Input</a> instance., defaults to None</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new <a class="reference internal" href="#input">Input</a> instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#dialogy.base.input.Input" title="dialogy.base.input.Input">Input</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.history">
-<span class="sig-name descname"><span class="pre">history</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.history" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.json">
-<span class="sig-name descname"><span class="pre">json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/input.html#Input.json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.input.Input.json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serialize <a class="reference internal" href="#input">Input</a> to a JSON-like dict.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A dictionary that represents an <a class="reference internal" href="#input">Input</a> instance.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Dict[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.lang">
-<span class="sig-name descname"><span class="pre">lang</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.base.input.Input.lang" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expected language of the input. This is needed for language dependent plugins.
-These are present in <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</a>
-for “English” the code is “en”.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.latent_entities">
-<span class="sig-name descname"><span class="pre">latent_entities</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dialogy.base.input.Input.latent_entities" title="Permalink to this definition">¶</a></dt>
-<dd><p>A switch to turn on/off production of latent entities via Duckling API
-If you need to parse “4” as 4 am or 4 pm. Note the absence of “am” or “pm” in the utterance.
-Then you might need this to be set as <code class="code docutils literal notranslate"><span class="pre">True</span></code>.
-It may be helpful to keep it <code class="code docutils literal notranslate"><span class="pre">False</span></code> unless clearly required.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.locale">
-<span class="sig-name descname"><span class="pre">locale</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.base.input.Input.locale" title="Permalink to this definition">¶</a></dt>
-<dd><p>The locale identifier consists of at least a language code and a country/region code.
-We keep “en_IN” as our default. This is used by Duckling for parsing patterns as per the 
-locale. If locale is missing i.e. None, we may fallback to <code class="code docutils literal notranslate"><span class="pre">lang</span></code> instead.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.previous_intent">
-<span class="sig-name descname"><span class="pre">previous_intent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.previous_intent" title="Permalink to this definition">¶</a></dt>
-<dd><p>The name of the intent that was predicted by the classifier in (exactly) the previous turn.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.reference_time">
-<span class="sig-name descname"><span class="pre">reference_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.reference_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>The time that should be used for parsing relative time values.
-This is a Unix timestamp in seconds.
-utils/datetime.py has <a class="reference internal" href="dialogy.utils.html#make-unix-ts"><span class="std std-ref">make_unix_ts</span></a> to help convert 
-a date in ISO 8601 format to unix ms timestamp.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.slot_tracker">
-<span class="sig-name descname"><span class="pre">slot_tracker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.slot_tracker" title="Permalink to this definition">¶</a></dt>
-<dd><p>This data structure tracks the slots that were filled in previous turns.
-This may come handy if we want to filter or reduce entities depending on our history.
-We use this in our <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinedatetimeoverslots"><span class="std std-ref">CombineDateTimeOverSlots</span></a> plugin.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
-    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"_callback_"</span><span class="p">,</span>               <span class="c1"># the intent name</span>
-    <span class="s2">"slots"</span><span class="p">:</span> <span class="p">[{</span>
-        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"callback_datetime"</span><span class="p">,</span>    <span class="c1"># the slot name</span>
-        <span class="s2">"type"</span><span class="p">:</span> <span class="p">[</span>                       <span class="c1"># can fill entities of these types.</span>
-            <span class="s2">"time"</span><span class="p">,</span>
-            <span class="s2">"date"</span><span class="p">,</span>
-            <span class="s2">"datetime"</span>
-        <span class="p">],</span>
-        <span class="s2">"values"</span><span class="p">:</span> <span class="p">[{</span>                    <span class="c1"># entities that were filled previously</span>
-            <span class="s2">"alternative_index"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">"body"</span><span class="p">:</span> <span class="s2">"tomorrow"</span><span class="p">,</span>
-            <span class="s2">"entity_type"</span><span class="p">:</span> <span class="s2">"date"</span><span class="p">,</span>
-            <span class="s2">"grain"</span><span class="p">:</span> <span class="s2">"day"</span><span class="p">,</span>
-            <span class="s2">"parsers"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"duckling"</span><span class="p">],</span>
-            <span class="s2">"range"</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">"end"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-                <span class="s2">"start"</span><span class="p">:</span> <span class="mi">0</span>
-            <span class="p">},</span>
-            <span class="s2">"score"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"value"</span><span class="p">,</span>
-            <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2021-10-15T00:00:00+05:30"</span>
-        <span class="p">}]</span>
-    <span class="p">}]</span>
-<span class="p">}]</span>
-</pre></div>
-</div>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.timezone">
-<span class="sig-name descname"><span class="pre">timezone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.base.input.Input.timezone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Timezones from <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">https://en.wikipedia.org/wiki/List_of_tz_database_time_zones</a>
-Used by duckling or any other date/time parsing plugins.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.transcripts">
-<span class="sig-name descname"><span class="pre">transcripts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.transcripts" title="Permalink to this definition">¶</a></dt>
-<dd><p>A derived attribute. We cross product each utterance and return a list of strings.
-We use this to <a class="reference internal" href="dialogy.utils.html#normalize"><span class="std std-ref">normalize</span></a> utterances.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.input.Input.utterances">
-<span class="sig-name descname"><span class="pre">utterances</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.utterances" title="Permalink to this definition">¶</a></dt>
-<dd><p>ASRs produce utterances. 
-Each utterance contains N-hypothesis. 
-Each hypothesis is a <code class="code docutils literal notranslate"><span class="pre">dict</span></code> with keys <code class="code docutils literal notranslate"><span class="pre">"transcript"</span></code> and <code class="code docutils literal notranslate"><span class="pre">"confidence"</span></code>.</p>
-</dd></dl>
-</dd></dl>
-</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
@@ -510,16 +277,7 @@ Each hypothesis is a <code class="code docutils literal notranslate"><span class
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.base.input package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.base.input">Module contents</a><ul>
-<li><a class="reference internal" href="#updates">Updates</a><ul>
-<li><a class="reference internal" href="#issues-with-frozen-instance-update">Issues with Frozen Instance Update</a></li>
-<li><a class="reference internal" href="#updating-a-frozen-instance">Updating a frozen instance</a></li>
-<li><a class="reference internal" href="#reusing-an-existing-instance">Reusing an existing instance</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#serialization">Serialization</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

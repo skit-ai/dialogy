@@ -597,12 +597,13 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :rtype: Dict[str, Any]
         """
         dimensions = self.dimensions
+        activate_latent_entities = use_latent or self.activate_latent_entities
+
         activate_latent_entities = (
-            self.activate_latent_entities
-            if isinstance(self.activate_latent_entities, bool)
-            else self.activate_latent_entities()
+            activate_latent_entities
+            if isinstance(activate_latent_entities, bool)
+            else activate_latent_entities()
         )
-        activate_latent_entities = use_latent or activate_latent_entities
 
         payload = {
             "text": text,

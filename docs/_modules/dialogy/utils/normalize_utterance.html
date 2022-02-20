@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.utils.normalize_utterance - dialogy 0.9.3 documentation</title>
+        <title>dialogy.utils.normalize_utterance - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -161,10 +161,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.workflow.html">Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -173,7 +175,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -394,7 +395,7 @@
 <span class="sd">    Convert a list of utterances to a list of alternatives.</span>
 <span class="sd">    """</span>
     <span class="k">return</span> <span class="p">[</span>
-        <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">alternative</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">alternative</span> <span class="ow">in</span> <span class="n">alternatives</span><span class="p">])</span>
+        <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">alternative</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">alternative</span> <span class="ow">in</span> <span class="n">alternatives</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">alternatives</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">utterances</span><span class="p">)</span>
     <span class="p">]</span></div>
 
@@ -405,34 +406,17 @@
 
 <span class="sd">    The output will be a list of strings since models will expect that.</span>
 
-<span class="sd">    .. _normalize:</span>
 
 <span class="sd">    .. ipython:: python</span>
 
-<span class="sd">        In [1]: from dialogy.utils.normalize_utterance import normalize</span>
-<span class="sd">        In [2]: # A popular case</span>
-<span class="sd">        In [3]: normalize([[{"transcript": "this"}, {"transcript": "works"}]])</span>
+<span class="sd">        from dialogy.utils.normalize_utterance import normalize</span>
 
-<span class="sd">    .. ipython:: python</span>
+<span class="sd">        normalize([[{"transcript": "hi"}]])</span>
+<span class="sd">        normalize([[{"transcript": "hello"}], [{"transcript": "world"}]])</span>
+<span class="sd">        normalize([{"transcript": "I wanted to know umm hello?"}])</span>
+<span class="sd">        normalize(["I wanted to know umm hello?"])</span>
+<span class="sd">        normalize("I wanted to know umm hello?")</span>
 
-<span class="sd">        In [3]: # A case with multiple utterances</span>
-<span class="sd">        In [4]: normalize([</span>
-<span class="sd">                    [{"transcript": "hello hello?", "transcript": "yellow yellow?"}],</span>
-<span class="sd">                    [{"transcript": "I wanted to check"}],</span>
-<span class="sd">                    [{"transcript": "if you have space for us?"}]</span>
-<span class="sd">                ])</span>
-
-<span class="sd">    .. ipython:: python</span>
-
-<span class="sd">        In [5]: normalize([{"transcript": "I wanted to know umm hello?"}])</span>
-
-<span class="sd">    .. ipython:: python</span>
-
-<span class="sd">        In [6]: normalize(["I wanted to know umm hello?"])</span>
-
-<span class="sd">    .. ipython:: python</span>
-
-<span class="sd">        In [7]: normalize("I wanted to know umm hello?")</span>
 
 <span class="sd">    :param maybe_utterance: Arbitrary input.</span>
 <span class="sd">    :type maybe_utterance: Any</span>
@@ -450,13 +434,13 @@
         <span class="k">return</span> <span class="n">utterance2alternatives</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">is_unsqueezed_utterance</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">alternative</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">alternative</span> <span class="ow">in</span> <span class="n">maybe_utterance</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">alternative</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">alternative</span> <span class="ow">in</span> <span class="n">maybe_utterance</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">is_list</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_list_of_string</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">utterance</span> <span class="k">for</span> <span class="n">utterance</span> <span class="ow">in</span> <span class="n">maybe_utterance</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">utterance</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">utterance</span> <span class="ow">in</span> <span class="n">maybe_utterance</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">is_string</span><span class="p">(</span><span class="n">maybe_utterance</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">maybe_utterance</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">maybe_utterance</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>

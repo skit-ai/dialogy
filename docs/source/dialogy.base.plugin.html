@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.intent package" href="dialogy.types.intent.html" /><link rel="prev" title="dialogy.workflow package" href="dialogy.workflow.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.base.plugin package - dialogy 0.9.3 documentation</title>
+        <title>dialogy.base.plugin package - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -222,329 +222,331 @@
 <h1>dialogy.base.plugin package<a class="headerlink" href="#dialogy-base-plugin-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.base.plugin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.base.plugin" title="Permalink to this headline">¶</a></h2>
-<section id="abstract-plugin">
-<span id="abstractplugin"></span><h3>Abstract Plugin<a class="headerlink" href="#abstract-plugin" title="Permalink to this headline">¶</a></h3>
-<p>A Plugin transforms the data within the workflow. We use plugins for producing <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a>, <a class="reference internal" href="dialogy.types.entity.base_entity.html#baseentity"><span class="std std-ref">entities</span></a>,
-filling <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a> and even preparing intermediate data for other plugins. This package ships the abstract base class for creating
-other plugins. These offer a base for a few already implemented features like <span class="xref std std-ref">book-keeping</span> and <a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html#guards"><span class="std std-ref">Guards</span></a>.</p>
-</section>
 <section id="writing-plugins">
-<h3>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Permalink to this headline">¶</a></h3>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>We will learn plugin creation by exploring some examples. <strong>It is highly advised to read 
-the</strong> <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">Input</span></a> and <a class="reference internal" href="dialogy.base.output.html#output"><span class="std std-ref">Output</span></a> <strong>sections first.</strong></p>
-</div>
-<section id="keyword-intent">
-<h4>Keyword Intent<a class="headerlink" href="#keyword-intent" title="Permalink to this headline">¶</a></h4>
-<p>Say we have to predict an intent <em>_greeting_</em> if the first item in the transcripts have <code class="code docutils literal notranslate"><span class="pre">"hello"</span></code>.
-This is assuming that the transcripts are ranked by their confidence scores in the descending order.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span id="plugin"></span><h3>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Permalink to this headline">¶</a></h3>
+<p>Plugins are an abstraction over procedures that offer a specific functionality. A plugin abstracts out the way it is fed an input, and the way its output is pushed out.
+A discussion about plugins requires a bit of background about <span class="xref std std-ref">Worfklows</span>, a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> is an ephemeral datastore. This distinction of roles
+between a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> and a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> is a <strong>convention</strong> to ensure that neither the <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> creation or its <em>utility</em> is constrained
+by their author’s choices.</p>
+<section id="plugin-types">
+<h4>Plugin Types<a class="headerlink" href="#plugin-types" title="Permalink to this headline">¶</a></h4>
+<p>There are three types of plugins:</p>
+<ol class="arabic simple">
+<li><p>Solitary</p></li>
+<li><p>Transformer</p></li>
+<li><p>Trainable</p></li>
+</ol>
+<section id="solitary">
+<h5>Solitary<a class="headerlink" href="#solitary" title="Permalink to this headline">¶</a></h5>
+<p>A plugin that only interacts during the runtime of a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> is called a <em>Base plugin</em>.
+We can create a Base plugin like so:</p>
+<section id="methods">
+<h6>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h6>
+<p>The <strong>utility</strong> method describes the feature implemented by the plugin, this is the only required method for Base plugins. This method is called
+during a workflow’s run. If a plugin produces a value, it can also be updated within workflow. Any kind of file reading, config parsing, model loading
+should be done during the plugin’s initialization. <strong>utility</strong> methods must have fast execution times. This also means if there is any dynamic input required
+by a plugin, it should be available within the <code class="code docutils literal notranslate"><span class="pre">*args</span></code>.</p>
+<blockquote>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">PluginFn</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
-<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">Output</span>
-<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Intent</span>
 <span class="gp">   ...: </span>
-
-<span class="gp">In [2]: </span><span class="k">class</span> <span class="nc">Transcript2IntentPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
-<span class="gp">   ...: </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="gp">   ...: </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="gp">   ...:         </span>
-<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">greet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
-<span class="gp">   ...: </span>        <span class="k">if</span> <span class="ow">not</span> <span class="n">transcripts</span><span class="p">:</span>
-<span class="gp">   ...: </span>            <span class="k">return</span> <span class="p">[]</span>
+<span class="gp">   ...: </span><span class="k">class</span> <span class="nc">ASolitaryPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">   ...: </span>    <span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="gp">   ...: </span>        <span class="n">best_transcript</span><span class="p">,</span> <span class="o">*</span><span class="n">rest</span> <span class="o">=</span> <span class="n">transcripts</span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="kc">None</span>
 <span class="gp">   ...: </span>
-<span class="gp">   ...: </span>        <span class="k">if</span> <span class="s2">"hello"</span> <span class="ow">in</span> <span class="n">best_transcript</span><span class="p">:</span>
-<span class="gp">   ...: </span>            <span class="k">return</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"_greeting_"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)]</span>
-<span class="gp">   ...: </span>        <span class="k">else</span><span class="p">:</span>
-<span class="gp">   ...: </span>            <span class="k">return</span> <span class="p">[]</span>
-<span class="gp">   ...: </span>
-<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
-<span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">greet</span><span class="p">(</span><span class="n">input_</span><span class="o">.</span><span class="n">transcripts</span><span class="p">)</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [3]: </span><span class="n">transcript2intent</span>   <span class="o">=</span> <span class="n">Transcript2IntentPlugin</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">"output.intents"</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">workflow</span>            <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">transcript2intent</span><span class="p">])</span>
-<span class="gp">   ...: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span>      <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="p">[[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">}]]))</span>
-<span class="gp">   ...: </span><span class="c1"># The last expression provides us a snapshot of the workflow's </span>
-<span class="gp">   ...: </span><span class="c1"># input and output after all plugins have been executed.</span>
-<span class="gp">   ...: </span><span class="c1"># These aren't the Input and Output objects, but their `dict` equivalents.</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [4]: </span><span class="c1"># we can see the utterance that we set </span>
-<span class="gp">   ...: </span><span class="c1"># and the derived field `transcript` that we used within the plugin.</span>
-<span class="gp">   ...: </span><span class="c1"># Other values are defaults.</span>
-<span class="gp">   ...: </span><span class="n">input_</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[4]: </span><span class="go"></span>
-<span class="go">{'utterances': [[{'transcript': 'hello'}]],</span>
-<span class="go"> 'reference_time': None,</span>
-<span class="go"> 'latent_entities': False,</span>
-<span class="go"> 'transcripts': ['hello'],</span>
-<span class="go"> 'clf_feature': [],</span>
-<span class="go"> 'lang': 'en',</span>
-<span class="go"> 'locale': 'en_IN',</span>
-<span class="go"> 'timezone': 'UTC',</span>
-<span class="go"> 'slot_tracker': None,</span>
-<span class="go"> 'current_state': None,</span>
-<span class="go"> 'previous_intent': None,</span>
-<span class="go"> 'history': None}</span>
-
-<span class="gp">In [5]: </span><span class="c1"># we can see that the _greeting_ intent has been set.</span>
-<span class="gp">   ...: </span><span class="n">output</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">{'intents': [{'name': '_greeting_',</span>
-<span class="go">   'alternative_index': None,</span>
-<span class="go">   'score': 1.0,</span>
-<span class="go">   'parsers': [],</span>
-<span class="go">   'slots': {}}],</span>
-<span class="go"> 'entities': []}</span>
 </pre></div>
 </div>
-</section>
-<section id="heuristic-based-intent">
-<h4>Heuristic based Intent<a class="headerlink" href="#heuristic-based-intent" title="Permalink to this headline">¶</a></h4>
-<p>This problem requires us to predict <em>_greeting_</em> if the word <code class="code docutils literal notranslate"><span class="pre">"hello"</span></code>
-is present at least 6 times across all utterances. To help us with this, 
-we will import an existing plugin: <span class="xref std std-ref">MergeASROutputPlugin</span>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">MergeASROutputPlugin</span>
+</div></blockquote>
+<p>Let’s take an example of a plugin that concatenates the transcripts from an ASR to a <code class="code docutils literal notranslate"><span class="pre">str</span></code>.</p>
+<blockquote>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [2]: </span><span class="k">class</span> <span class="nc">MergeASRPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">start_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"&lt;s&gt;"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">end_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"&lt;/s&gt;"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">   ...: </span>    <span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+<span class="gp">   ...: </span>        <span class="c1"># Always validate the input.</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">start_token</span> <span class="o">=</span> <span class="n">start_token</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span> <span class="o">=</span> <span class="n">start_token</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="gp">   ...: </span>        <span class="c1"># Always validate the input.</span>
+<span class="gp">   ...: </span>        <span class="n">transcripts</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_token</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_token</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_token</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span>
 <span class="gp">   ...: </span>
 
-<span class="gp">In [7]: </span><span class="k">class</span> <span class="nc">HeuristicBasedIntentPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
-<span class="gp">   ...: </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="gp">   ...: </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
-<span class="gp">   ...: </span>
-<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">greet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clf_features</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
-<span class="gp">   ...: </span>        <span class="k">if</span> <span class="ow">not</span> <span class="n">clf_features</span><span class="p">:</span>
-<span class="gp">   ...: </span>            <span class="k">return</span> <span class="p">[]</span>
-<span class="gp">   ...: </span>
-<span class="gp">   ...: </span>        <span class="n">feature</span> <span class="o">=</span> <span class="n">clf_features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">   ...: </span>        <span class="n">word_frequency</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-<span class="gp">   ...: </span>        <span class="k">if</span> <span class="n">word_frequency</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
-<span class="gp">   ...: </span>            <span class="k">return</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"_greeting_"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)]</span>
-<span class="gp">   ...: </span>        <span class="k">else</span><span class="p">:</span>
-<span class="gp">   ...: </span>            <span class="k">return</span> <span class="p">[]</span>
-<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
-<span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">greet</span><span class="p">(</span><span class="n">input_</span><span class="o">.</span><span class="n">clf_feature</span><span class="p">)</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [8]: </span><span class="n">heuristic_based_intent</span>  <span class="o">=</span> <span class="n">HeuristicBasedIntentPlugin</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">"output.intents"</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">merge_asr_output_plugin</span> <span class="o">=</span> <span class="n">MergeASROutputPlugin</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">"input.clf_feature"</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">workflow</span>                <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">merge_asr_output_plugin</span><span class="p">,</span> <span class="n">heuristic_based_intent</span><span class="p">])</span>
-<span class="gp">   ...: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span>          <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-<span class="gp">   ...: </span>   <span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="p">[</span>
-<span class="gp">   ...: </span>       <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello is anyone there"</span><span class="p">},</span>
-<span class="gp">   ...: </span>        <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"yellow is anyone here"</span><span class="p">},</span>
-<span class="gp">   ...: </span>        <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello is one here"</span><span class="p">},</span>
-<span class="gp">   ...: </span>        <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello is one there"</span><span class="p">},</span>
-<span class="gp">   ...: </span>        <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello if one here"</span><span class="p">},</span>
-<span class="gp">   ...: </span>        <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello in one here"</span><span class="p">},</span>
-<span class="gp">   ...: </span>        <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello ip one here"</span><span class="p">}]</span>
-<span class="gp">   ...: </span>   <span class="p">])</span>
-<span class="gp">   ...: </span><span class="p">)</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [9]: </span><span class="c1"># let's check the snapshots again.</span>
-<span class="gp">   ...: </span><span class="c1"># Pay close attention to `clf_feature`</span>
-<span class="gp">   ...: </span><span class="c1"># it wasn't set in the previous example.</span>
-<span class="gp">   ...: </span><span class="c1"># This time, it was set by the `MergeASROutputPlugin` plugin </span>
-<span class="gp">   ...: </span><span class="c1"># as it had the dest = "input.clf_feature"</span>
-<span class="gp">   ...: </span><span class="n">input_</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[9]: </span><span class="go"></span>
-<span class="go">{'utterances': [[{'transcript': 'hello is anyone there'},</span>
-<span class="go">   {'transcript': 'yellow is anyone here'},</span>
-<span class="go">   {'transcript': 'hello is one here'},</span>
-<span class="go">   {'transcript': 'hello is one there'},</span>
-<span class="go">   {'transcript': 'hello if one here'},</span>
-<span class="go">   {'transcript': 'hello in one here'},</span>
-<span class="go">   {'transcript': 'hello ip one here'}]],</span>
-<span class="go"> 'reference_time': None,</span>
-<span class="go"> 'latent_entities': False,</span>
-<span class="go"> 'transcripts': ['hello is anyone there',</span>
-<span class="go">  'yellow is anyone here',</span>
-<span class="go">  'hello is one here',</span>
-<span class="go">  'hello is one there',</span>
-<span class="go">  'hello if one here',</span>
-<span class="go">  'hello in one here',</span>
-<span class="go">  'hello ip one here'],</span>
-<span class="go"> 'clf_feature': ['&lt;s&gt; hello is anyone there &lt;/s&gt; &lt;s&gt; yellow is anyone here &lt;/s&gt; &lt;s&gt; hello is one here &lt;/s&gt; &lt;s&gt; hello is one there &lt;/s&gt; &lt;s&gt; hello if one here &lt;/s&gt; &lt;s&gt; hello in one here &lt;/s&gt; &lt;s&gt; hello ip one here &lt;/s&gt;'],</span>
-<span class="go"> 'lang': 'en',</span>
-<span class="go"> 'locale': 'en_IN',</span>
-<span class="go"> 'timezone': 'UTC',</span>
-<span class="go"> 'slot_tracker': None,</span>
-<span class="go"> 'current_state': None,</span>
-<span class="go"> 'previous_intent': None,</span>
-<span class="go"> 'history': None}</span>
-
-<span class="gp">In [10]: </span><span class="n">output</span>
-<span class="gh">Out[10]: </span><span class="go"></span>
-<span class="go">{'intents': [{'name': '_greeting_',</span>
-<span class="go">   'alternative_index': None,</span>
-<span class="go">   'score': 1.0,</span>
-<span class="go">   'parsers': [],</span>
-<span class="go">   'slots': {}}],</span>
-<span class="go"> 'entities': []}</span>
+<span class="gp">In [3]: </span><span class="n">MergeASRPlugin</span><span class="p">()</span><span class="o">.</span><span class="n">utility</span><span class="p">([</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="s2">"hello worlds"</span><span class="p">,</span> <span class="s2">"hello word"</span><span class="p">])</span>
+<span class="gh">Out[3]: </span><span class="go">'&lt;s&gt;hello world&lt;s&gt; &lt;s&gt;hello worlds&lt;s&gt; &lt;s&gt;hello word&lt;s&gt;'</span>
 </pre></div>
 </div>
+</div></blockquote>
 </section>
-<section id="guarding-plugins">
-<h4>Guarding plugins<a class="headerlink" href="#guarding-plugins" title="Permalink to this headline">¶</a></h4>
-<p>It may seem useful to not run plugins all the time. In this case, if we knew the current state
-of the conversation we could decide to not run our naive plugin. Say a state where we are expecting numbers? 
-So let’s look at an example where we prevent plugins from execution using <code class="code docutils literal notranslate"><span class="pre">guards</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">heuristic_based_intent</span>  <span class="o">=</span> <span class="n">HeuristicBasedIntentPlugin</span><span class="p">(</span>
-<span class="gp">   ....: </span>    <span class="n">threshold</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
-<span class="gp">   ....: </span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.intents"</span><span class="p">,</span>
-<span class="gp">   ....: </span>    <span class="n">guards</span><span class="o">=</span><span class="p">[</span><span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="s2">"STATE_EXPECTING_NUMBERS"</span><span class="p">]</span>
-<span class="gp">   ....: </span><span class="p">)</span>
-<span class="gp">   ....: </span><span class="n">merge_asr_output_plugin</span> <span class="o">=</span> <span class="n">MergeASROutputPlugin</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">"input.clf_feature"</span><span class="p">)</span>
-<span class="gp">   ....: </span><span class="n">workflow</span>                <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">merge_asr_output_plugin</span><span class="p">,</span> <span class="n">heuristic_based_intent</span><span class="p">])</span>
-<span class="gp">   ....: </span><span class="n">in_</span>                     <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="p">[[</span>
-<span class="gp">   ....: </span>                                <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello is anyone there"</span><span class="p">},</span>
-<span class="gp">   ....: </span>                                <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"yellow is anyone here"</span><span class="p">},</span>
-<span class="gp">   ....: </span>                                <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello is one here"</span><span class="p">},</span>
-<span class="gp">   ....: </span>                                <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello is one there"</span><span class="p">},</span>
-<span class="gp">   ....: </span>                                <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello if one here"</span><span class="p">},</span>
-<span class="gp">   ....: </span>                                <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello in one here"</span><span class="p">},</span>
-<span class="gp">   ....: </span>                                <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello ip one here"</span><span class="p">}]])</span> 
-<span class="gp">   ....: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span>          <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">in_</span><span class="p">)</span>
-<span class="gp">   ....: </span>
-
-<span class="gp">In [12]: </span><span class="c1"># Oops we forgot to set the current state within the Input!</span>
-<span class="gp">   ....: </span><span class="n">output</span>
-<span class="gp">   ....: </span>
-<span class="gh">Out[12]: </span><span class="go"></span>
-<span class="go">{'intents': [{'name': '_greeting_',</span>
-<span class="go">   'alternative_index': None,</span>
-<span class="go">   'score': 1.0,</span>
-<span class="go">   'parsers': [],</span>
-<span class="go">   'slots': {}}],</span>
-<span class="go"> 'entities': []}</span>
-
-<span class="gp">In [13]: </span><span class="n">workflow</span>            <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">merge_asr_output_plugin</span><span class="p">,</span> <span class="n">heuristic_based_intent</span><span class="p">])</span>
-<span class="gp">   ....: </span><span class="n">in_</span><span class="o">.</span><span class="n">current_state</span>   <span class="o">=</span> <span class="s2">"STATE_EXPECTING_NUMBERS"</span>
-<span class="gp">   ....: </span><span class="c1"># We get a FrozenInstanceError because Input and Output instances are immutable.</span>
-<span class="gp">   ....: </span>
-<span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">FrozenInstanceError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Input</span> <span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">workflow</span>            <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">merge_asr_output_plugin</span><span class="p">,</span> <span class="n">heuristic_based_intent</span><span class="p">])</span>
-<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">in_</span><span class="o">.</span><span class="n">current_state</span>   <span class="o">=</span> <span class="s2">"STATE_EXPECTING_NUMBERS"</span>
-
-<span class="nn">File ~/miniconda3/envs/dialogy/lib/python3.9/site-packages/attr/_make.py:553,</span> in <span class="ni">_frozen_setattrs</span><span class="nt">(self, name, value)</span>
-<span class="g g-Whitespace">    </span><span class="mi">549</span> <span class="k">def</span> <span class="nf">_frozen_setattrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">550</span>     <span class="sd">"""</span>
-<span class="g g-Whitespace">    </span><span class="mi">551</span><span class="sd">     Attached to frozen classes as __setattr__.</span>
-<span class="g g-Whitespace">    </span><span class="mi">552</span><span class="sd">     """</span>
-<span class="ne">--&gt; </span><span class="mi">553</span>     <span class="k">raise</span> <span class="n">FrozenInstanceError</span><span class="p">()</span>
-
-<span class="ne">FrozenInstanceError</span>: 
-
-<span class="gp">In [14]: </span><span class="c1"># We can use the following to create a new instance of Input instead.</span>
-<span class="gp">   ....: </span><span class="n">in_</span> <span class="o">=</span> <span class="n">Input</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">"current_state"</span><span class="p">:</span> <span class="s2">"STATE_EXPECTING_NUMBERS"</span><span class="p">},</span> <span class="n">reference</span><span class="o">=</span><span class="n">in_</span><span class="p">)</span>
-<span class="gp">   ....: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span>  <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">in_</span><span class="p">)</span>
-<span class="gp">   ....: </span>
-
-<span class="gp">In [15]: </span><span class="c1"># In this case, we don't see anything set as the </span>
-<span class="gp">   ....: </span><span class="c1"># HeuristicBasedIntentPlugin was prevented</span>
-<span class="gp">   ....: </span><span class="c1"># by its guarding conditions.</span>
-<span class="gp">   ....: </span><span class="n">output</span>
-<span class="gp">   ....: </span>
-<span class="gh">Out[15]: </span><span class="go">{'intents': [], 'entities': []}</span>
-
-<span class="gp">In [16]: </span><span class="c1"># However, `clf_features` are set since we never wrote guards for </span>
-<span class="gp">   ....: </span><span class="c1"># the MergeASROutputPlugin.</span>
-<span class="gp">   ....: </span><span class="n">input_</span>
-<span class="gp">   ....: </span>
-<span class="gh">Out[16]: </span><span class="go"></span>
-<span class="go">{'utterances': [[{'transcript': 'hello is anyone there'},</span>
-<span class="go">   {'transcript': 'yellow is anyone here'},</span>
-<span class="go">   {'transcript': 'hello is one here'},</span>
-<span class="go">   {'transcript': 'hello is one there'},</span>
-<span class="go">   {'transcript': 'hello if one here'},</span>
-<span class="go">   {'transcript': 'hello in one here'},</span>
-<span class="go">   {'transcript': 'hello ip one here'}]],</span>
-<span class="go"> 'reference_time': None,</span>
-<span class="go"> 'latent_entities': False,</span>
-<span class="go"> 'transcripts': ['hello is anyone there',</span>
-<span class="go">  'yellow is anyone here',</span>
-<span class="go">  'hello is one here',</span>
-<span class="go">  'hello is one there',</span>
-<span class="go">  'hello if one here',</span>
-<span class="go">  'hello in one here',</span>
-<span class="go">  'hello ip one here'],</span>
-<span class="go"> 'clf_feature': ['&lt;s&gt; hello is anyone there &lt;/s&gt; &lt;s&gt; yellow is anyone here &lt;/s&gt; &lt;s&gt; hello is one here &lt;/s&gt; &lt;s&gt; hello is one there &lt;/s&gt; &lt;s&gt; hello if one here &lt;/s&gt; &lt;s&gt; hello in one here &lt;/s&gt; &lt;s&gt; hello ip one here &lt;/s&gt;'],</span>
-<span class="go"> 'lang': 'en',</span>
-<span class="go"> 'locale': 'en_IN',</span>
-<span class="go"> 'timezone': 'UTC',</span>
-<span class="go"> 'slot_tracker': None,</span>
-<span class="go"> 'current_state': 'STATE_EXPECTING_NUMBERS',</span>
-<span class="go"> 'previous_intent': None,</span>
-<span class="go"> 'history': None}</span>
+<section id="input">
+<h6>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h6>
+<p>Previously we saw that the utility method produces results on expected inputs. We will now see how to get the same from a workflow.</p>
+<blockquote>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="k">def</span> <span class="nf">get_classifier_input</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="gp">   ...: </span>    <span class="k">return</span> <span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"transcripts"</span><span class="p">],)</span>
+<span class="gp">   ...: </span>
 </pre></div>
 </div>
+</div></blockquote>
+<p>This is an accessor function, these expect a workflow instance as their only argument and can return anything currently available.
+These accessor functions are written by workflow creators and allow someone to use core plugins as long as plugins specify the input, output types.</p>
 </section>
-<section id="update-plans">
-<h4>Update Plans<a class="headerlink" href="#update-plans" title="Permalink to this headline">¶</a></h4>
-<p>You may need to write plugins that generate an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> or <a class="reference internal" href="dialogy.types.entity.base_entity.html#baseentity"><span class="std std-ref">BaseEntity</span></a>, there
-is also a category of plugins that might be required for modifications. Like the <a class="reference internal" href="dialogy.plugins.text.slot_filler.html#rulebasedslotfillerplugin"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a>
-or the <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinedatetimeoverslots"><span class="std std-ref">CombineDateTimeOverSlots</span></a>.</p>
-<p>The former updates the <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">intents</span></a> and the latter updates <a class="reference internal" href="dialogy.types.entity.time.html#timeentity"><span class="std std-ref">time-entities</span></a>. In these cases, the plugins
-also take into account other values.</p>
-<p>Such as, <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinedatetimeoverslots"><span class="std std-ref">CombineDateTimeOverSlots</span></a>:</p>
-<ol class="arabic simple">
-<li><p>Separates time entities from other entity types.</p></li>
-<li><p>Combines them over slot presence.</p></li>
-<li><p>Rebuilds a full entity list.</p></li>
-</ol>
-<p>This means</p>
-<ol class="arabic simple">
-<li><p>Some plugins need to replace the entire set of intents or entities.</p></li>
-<li><p>While others need to append their results along with the history of the workflow.</p></li>
-</ol>
-<p>If your plugin belongs to [1], then you need to set <code class="code docutils literal notranslate"><span class="pre">replace_output=True</span></code> in the constructor of your plugin.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Refer to <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinedatetimeoverslots"><span class="std std-ref">CombineDateTimeOverSlots</span></a>.
-It’s <a class="reference internal" href="dialogy.plugins.text.combine_date_time.html#combinetimeentitiesfromslots"><span class="std std-ref">combine_time_entities_from_slots</span></a> method shows where we may need to use
-<code class="code docutils literal notranslate"><span class="pre">replace_output=True</span></code>.</p>
+<section id="output">
+<h6>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h6>
+<p>Once the plugin produces an output, we may want to keep it somwhere in the workflow. In this case we rely on mutator functions to send
+the plugin output back to the workflow. These are also written by workflow creators and hence any updates are plugin agnostic.</p>
+<blockquote>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="k">def</span> <span class="nf">set_classifier_input</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="gp">   ...: </span>    <span class="sd">'''</span>
+<span class="gp">   ...: </span><span class="sd">    We would normally overwrite the input but since a workflow</span>
+<span class="gp">   ...: </span><span class="sd">    loses inputs once run; and returns only a copy of the output,</span>
+<span class="gp">   ...: </span><span class="sd">    we are creating a new key within the output.</span>
+<span class="gp">   ...: </span><span class="sd">    '''</span>
+<span class="gp">   ...: </span>    <span class="n">workflow</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">"transcripts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<span class="gp">   ...: </span>
+</pre></div>
 </div>
+</div></blockquote>
+</section>
+<section id="integrations">
+<h6>Integrations<a class="headerlink" href="#integrations" title="Permalink to this headline">¶</a></h6>
+<p>Now we fit the pieces together and can visualize the interactions between a workflow and a plugin.</p>
+<blockquote>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">w</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">MergeASRPlugin</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">get_classifier_input</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">set_classifier_input</span><span class="p">)])</span>
+<span class="gp">   ...: </span><span class="n">w</span><span class="o">.</span><span class="n">output</span>
+<span class="gp">   ...: </span><span class="n">w</span><span class="o">.</span><span class="n">run</span><span class="p">({</span><span class="s2">"transcripts"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="s2">"hello worlds"</span><span class="p">,</span> <span class="s2">"hello word"</span><span class="p">]})</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">{'intents': [],</span>
+<span class="go"> 'entities': [],</span>
+<span class="go"> 'transcripts': '&lt;s&gt;hello world&lt;s&gt; &lt;s&gt;hello worlds&lt;s&gt; &lt;s&gt;hello word&lt;s&gt;'}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="transformer">
+<h5>Transformer<a class="headerlink" href="#transformer" title="Permalink to this headline">¶</a></h5>
+<p>Transformer plugins are solitary plugins that can additionally transform dataframes. These can be used for producing new features or modify existing ones.
+If we remember the MergeASRPlugin plugin we have built so far, it does perform its transformation on a single data point expected at runtime but transformations
+happen during the training phase of a workflow.</p>
+<p>Let’s try to build a transformer plugin that will add a new column to a dataframe.</p>
+<blockquote>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="kn">import</span> <span class="nn">json</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span><span class="k">class</span> <span class="nc">MergeASRPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">start_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"&lt;s&gt;"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">end_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"&lt;/s&gt;"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">input_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"alternatives"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">output_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"concat_alternatives"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">use_transform</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">   ...: </span>    <span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">input_column</span><span class="o">=</span><span class="n">input_column</span><span class="p">,</span> <span class="n">output_column</span><span class="o">=</span><span class="n">output_column</span><span class="p">,</span> <span class="n">use_transform</span><span class="o">=</span><span class="n">use_transform</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">start_token</span> <span class="o">=</span> <span class="n">start_token</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span> <span class="o">=</span> <span class="n">start_token</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="gp">   ...: </span>        <span class="n">transcripts</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_token</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_token</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_token</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_token</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">parse_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">utility</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_transform</span><span class="p">:</span>
+<span class="gp">   ...: </span>            <span class="k">return</span> <span class="n">training_data</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>        <span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parse_value</span><span class="p">)</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="n">training_data</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"alternatives"</span><span class="p">:</span> <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">([</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="s2">"helo world"</span><span class="p">]),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">([</span><span class="s2">"today only"</span><span class="p">,</span> <span class="s2">"today"</span><span class="p">])]})</span>
+<span class="gp">   ...: </span><span class="n">MergeASRPlugin</span><span class="p">(</span><span class="n">input_column</span><span class="o">=</span><span class="s2">"alternatives"</span><span class="p">,</span> <span class="n">output_column</span><span class="o">=</span><span class="s2">"updated_alternatives"</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">                    alternatives                updated_alternatives</span>
+<span class="go">0  ["hello world", "helo world"]  &lt;s&gt;hello world&lt;s&gt; &lt;s&gt;helo world&lt;s&gt;</span>
+<span class="go">1        ["today only", "today"]        &lt;s&gt;today only&lt;s&gt; &lt;s&gt;today&lt;s&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>and the lifecycle of its demo will be covered in a later section once we have an understanding of a trainable plugin.</p>
+</section>
+<section id="trainable">
+<h5>Trainable<a class="headerlink" href="#trainable" title="Permalink to this headline">¶</a></h5>
+<p>Trainable plugins are solitary plugins that can additionally train dataframes. A trainable plugin may optionally be able to transform dataframes as well.
+Now we will build a new demo plugin that will train a classifier on a dataframe.</p>
+<blockquote>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfTransformer</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">CountVectorizer</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [9]: </span><span class="k">class</span> <span class="nc">TreeClassifierPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">random_state</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">x_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"alternatives"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">y_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"intents"</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">   ...: </span>    <span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+<span class="gp">   ...: </span>            <span class="p">(</span><span class="s1">'vect'</span><span class="p">,</span> <span class="n">CountVectorizer</span><span class="p">()),</span>
+<span class="gp">   ...: </span>            <span class="p">(</span><span class="s1">'tfidf'</span><span class="p">,</span> <span class="n">TfidfTransformer</span><span class="p">()),</span>
+<span class="gp">   ...: </span>            <span class="p">(</span><span class="s1">'clf'</span><span class="p">,</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">))</span>
+<span class="gp">   ...: </span>        <span class="p">])</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">x_col</span> <span class="o">=</span> <span class="n">x_col</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">y_col</span> <span class="o">=</span> <span class="n">y_col</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="n">X</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_col</span><span class="p">]</span>
+<span class="gp">   ...: </span>        <span class="n">y</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">y_col</span><span class="p">]</span>
+<span class="gp">   ...: </span>        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+<span class="gp">   ...: </span>            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">handle</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+<span class="gp">   ...: </span>            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="gp">   ...: </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"alternatives"</span><span class="p">:</span> <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">([</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"yea"</span><span class="p">]),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">([</span><span class="s2">"no"</span><span class="p">,</span> <span class="s2">"nope"</span><span class="p">])],</span> <span class="s2">"intents"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"affirmative"</span><span class="p">,</span> <span class="s2">"negative"</span><span class="p">]})</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span><span class="k">def</span> <span class="nf">set_classifier_output</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="gp">   ...: </span>   <span class="n">workflow</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">"intents"</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<span class="gp">   ...: </span>
+<span class="gp">   ...: </span><span class="k">def</span> <span class="nf">set_classifier_input</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="gp">   ...: </span>   <span class="n">workflow</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">"transcripts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [10]: </span><span class="n">w</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">MergeASRPlugin</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">get_classifier_input</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">set_classifier_input</span><span class="p">,</span> <span class="n">input_column</span><span class="o">=</span><span class="s2">"alternatives"</span><span class="p">,</span> <span class="n">use_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">TreeClassifierPlugin</span><span class="p">(</span><span class="n">access</span><span class="o">=</span><span class="n">get_classifier_input</span><span class="p">,</span> <span class="n">mutate</span><span class="o">=</span><span class="n">set_classifier_output</span><span class="p">,</span> <span class="n">x_col</span><span class="o">=</span><span class="s2">"concat_alternatives"</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="s2">"intents"</span><span class="p">)])</span>
+
+<span class="gp">In [11]: </span><span class="n">w</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="gp">In [12]: </span><span class="n">w</span><span class="o">.</span><span class="n">run</span><span class="p">({</span><span class="s2">"transcripts"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"yes"</span><span class="p">]})</span>
+<span class="gh">Out[12]: </span><span class="go">{'intents': array(['affirmative'], dtype=object), 'entities': []}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>If your plugin needs a model but it need not be trained frequently or is just an off the shelf pre-trained model, then you must go for a Solitary plugin.</p></li>
+<li><p>A trainable plugin can also have transform methods if it must modify a dataframe for other plugins in place.</p></li>
+</ul>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>Abstract class to be implemented by all plugins.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_column</strong> (<em>str</em>) – Transforms data in this column for a given dataframe, defaults to const.ALTERNATIVES</p></li>
-<li><p><strong>output_column</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – Saves transformation in this column for a given dataframe, defaults to None</p></li>
-<li><p><strong>use_transform</strong> (<em>bool</em>) – Should the transformation be applied while training?, defaults to False</p></li>
-<li><p><strong>dest</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The path where plugin output should be saved., defaults to None</p></li>
-<li><p><strong>guards</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Guard</em><em>]</em><em>]</em>) – A list of functions that evaluate to bool, defaults to None</p></li>
-<li><p><strong>debug</strong> (<em>bool</em><em>, </em><em>optional</em>) – Should we print debug logs?, defaults to False</p></li>
+<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> object provides utilities that perform a transformation. A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> object differs
+in behaviour depending on it’s purpose. Purpose defines stages in a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>’s lifecycle.
+These are namely: <code class="docutils literal notranslate"><span class="pre">train</span></code>, <code class="docutils literal notranslate"><span class="pre">test</span></code> and <code class="docutils literal notranslate"><span class="pre">production</span></code>.</p>
+<p>A <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> object:</p>
+<ul class="simple">
+<li><p>May be trained, expected during the <code class="docutils literal notranslate"><span class="pre">train</span></code> lifecycle.</p></li>
+<li><p>May transform a dataframe, expected during the <code class="docutils literal notranslate"><span class="pre">test</span></code> lifecycle.</p></li>
+<li><p>Transforms a datapoint, expected during the <code class="docutils literal notranslate"><span class="pre">production</span></code> lifecycle.</p></li>
 </ul>
+<p>Imagine a workflow processing a dataframe. Sequencing plugins like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">-&gt;</span> <span class="n">A</span> <span class="o">-&gt;</span> <span class="n">B</span> <span class="o">-&gt;</span> <span class="n">C</span> <span class="o">-&gt;</span> <span class="n">D</span> <span class="o">-&gt;</span> <span class="n">end</span>
+</pre></div>
+</div>
+<p>Let’s assume that the plugin B, and C are plugins that can transform data without any training.
+However, plugins A and D require training and transform data. The data transformations differ slightly as per
+the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a> life-cycle.</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>During the training phase:</dt><dd><ol class="arabic simple">
+<li><p>Plugin A starts training on a dataframe and then transforms the data.</p></li>
+<li><p>Plugin B, C start transforming the dataframe received from A.</p></li>
+<li><p>Plugin D starts trains on the dataframe received from C.</p></li>
+</ol>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.base.plugin.Plugin.prevent">
-<span class="sig-name descname"><span class="pre">prevent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.prevent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.prevent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decide if the plugin should execute.</p>
-<p>If this method returns true, the plugin’s utility method will not be called.</p>
-<dl class="field-list simple" id="guards">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>prevent plugin execution if True.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
+</li>
+<li><dl class="simple">
+<dt>During the evaluation phase:</dt><dd><ol class="arabic simple">
+<li><p>Each plugin performs its own transformation and passes data ahead.</p></li>
+</ol>
 </dd>
 </dl>
-</dd></dl>
+</li>
+</ol>
+<p>How does plugin P2 get trained if plugin P1 requires data from an incompatable dataframe?</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="o">-&gt;</span> <span class="n">P1</span> <span class="o">-&gt;</span> <span class="n">P2</span> <span class="o">-&gt;</span> <span class="n">end</span>
+</pre></div>
+</div>
+<p>Given that the production lifecycle implies that a plugin either receives the base features
+straight from the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> or its derivates via transformations from pre-existing plugins.</p>
+<p>Therefore we can redefine incompatibility as follows:</p>
+<ol class="arabic simple">
+<li><p>Label differences, i.e. P1 trains on Transcription dataframes but P2 trains on Intent Classification dataframes.</p></li>
+<li><p>Feature differences, i.e. P1 trains on confidence scores but P2 trains on ASR transcripts.</p></li>
+</ol>
+<p>Plugins require a method for validation to ensure the data they receive matches the data they are expected to process.
+If the validation fails, plugins must not interrupt the training by raising exceptions.</p>
+<p>Speaking from our example, P1 gets trained and P2 remaines untrained. This doesn’t sound intuitive but
+that’s because we are looking at plugins within a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">workflow</span></a>. As a remedy, <span class="xref std std-ref">plugins</span>
+can be trained in isolation. A plugin author still must provide <code class="docutils literal notranslate"><span class="pre">train</span></code>, <code class="docutils literal notranslate"><span class="pre">transform</span></code> and <code class="docutils literal notranslate"><span class="pre">utility</span></code>
+methods for a trainable plugin.</p>
+<p><strong>Input</strong></p>
+<p><a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> instantiation provides the configuration but transformation is done by applying
+functions on a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>. This way the seemingly linear sequence of plugins has the freedom to
+access anything committed to the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>.</p>
+<p><strong>Output</strong></p>
+<p>Post transformation we need the plugin to commit a <code class="docutils literal notranslate"><span class="pre">value</span></code>. This value is not passed to the next plugin, instead we commit
+everything to the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> by applying a <code class="docutils literal notranslate"><span class="pre">mutate</span></code> function with the <code class="docutils literal notranslate"><span class="pre">value</span></code> over to the <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a>.</p>
+<p><strong>Trainable Plugins</strong></p>
+<p>If a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is trainable, it must implement these methods:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">train(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">Plugin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utility(...)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save()</span> <span class="pre">-&gt;</span> <span class="pre">Plugin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load()</span> <span class="pre">-&gt;</span> <span class="pre">Plugin</span></code></p></li>
+</ol>
+<p><strong>Transformer Plugins</strong></p>
+<p>If a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> transforms data and produces trainable features, it must implement these methods:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">transform(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">pd.DataFrame</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utility(...)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate(x:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></li>
+</ol>
+<p><strong>Base Plugins</strong></p>
+<p>If a <a class="reference internal" href="#plugin"><span class="std std-ref">Plugin</span></a> is expected to transform isolated data points (no-training, no feature generation):</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">utility(...)</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code></p></li>
+</ol>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.train" title="Permalink to this definition">¶</a></dt>
@@ -567,24 +569,20 @@ It’s <a class="reference internal" href="dialogy.plugins.text.combine_date_tim
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.base.plugin.Plugin.utility">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.utility" title="Permalink to this definition">¶</a></dt>
-<dd><p>An abstract method that describes the plugin’s functionality.</p>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/plugin.html#Plugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.plugin.Plugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform X -&gt; y.</p>
+<p>This method is called during a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> run.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> (<a class="reference internal" href="dialogy.base.input.html#dialogy.base.input.Input" title="dialogy.base.input.Input"><em>Input</em></a>) – The workflow’s input.</p></li>
-<li><p><strong>output</strong> (<a class="reference internal" href="dialogy.base.output.html#dialogy.base.output.Output" title="dialogy.base.output.Output"><em>Output</em></a>) – The workflow’s output.</p></li>
-</ul>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A value that will be passed to the next plugin (if any).</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The value returned by the plugin.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Any</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Any</p>
 </dd>
 </dl>
 </dd></dl>
 </dd></dl>
+</section>
 </section>
 </section>
 </section>
@@ -643,12 +641,19 @@ It’s <a class="reference internal" href="dialogy.plugins.text.combine_date_tim
             <ul>
 <li><a class="reference internal" href="#">dialogy.base.plugin package</a><ul>
 <li><a class="reference internal" href="#module-dialogy.base.plugin">Module contents</a><ul>
-<li><a class="reference internal" href="#abstract-plugin">Abstract Plugin</a></li>
 <li><a class="reference internal" href="#writing-plugins">Writing Plugins</a><ul>
-<li><a class="reference internal" href="#keyword-intent">Keyword Intent</a></li>
-<li><a class="reference internal" href="#heuristic-based-intent">Heuristic based Intent</a></li>
-<li><a class="reference internal" href="#guarding-plugins">Guarding plugins</a></li>
-<li><a class="reference internal" href="#update-plans">Update Plans</a></li>
+<li><a class="reference internal" href="#plugin-types">Plugin Types</a><ul>
+<li><a class="reference internal" href="#solitary">Solitary</a><ul>
+<li><a class="reference internal" href="#methods">Methods</a></li>
+<li><a class="reference internal" href="#input">Input</a></li>
+<li><a class="reference internal" href="#output">Output</a></li>
+<li><a class="reference internal" href="#integrations">Integrations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#transformer">Transformer</a></li>
+<li><a class="reference internal" href="#trainable">Trainable</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

@@ -180,12 +180,8 @@ def test_slot_dual_fill() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"][0]["values"] == [
-        entity_1.json()
-    ]
-    assert output[const.INTENTS][0]["slots"][1]["values"] == [
-        entity_2.json()
-    ]
+    assert output[const.INTENTS][0]["slots"][0]["values"] == [entity_1.json()]
+    assert output[const.INTENTS][0]["slots"][1]["values"] == [entity_2.json()]
 
 
 def test_slot_filling_multiple() -> None:
@@ -232,12 +228,8 @@ def test_slot_filling_multiple() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"][0]["values"] == [
-        entity_1.json()
-    ]
-    assert output[const.INTENTS][0]["slots"][1]["values"] == [
-        entity_2.json()
-    ]
+    assert output[const.INTENTS][0]["slots"][0]["values"] == [entity_1.json()]
+    assert output[const.INTENTS][0]["slots"][1]["values"] == [entity_2.json()]
 
 
 def test_slot_competition_fill_multiple() -> None:

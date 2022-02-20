@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.time_interval package" href="dialogy.types.entity.time_interval.html" /><link rel="prev" title="dialogy.types.entity.people package" href="dialogy.types.entity.people.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.time package - dialogy 0.9.3 documentation</title>
+        <title>dialogy.types.entity.time package - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -220,245 +220,8 @@
         <article role="main">
           <section id="dialogy-types-entity-time-package">
 <h1>dialogy.types.entity.time package<a class="headerlink" href="#dialogy-types-entity-time-package" title="Permalink to this headline">¶</a></h1>
-<section id="module-dialogy.types.entity.time">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.entity.time" title="Permalink to this headline">¶</a></h2>
-<section id="time-entity">
-<span id="timeentity"></span><h3>Time Entity<a class="headerlink" href="#time-entity" title="Permalink to this headline">¶</a></h3>
-<p>Provides the entity class for representing time in natural language. This entity is obtained via <a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html#ducklingplugin"><span class="std std-ref">DucklingPlugin</span></a>.</p>
-<section id="plugin-walkthrough">
-<h4>Plugin Walkthrough<a class="headerlink" href="#plugin-walkthrough" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">DucklingPlugin</span>
-
-<span class="gp">In [2]: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
-<span class="gp">   ...: </span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">,</span>
-<span class="gp">   ...: </span>    <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span>
-<span class="gp">   ...: </span>    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
-<span class="gp">   ...: </span>    <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">,</span>
-<span class="gp">   ...: </span><span class="p">)</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"tomorrow"</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-16T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
-
-<span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"monday"</span><span class="p">)</span>
-<span class="gh">Out[4]: </span><span class="go">[TimeEntity(body='monday', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-02-21T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
-
-<span class="gp">In [5]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"27th jan"</span><span class="p">)</span>
-<span class="gh">Out[5]: </span><span class="go">[TimeEntity(body='27th jan', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2023-01-27T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
-</pre></div>
-</div>
-</section>
-<section id="workflow-integration">
-<h4>Workflow Integration<a class="headerlink" href="#workflow-integration" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
-<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">DucklingPlugin</span>
-<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [2]: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span>
-<span class="gp">   ...: </span>    <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">,</span>
-<span class="gp">   ...: </span>    <span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span>
-<span class="gp">   ...: </span>    <span class="n">locale</span><span class="o">=</span><span class="s2">"en_IN"</span><span class="p">,</span>
-<span class="gp">   ...: </span>    <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Kolkata"</span><span class="p">,</span>
-<span class="gp">   ...: </span><span class="p">)</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [3]: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">duckling_plugin</span><span class="p">])</span>
-
-<span class="gp">In [4]: </span><span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="p">[</span><span class="s2">"tomorrow"</span><span class="p">,</span> <span class="s2">"monday"</span><span class="p">,</span> <span class="s2">"27th jan"</span><span class="p">]))</span>
-
-<span class="gp">In [5]: </span><span class="n">output</span>
-<span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">{'intents': [],</span>
-<span class="go"> 'entities': [{'range': {'start': 0, 'end': 8},</span>
-<span class="go">   'body': 'tomorrow',</span>
-<span class="go">   'type': 'value',</span>
-<span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.3333333333333333,</span>
-<span class="go">   'alternative_index': 0,</span>
-<span class="go">   'value': '2022-02-16T00:00:00.000+05:30',</span>
-<span class="go">   'entity_type': 'date',</span>
-<span class="go">   'grain': 'day'},</span>
-<span class="go">  {'range': {'start': 0, 'end': 6},</span>
-<span class="go">   'body': 'monday',</span>
-<span class="go">   'type': 'value',</span>
-<span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.3333333333333333,</span>
-<span class="go">   'alternative_index': 1,</span>
-<span class="go">   'value': '2022-02-21T00:00:00.000+05:30',</span>
-<span class="go">   'entity_type': 'date',</span>
-<span class="go">   'grain': 'day'},</span>
-<span class="go">  {'range': {'start': 0, 'end': 8},</span>
-<span class="go">   'body': '27th jan',</span>
-<span class="go">   'type': 'value',</span>
-<span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.3333333333333333,</span>
-<span class="go">   'alternative_index': 2,</span>
-<span class="go">   'value': '2023-01-27T00:00:00.000+05:30',</span>
-<span class="go">   'entity_type': 'date',</span>
-<span class="go">   'grain': 'day'}]}</span>
-</pre></div>
-</div>
-<dl class="py class">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></code></a></p>
-<p>Entities that can be parsed to obtain date, time or datetime values.</p>
-<p>Example sentences that contain the entity are:
-- “I have a flight at 6 am.”
-- “I have a flight at 6th December.”
-- “I have a flight at 6 am today.”</p>
-<p>Attributes:
-- <cite>grain</cite> tells us the smallest unit of time in the utterance</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.collect_datetime_values">
-<span class="sig-name descname"><span class="pre">collect_datetime_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.collect_datetime_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.collect_datetime_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collect all datetime values from the entity</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of datetime values</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>List[str]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.dim">
-<span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.dim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.from_duckling">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_duckling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.from_duckling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.from_duckling" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeEntity</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.get_value">
-<span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.get_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.get_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the date string in ISO format from the dictionary passed</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">date</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"2021-04-17T16:00:00.000+05:30"</span><span class="p">,</span>
-    <span class="s2">"grain"</span><span class="p">:</span> <span class="s2">"hour"</span><span class="p">,</span>
-    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"value"</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>date</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary which stores the datetime in ISO format, grain and type</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">date["value"]</span></code></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[datetime]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.grain">
-<span class="sig-name descname"><span class="pre">grain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.grain" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.is_uniq_date_from_values">
-<span class="sig-name descname"><span class="pre">is_uniq_date_from_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.is_uniq_date_from_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.is_uniq_date_from_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check a list has a unique day</p>
-<p>Where day is the date number for a month.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>True if there is a unique day in all datetime values</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.is_uniq_day_from_values">
-<span class="sig-name descname"><span class="pre">is_uniq_day_from_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.is_uniq_day_from_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.is_uniq_day_from_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check a list has a unique weekday</p>
-<p>Where weekday ranges from 0 for Monday till 6 for Sunday
-Ex: for “2021-04-17T16:00:00.000+05:30”, the weekday is 5 (Saturday)</p>
-<p>Duckling may return 3 datetime values in chronological order. For cases where the utterance is “Monday”,
-(or any weekday for that matter) we will get 3 values, each value a week apart.
-We pair these dates and check the difference is 1 week long (7 days).</p>
-<p>For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Say, our 3 date values are:</span>
-<span class="n">date</span> <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">21</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">28</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">05</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">2021</span><span class="p">]</span>
-
-<span class="c1"># then we generate pairs as:</span>
-<span class="p">[(</span><span class="mi">21</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">28</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">2021</span><span class="p">),</span> <span class="p">(</span><span class="mi">28</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">05</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">2021</span><span class="p">)]</span>
-</pre></div>
-</div>
-<p>If the difference between these dates is divisible by seven, then the input was a weekday.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>True if there is a unique weekday in all datetime values</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.origin">
-<span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.origin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.set_entity_type">
-<span class="sig-name descname"><span class="pre">set_entity_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.set_entity_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.set_entity_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the type for this entity</p>
-<p>To pinpoint a time for any action, we need both DATE (either explicit or inferred) and TIME.
-We can get these in 3 possible manners:</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>both DATE and TIME, the entity type here will be DATETIME</dt><dd><ul>
-<li><p>Positive examples: tonight, tomorrow 4pm, 7th april 2019 6pm, last 3 hours (Because it tells us about the date as well, that is today)</p></li>
-<li><p>Negative examples: Yesterday I went to park at 3pm (because the user did not say yesterday and 3pm together)</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>only DATE, the entity type here will be DATE</dt><dd><ul>
-<li><p>Positive examples: last month, last year, last 3 months, last 6 months, tomorrow, 27th oct 1996, 1st October 2019 till yesterday, yesterday, today, tomorrow, October, 2019, 27th October 1996 to 29th October 1996 etc</p></li>
-<li><p>Negative examples: month, year, 6 months, 3 months (Since these do not have a fixed start and end date, it could have been 6 months from today, 6 months from tomorrow, previous 6 months. Therefore it only tells us a duration.)</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>only TIME, the entity type here will be TIME</dt><dd><ul>
-<li><p>Positive examples: 3pm, 5pm, night, morning, etc</p></li>
-<li><p>Negative examples: tonight (because the date part today is in it), tomorrow night, 6th April 5pm, 7 hours (duration because they didn’t mention a start/end time. It could be 7 hours from any time) etc</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p>if we get the grain as one of (“day”, “week”, “month”, “quarter”, “year”),
-then the entity type is DATE
-if we get grain as one of (“hour”, “second”, “minute”) and we only have 1 value in <cite>self.values</cite>,
-then the entity type is DATETIME.
-if we get grain as one of (“hour”, “second”, “minute”) and we have either a unique date or a unique weekday,
-then the entity type is DATETIME.
-else the entity type is TIME.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>one of (date, time, datetime)</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-</section>
-</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
@@ -514,14 +277,7 @@ else the entity type is TIME.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.types.entity.time package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.types.entity.time">Module contents</a><ul>
-<li><a class="reference internal" href="#time-entity">Time Entity</a><ul>
-<li><a class="reference internal" href="#plugin-walkthrough">Plugin Walkthrough</a></li>
-<li><a class="reference internal" href="#workflow-integration">Workflow Integration</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

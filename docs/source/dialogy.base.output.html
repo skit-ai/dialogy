@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.workflow package" href="dialogy.workflow.html" /><link rel="prev" title="dialogy.base.input package" href="dialogy.base.input.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.base.output package - dialogy 0.9.3 documentation</title>
+        <title>dialogy.base.output package - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -220,105 +220,8 @@
         <article role="main">
           <section id="dialogy-base-output-package">
 <h1>dialogy.base.output package<a class="headerlink" href="#dialogy-base-output-package" title="Permalink to this headline">¶</a></h1>
-<section id="module-dialogy.base.output">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.base.output" title="Permalink to this headline">¶</a></h2>
-<p id="output">The <a class="reference internal" href="#output"><span class="std std-ref">Output</span></a> class creates immutable instances that describe the output of a single turn of a conversation.
-The output contains</p>
-<ol class="arabic simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">List[Intent]</span></code> sorted in descending order of confidence scores.</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">List[BaseEntity]</span></code> in an arbitrary order.</p></li>
-</ol>
-<p>We don’t require the <code class="code docutils literal notranslate"><span class="pre">List[BaseEntity]</span></code> apart from logging purposes. We fill relevant entities within <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a>
-of the predicted <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>. Currently this is done only for the <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a> with the highest confidence score.
-That’s because currently, we only process a single trigger from the SLU API (at the dialog manager), which is an <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a>.</p>
-<div class="admonition-why-do-i-see-ref-input-input-and-ref-output-output-as-inputs-to-all-ref-plugins-abstractplugin admonition">
-<p class="admonition-title">Why do I see <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">Input</span></a> and <a class="reference internal" href="#output"><span class="std std-ref">Output</span></a> as inputs to all <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugins</span></a>?</p>
-<p>It is a common pattern for all the plugins to require both as arguments. Since this could be confusing nomenclature, <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">Input</span></a>
-and <a class="reference internal" href="#output"><span class="std std-ref">Output</span></a> bear meaning and even separation for the SLU API, <strong>not for</strong> <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugins</span></a>.</p>
-</div>
-<section id="setting-output">
-<h3>Setting Output<a class="headerlink" href="#setting-output" title="Permalink to this headline">¶</a></h3>
-<p>Just like <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">Input</span></a>, <a class="reference internal" href="#output"><span class="std std-ref">Output</span></a> is also an immutable class.</p>
-<ol class="arabic simple">
-<li><p><strong>Don’t change the attribute elements in place.</strong> It would work for now
-but even types like <cite>Intent</cite> and <cite>BaseEntity</cite> will soon become immutable as well.</p></li>
-<li><p>Plugins that produce output must always produce a <code class="code docutils literal notranslate"><span class="pre">List[Intent]</span></code> or <code class="code docutils literal notranslate"><span class="pre">List[BaseEntity]</span></code>.
-Say, returning a single <code class="code docutils literal notranslate"><span class="pre">Intent</span></code> would break validations on the output class.</p></li>
-</ol>
-</section>
-<section id="serialization">
-<h3>Serialization<a class="headerlink" href="#serialization" title="Permalink to this headline">¶</a></h3>
-<p>If there is a need to represent an <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">Input</span></a> as a <cite>dict</cite> we can do the following:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Output</span>
-<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Intent</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [2]: </span><span class="n">output</span> <span class="o">=</span> <span class="n">Output</span><span class="p">(</span><span class="n">intents</span><span class="o">=</span><span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"_greeting_"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)])</span>
-
-<span class="gp">In [3]: </span><span class="n">output</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<span class="gh">Out[3]: </span><span class="go"></span>
-<span class="go">{'intents': [{'name': '_greeting_',</span>
-<span class="go">   'alternative_index': None,</span>
-<span class="go">   'score': 1.0,</span>
-<span class="go">   'parsers': [],</span>
-<span class="go">   'slots': {}}],</span>
-<span class="go"> 'entities': []}</span>
-</pre></div>
-</div>
-<dl class="py class">
-<dt class="sig sig-object py" id="dialogy.base.output.Output">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/output.html#Output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.output.Output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represents output of the SLU API.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.output.Output.entities">
-<span class="sig-name descname"><span class="pre">entities</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.output.Output.entities" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list of entities. Produced by <a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html#ducklingplugin"><span class="std std-ref">DucklingPlugin</span></a>, 
-<a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html#listentityplugin"><span class="std std-ref">ListEntityPlugin</span></a> or <a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html#listsearchplugin"><span class="std std-ref">ListSearchPlugin</span></a>.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.base.output.Output.from_dict">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/output.html#Output.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.output.Output.from_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new <a class="reference internal" href="#output">Output</a> instance from a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>d</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A dictionary such that keys are a subset of <a class="reference internal" href="#output">Output</a> attributes.</p></li>
-<li><p><strong>reference</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#dialogy.base.output.Output" title="dialogy.base.output.Output"><em>Output</em></a><em>]</em><em>, </em><em>optional</em>) – An existing <a class="reference internal" href="#output">Output</a> instance., defaults to None</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new <a class="reference internal" href="#output">Output</a> instance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#dialogy.base.output.Output" title="dialogy.base.output.Output">Output</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.base.output.Output.intents">
-<span class="sig-name descname"><span class="pre">intents</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.output.Output.intents" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list of intents. Produced by <a class="reference internal" href="dialogy.plugins.text.classification.html#xlmrmulticlass"><span class="std std-ref">XLMRMultiClass</span></a>
-or <a class="reference internal" href="dialogy.plugins.text.classification.html#mlpmulticlass"><span class="std std-ref">MLPMultiClass</span></a>.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.base.output.Output.json">
-<span class="sig-name descname"><span class="pre">json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/output.html#Output.json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.output.Output.json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serialize <a class="reference internal" href="#output">Output</a> to a JSON-like dict.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="#dialogy.base.output.Output" title="dialogy.base.output.Output"><em>Output</em></a>) – [description]</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>[description]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, List[Dict[str, Any]]]</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
@@ -374,11 +277,7 @@ or <a class="reference internal" href="dialogy.plugins.text.classification.html#
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.base.output package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.base.output">Module contents</a><ul>
-<li><a class="reference internal" href="#setting-output">Setting Output</a></li>
-<li><a class="reference internal" href="#serialization">Serialization</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

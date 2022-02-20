@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="dialogy.plugins.text.combine_date_time package" href="dialogy.plugins.text.combine_date_time.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.utils package - dialogy 0.9.3 documentation</title>
+        <title>dialogy.utils package - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -223,73 +223,8 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </section>
-<section id="module-dialogy.utils.datetime">
-<span id="dialogy-utils-datetime-module"></span><h2>dialogy.utils.datetime module<a class="headerlink" href="#module-dialogy.utils.datetime" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="dialogy.utils.datetime.dt2timestamp">
-<span class="sig-name descname"><span class="pre">dt2timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/datetime.html#dt2timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.datetime.dt2timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a python datetime object to unix-timestamp.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>date_time</strong> (<em>datetime</em>) – An instance of datetime.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Unix timestamp integer.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="dialogy.utils.datetime.is_unix_ts">
-<span class="sig-name descname"><span class="pre">is_unix_ts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/datetime.html#is_unix_ts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.datetime.is_unix_ts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the input is a unix timestamp.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<em>int</em>) – A unix timestamp (13-digit).</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if <code class="code docutils literal notranslate"><span class="pre">ts</span></code> is a unix timestamp, else False.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="dialogy.utils.datetime.make_unix_ts">
-<span class="sig-name descname"><span class="pre">make_unix_ts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/datetime.html#make_unix_ts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.datetime.make_unix_ts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert date in ISO 8601 format to unix ms timestamp.</p>
-<div class="highlight-ipython notranslate" id="make-unix-ts"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.datetime</span> <span class="kn">import</span> <span class="n">make_unix_ts</span>
-
-<span class="gp">In [2]: </span><span class="n">ts</span> <span class="o">=</span> <span class="n">make_unix_ts</span><span class="p">(</span><span class="s2">"Asia/Kolkata"</span><span class="p">)(</span><span class="s2">"2022-02-07T19:39:39.537827"</span><span class="p">)</span>
-
-<span class="gp">In [3]: </span><span class="n">ts</span> <span class="o">==</span> <span class="mi">1644241599537</span>
-<span class="gh">Out[3]: </span><span class="go">True</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tz</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – A timezone string, defaults to “UTC”</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A callable that converts a date in ISO 8601 format to unix ms timestamp.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Callable[[str], int]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="dialogy.utils.datetime.unix_ts_to_datetime">
-<span class="sig-name descname"><span class="pre">unix_ts_to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/datetime.html#unix_ts_to_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.datetime.unix_ts_to_datetime" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<section id="dialogy-utils-datetime-module">
+<h2>dialogy.utils.datetime module<a class="headerlink" href="#dialogy-utils-datetime-module" title="Permalink to this headline">¶</a></h2>
 </section>
 <section id="module-dialogy.utils.file_handler">
 <span id="dialogy-utils-file-handler-module"></span><h2>dialogy.utils.file_handler module<a class="headerlink" href="#module-dialogy.utils.file_handler" title="Permalink to this headline">¶</a></h2>
@@ -375,6 +310,12 @@
 <span id="dialogy-utils-logger-module"></span><h2>dialogy.utils.logger module<a class="headerlink" href="#module-dialogy.utils.logger" title="Permalink to this headline">¶</a></h2>
 <p>Module provides access to logger.</p>
 <p>This needs to be used sparingly, prefer to raise specific exceptions instead.</p>
+<dl class="simple">
+<dt>Import functions:</dt><dd><ul class="simple">
+<li><p>change_log_level</p></li>
+</ul>
+</dd>
+</dl>
 </section>
 <section id="module-dialogy.utils.misc">
 <span id="dialogy-utils-misc-module"></span><h2>dialogy.utils.misc module<a class="headerlink" href="#module-dialogy.utils.misc" title="Permalink to this headline">¶</a></h2>
@@ -386,6 +327,22 @@
 </ul>
 </dd>
 </dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.utils.misc.dt2timestamp">
+<span class="sig-name descname"><span class="pre">dt2timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#dt2timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.dt2timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a python datetime object to unix-timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date_time</strong> (<em>datetime</em>) – An instance of datetime.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Unix timestamp integer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="dialogy.utils.misc.traverse_dict">
 <span class="sig-name descname"><span class="pre">traverse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/misc.html#traverse_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.misc.traverse_dict" title="Permalink to this definition">¶</a></dt>
@@ -416,36 +373,22 @@ Missing properties will lead to KeyErrors.</p>
 <span class="gp">In [4]: </span><span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
 <span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">IndexError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
-<span class="n">Input</span> <span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">556</span><span class="n">a11057179</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">traverse_dict</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="p">[</span><span class="s2">"planets"</span><span class="p">,</span> <span class="s2">"mars"</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="s2">"languages"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"bop"</span><span class="p">])</span>
 
-<span class="nn">File ~/Programs/pythoncode/dialogy/dialogy/utils/misc.py:52,</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
-<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="sd">"""</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span><span class="sd"> Traverse a dictionary for a given list of properties.</span>
-<span class="g g-Whitespace">     </span><span class="mi">15</span><span class="sd"> </span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span><span class="sd"> :raises TypeError: Properties don't describe a path due to possible type error.</span>
-<span class="g g-Whitespace">     </span><span class="mi">50</span><span class="sd"> """</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">52</span>     <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span> <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">54</span>     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">55</span>         <span class="sa">f</span><span class="s2">"Missing property </span><span class="si">{</span><span class="n">key_error</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">. Check the types. Failed for path </span><span class="si">{</span><span class="n">properties</span><span class="si">}</span><span class="s2">"</span>
-<span class="g g-Whitespace">     </span><span class="mi">56</span>     <span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
+<span class="nn">~/.pyenv/versions/3.8.7/envs/venv_dialogy/lib/python3.8/site-packages/dialogy/utils/misc.py</span> in <span class="ni">traverse_dict</span><span class="nt">(obj, properties)</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">"""</span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd">     try:</span>
+<span class="ne">---&gt; </span><span class="mi">53</span><span class="sd">         return reduce(lambda o, k: o[k], properties, obj)</span>
+<span class="g g-Whitespace">     </span><span class="mi">54</span><span class="sd">     except KeyError as key_error:</span>
+<span class="g g-Whitespace">     </span><span class="mi">55</span><span class="sd">         raise KeyError(</span>
 
-<span class="nn">File ~/Programs/pythoncode/dialogy/dialogy/utils/misc.py:52,</span> in <span class="ni">traverse_dict.&lt;locals&gt;.&lt;lambda&gt;</span><span class="nt">(o, k)</span>
-<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="sd">"""</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span><span class="sd"> Traverse a dictionary for a given list of properties.</span>
-<span class="g g-Whitespace">     </span><span class="mi">15</span><span class="sd"> </span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span><span class="sd"> :raises TypeError: Properties don't describe a path due to possible type error.</span>
-<span class="g g-Whitespace">     </span><span class="mi">50</span><span class="sd"> """</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">52</span>     <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span> <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">54</span>     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">55</span>         <span class="sa">f</span><span class="s2">"Missing property </span><span class="si">{</span><span class="n">key_error</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">. Check the types. Failed for path </span><span class="si">{</span><span class="n">properties</span><span class="si">}</span><span class="s2">"</span>
-<span class="g g-Whitespace">     </span><span class="mi">56</span>     <span class="p">)</span> <span class="kn">from</span> <span class="nn">key_error</span>
+<span class="nn">~/.pyenv/versions/3.8.7/envs/venv_dialogy/lib/python3.8/site-packages/dialogy/utils/misc.py</span> in <span class="ni">&lt;lambda&gt;</span><span class="nt">(o, k)</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd">     """</span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span>     <span class="k">try</span><span class="p">:</span>
+<span class="ne">---&gt; </span><span class="mi">53</span>         <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">o</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">properties</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">54</span>     <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">55</span>         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
 
 <span class="ne">IndexError</span>: list index out of range
 </pre></div>
@@ -692,33 +635,22 @@ Defaults to <code class="code docutils literal notranslate"><span class="pre">co
 <span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_utterance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transcript'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/utils/normalize_utterance.html#normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.utils.normalize_utterance.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adapt various non-standard ASR alternative forms.</p>
 <p>The output will be a list of strings since models will expect that.</p>
-<div class="highlight-ipython notranslate" id="normalize"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">normalize</span>
-<span class="gp">   ...: </span><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="c1"># A popular case</span>
-<span class="gp">   ...: </span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"this"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"works"</span><span class="p">}]])</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[1]: </span><span class="go">['this', 'works']</span>
-</pre></div>
-</div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [2]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="c1"># A case with multiple utterances</span>
-<span class="gp">   ...: </span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">([</span>
-<span class="gp">   ...: </span>            <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello hello?"</span><span class="p">,</span> <span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"yellow yellow?"</span><span class="p">}],</span>
-<span class="gp">   ...: </span>            <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"I wanted to check"</span><span class="p">}],</span>
-<span class="gp">   ...: </span>            <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"if you have space for us?"</span><span class="p">}]</span>
-<span class="gp">   ...: </span>        <span class="p">])</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[2]: </span><span class="go">['yellow yellow? I wanted to check if you have space for us?']</span>
-</pre></div>
-</div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [3]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">([{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"I wanted to know umm hello?"</span><span class="p">}])</span>
-<span class="gh">Out[3]: </span><span class="go">['I wanted to know umm hello?']</span>
-</pre></div>
-</div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">([</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">])</span>
-<span class="gh">Out[4]: </span><span class="go">['I wanted to know umm hello?']</span>
-</pre></div>
-</div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">normalize</span><span class="p">(</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">)</span>
-<span class="gh">Out[5]: </span><span class="go">['I wanted to know umm hello?']</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.utils.normalize_utterance</span> <span class="kn">import</span> <span class="n">normalize</span>
+
+<span class="gp">In [2]: </span><span class="n">normalize</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hi"</span><span class="p">}]])</span>
+<span class="gh">Out[2]: </span><span class="go">['hi']</span>
+
+<span class="gp">In [3]: </span><span class="n">normalize</span><span class="p">([[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">}],</span> <span class="p">[{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"world"</span><span class="p">}]])</span>
+<span class="gh">Out[3]: </span><span class="go">['hello world']</span>
+
+<span class="gp">In [4]: </span><span class="n">normalize</span><span class="p">([{</span><span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"I wanted to know umm hello?"</span><span class="p">}])</span>
+<span class="gh">Out[4]: </span><span class="go">['i wanted to know umm hello?']</span>
+
+<span class="gp">In [5]: </span><span class="n">normalize</span><span class="p">([</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">])</span>
+<span class="gh">Out[5]: </span><span class="go">['i wanted to know umm hello?']</span>
+
+<span class="gp">In [6]: </span><span class="n">normalize</span><span class="p">(</span><span class="s2">"I wanted to know umm hello?"</span><span class="p">)</span>
+<span class="gh">Out[6]: </span><span class="go">['i wanted to know umm hello?']</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -800,7 +732,7 @@ Defaults to <code class="code docutils literal notranslate"><span class="pre">co
             <ul>
 <li><a class="reference internal" href="#">dialogy.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dialogy.utils.datetime">dialogy.utils.datetime module</a></li>
+<li><a class="reference internal" href="#dialogy-utils-datetime-module">dialogy.utils.datetime module</a></li>
 <li><a class="reference internal" href="#module-dialogy.utils.file_handler">dialogy.utils.file_handler module</a></li>
 <li><a class="reference internal" href="#module-dialogy.utils.logger">dialogy.utils.logger module</a></li>
 <li><a class="reference internal" href="#module-dialogy.utils.misc">dialogy.utils.misc module</a></li>

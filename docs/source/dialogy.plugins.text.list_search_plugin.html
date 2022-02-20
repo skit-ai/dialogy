@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.base.entity_extractor package" href="dialogy.base.entity_extractor.html" /><link rel="prev" title="dialogy.plugins.text.list_entity_plugin package" href="dialogy.plugins.text.list_entity_plugin.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.list_search_plugin package - dialogy 0.9.3 documentation</title>
+        <title>dialogy.plugins.text.list_search_plugin package - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -220,107 +220,8 @@
         <article role="main">
           <section id="dialogy-plugins-text-list-search-plugin-package">
 <h1>dialogy.plugins.text.list_search_plugin package<a class="headerlink" href="#dialogy-plugins-text-list-search-plugin-package" title="Permalink to this headline">¶</a></h1>
-<section id="module-dialogy.plugins.text.list_search_plugin">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.list_search_plugin" title="Permalink to this headline">¶</a></h2>
-<p>Module needs refactor. We are currently keeping all strategies bundled as methods as opposed to SearchStrategyClasses.</p>
-<p>Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We can ship individual plugins but at the
-same time, the difference is just configuration of each of these tools/services. There is another difference of
-intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting
-all other entities. So that their <code class="code docutils literal notranslate"><span class="pre">from_dict(...)</span></code> methods are pristine and involve no shape hacking.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="dialogy.plugins.text.list_search_plugin.ListSearchPlugin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ListSearchPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fuzzy_dp_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column='alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags=RegexFlag.None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fuzzy_threshold=0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_search_plugin.html#ListSearchPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_search_plugin.ListSearchPlugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="dialogy.base.entity_extractor.html#dialogy.base.entity_extractor.EntityScoringMixin" title="dialogy.base.entity_extractor.EntityScoringMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.entity_extractor.EntityScoringMixin</span></code></a>, <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
-<blockquote>
-<div><p>A <span class="xref std std-ref">Plugin</span> for extracting entities using spacy or a list of regex patterns.</p>
-</div></blockquote>
-<dl class="field-list simple" id="listsearchplugin">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>style</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – One of [“regex”, “spacy”]</p></li>
-<li><p><strong>candidates</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>]</em>) – Required if style is “regex”, this is a <code class="code docutils literal notranslate"><span class="pre">dict</span></code> that shows a mapping of entity
-values and their patterns.</p></li>
-<li><p><strong>spacy_nlp</strong> (<em>Any</em>) – Required if style is “spacy”, this is a
-<a class="reference external" href="https://spacy.io/usage/spacy-101#annotations-ner">spacy model</a>.</p></li>
-<li><p><strong>labels</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Required if style is “spacy”. If there is a need to extract only a few labels from all the other
-<a class="reference external" href="https://github.com/explosion/spaCy/issues/441#issuecomment-311804705">available labels</a>.</p></li>
-<li><p><strong>debug</strong> (<em>bool</em>) – A flag to set debugging on the plugin methods</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.list_search_plugin.ListSearchPlugin.dp_search">
-<span class="sig-name descname"><span class="pre">dp_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_patterns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_search_plugin.html#ListSearchPlugin.dp_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_search_plugin.ListSearchPlugin.dp_search" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.list_search_plugin.ListSearchPlugin.fuzzy_init">
-<span class="sig-name descname"><span class="pre">fuzzy_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_search_plugin.html#ListSearchPlugin.fuzzy_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_search_plugin.ListSearchPlugin.fuzzy_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializing the parameters for fuzzy dp search with their values</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.list_search_plugin.ListSearchPlugin.get_entities">
-<span class="sig-name descname"><span class="pre">get_entities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcripts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_search_plugin.html#ListSearchPlugin.get_entities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_search_plugin.ListSearchPlugin.get_entities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse entities using regex and spacy ner.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>transcripts</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – A list of strings within which to search for entities.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of entities from regex matches or spacy ner.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="dialogy.types.entity.keyword.html#dialogy.types.entity.keyword.KeywordEntity" title="dialogy.types.entity.keyword.KeywordEntity">KeywordEntity</a>]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.list_search_plugin.ListSearchPlugin.get_fuzzy_dp_search">
-<span class="sig-name descname"><span class="pre">get_fuzzy_dp_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcript</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_search_plugin.html#ListSearchPlugin.get_fuzzy_dp_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_search_plugin.ListSearchPlugin.get_fuzzy_dp_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search for Entity in transcript from a defined List Search space
-:param transcripts : A list of transcripts, <code class="code docutils literal notranslate"><span class="pre">List[str]</span></code>.
-:param lang : Language code of the transcript :code str
-:return: Token matches with the transcript.
-:rtype: List[MatchType]</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.list_search_plugin.ListSearchPlugin.search_regex">
-<span class="sig-name descname"><span class="pre">search_regex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_patterns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_search_plugin.html#ListSearchPlugin.search_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_search_plugin.ListSearchPlugin.search_regex" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.list_search_plugin.ListSearchPlugin.utility">
-<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_search_plugin.html#ListSearchPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_search_plugin.ListSearchPlugin.utility" title="Permalink to this definition">¶</a></dt>
-<dd><p>An abstract method that describes the plugin’s functionality.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> (<a class="reference internal" href="dialogy.base.input.html#dialogy.base.input.Input" title="dialogy.base.input.Input"><em>Input</em></a>) – The workflow’s input.</p></li>
-<li><p><strong>output</strong> (<a class="reference internal" href="dialogy.base.output.html#dialogy.base.output.Output" title="dialogy.base.output.Output"><em>Output</em></a>) – The workflow’s output.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The value returned by the plugin.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Any</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
@@ -376,7 +277,7 @@ values and their patterns.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.plugins.text.list_search_plugin package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.plugins.text.list_search_plugin">Module contents</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
