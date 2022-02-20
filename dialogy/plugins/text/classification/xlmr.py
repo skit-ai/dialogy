@@ -16,7 +16,7 @@ from sklearn import preprocessing
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
-from dialogy.utils import load_file, logger, save_file
+from dialogy.utils import load_file, logger, save_file, read_from_json
 
 
 class XLMRMultiClass(Plugin):
@@ -69,6 +69,12 @@ class XLMRMultiClass(Plugin):
         self.labelencoder_file_path = os.path.join(
             self.model_dir, const.LABELENCODER_FILE
         )
+        self.ts_parameter: float = read_from_json(
+            [const.TS_PARAMETER],
+            model_dir,
+            const.CALIBRATION_CONFIG_FILE
+        ).get(const.TS_PARAMETER) or 1.0
+        
         self.threshold = threshold
         self.skip_labels = set(skip_labels or set())
         self.purpose = purpose
@@ -79,7 +85,7 @@ class XLMRMultiClass(Plugin):
             or const.PRODUCTION not in args_map
         ):
             raise ValueError(
-                f"Attempting to set invalid {args_map=}. "
+                f"Attempting to set invalid {args_map}. "
                 "It is missing some of {const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
             )
         self.args_map = args_map
@@ -115,6 +121,7 @@ class XLMRMultiClass(Plugin):
             if self.args_map and self.purpose in self.args_map
             else {}
         )
+        self.use_calibration = args.get(const.MODEL_CALIBRATION)
         try:
             self.model = self.classifier(
                 const.XLMR_MODEL,
@@ -176,6 +183,8 @@ class XLMRMultiClass(Plugin):
         if not predictions:
             return [fallback_output]
 
+        
+        logits = logits / self.ts_parameter
         confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
         intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
         predicted_intents = self.labelencoder.inverse_transform(
@@ -184,6 +193,9 @@ class XLMRMultiClass(Plugin):
         ordered_confidence_scores = [
             confidence_scores[0][idx] for idx in intents_confidence_order
         ]
+
+        if self.use_calibration:
+            ordered_confidence_scores = [logits[0][idx] for idx in np.argsort(logits)[0][::-1]] # ordered logits for calibration
 
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(

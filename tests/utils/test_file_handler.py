@@ -5,7 +5,9 @@ import shutil
 import tempfile
 from datetime import datetime
 
-from dialogy.utils.file_handler import create_timestamps_path, load_file, save_file
+from dialogy.utils.file_handler import (
+    create_timestamps_path, load_file, save_file, read_from_json, save_to_json
+)
 
 
 def test_load_file_json():
@@ -72,3 +74,49 @@ def test_create_timestamps_path_real_run():
     )
     shutil.rmtree(dir_path)
     assert produced_path == path_
+
+def test_read_from_json():
+    empty_config = read_from_json(["a", "b"], "/tmp", "fake.json")
+    assert isinstance(empty_config, dict)
+    assert empty_config == {}
+    fake_config = {
+        "a" : 1,
+        "b" : [1, 2]
+    }
+    _, file_path = tempfile.mkstemp(suffix=".json")
+    dir, file_name = os.path.split(file_path)
+    with open(file_path, "w") as f:
+        json.dump(fake_config, f)
+    assert list(read_from_json(["a", "b"], dir, file_name).items()) == list(fake_config.items())
+    os.remove(file_path)
+    
+
+def test_save_to_json_empty_config():
+    fake_config = {
+        "a" : 1,
+        "b" : [1, 2]
+    }
+    _, file_path = tempfile.mkstemp(suffix=".json")
+    dir, file_name = os.path.split(file_path)
+    save_to_json(fake_config, dir, file_name)
+    with open(file_path, "r") as f:
+        assert list(json.load(f).items()) == list(fake_config.items())
+    os.remove(file_path)
+
+def test_save_to_json_filled_config():
+    old_config = {
+        "a" : 1,
+        "b" : [1, 2]
+    }
+    new_config = {
+        "a": 2,
+        "b": [3, 4]
+    }
+    _, file_path = tempfile.mkstemp(suffix=".json")
+    with open(file_path, "w") as f:
+        json.dump(old_config, f)
+    dir, file_name = os.path.split(file_path)
+    save_to_json(new_config, dir, file_name)
+    with open(file_path, "r") as f:
+        assert list(json.load(f).items()) == list(new_config.items())
+    os.remove(file_path)

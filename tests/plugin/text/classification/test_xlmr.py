@@ -259,6 +259,14 @@ def test_inference(payload):
         model_dir=directory,
         dest="output.intents",
         debug=False,
+        purpose = const.TEST,
+        args_map={
+            const.TEST: {
+                const.MODEL_CALIBRATION: True
+            },
+            const.TRAIN: {},
+            const.PRODUCTION: {}
+        },
     )
 
     merge_asr_output_plugin = MergeASROutputPlugin(
