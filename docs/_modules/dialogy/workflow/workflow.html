@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.workflow.workflow - dialogy 0.9.3 documentation</title>
+        <title>dialogy.workflow.workflow - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -219,131 +219,64 @@
         <article role="main">
           <h1>Source code for dialogy.workflow.workflow</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">The :ref:`Workflow&lt;WorkflowClass&gt;` represents a black box for an SLU microservice, and its terminals, :ref:`input &lt;Input&gt;` and :ref:`output &lt;Output&gt;`</span>
-<span class="sd">represent request response structure of the SLU API.</span>
+<span class="sd">.. _workflow:</span>
 
-<span class="sd">.. note::</span>
+<span class="sd">A :code:`workflow` is supposed to run tasks that can be anticipated well in advance.</span>
 
-<span class="sd">    The :ref:`Input&lt;Input&gt;` has some extra properties that aren't part of the SLU API.</span>
-<span class="sd">    We have kept reserves for intermediates, and flattened as most other nested inputs </span>
-<span class="sd">    aren't required and add to bloat.</span>
+<span class="sd">Here are few demo's where you can see mock :code:`workflow` in action.</span>
 
-<span class="sd">.. attention::</span>
+<span class="sd">- :ref:`RuleBasedSlotFillerPlugin&lt;rule_slot_filler&gt;`</span>
+<span class="sd">- :ref:`VotePlugin&lt;vote_plugin&gt;`</span>
+<span class="sd">- :ref:`DucklingPlugin&lt;duckling_plugin&gt;`</span>
 
-<span class="sd">    :ref:`Input&lt;Input&gt;` and :ref:`Output&lt;Output&gt;` instances are immutable.</span>
+<span class="sd">A workflow is a hollow conduit, think of a vertically hanging pipe without any medium. If you were to drop a block of ...</span>
+<span class="sd">`anything`? through it, it would pass through with a thud on the ground `(yes we assumed gravity)`.</span>
 
-<span class="sd">What does it do?</span>
-<span class="sd">----------------</span>
+<span class="sd">Structure</span>
+<span class="sd">----------</span>
 
-<span class="sd">Produce the response for a single turn of a conversation. It recieves (not an exhaustive list):</span>
+<span class="sd">A workflow allows flexibility, that's why. There is very little structure to it. We have:</span>
 
-<span class="sd">- Utterance.</span>
-<span class="sd">- Timezone</span>
-<span class="sd">- Language code</span>
-<span class="sd">- Locale</span>
-<span class="sd">- Current State of the conversation</span>
-<span class="sd">- Slot tracker</span>
+<span class="sd">- input</span>
+<span class="sd">- output</span>
+<span class="sd">- plugins</span>
 
+<span class="sd">Apart from these, we expect at the core, an inference function with machine learning models. Which ones? A N Y ones.</span>
+<span class="sd">As long as you have the compute, there is no restriction. Use statistical models or DL or a bunch of conditions,</span>
+<span class="sd">your :ref:`Workflow &lt;Workflow&gt;` won't judge you.</span>
 
-<span class="sd">as :ref:`inputs&lt;Input&gt;`, parses these, produces a few intermediates and finally returns the :ref:`intent &lt;Intent&gt;` </span>
-<span class="sd">and optionally :ref:`entities &lt;BaseEntity&gt;`. Details will be documented within the specific plugins.</span>
+<span class="sd">Advantages</span>
+<span class="sd">-----------</span>
 
-<span class="sd">.. mermaid::</span>
+<span class="sd">The :ref:`Plugin&lt;plugin&gt;` concept takes care of the sauciness 🍅 of this project. Any functionality can be bundled into</span>
+<span class="sd">a :ref:`Plugin&lt;plugin&gt;` and they are portable over to foreign workflows. A :ref:`Plugin&lt;plugin&gt;` proxies inputs through</span>
+<span class="sd">an :code:`access` function (an argument to every :ref:`Plugin&lt;plugin&gt;`) and relays output through a :code:`mutate`</span>
+<span class="sd">function (another argument for every :ref:`Plugin&lt;plugin&gt;`). These two functions define interactions between many many</span>
+<span class="sd">(sic) :ref:`Plugins&lt;plugin&gt;` without knowing the inner workings of a :ref:`Workflow &lt;workflow&gt;`.</span>
 
-<span class="sd">    classDiagram</span>
-<span class="sd">        direction TB</span>
-<span class="sd">        Workflow --&gt; "1" Input: has</span>
-<span class="sd">        Workflow --&gt; "1" Output: has</span>
-<span class="sd">        Workflow --&gt; "many" Plugin: has</span>
+<span class="sd">Take a look at :ref:`DucklingPlugin &lt;duckling_plugin&gt;`, this plugin handles inputs, manages the default :code:`json` output</span>
+<span class="sd">into neatly bundled :ref:`BaseEntity &lt;base_entity&gt;` and other similar classes. Another plugin</span>
+<span class="sd">:ref:`RuleBasedSlotFillerPlugin&lt;rule_slot_filler&gt;` takes care of slot names and the entity types that should be filled</span>
+<span class="sd">within.</span>
 
-<span class="sd">        class Workflow {</span>
-<span class="sd">            Workflow: +Input input</span>
-<span class="sd">            Workflow: +Output output</span>
-<span class="sd">            Workflow: +set(path: str, value: Any)</span>
-<span class="sd">            Workflow: +run(input: Input)</span>
-<span class="sd">        }</span>
+<span class="sd">If your classifier predicts an :ref:`Intent&lt;intent&gt;` with :ref:`Slots&lt;slot&gt;` supporting any of those entities, then</span>
+<span class="sd">slot-filling is not a worry.</span>
 
-<span class="sd">        class Input {</span>
-<span class="sd">            +List~Utterance~ utterance</span>
-<span class="sd">            +int reference_time</span>
-<span class="sd">            +str current_state</span>
-<span class="sd">            +str lang</span>
-<span class="sd">            +str locale</span>
-<span class="sd">            +dict slot_tracker</span>
-<span class="sd">            +str timezone</span>
-<span class="sd">            +dict json()</span>
-<span class="sd">        }</span>
+<span class="sd">The aim of this project is to be largest supplier of plugins for SLU applications.</span>
 
-<span class="sd">        class Output {</span>
-<span class="sd">            +List~Intent~ intents</span>
-<span class="sd">            +List~BaseEntity~ entities</span>
-<span class="sd">            +dict json()</span>
-<span class="sd">        }</span>
-
-<span class="sd">        &lt;&lt;abstract&gt;&gt; Plugin</span>
-<span class="sd">        class Plugin {</span>
-<span class="sd">            +str dest</span>
-<span class="sd">            *any utility(input: Input, output: Output)</span>
-<span class="sd">        }</span>
-
-
-
-<span class="sd">How does it do it?</span>
-<span class="sd">------------------</span>
-
-<span class="sd">- A workflow contains a sequence of :ref:`plugins &lt;AbstractPlugin&gt;`. The sequence is important.</span>
-<span class="sd">- The sequence describes the order in which :ref:`plugins &lt;AbstractPlugin&gt;` are run.</span>
-<span class="sd">- The plugins can save their output within the workflow's :ref:`input&lt;Input&gt;` or :ref:`output&lt;Output&gt;`.</span>
-<span class="sd">- After execution of all plugins, the :ref:`workflow &lt;WorkflowClass&gt;` returns a pair of serialized :ref:`input&lt;Input&gt;` and :ref:`output&lt;Output&gt;`.</span>
-
-
-<span class="sd">.. mermaid::</span>
-
-<span class="sd">    flowchart TB</span>
-
-<span class="sd">        subgraph Workflow</span>
-
-<span class="sd">            subgraph input</span>
-<span class="sd">                utterance</span>
-<span class="sd">                reference_time</span>
-<span class="sd">            end</span>
-
-<span class="sd">            subgraph output</span>
-<span class="sd">                intents</span>
-<span class="sd">                entities</span>
-<span class="sd">            end</span>
-
-<span class="sd">            input --&gt; plugin</span>
-<span class="sd">            output --&gt; plugin</span>
-<span class="sd">            plugin --&gt;|update| input</span>
-<span class="sd">            plugin --&gt;|update| output</span>
-<span class="sd">            plugin --&gt;|foreach| plugin</span>
-
-<span class="sd">        end</span>
-<span class="sd">        output --&gt; output_json</span>
-<span class="sd">        input --&gt; input_json</span>
-
-<span class="sd">        output_json --&gt; workflow_output</span>
-<span class="sd">        input_json --&gt; workflow_output</span>
-
-<span class="sd">        subgraph Response</span>
-<span class="sd">            output_json</span>
-<span class="sd">        end</span>
-
+<span class="sd">.. warning:: The :ref:`Workflow&lt;workflow&gt;` class is not supposed to be used as it is. Ideally it should have been an</span>
+<span class="sd">    abstract class. There are some design considerations which make that a bad choice. We want methods to be overridden</span>
+<span class="sd">    to offer flexibility of use.</span>
 <span class="sd">"""</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.input</span> <span class="kn">import</span> <span class="n">Input</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.output</span> <span class="kn">import</span> <span class="n">Output</span>
 <span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils.logger</span> <span class="kn">import</span> <span class="n">logger</span>
 
@@ -351,9 +284,20 @@
 <div class="viewcode-block" id="Workflow"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
 <span class="k">class</span> <span class="nc">Workflow</span><span class="p">:</span>
     <span class="sd">"""</span>
-<span class="sd">    SLU API blackbox.</span>
+<span class="sd">    This is a light but fairly flexible workflow for building a machine learning pipeline.</span>
 
-<span class="sd">    .. _WorkflowClass:</span>
+<span class="sd">    Requirements</span>
+<span class="sd">    - A list of pre-processing functions.</span>
+<span class="sd">    - A list of post-processing functions.</span>
+
+<span class="sd">    Abstract classes put constraints on method signatures which isn't desired because a couple of methods</span>
+<span class="sd">    here could use more arguments, say, `load_model()` requires `path` and `version` and in some other cases</span>
+<span class="sd">    `path`, `version` and `language`.</span>
+
+<span class="sd">    :param plugins: A list of functions to execute before inference.</span>
+<span class="sd">    :type plugins: Optional[List[PluginFn]]</span>
+<span class="sd">    :param debug: log level shifts to debug if True.</span>
+<span class="sd">    :type debug: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">plugins</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
@@ -361,119 +305,48 @@
         <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">Plugin</span><span class="p">],</span>
         <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="sd">"""</span>
-<span class="sd">    List of :ref:`plugins &lt;AbstractPlugin&gt;`.</span>
-<span class="sd">    """</span>
-
-    <span class="nb">input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Input</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">optional</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="n">Input</span><span class="p">)),</span>
-    <span class="p">)</span>
-    <span class="sd">"""</span>
-<span class="sd">    Represents the SLU API request object. A few nested properties and intermediates are flattened out</span>
-<span class="sd">    for readability.</span>
-<span class="sd">    """</span>
-
-    <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Output</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">optional</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="n">Output</span><span class="p">)),</span>
-    <span class="p">)</span>
-    <span class="sd">"""</span>
-<span class="sd">    Represents the SLU API response object.</span>
-<span class="sd">    """</span>
-
+    <span class="nb">input</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">debug</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="sd">"""</span>
-<span class="sd">    Switch on/off the debug logs for the workflow.</span>
-<span class="sd">    """</span>
     <span class="n">lock</span><span class="p">:</span> <span class="n">Lock</span>
-    <span class="sd">"""</span>
-<span class="sd">    A :ref:`workflow &lt;WorkflowClass&gt;` isn't thread-safe by itself. We need locks</span>
-<span class="sd">    to prevent race conditions.</span>
-<span class="sd">    """</span>
     <span class="n">NON_SERIALIZABLE_FIELDS</span> <span class="o">=</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">PLUGINS</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">LOCK</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__attrs_post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Post init hook.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_io</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Workflow.set_io"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.set_io">[docs]</a>    <span class="k">def</span> <span class="nf">set_io</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Use this method to keep workflow-io in the same format as expected.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">Output</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">INTENTS</span><span class="p">:</span> <span class="p">[],</span> <span class="n">const</span><span class="o">.</span><span class="n">ENTITIES</span><span class="p">:</span> <span class="p">[]}</span></div>
 
-<div class="viewcode-block" id="Workflow.set"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Workflow</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Set attribute path with value.</span>
-
-<span class="sd">        This method (re)-sets the input or output object without losing information</span>
-<span class="sd">        from previous instances.</span>
-
-<span class="sd">        :param path: A '.' separated attribute path.</span>
-<span class="sd">        :type path: str</span>
-<span class="sd">        :param value: A value to set.</span>
-<span class="sd">        :type value: Any</span>
-<span class="sd">        :return: This instance</span>
-<span class="sd">        :rtype: Workflow</span>
-<span class="sd">        """</span>
-        <span class="n">dest</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">dest</span> <span class="o">==</span> <span class="s2">"input"</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">Input</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="n">attribute</span><span class="p">:</span> <span class="n">value</span><span class="p">},</span> <span class="n">reference</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">dest</span> <span class="o">==</span> <span class="s2">"output"</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-
-            <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">Output</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
-                    <span class="p">{</span><span class="n">attribute</span><span class="p">:</span> <span class="n">value</span><span class="p">},</span> <span class="n">reference</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">attribute</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">INTENTS</span><span class="p">:</span>
-                    <span class="n">previous_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">intents</span>  <span class="c1"># type: ignore</span>
-                <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ENTITIES</span><span class="p">:</span>
-                    <span class="n">previous_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">entities</span>  <span class="c1"># type: ignore</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Unknown attribute </span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2"> tracked on Output."</span>
-                    <span class="p">)</span>
-
-                <span class="n">combined_value</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-                    <span class="n">previous_value</span> <span class="o">+</span> <span class="n">value</span><span class="p">,</span>
-                    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">parse</span><span class="p">:</span> <span class="n">parse</span><span class="o">.</span><span class="n">score</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">Output</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
-                    <span class="p">{</span><span class="n">attribute</span><span class="p">:</span> <span class="n">combined_value</span><span class="p">},</span> <span class="n">reference</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span>
-                <span class="p">)</span>
-
-        <span class="k">elif</span> <span class="n">dest</span> <span class="o">==</span> <span class="s2">"output"</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value</span><span class="si">=}</span><span class="s2"> should be a List[Intent] or List[BaseEntity]."</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is not a valid path."</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="Workflow.execute"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Workflow</span><span class="p">:</span>
+<div class="viewcode-block" id="Workflow.execute"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Update input, output attributes.</span>
 
 <span class="sd">        We iterate through pre/post processing functions and update the input and</span>
 <span class="sd">        output attributes of the class. It is expected that pre-processing functions</span>
 <span class="sd">        would modify the input, and post-processing functions would modify the output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            processors (`List`): The list of preprocess or postprocess functions.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            `TypeError`: If any element in processors list is not a Callable.</span>
 <span class="sd">        """</span>
         <span class="n">history</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">plugin</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">plugin</span><span class="si">=}</span><span class="s2"> is not a callable"</span><span class="p">)</span>
 
-            <span class="c1"># logs are available only when debug=False during class initialization</span>
+            <span class="c1"># logs are available only when debug=True during class initialization</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
                 <span class="n">history</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s2">"plugin"</span><span class="p">:</span> <span class="n">plugin</span><span class="p">,</span>
@@ -485,7 +358,7 @@
             <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
             <span class="n">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-            <span class="c1"># logs are available only when debug=False during class initialization</span>
+            <span class="c1"># logs are available only when debug=True during class initialization</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
                 <span class="n">history</span><span class="p">[</span><span class="s2">"after"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s2">"input"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span>
@@ -493,10 +366,9 @@
                 <span class="p">}</span>
                 <span class="n">history</span><span class="p">[</span><span class="s2">"perf"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">history</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">history</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Workflow.run"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Input</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<div class="viewcode-block" id="Workflow.run"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        .. _workflow_run:</span>
 
@@ -504,21 +376,26 @@
 
 <span class="sd">        The current workflow exhibits the following simple procedure:</span>
 <span class="sd">        pre-processing -&gt; inference -&gt; post-processing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_ (`Any`): This function receives any arbitrary input. Subclasses may enforce</span>
+<span class="sd">            a stronger check.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (`Any`): This function can return any arbitrary value. Subclasses may enforce a stronger check.</span>
 <span class="sd">        """</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">input_</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
-<div class="viewcode-block" id="Workflow.flush"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<div class="viewcode-block" id="Workflow.flush"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Reset :code:`workflow.input` and :code:`workflow.output`.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{},</span> <span class="p">{}</span>
-        <span class="n">input_</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__reset</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">input_</span><span class="p">,</span> <span class="n">output</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_io</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Workflow.json"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">"""</span>
@@ -532,7 +409,7 @@
             <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">NON_SERIALIZABLE_FIELDS</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Workflow.train"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Workflow</span><span class="p">:</span>
+<div class="viewcode-block" id="Workflow.train"><a class="viewcode-back" href="../../../source/dialogy.workflow.html#dialogy.workflow.workflow.Workflow.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Train all the plugins in the workflow.</span>
 
@@ -547,11 +424,7 @@
             <span class="n">plugin</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
             <span class="n">transformed_data</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">transformed_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">training_data</span> <span class="o">=</span> <span class="n">transformed_data</span>
-        <span class="k">return</span> <span class="bp">self</span></div></div>
-
-
-<span class="mi">47</span>
+                <span class="n">training_data</span> <span class="o">=</span> <span class="n">transformed_data</span></div></div>
 </pre></div>
         </article>
       </div>

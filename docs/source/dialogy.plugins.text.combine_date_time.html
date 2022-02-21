@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.utils package" href="dialogy.utils.html" /><link rel="prev" title="dialogy.plugins.text.lb_plugin package" href="dialogy.plugins.text.lb_plugin.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.combine_date_time package - dialogy 0.9.3 documentation</title>
+        <title>dialogy.plugins.text.combine_date_time package - dialogy 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -220,175 +220,8 @@
         <article role="main">
           <section id="dialogy-plugins-text-combine-date-time-package">
 <h1>dialogy.plugins.text.combine_date_time package<a class="headerlink" href="#dialogy-plugins-text-combine-date-time-package" title="Permalink to this headline">¶</a></h1>
-<section id="module-dialogy.plugins.text.combine_date_time">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.combine_date_time" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CombineDateTimeOverSlots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
-<p id="combinedatetimeoverslots">Dialog case:</p>
-<p>Assume that at the moment of dialog the date is 15th December 2019.</p>
-<div class="table-wrapper"><table class="docutils align-default">
-<colgroup>
-<col style="width: 3%"/>
-<col style="width: 7%"/>
-<col style="width: 30%"/>
-<col style="width: 60%"/>
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"></th>
-<th class="head"></th>
-<th class="head"><p>utterance</p></th>
-<th class="head"><p>entity</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>1</p></td>
-<td><p>BOT</p></td>
-<td><p>When do you want to visit?</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>2</p></td>
-<td><p>USER</p></td>
-<td><p>Day after tomorrow</p></td>
-<td><p>{‘type’: ‘date’, ‘value’: ‘2019-12-17’}</p></td>
-</tr>
-<tr class="row-even"><td><p>3</p></td>
-<td><p>BOT</p></td>
-<td><p>At what time?</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>4</p></td>
-<td><p>USER</p></td>
-<td><p>3 pm</p></td>
-<td><p>{‘type’: ‘time’, ‘value’: ‘2019-12-15T15:00:00+0000’}</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>We want to use the slots such that the date from interaction [2] and the time from interaction [4] are combined into a single entity.</p>
-<p>We receive this as a tracked slot:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_callback_"</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">"slots"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"callback_datetime"</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">            </span><span class="s2">"time"</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">"date"</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">"datetime"</span><span class="w"></span>
-<span class="w">        </span><span class="p">],</span><span class="w"></span>
-<span class="w">        </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"alternative_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"body"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tomorrow"</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"date"</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"grain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"day"</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"parsers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"duckling"</span><span class="p">],</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">            </span><span class="p">},</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"score"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-10-15T00:00:00+05:30"</span><span class="w"></span>
-<span class="w">        </span><span class="p">}]</span><span class="w"></span>
-<span class="w">    </span><span class="p">}]</span><span class="w"></span>
-<span class="p">}]</span><span class="w"></span>
-</pre></div>
-</div>
-<p>At interaction [4] we would have a TimeEntity from DucklingPlugin but as we can see, the tracked slot provides us
-previously filled values as json.</p>
-<p>So we need to parse the first value in the slot (since they are the entities) if they are one of these date, time, datetime types.
-This would give us a date / time entity that we can subsequently combine with the available entity in the current turn.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATE">
-<span class="sig-name descname"><span class="pre">DATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'date'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATETIME">
-<span class="sig-name descname"><span class="pre">DATETIME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'datetime'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.DATETIME" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.SUPPORTED_ENTITIES">
-<span class="sig-name descname"><span class="pre">SUPPORTED_ENTITIES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['date',</span> <span class="pre">'time',</span> <span class="pre">'datetime']</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.SUPPORTED_ENTITIES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.TIME">
-<span class="sig-name descname"><span class="pre">TIME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'time'</span></em><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.TIME" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.combine_time_entities_from_slots">
-<span class="sig-name descname"><span class="pre">combine_time_entities_from_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.combine_time_entities_from_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.combine_time_entities_from_slots" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combines the time entities from the slots with the entities from the current turn.</p>
-<dl class="field-list simple" id="combinetimeentitiesfromslots">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>slot_tracker</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>) – The slot tracker from the previous turn.</p></li>
-<li><p><strong>entities</strong> (<em>List</em><em>[</em><a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><em>BaseEntity</em></a><em>]</em>) – Entities found in the current turn.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Combined set of entities.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a>]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.get_tracked_slots">
-<span class="sig-name descname"><span class="pre">get_tracked_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.get_tracked_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.get_tracked_slots" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.join">
-<span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.join" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEntity</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.pick_previously_filled_time_entity">
-<span class="sig-name descname"><span class="pre">pick_previously_filled_time_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracked_slots</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.pick_previously_filled_time_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.pick_previously_filled_time_entity" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeEntity</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.utility">
-<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#CombineDateTimeOverSlots.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.CombineDateTimeOverSlots.utility" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combine the date and time entities collected across turns into a single entity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEntity</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.has_time_component">
-<span class="sig-name descname"><span class="pre">has_time_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#has_time_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.has_time_component" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="dialogy.plugins.text.combine_date_time.is_date">
-<span class="sig-name descname"><span class="pre">is_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/combine_date_time.html#is_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.combine_date_time.is_date" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
@@ -444,7 +277,7 @@ This would give us a date / time entity that we can subsequently combine with th
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.plugins.text.combine_date_time package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.plugins.text.combine_date_time">Module contents</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
