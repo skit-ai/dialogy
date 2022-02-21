@@ -171,6 +171,12 @@ VERBOSE_LEVEL = "verbose_level"
 NGRAM_RANGE = "ngram_range"
 GRIDSEARCH_WORKERS = -1  # -1 means use all available cores
 
+#Calibration Constants
+MODEL_CALIBRATION = "model_calibration"
+TS_PARAMETER = "ts_parameter"
+CALIBRATION_CONFIG_FILE = "calibration_config.json"
+TEMPERATURE = "temperature"
+
 # CLI Commands
 TRAIN = "train"
 TEST = "test"
