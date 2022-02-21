@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.5
+
+- [x] fix: DucklingPlugin's unreliable use of latent entities.
+- [x] feat: Temperature scaling for XLMR classifier.
+
 ## 0.9.4
 
 - [x] fix: Slot structure need not be redefined in templates.
