@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.6
+
+- [x] add: `original_intent` to store the initial classifier output.
+- [x] add: plugin to track `original_intent`.
+
 ## 0.9.5
 
 - [x] fix: DucklingPlugin's unreliable use of latent entities.
