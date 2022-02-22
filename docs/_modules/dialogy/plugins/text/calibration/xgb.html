@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.calibration.xgb - dialogy 0.9.4 documentation</title>
+        <title>dialogy.plugins.text.calibration.xgb - dialogy 0.9.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,13 +160,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.plugin.html">Plugin</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.intent.html">Intent</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.slots.html">Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -175,6 +173,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -186,7 +185,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -233,15 +231,16 @@
 <span class="kn">import</span> <span class="nn">jiwer</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
 <span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">from</span> <span class="nn">xgboost</span> <span class="kn">import</span> <span class="n">XGBRegressor</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
-<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Transcript</span><span class="p">,</span> <span class="n">Utterance</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">normalize</span>
+<span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Transcript</span><span class="p">,</span> <span class="n">Utterance</span><span class="p">,</span> <span class="n">utterances</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">normalize</span>
 
 
 <div class="viewcode-block" id="FeatureExtractor"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.FeatureExtractor">[docs]</a><span class="k">class</span> <span class="nc">FeatureExtractor</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
@@ -303,6 +302,8 @@
 
 <div class="viewcode-block" id="CalibrationModel"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.CalibrationModel">[docs]</a><span class="k">class</span> <span class="nc">CalibrationModel</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
+<span class="sd">    .. _calibration_plugin:</span>
+
 <span class="sd">    This plugin provides a calibration model that sits between ASR and SLU.</span>
 <span class="sd">    It trains a model that learn to classify alternatives from the text and</span>
 <span class="sd">    AM, LM score. Bad alternatives are removed before training SLU and during</span>
@@ -311,9 +312,9 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
-        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">],</span>
         <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">dest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">guards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">input_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVES</span><span class="p">,</span>
         <span class="n">output_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVES</span><span class="p">,</span>
@@ -321,8 +322,8 @@
         <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"calibration.pkl"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">access</span><span class="p">,</span>
-            <span class="n">mutate</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span>
+            <span class="n">guards</span><span class="o">=</span><span class="n">guards</span><span class="p">,</span>
             <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
             <span class="n">input_column</span><span class="o">=</span><span class="n">input_column</span><span class="p">,</span>
             <span class="n">output_column</span><span class="o">=</span><span class="n">output_column</span><span class="p">,</span>
@@ -399,8 +400,9 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">training_data_</span></div>
 
-<div class="viewcode-block" id="CalibrationModel.inference"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.CalibrationModel.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">utterances</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Utterance</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Transcript</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">utterances</span><span class="p">)</span>
+<div class="viewcode-block" id="CalibrationModel.inference"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.CalibrationModel.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">transcripts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">utterances</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Utterance</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="n">transcript_lengths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">transcript</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">transcript</span> <span class="ow">in</span> <span class="n">transcripts</span>
         <span class="p">]</span>
@@ -413,15 +415,17 @@
         <span class="c1"># a classifier's prediction to a fallback label.</span>
         <span class="c1"># If the transcripts have less than WORD_THRESHOLD words, we will always predict the fallback label.</span>
         <span class="k">if</span> <span class="n">average_word_count</span> <span class="o">&lt;=</span> <span class="n">const</span><span class="o">.</span><span class="n">WORD_THRESHOLD</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">normalize</span><span class="p">(</span><span class="n">utterances</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">transcripts</span>
 
         <span class="k">return</span> <span class="n">normalize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_asr_output</span><span class="p">(</span><span class="n">utterances</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="CalibrationModel.save"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.CalibrationModel.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="CalibrationModel.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.CalibrationModel.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-value-for-parameter</span></div>
+<div class="viewcode-block" id="CalibrationModel.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.CalibrationModel.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span>
+            <span class="nb">input</span><span class="o">.</span><span class="n">transcripts</span><span class="p">,</span> <span class="nb">input</span><span class="o">.</span><span class="n">utterances</span>
+        <span class="p">)</span>  <span class="c1"># pylint: disable=no-value-for-parameter</span></div>
 
 <div class="viewcode-block" id="CalibrationModel.validate"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.calibration.html#dialogy.plugins.text.calibration.xgb.CalibrationModel.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -476,7 +480,5 @@
     <script src="../../../../../_static/scripts/furo.js"></script>
     <script src="../../../../../_static/clipboard.min.js"></script>
     <script src="../../../../../_static/copybutton.js"></script>
-    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

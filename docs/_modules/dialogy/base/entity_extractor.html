@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.base.entity_extractor - dialogy 0.9.4 documentation</title>
+        <title>dialogy.base.entity_extractor - dialogy 0.9.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,13 +160,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">Plugin</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.intent.html">Intent</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.slots.html">Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -175,6 +173,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -186,7 +185,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -219,12 +217,11 @@
         <article role="main">
           <h1>Source code for dialogy.base.entity_extractor</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">pydash</span> <span class="kn">import</span> <span class="n">py_</span>
 
-<span class="kn">from</span> <span class="nn">dialogy.types.entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
 <span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">normalize</span>
 
 
@@ -234,19 +231,23 @@
 
 <div class="viewcode-block" id="EntityScoringMixin"><a class="viewcode-back" href="../../../source/dialogy.base.entity_extractor.html#dialogy.base.entity_extractor.EntityScoringMixin">[docs]</a><span class="k">class</span> <span class="nc">EntityScoringMixin</span><span class="p">:</span>
     <span class="sd">"""</span>
-<span class="sd">    Mixin class for scoring entities acquired over a set of transcripts.</span>
+<span class="sd">    Mixin for scoring and aggregation of entities over a set of transcripts.</span>
+
+<span class="sd">    .. _EntityScoringMixin:</span>
 <span class="sd">    """</span>
 
-    <span class="n">FUTURE</span> <span class="o">=</span> <span class="s2">"future"</span>
-    <span class="n">PAST</span> <span class="o">=</span> <span class="s2">"past"</span>
-    <span class="n">DATETIME_OPERATION_ALIAS</span> <span class="o">=</span> <span class="p">{</span><span class="n">FUTURE</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">,</span> <span class="n">PAST</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">}</span>
     <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">"""</span>
+<span class="sd">    Value to compare against an entity's score.</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="EntityScoringMixin.remove_low_scoring_entities"><a class="viewcode-back" href="../../../source/dialogy.base.entity_extractor.html#dialogy.base.entity_extractor.EntityScoringMixin.remove_low_scoring_entities">[docs]</a>    <span class="k">def</span> <span class="nf">remove_low_scoring_entities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Remove entities with a lower score than the threshold.</span>
+
+<span class="sd">        This doesn't apply to entities with score=None.</span>
 
 <span class="sd">        :param entities: A list of entities.</span>
 <span class="sd">        :type entities: List[BaseEntity]</span>
@@ -274,7 +275,14 @@
         <span class="sd">"""</span>
 <span class="sd">        Reduce entities sharing same type and value.</span>
 
-<span class="sd">        Entities with same type and value are considered identical even if other metadata is same.</span>
+<span class="sd">        - Entities with same type and value are considered identical even if other metadata is same.</span>
+<span class="sd">          These entities are part of a group.</span>
+<span class="sd">        - We track the transcript indices for every entity in a group.</span>
+<span class="sd">        - Select the minimum of all the indices. (because 0th transcript has highest confidence)</span>
+<span class="sd">        - We pick one entity per group and modify its index to the minimum and score is aggregated for the group.</span>
+<span class="sd">        - The entity picked is added to a list of aggregates.</span>
+
+<span class="sd">        The above is done for all entities in a group</span>
 
 <span class="sd">        :param entity_type_val_group: A data-structure that groups entities by type and value.</span>
 <span class="sd">        :type entity_type_val_group: Dict[Tuple[str, Any], List[BaseEntity]]</span>
@@ -298,7 +306,7 @@
 
 <div class="viewcode-block" id="EntityScoringMixin.apply_filters"><a class="viewcode-back" href="../../../source/dialogy.base.entity_extractor.html#dialogy.base.entity_extractor.EntityScoringMixin.apply_filters">[docs]</a>    <span class="k">def</span> <span class="nf">apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="sd">"""</span>
-<span class="sd">        Conditionally remove entities.</span>
+<span class="sd">        Filter entities with score less than the threshold.</span>
 
 <span class="sd">        :param entities: A list of entities.</span>
 <span class="sd">        :type entities: List[BaseEntity]</span>
@@ -377,7 +385,5 @@
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
-    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

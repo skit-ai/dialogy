@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.constants - dialogy 0.9.4 documentation</title>
+        <title>dialogy.constants - dialogy 0.9.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
+      <a href="../../index.html"><div class="brand">dialogy 0.9.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -220,14 +220,13 @@
           <h1>Source code for dialogy.constants</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Module provides Constants to be used throughtout the project."""</span>
 
+<span class="kn">from</span> <span class="nn">locale</span> <span class="kn">import</span> <span class="n">DAY_1</span>
+
 <span class="n">DEFAULT_NAMESPACE</span> <span class="o">=</span> <span class="s2">"vernacular-ai"</span>
 <span class="n">DEFAULT_PROJECT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"dialogy-template-simple-transformers"</span>
 
 <span class="n">PLUGINS</span> <span class="o">=</span> <span class="s2">"plugins"</span>
-<span class="n">PREPROCESSORS</span> <span class="o">=</span> <span class="s2">"preprocessors"</span>
-<span class="n">POSTPROCESSORS</span> <span class="o">=</span> <span class="s2">"postprocessors"</span>
 <span class="n">DEBUG</span> <span class="o">=</span> <span class="s2">"debug"</span>
-<span class="n">WORKFLOW_PUBLIC_PROPERTIES</span> <span class="o">=</span> <span class="p">[</span><span class="n">PREPROCESSORS</span><span class="p">,</span> <span class="n">POSTPROCESSORS</span><span class="p">]</span>
 <span class="n">S_INTENT_OOS</span> <span class="o">=</span> <span class="s2">"_oos_"</span>
 <span class="n">TRANSCRIPT</span> <span class="o">=</span> <span class="s2">"transcript"</span>
 <span class="n">AM_SCORE</span> <span class="o">=</span> <span class="s2">"am_score"</span>
@@ -236,38 +235,68 @@
 <span class="n">TO</span> <span class="o">=</span> <span class="s2">"to"</span>
 <span class="n">FROM</span> <span class="o">=</span> <span class="s2">"from"</span>
 <span class="n">LOCK</span> <span class="o">=</span> <span class="s2">"lock"</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"name"</span>
+<span class="n">SLOTS</span> <span class="o">=</span> <span class="s2">"slots"</span>
 
+<span class="n">DUCKLING_ENTITY_KEYS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"body"</span><span class="p">,</span> <span class="s2">"dim"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">,</span> <span class="s2">"latent"</span><span class="p">,</span> <span class="s2">"start"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span>
+<span class="n">DUCKLING_TIME_VALUES_ENTITY_KEYS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"grain"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">,</span> <span class="s2">"values"</span><span class="p">)</span>
+<span class="n">DUCKLING_TIME_INTERVAL_ENTITY_KEYS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="s2">"from"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">,</span> <span class="s2">"values"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"to"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">,</span> <span class="s2">"values"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"from"</span><span class="p">,</span> <span class="s2">"to"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">,</span> <span class="s2">"values"</span><span class="p">),</span>
+<span class="p">)</span>
 
-<div class="viewcode-block" id="EntityKeys"><a class="viewcode-back" href="../../source/dialogy.constants.html#dialogy.constants.EntityKeys">[docs]</a><span class="k">class</span> <span class="nc">EntityKeys</span><span class="p">:</span>
-    <span class="n">BODY</span> <span class="o">=</span> <span class="s2">"body"</span>
-    <span class="n">DIM</span> <span class="o">=</span> <span class="s2">"dim"</span>
-    <span class="n">END</span> <span class="o">=</span> <span class="s2">"end"</span>
-    <span class="n">FROM</span> <span class="o">=</span> <span class="s2">"from"</span>
-    <span class="n">GRAIN</span> <span class="o">=</span> <span class="s2">"grain"</span>
-    <span class="n">INTERVAL</span> <span class="o">=</span> <span class="s2">"interval"</span>
-    <span class="n">DURATION</span> <span class="o">=</span> <span class="s2">"duration"</span>
-    <span class="n">LATENT</span> <span class="o">=</span> <span class="s2">"latent"</span>
-    <span class="n">RANGE</span> <span class="o">=</span> <span class="s2">"range"</span>
-    <span class="n">START</span> <span class="o">=</span> <span class="s2">"start"</span>
-    <span class="n">TO</span> <span class="o">=</span> <span class="s2">"to"</span>
-    <span class="n">TYPE</span> <span class="o">=</span> <span class="s2">"type"</span>
-    <span class="n">UNIT</span> <span class="o">=</span> <span class="s2">"unit"</span>
-    <span class="n">VALUE</span> <span class="o">=</span> <span class="s2">"value"</span>
-    <span class="n">VALUES</span> <span class="o">=</span> <span class="s2">"values"</span>
-    <span class="n">ORIGIN</span> <span class="o">=</span> <span class="s2">"origin"</span>
-    <span class="n">NORMALIZED</span> <span class="o">=</span> <span class="s2">"normalized"</span>
-    <span class="n">SLOT_NAMES</span> <span class="o">=</span> <span class="s2">"slot_names"</span>
-    <span class="n">ALTERNATIVE_INDEX</span> <span class="o">=</span> <span class="s2">"alternative_index"</span>
-    <span class="n">ALTERNATIVE_INDICES</span> <span class="o">=</span> <span class="s2">"alternative_indices"</span></div>
+<span class="c1"># Time Entity types</span>
+<span class="n">DATE</span> <span class="o">=</span> <span class="s2">"date"</span>
+<span class="n">TIME</span> <span class="o">=</span> <span class="s2">"time"</span>
+<span class="n">DATETIME</span> <span class="o">=</span> <span class="s2">"datetime"</span>
+<span class="n">HOUR</span> <span class="o">=</span> <span class="s2">"hour"</span>
+<span class="n">DAY</span> <span class="o">=</span> <span class="s2">"day"</span>
+<span class="n">MONTH</span> <span class="o">=</span> <span class="s2">"month"</span>
 
+<span class="n">PEOPLE</span> <span class="o">=</span> <span class="s2">"people"</span>
+<span class="n">NUMBER</span> <span class="o">=</span> <span class="s2">"number"</span>
+<span class="n">AMOUNT_OF_MONEY</span> <span class="o">=</span> <span class="s2">"amount-of-money"</span>
+<span class="n">DURATION</span> <span class="o">=</span> <span class="s2">"duration"</span>
+<span class="n">CREDIT_CARD_NUMBER</span> <span class="o">=</span> <span class="s2">"credit-card-number"</span>
 
+<span class="n">FUTURE</span> <span class="o">=</span> <span class="s2">"future"</span>
+<span class="n">PAST</span> <span class="o">=</span> <span class="s2">"past"</span>
+<span class="n">ANY</span> <span class="o">=</span> <span class="s2">"__any__"</span>
+
+<span class="n">DUCKLING_DIMS</span> <span class="o">=</span> <span class="p">[</span><span class="n">PEOPLE</span><span class="p">,</span> <span class="n">NUMBER</span><span class="p">,</span> <span class="n">AMOUNT_OF_MONEY</span><span class="p">,</span> <span class="n">DURATION</span><span class="p">,</span> <span class="n">CREDIT_CARD_NUMBER</span><span class="p">,</span> <span class="n">TIME</span><span class="p">]</span>
+
+<span class="n">BODY</span> <span class="o">=</span> <span class="s2">"body"</span>
+<span class="n">DIM</span> <span class="o">=</span> <span class="s2">"dim"</span>
+<span class="n">END</span> <span class="o">=</span> <span class="s2">"end"</span>
+<span class="n">FROM</span> <span class="o">=</span> <span class="s2">"from"</span>
+<span class="n">GRAIN</span> <span class="o">=</span> <span class="s2">"grain"</span>
+<span class="n">INTERVAL</span> <span class="o">=</span> <span class="s2">"interval"</span>
+<span class="n">DURATION</span> <span class="o">=</span> <span class="s2">"duration"</span>
+<span class="n">LATENT</span> <span class="o">=</span> <span class="s2">"latent"</span>
+<span class="n">RANGE</span> <span class="o">=</span> <span class="s2">"range"</span>
+<span class="n">START</span> <span class="o">=</span> <span class="s2">"start"</span>
+<span class="n">TO</span> <span class="o">=</span> <span class="s2">"to"</span>
+<span class="n">TYPE</span> <span class="o">=</span> <span class="s2">"type"</span>
+<span class="n">ENTITY_TYPE</span> <span class="o">=</span> <span class="s2">"entity_type"</span>
+<span class="n">UNIT</span> <span class="o">=</span> <span class="s2">"unit"</span>
+<span class="n">VALUE</span> <span class="o">=</span> <span class="s2">"value"</span>
+<span class="n">VALUES</span> <span class="o">=</span> <span class="s2">"values"</span>
+<span class="n">ORIGIN</span> <span class="o">=</span> <span class="s2">"origin"</span>
+<span class="n">ISSUER</span> <span class="o">=</span> <span class="s2">"issuer"</span>
+<span class="n">NORMALIZED</span> <span class="o">=</span> <span class="s2">"normalized"</span>
+<span class="n">ALTERNATIVE_INDEX</span> <span class="o">=</span> <span class="s2">"alternative_index"</span>
+<span class="n">ALTERNATIVE_INDICES</span> <span class="o">=</span> <span class="s2">"alternative_indices"</span>
+<span class="n">CREDIT_CARD_NUMBER</span> <span class="o">=</span> <span class="s2">"credit-card-number"</span>
+
+<span class="n">SLOT_NAMES</span> <span class="o">=</span> <span class="s2">"slot_names"</span>
 <span class="n">SKIP_ENTITY_ATTRS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span>
-    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">,</span>
-    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">LATENT</span><span class="p">,</span>
-    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">ORIGIN</span><span class="p">,</span>
-    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">SLOT_NAMES</span><span class="p">,</span>
-    <span class="n">EntityKeys</span><span class="o">.</span><span class="n">ALTERNATIVE_INDICES</span><span class="p">,</span>
+    <span class="n">DIM</span><span class="p">,</span>
+    <span class="n">VALUES</span><span class="p">,</span>
+    <span class="n">LATENT</span><span class="p">,</span>
+    <span class="n">ORIGIN</span><span class="p">,</span>
+    <span class="n">SLOT_NAMES</span><span class="p">,</span>
+    <span class="n">ALTERNATIVE_INDICES</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="c1"># This section is needed for dialogy.types.entities.*</span>
@@ -279,26 +308,31 @@
 <span class="c1"># instantiate the Entity. We use this mapping to ensure that the</span>
 <span class="c1"># values belong to expected types.</span>
 <span class="n">BASE_ENTITY_PROPS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">],</span> <span class="nb">dict</span><span class="p">),</span>
-    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">START</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
-    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">EntityKeys</span><span class="o">.</span><span class="n">END</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
-    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">BODY</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
-    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">VALUES</span><span class="p">],</span> <span class="nb">list</span><span class="p">),</span>
-    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">DIM</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
-    <span class="p">([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">LATENT</span><span class="p">],</span> <span class="nb">bool</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">RANGE</span><span class="p">],</span> <span class="nb">dict</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">START</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">END</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">BODY</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">VALUES</span><span class="p">],</span> <span class="nb">list</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">DIM</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">LATENT</span><span class="p">],</span> <span class="nb">bool</span><span class="p">),</span>
 <span class="p">]</span>
 
-<span class="n">TIME_ENTITY_PROPS</span> <span class="o">=</span> <span class="n">BASE_ENTITY_PROPS</span> <span class="o">+</span> <span class="p">[([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">],</span> <span class="nb">str</span><span class="p">)]</span>
-<span class="n">PEOPLE_ENTITY_PROPS</span> <span class="o">=</span> <span class="n">BASE_ENTITY_PROPS</span> <span class="o">+</span> <span class="p">[([</span><span class="n">EntityKeys</span><span class="o">.</span><span class="n">UNIT</span><span class="p">],</span> <span class="nb">str</span><span class="p">)]</span>
+<span class="n">CREDIT_CARD_NUMBER_PROPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">([</span><span class="n">RANGE</span><span class="p">],</span> <span class="nb">dict</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">START</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">RANGE</span><span class="p">,</span> <span class="n">END</span><span class="p">],</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">BODY</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">VALUE</span><span class="p">],</span> <span class="nb">dict</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">DIM</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="p">([</span><span class="n">LATENT</span><span class="p">],</span> <span class="nb">bool</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">TIME_ENTITY_PROPS</span> <span class="o">=</span> <span class="n">BASE_ENTITY_PROPS</span> <span class="o">+</span> <span class="p">[([</span><span class="n">GRAIN</span><span class="p">],</span> <span class="nb">str</span><span class="p">)]</span>
+<span class="n">PEOPLE_ENTITY_PROPS</span> <span class="o">=</span> <span class="n">BASE_ENTITY_PROPS</span> <span class="o">+</span> <span class="p">[([</span><span class="n">UNIT</span><span class="p">],</span> <span class="nb">str</span><span class="p">)]</span>
 
 <span class="c1"># Time related constants</span>
 <span class="n">DATE_UNITS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"day"</span><span class="p">,</span> <span class="s2">"week"</span><span class="p">,</span> <span class="s2">"month"</span><span class="p">,</span> <span class="s2">"quarter"</span><span class="p">,</span> <span class="s2">"year"</span><span class="p">]</span>
 <span class="n">TIME_UNITS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"hour"</span><span class="p">,</span> <span class="s2">"minute"</span><span class="p">,</span> <span class="s2">"second"</span><span class="p">]</span>
-
-<span class="c1"># Time Entity types</span>
-<span class="n">DATE</span> <span class="o">=</span> <span class="s2">"date"</span>
-<span class="n">TIME</span> <span class="o">=</span> <span class="s2">"time"</span>
-<span class="n">DATETIME</span> <span class="o">=</span> <span class="s2">"datetime"</span>
 
 
 <span class="c1"># This section covers signals tuple indices</span>
@@ -320,19 +354,52 @@
 
 <span class="c1"># XLMR</span>
 <span class="n">ID</span> <span class="o">=</span> <span class="s2">"id"</span>
+<span class="n">IDX</span> <span class="o">=</span> <span class="s2">"idx"</span>
 <span class="n">DATA</span> <span class="o">=</span> <span class="s2">"data"</span>
+<span class="n">STATE</span> <span class="o">=</span> <span class="s2">"state"</span>
+<span class="n">OUTPUT</span> <span class="o">=</span> <span class="s2">"output"</span>
+<span class="n">INPUT</span> <span class="o">=</span> <span class="s2">"input"</span>
 <span class="n">CLASSIFICATION_INPUT</span> <span class="o">=</span> <span class="s2">"classification_input"</span>
 <span class="n">XLMR_MODULE</span> <span class="o">=</span> <span class="s2">"simpletransformers.classification"</span>
 <span class="n">XLMR_MULTI_CLASS_MODEL</span> <span class="o">=</span> <span class="s2">"ClassificationModel"</span>
-<span class="n">XLMR_MODEL</span> <span class="o">=</span> <span class="s2">"roberta"</span>
-<span class="n">XLMR_MODEL_TIER</span> <span class="o">=</span> <span class="s2">"roberta-base"</span>
+<span class="n">XLMR_MODEL</span> <span class="o">=</span> <span class="s2">"xlmroberta"</span>
+<span class="n">XLMR_MODEL_TIER</span> <span class="o">=</span> <span class="s2">"xlm-roberta-base"</span>
 <span class="n">INTENT</span> <span class="o">=</span> <span class="s2">"intent"</span>
+<span class="n">ORIGINAL_INTENT</span> <span class="o">=</span> <span class="s2">"original_intent"</span>
 <span class="n">INTENTS</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">INTENT</span><span class="si">}</span><span class="s2">s"</span>
 <span class="n">LABELS</span> <span class="o">=</span> <span class="s2">"labels"</span>
 <span class="n">ENTITIES</span> <span class="o">=</span> <span class="s2">"entities"</span>
 <span class="n">SCORE</span> <span class="o">=</span> <span class="s2">"score"</span>
 <span class="n">LABELENCODER_FILE</span> <span class="o">=</span> <span class="s2">"labelencoder.pkl"</span>
 <span class="n">INVALID_TOKENS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"&lt;UNK&gt;"</span><span class="p">,</span> <span class="s2">"&lt;PAD&gt;"</span><span class="p">,</span> <span class="s2">"&lt;SOS&gt;"</span><span class="p">,</span> <span class="s2">"&lt;EOS&gt;"</span><span class="p">]</span>
+<span class="n">OUTPUT_ATTRIBUTES</span> <span class="o">=</span> <span class="p">{</span><span class="n">INTENTS</span><span class="p">,</span> <span class="n">ENTITIES</span><span class="p">,</span> <span class="n">ORIGINAL_INTENT</span><span class="p">}</span>
+
+<span class="c1"># MLP</span>
+<span class="n">MLPMODEL_FILE</span> <span class="o">=</span> <span class="s2">"mlpmodelpipeline.joblib"</span>
+<span class="n">NUM_TRAIN_EPOCHS</span> <span class="o">=</span> <span class="s2">"num_train_epochs"</span>
+<span class="n">MLP_DEFAULT_TRAIN_EPOCHS</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">DEFAULT_NGRAM</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">TFIDF_LOWERCASE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">STOPWORDS</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">MLP_RANDOMSTATE</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">TFIDF</span> <span class="o">=</span> <span class="s2">"tfidf"</span>
+<span class="n">MLP</span> <span class="o">=</span> <span class="s2">"mlp"</span>
+
+<span class="c1"># Hyperparams For MLP</span>
+<span class="n">USE_GRIDSEARCH</span> <span class="o">=</span> <span class="s2">"gridsearch_hyperparams"</span>
+<span class="n">PARAMS</span> <span class="o">=</span> <span class="s2">"params"</span>
+<span class="n">GRID_SCORETYPE</span> <span class="o">=</span> <span class="s2">"weighted"</span>
+<span class="n">CV</span> <span class="o">=</span> <span class="s2">"cv"</span>
+<span class="n">VERBOSE_LEVEL</span> <span class="o">=</span> <span class="s2">"verbose_level"</span>
+<span class="n">NGRAM_RANGE</span> <span class="o">=</span> <span class="s2">"ngram_range"</span>
+<span class="n">GRIDSEARCH_WORKERS</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># -1 means use all available cores</span>
+
+<span class="c1">#Calibration Constants</span>
+<span class="n">MODEL_CALIBRATION</span> <span class="o">=</span> <span class="s2">"model_calibration"</span>
+<span class="n">TS_PARAMETER</span> <span class="o">=</span> <span class="s2">"ts_parameter"</span>
+<span class="n">CALIBRATION_CONFIG_FILE</span> <span class="o">=</span> <span class="s2">"calibration_config.json"</span>
+<span class="n">TEMPERATURE</span> <span class="o">=</span> <span class="s2">"temperature"</span>
 
 <span class="c1"># CLI Commands</span>
 <span class="n">TRAIN</span> <span class="o">=</span> <span class="s2">"train"</span>
@@ -345,6 +412,8 @@
 <span class="n">CANONICALIZED_TRANSCRIPTS</span> <span class="o">=</span> <span class="s2">"canonicalized_transcripts"</span>
 <span class="n">REFERENCE_TIME</span> <span class="o">=</span> <span class="s2">"reftime"</span>
 <span class="n">ENTITY_COLUMN</span> <span class="o">=</span> <span class="s2">"entities"</span>
+
+<span class="n">FUZZY_DP</span> <span class="o">=</span> <span class="s2">"fuzzy_dp"</span>
 </pre></div>
         </article>
       </div>
