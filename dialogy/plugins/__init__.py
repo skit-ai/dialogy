@@ -2,6 +2,7 @@ from dialogy.plugins.text.calibration.xgb import CalibrationModel
 from dialogy.plugins.text.canonicalization import CanonicalizationPlugin
 from dialogy.plugins.text.classification.mlp import MLPMultiClass
 from dialogy.plugins.text.classification.xlmr import XLMRMultiClass
+from dialogy.plugins.text.classification.retain_intent import RetainOriginalIntentPlugin
 from dialogy.plugins.text.combine_date_time import CombineDateTimeOverSlots
 from dialogy.plugins.text.duckling_plugin import DucklingPlugin
 from dialogy.plugins.text.lb_plugin import DucklingPluginLB

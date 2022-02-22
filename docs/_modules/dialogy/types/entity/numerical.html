@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.numerical - dialogy 0.9.3 documentation</title>
+        <title>dialogy.types.entity.numerical - dialogy 0.9.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.9.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -161,10 +161,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.workflow.html">Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -173,7 +175,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -367,6 +368,7 @@
                 <span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">],</span>
             <span class="p">},</span>
             <span class="n">body</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="p">,</span>
+            <span class="n">score</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">,</span>
             <span class="n">dim</span><span class="o">=</span><span class="s2">"time"</span><span class="p">,</span>
             <span class="n">alternative_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alternative_index</span><span class="p">,</span>
             <span class="n">latent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">latent</span><span class="p">,</span>

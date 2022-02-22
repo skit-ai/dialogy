@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.base_entity package" href="dialogy.types.entity.base_entity.html" /><link rel="prev" title="dialogy.base.plugin package" href="dialogy.base.plugin.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.intent package - dialogy 0.9.4 documentation</title>
+        <title>dialogy.types.intent package - dialogy 0.9.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -222,16 +222,18 @@
 <h1>dialogy.types.intent package<a class="headerlink" href="#dialogy-types-intent-package" title="Permalink to this headline">¶</a></h1>
 <section id="module-dialogy.types.intent">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.intent" title="Permalink to this headline">¶</a></h2>
-<p>Type definition for <cite>Intent</cite>.</p>
-<p>Import classes:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Intent</p></li>
-</ul>
-</div></blockquote>
+<section id="intent-classification">
+<span id="intent"></span><h3>Intent Classification<a class="headerlink" href="#intent-classification" title="Permalink to this headline">¶</a></h3>
+<p>Automatic categorization of texts into known classes. When solving SLU problems
+the objective is to answer <em>What was meant?</em> instead of <em>“What was said?”</em>.</p>
+<p>For an example utterance <em>“I lost my wallet”</em> a bank’s support executives would 
+understand that they must follow the operating procedure for blocking all transaction 
+accounts. We want to train machines to have the ability to interpret these cues.</p>
+<p>We call the classes of <em>meaning</em> as <code class="code docutils literal notranslate"><span class="pre">Intent</span></code>.</p>
+<p>We can obtain intents from <a class="reference internal" href="dialogy.plugins.text.classification.html#xlmrmulticlass"><span class="std std-ref">XLMRMultiClass</span></a> and <a class="reference internal" href="dialogy.plugins.text.classification.html#mlpmulticlass"><span class="std std-ref">MLPMultiClass</span></a> plugin.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.types.intent.Intent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Intent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent.html#Intent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.Intent" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Intent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent.html#Intent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.Intent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>An instance of this class contains the name of the action associated with a body of text.</p>
 <dl class="py method">
@@ -252,11 +254,54 @@ This only helps in debugging and has no production utility.</p>
 </dd>
 </dl>
 </dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.Intent.alternative_index">
+<span class="sig-name descname"><span class="pre">alternative_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.Intent.alternative_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells us the index of transcript that yeilds this intent. Since our featurizer
+concatenates all transcripts, we currently don’t have a use for it.</p>
+<p>If we were to predict the intent for each transcript separately and vote, in those
+cases it would be helpful to log this property.</p>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.intent.Intent.apply">
 <span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent.html#Intent.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.Intent.apply" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create slots using <span class="xref std std-ref">rules</span>.</p>
-<p>An intent can hold different entities within associated slot-types.</p>
+<dd><p>Create slots using rules.</p>
+<p id="applyslot">An intent can hold different entities within associated slot-types.
+We parse rules that describe this mapping and create placeholders within an intent for
+holding entities found.</p>
+<p>An example rule would look like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"wake_up_alarm"</span><span class="p">:</span> <span class="p">{</span>          <span class="c1"># name of the intent.</span>
+        <span class="s2">"datetime_slot"</span><span class="p">:</span> <span class="p">[</span>      <span class="c1"># "datetime_slot" is the only slot associated with this intent.</span>
+            <span class="s2">"date"</span><span class="p">,</span>             <span class="c1"># Only "date", "time", "datetime" entities can fill the "datetime_slot"</span>
+            <span class="s2">"time"</span><span class="p">,</span>
+            <span class="s2">"datetime"</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">"ticket_booking"</span><span class="p">:</span> <span class="p">{</span>         <span class="c1"># name of the intent.</span>
+        <span class="s2">"origin"</span><span class="p">:</span> <span class="p">[</span>             <span class="c1"># A slot that will fill only location type entities.</span>
+            <span class="s2">"location"</span>          <span class="c1"># The entity types that can be filled in the slot.</span>
+        <span class="p">],</span>
+        <span class="s2">"destination"</span><span class="p">:</span> <span class="p">[</span>        <span class="c1"># Another slot that will fill only location type entities.</span>
+            <span class="s2">"location"</span>
+        <span class="p">],</span>
+        <span class="s2">"start_date"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"date"</span>
+        <span class="p">],</span>
+        <span class="s2">"end_date"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"date"</span>
+        <span class="p">],</span>
+        <span class="s2">"passengers"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"people"</span><span class="p">,</span>
+            <span class="s2">"number"</span>
+        <span class="p">],</span>
+        <span class="s2">"budget"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"amount-of-money"</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>rules</strong> (<em>Rule</em>) – A configuration for slot names and entity types associated with this instance of Intent.</p>
@@ -273,7 +318,7 @@ This only helps in debugging and has no production utility.</p>
 <dt class="sig sig-object py" id="dialogy.types.intent.Intent.cleanup">
 <span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent.html#Intent.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.Intent.cleanup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove slots that were not filled.</p>
-<dl class="field-list simple">
+<dl class="field-list simple" id="cleanupslot">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
@@ -283,11 +328,11 @@ This only helps in debugging and has no production utility.</p>
 <dt class="sig sig-object py" id="dialogy.types.intent.Intent.fill_slot">
 <span class="sig-name descname"><span class="pre">fill_slot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_multiple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent.html#Intent.fill_slot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.Intent.fill_slot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update <code class="code docutils literal notranslate"><span class="pre">slots[slot_type].values</span></code> with a single entity.</p>
-<p>We will explore the possibility of sharing/understanding the meaning of multiple entities
+<p id="fillslot">We will explore the possibility of sharing/understanding the meaning of multiple entities
 in the same slot type.</p>
 <p>There maybe cases where we want to fill multiple entities of the same type within a slot.
 In these cases <code class="code docutils literal notranslate"><span class="pre">fill_multiple</span></code> should be set to True.</p>
-<p>The <a class="reference internal" href="dialogy.plugins.text.slot_filler.html#rule-slot-filler"><span class="std std-ref">RuleBasedSlotFillerPlugin</span></a> has a detailed demo for this.</p>
+<p>The <span class="xref std std-ref">RuleBasedSlotFillerPlugin</span> has a detailed demo for this.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -314,10 +359,10 @@ In these cases <code class="code docutils literal notranslate"><span class="pre"
 <span class="gp">In [3]: </span><span class="n">intent</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 <span class="gh">Out[3]: </span><span class="go"></span>
 <span class="go">{'name': 'special',</span>
+<span class="go"> 'alternative_index': None,</span>
 <span class="go"> 'score': 0.8,</span>
-<span class="go"> 'alternative_index': 0,</span>
-<span class="go"> 'slots': [],</span>
-<span class="go"> 'parsers': []}</span>
+<span class="go"> 'parsers': [],</span>
+<span class="go"> 'slots': []}</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -326,7 +371,31 @@ In these cases <code class="code docutils literal notranslate"><span class="pre"
 </dd>
 </dl>
 </dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.Intent.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.intent.Intent.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The description of an intent separated by ‘_’</p>
 </dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.Intent.parsers">
+<span class="sig-name descname"><span class="pre">parsers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.Intent.parsers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains a list of plugins that have created, updated this Intent.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.Intent.score">
+<span class="sig-name descname"><span class="pre">score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dialogy.types.intent.Intent.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>A positive real number that represents confidence of this intent
+being the meaning of an utterance. Higher is better.</p>
+<p>Should be a value between 0 and 1.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.Intent.slots">
+<span class="sig-name descname"><span class="pre">slots</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="dialogy.types.slots.html#dialogy.types.slots.Slot" title="dialogy.types.slots.Slot"><span class="pre">dialogy.types.slots.Slot</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.Intent.slots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholders for <a class="reference internal" href="dialogy.types.entity.base_entity.html#baseentity"><span class="std std-ref">entities</span></a> that are relevant to this intent. 
+More details are available in the doc for <a class="reference internal" href="dialogy.types.slots.html#slot"><span class="std std-ref">slots</span></a>.</p>
+</dd></dl>
+</dd></dl>
+</section>
 </section>
 </section>
 
@@ -382,7 +451,10 @@ In these cases <code class="code docutils literal notranslate"><span class="pre"
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.types.intent package</a><ul>
-<li><a class="reference internal" href="#module-dialogy.types.intent">Module contents</a></li>
+<li><a class="reference internal" href="#module-dialogy.types.intent">Module contents</a><ul>
+<li><a class="reference internal" href="#intent-classification">Intent Classification</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

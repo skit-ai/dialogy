@@ -137,18 +137,22 @@ ID = "id"
 IDX = "idx"
 DATA = "data"
 STATE = "state"
+OUTPUT = "output"
+INPUT = "input"
 CLASSIFICATION_INPUT = "classification_input"
 XLMR_MODULE = "simpletransformers.classification"
 XLMR_MULTI_CLASS_MODEL = "ClassificationModel"
 XLMR_MODEL = "xlmroberta"
 XLMR_MODEL_TIER = "xlm-roberta-base"
 INTENT = "intent"
+ORIGINAL_INTENT = "original_intent"
 INTENTS = f"{INTENT}s"
 LABELS = "labels"
 ENTITIES = "entities"
 SCORE = "score"
 LABELENCODER_FILE = "labelencoder.pkl"
 INVALID_TOKENS = ["<UNK>", "<PAD>", "<SOS>", "<EOS>"]
+OUTPUT_ATTRIBUTES = {INTENTS, ENTITIES, ORIGINAL_INTENT}
 
 # MLP
 MLPMODEL_FILE = "mlpmodelpipeline.joblib"

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.list_entity_plugin - dialogy 0.9.4 documentation</title>
+        <title>dialogy.plugins.text.list_entity_plugin - dialogy 0.9.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.9.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,13 +160,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.plugin.html">Plugin</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.intent.html">Intent</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.slots.html">Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -175,6 +173,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -186,7 +185,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -219,27 +217,77 @@
         <article role="main">
           <h1>Source code for dialogy.plugins.text.list_entity_plugin</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">.. _list_entity_plugin:</span>
+<span class="sd">.. _ListEntityPlugin:</span>
 
-<span class="sd">Module needs refactor. We are currently keeping all strategies bundled as methods as opposed to SearchStrategyClasses.</span>
+<span class="sd">Regex Search</span>
+<span class="sd">-------------</span>
 
-<span class="sd">Within dialogy, we extract entities using Duckling, Pattern lists and Spacy. We can ship individual plugins but at the</span>
-<span class="sd">same time, the difference is just configuration of each of these tools/services. There is another difference of</span>
-<span class="sd">intermediate structure that the DucklingPlugin expects. We need to prevent the impact of the structure from affecting</span>
-<span class="sd">all other entities. So that their :code:`from_dict(...)` methods are pristine and involve no shape hacking.</span>
+<span class="sd">We have often seen certain keywords that gain significance in an SLU project. These keywords are </span>
+<span class="sd">easy to extract via patterns and are often used to create entities. The :ref:`ListEntityPlugin&lt;ListEntityPlugin&gt;`</span>
+<span class="sd">helps in this task, it requires a pattern-map, we call it :code:`candidates`.</span>
+
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.plugins import ListEntityPlugin</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+
+<span class="sd">    In [2]: candidates = {</span>
+<span class="sd">       ...:      "colours": {</span>
+<span class="sd">       ...:          "red": ["red", "crimson", "ruby", "raspberry"],</span>
+<span class="sd">       ...:          "blue": ["blue", "azure", "indigo", "navy"],</span>
+<span class="sd">       ...:          "green": ["green", "emerald", "jade", "teal"],</span>
+<span class="sd">       ...:      }, </span>
+<span class="sd">       ...:    }</span>
+
+<span class="sd">    In [2]: list_entity_plugin = ListEntityPlugin(</span>
+<span class="sd">       ...:   candidates=candidates,</span>
+<span class="sd">       ...:   style="regex",</span>
+<span class="sd">       ...:   dest="output.entities"</span>
+<span class="sd">       ...: )</span>
+<span class="sd">       ...: workflow = Workflow([list_entity_plugin])</span>
+<span class="sd">       ...: _, output = workflow.run(Input(utterances="I want an emerald green shirt"))</span>
+
+<span class="sd">    In [3]: output</span>
+
+<span class="sd">Spacy NER</span>
+<span class="sd">-----------</span>
+
+<span class="sd">We also allow using `spacy's NER &lt;https://spacy.io/usage/spacy-101#annotations-ner&gt;`_. This has to be passed within the</span>
+<span class="sd">:code:`spacy_nlp` attribute.</span>
+
+<span class="sd">.. ipython::</span>
+
+<span class="sd">    In [1]: import spacy</span>
+<span class="sd">       ...: from dialogy.workflow import Workflow</span>
+<span class="sd">       ...: from dialogy.plugins import ListEntityPlugin</span>
+<span class="sd">       ...: from dialogy.base import Input</span>
+
+<span class="sd">    In [2]: nlp = spacy.load("en_core_web_sm")</span>
+
+<span class="sd">    In [3]: list_entity_plugin = ListEntityPlugin(</span>
+<span class="sd">       ...:   spacy_nlp=nlp,</span>
+<span class="sd">       ...:   style="spacy",</span>
+<span class="sd">       ...:   dest="output.entities"</span>
+<span class="sd">       ...: )</span>
+<span class="sd">       ...: workflow = Workflow([list_entity_plugin])</span>
+<span class="sd">       ...: _, output = workflow.run(Input(utterances="Need a place to stay in New Delhi."))</span>
+
+<span class="sd">    In [3]: output</span>
 <span class="sd">"""</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span>
 <span class="kn">from</span> <span class="nn">dialogy.base.entity_extractor</span> <span class="kn">import</span> <span class="n">EntityScoringMixin</span>
-<span class="kn">from</span> <span class="nn">dialogy.base.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginFn</span>
 <span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">KeywordEntity</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">logger</span>
 
 <span class="n">Text</span> <span class="o">=</span> <span class="nb">str</span>
 <span class="n">Label</span> <span class="o">=</span> <span class="nb">str</span>
@@ -250,28 +298,25 @@
 
 <div class="viewcode-block" id="ListEntityPlugin"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin">[docs]</a><span class="k">class</span> <span class="nc">ListEntityPlugin</span><span class="p">(</span><span class="n">EntityScoringMixin</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">):</span>
     <span class="sd">"""</span>
-<span class="sd">     A :ref:`Plugin&lt;plugin&gt;` for extracting entities using spacy or a list of regex patterns.</span>
+<span class="sd">     A :ref:`Plugin&lt;AbstractPlugin&gt;` for extracting entities using spacy or a list of regex patterns.</span>
 
-<span class="sd">     .. note: This class will undergo a series of refactoring changes. The final form will accommodate Duckling, Spacy</span>
-<span class="sd">        and regex based entity parsers.</span>
+<span class="sd">     .. attention:</span>
+
+<span class="sd">        This class will undergo a series of refactoring changes. FWIW, :ref:`ListSearchPlugin&lt;ListSearchPlugin&gt;`</span>
+<span class="sd">        is more more performant in terms of entity capture rates but not as responsive. :code:`ListEntityPlugin`</span>
+<span class="sd">        is fast. So make choices with bearing this in mind.</span>
 
 <span class="sd">    :param style: One of ["regex", "spacy"]</span>
 <span class="sd">    :type style: Optional[str]</span>
 <span class="sd">    :param candidates: Required if style is "regex", this is a :code:`dict` that shows a mapping of entity</span>
 <span class="sd">        values and their patterns.</span>
 <span class="sd">    :type candidates: Optional[Dict[str, List[str]]]</span>
-<span class="sd">    :param spacy_nlp: Required if style is "spacy", this is a</span>
+<span class="sd">    :param spacy_nlp: Required if style is "spacy", requires is a</span>
 <span class="sd">        `spacy model &lt;https://spacy.io/usage/spacy-101#annotations-ner&gt;`_.</span>
 <span class="sd">    :type spacy_nlp: Any</span>
 <span class="sd">    :param labels: Required if style is "spacy". If there is a need to extract only a few labels from all the other</span>
 <span class="sd">        `available labels &lt;https://github.com/explosion/spaCy/issues/441#issuecomment-311804705&gt;`_.</span>
 <span class="sd">    :type labels: Optional[List[str]]</span>
-<span class="sd">    :param access: A plugin io utility that allows access to transcripts</span>
-<span class="sd">        :code:`List[str]` within a :ref:`Workflow &lt;workflow&gt;`.</span>
-<span class="sd">    :type access: Optional[PluginFn]</span>
-<span class="sd">    :param mutate: A plugin io utility that allows insertion of :code:`List[BaseEntity]` within a</span>
-<span class="sd">        :ref:`Workflow &lt;workflow&gt;`.</span>
-<span class="sd">    :type mutate: Optional[PluginFn]</span>
 <span class="sd">    :param debug: A flag to set debugging on the plugin methods</span>
 <span class="sd">    :type debug: bool</span>
 <span class="sd">    """</span>
@@ -281,10 +326,10 @@
         <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">candidates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">spacy_nlp</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">guards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">access</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mutate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PluginFn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">input_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVES</span><span class="p">,</span>
         <span class="n">output_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_transform</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -292,8 +337,8 @@
         <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">access</span><span class="o">=</span><span class="n">access</span><span class="p">,</span>
-            <span class="n">mutate</span><span class="o">=</span><span class="n">mutate</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span>
+            <span class="n">guards</span><span class="o">=</span><span class="n">guards</span><span class="p">,</span>
             <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
             <span class="n">input_column</span><span class="o">=</span><span class="n">input_column</span><span class="p">,</span>
             <span class="n">output_column</span><span class="o">=</span><span class="n">output_column</span><span class="p">,</span>
@@ -407,25 +452,25 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">matches_on_transcript</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matches_on_transcripts</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">span</span> <span class="ow">in</span> <span class="n">matches_on_transcript</span><span class="p">:</span>
                 <span class="n">entity_dict</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">"start"</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="s2">"end"</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">"body"</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
-                    <span class="s2">"dim"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
-                    <span class="s2">"parsers"</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">],</span>
-                    <span class="s2">"score"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="s2">"alternative_index"</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
-                    <span class="s2">"latent"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                    <span class="s2">"__group"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-                    <span class="s2">"type"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
-                    <span class="s2">"entity_type"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
-                    <span class="s2">"value"</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">"values"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}],</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">RANGE</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="n">const</span><span class="o">.</span><span class="n">START</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                     <span class="p">},</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">BODY</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">DIM</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">ALTERNATIVE_INDEX</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">LATENT</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s2">"__group"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">ENTITY_TYPE</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">:</span> <span class="p">[{</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">:</span> <span class="n">value</span><span class="p">}],</span>
                 <span class="p">}</span>
 
                 <span class="k">del</span> <span class="n">entity_dict</span><span class="p">[</span><span class="s2">"__group"</span><span class="p">]</span>
                 <span class="n">entity_</span> <span class="o">=</span> <span class="n">KeywordEntity</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">entity_dict</span><span class="p">)</span>
-                <span class="n">entity_</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_value</span><span class="p">()</span>
+                <span class="n">entity_</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity_</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Parsed entities"</span><span class="p">)</span>
@@ -434,8 +479,9 @@
         <span class="n">aggregated_entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_consensus</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">transcripts</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">aggregated_entities</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ListEntityPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-value-for-parameter</span></div>
+<div class="viewcode-block" id="ListEntityPlugin.utility"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">transcripts</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">transcripts</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-value-for-parameter</span></div>
 
 <div class="viewcode-block" id="ListEntityPlugin.ner_search"><a class="viewcode-back" href="../../../../source/dialogy.plugins.text.list_entity_plugin.html#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin.ner_search">[docs]</a>    <span class="k">def</span> <span class="nf">ner_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transcript</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchType</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -528,7 +574,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="s2">"dialogy"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">training_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)):</span>
             <span class="n">transcripts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_transform_values</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">])</span>
-            <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utility</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span>
+            <span class="n">entities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_entities</span><span class="p">(</span><span class="n">transcripts</span><span class="p">)</span>
             <span class="n">is_empty_series</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
                 <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
             <span class="p">)</span>
@@ -573,7 +619,5 @@
     <script src="../../../../_static/scripts/furo.js"></script>
     <script src="../../../../_static/clipboard.min.js"></script>
     <script src="../../../../_static/copybutton.js"></script>
-    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

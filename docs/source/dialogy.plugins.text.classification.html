@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.duckling_plugin package" href="dialogy.plugins.text.duckling_plugin.html" /><link rel="prev" title="dialogy.plugins.text.merge_asr_output package" href="dialogy.plugins.text.merge_asr_output.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.classification package - dialogy 0.9.4 documentation</title>
+        <title>dialogy.plugins.text.classification package - dialogy 0.9.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.4 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.4 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -223,11 +223,205 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </section>
-<section id="dialogy-plugins-text-classification-mlp-module">
-<h2>dialogy.plugins.text.classification.mlp module<a class="headerlink" href="#dialogy-plugins-text-classification-mlp-module" title="Permalink to this headline">¶</a></h2>
+<section id="module-dialogy.plugins.text.classification.mlp">
+<span id="dialogy-plugins-text-classification-mlp-module"></span><h2>dialogy.plugins.text.classification.mlp module<a class="headerlink" href="#module-dialogy.plugins.text.classification.mlp" title="Permalink to this headline">¶</a></h2>
+<p id="mlp-classifier">This module provides a trainable MLP classifier.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MLPMultiClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_round_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_error_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'labels'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
+<p>This plugin provides a classifier based on sklearn’s MLPClassifier.</p>
+<span class="target" id="mlpmulticlass"></span><dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.get_formatted_gridparams">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_formatted_gridparams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.get_formatted_gridparams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_formatted_gridparams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the valid parameters for the gridsearch.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>values: The values to be validated.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The valid parameters.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid">
+<span class="sig-name descname"><span class="pre">get_gridsearch_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.get_gridsearch_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets gridsearch hyperparameters for the model in proper grid params format.</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>ValueError: If a gridsearch parameter doesn’t exist in sklearns TFIDF and MLPClassifier modules.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.inference">
+<span class="sig-name descname"><span class="pre">inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">texts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.inference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the intent of a list of texts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>texts</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – A list of strings, derived from ASR transcripts.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – In case the model isn’t of sklearn pipeline or gridsearchcv.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of intents corresponding to texts.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent">Intent</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.init_model">
+<span class="sig-name descname"><span class="pre">init_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.init_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.init_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the model if artifacts are available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the plugin artifacts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the plugin artifacts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – In case the mlp model is not trained.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train an intent-classifier on the provided training data.</p>
+<p>The training is skipped if the data-format is not valid.
+:type training_data: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>
+:param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
+:type training_data: pd.DataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.utility">
+<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.utility" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract method that describes the plugin’s functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<a class="reference internal" href="dialogy.base.input.html#dialogy.base.input.Input" title="dialogy.base.input.Input"><em>Input</em></a>) – The workflow’s input.</p></li>
+<li><p><strong>output</strong> (<a class="reference internal" href="dialogy.base.output.html#dialogy.base.output.Output" title="dialogy.base.output.Output"><em>Output</em></a>) – The workflow’s output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value returned by the plugin.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.valid_mlpmodel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_mlpmodel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.valid_mlpmodel" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the training data is in the appropriate format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>training_data</strong> (<em>pd.DataFrame</em>) – A pandas dataframe containing at least list of strings and corresponding labels.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the dataframe is valid, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
-<section id="dialogy-plugins-text-classification-tokenizers-module">
-<h2>dialogy.plugins.text.classification.tokenizers module<a class="headerlink" href="#dialogy-plugins-text-classification-tokenizers-module" title="Permalink to this headline">¶</a></h2>
+<section id="module-dialogy.plugins.text.classification.retain_intent">
+<span id="dialogy-plugins-text-classification-retain-intent-module"></span><h2>dialogy.plugins.text.classification.retain_intent module<a class="headerlink" href="#module-dialogy.plugins.text.classification.retain_intent" title="Permalink to this headline">¶</a></h2>
+<p id="retainoriginalintentplugin">We may apply transforms over predicted intents. This makes it hard to track the impact of classifiers. 
+Here, we will track the original intent, the one produced by a classifier.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RetainOriginalIntentPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replace_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'output.original_intent'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/retain_intent.html#RetainOriginalIntentPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin.retain">
+<span class="sig-name descname"><span class="pre">retain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/retain_intent.html#RetainOriginalIntentPlugin.retain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin.retain" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin.utility">
+<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/retain_intent.html#RetainOriginalIntentPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract method that describes the plugin’s functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<a class="reference internal" href="dialogy.base.input.html#dialogy.base.input.Input" title="dialogy.base.input.Input"><em>Input</em></a>) – The workflow’s input.</p></li>
+<li><p><strong>output</strong> (<a class="reference internal" href="dialogy.base.output.html#dialogy.base.output.Output" title="dialogy.base.output.Output"><em>Output</em></a>) – The workflow’s output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value returned by the plugin.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-dialogy.plugins.text.classification.tokenizers">
+<span id="dialogy-plugins-text-classification-tokenizers-module"></span><h2>dialogy.plugins.text.classification.tokenizers module<a class="headerlink" href="#module-dialogy.plugins.text.classification.tokenizers" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.plugins.text.classification.tokenizers.identity_tokenizer">
+<span class="sig-name descname"><span class="pre">identity_tokenizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/tokenizers.html#identity_tokenizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.tokenizers.identity_tokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 </section>
 <section id="module-dialogy.plugins.text.classification.xlmr">
 <span id="dialogy-plugins-text-classification-xlmr-module"></span><h2>dialogy.plugins.text.classification.xlmr module<a class="headerlink" href="#module-dialogy.plugins.text.classification.xlmr" title="Permalink to this headline">¶</a></h2>
@@ -235,13 +429,15 @@
 [read-more](<a class="reference external" href="https://arxiv.org/abs/1911.02116">https://arxiv.org/abs/1911.02116</a>)</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">XLMRMultiClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cuda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_round_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_error_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'labels'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">XLMRMultiClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cuda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_round_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_error_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'labels'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'state'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
 <p>This plugin provides a classifier based on <cite>XLM-Roberta &lt;https://arxiv.org/abs/1911.02116&gt;</cite>.</p>
+<p>The use_state flag in the XLMRMultiClass plugin is used to enable the use of state variable as the part of the text input.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.inference">
 <span class="sig-name descname"><span class="pre">inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">texts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.inference" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predict the intent of a list of texts.</p>
+<dd><p>Predict the intent of a list of texts.
+If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>texts</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – A list of strings, derived from ASR transcripts.</p>
@@ -301,6 +497,7 @@
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train an intent-classifier on the provided training data.</p>
 <p>The training is skipped if the data-format is not valid.
+While training with the use_state flag as true, make sure that the state column is the part of the training_data dataframe
 :type training_data: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>
 :param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
 :type training_data: pd.DataFrame</p>
@@ -312,15 +509,20 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.classification.xlmr.XLMRMultiClass.utility">
-<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.utility" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform X -&gt; y.</p>
-<p>This method is called during a <a class="reference internal" href="dialogy.workflow.html#workflow"><span class="std std-ref">Workflow</span></a> run.</p>
+<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/xlmr.html#XLMRMultiClass.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.utility" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract method that describes the plugin’s functionality.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A value that will be passed to the next plugin (if any).</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<a class="reference internal" href="dialogy.base.input.html#dialogy.base.input.Input" title="dialogy.base.input.Input"><em>Input</em></a>) – The workflow’s input.</p></li>
+<li><p><strong>output</strong> (<a class="reference internal" href="dialogy.base.output.html#dialogy.base.output.Output" title="dialogy.base.output.Output"><em>Output</em></a>) – The workflow’s output.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Any</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value returned by the plugin.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
 </dd></dl>
@@ -339,7 +541,8 @@
 <dd><p>Validate the training data is in the appropriate format</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>training_data</strong> (<em>pd.DataFrame</em>) – A pandas dataframe containing at least list of strings and corresponding labels.</p>
+<dd class="field-odd"><p><strong>training_data</strong> (<em>pd.DataFrame</em>) – A pandas dataframe containing at least list of strings and corresponding labels.
+Should also contain a state key if use_state = True while initializing object.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>True if the dataframe is valid, False otherwise.</p>
@@ -409,8 +612,9 @@
             <ul>
 <li><a class="reference internal" href="#">dialogy.plugins.text.classification package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#dialogy-plugins-text-classification-mlp-module">dialogy.plugins.text.classification.mlp module</a></li>
-<li><a class="reference internal" href="#dialogy-plugins-text-classification-tokenizers-module">dialogy.plugins.text.classification.tokenizers module</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.classification.mlp">dialogy.plugins.text.classification.mlp module</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.classification.retain_intent">dialogy.plugins.text.classification.retain_intent module</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.classification.tokenizers">dialogy.plugins.text.classification.tokenizers module</a></li>
 <li><a class="reference internal" href="#module-dialogy.plugins.text.classification.xlmr">dialogy.plugins.text.classification.xlmr module</a></li>
 <li><a class="reference internal" href="#module-dialogy.plugins.text.classification">Module contents</a></li>
 </ul>

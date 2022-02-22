@@ -44,12 +44,16 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import attr
 
 from dialogy.types import BaseEntity, Intent
+from dialogy import constants as const
 
+
+JSON_LIST_TYPE = List[Dict[str, Any]]
+ORIGINAL_INTENT_TYPE = Dict[str, Union[str, float]]
 
 @attr.frozen
 class Output:
@@ -68,6 +72,8 @@ class Output:
     A list of entities. Produced by :ref:`DucklingPlugin <DucklingPlugin>`, 
     :ref:`ListEntityPlugin <ListEntityPlugin>` or :ref:`ListSearchPlugin <ListSearchPlugin>`.
     """
+
+    original_intent: ORIGINAL_INTENT_TYPE = attr.ib(default=attr.Factory(dict), kw_only=True)
 
     @intents.validator  # type: ignore
     def _are_intents_valid(
@@ -99,7 +105,30 @@ class Output:
                 f"intents must be a List[BaseEntity] but {entities} was provided."
             )
 
-    def json(self: Output) -> Dict[str, List[Dict[str, Any]]]:
+    @original_intent.validator  # type: ignore
+    def _is_original_intent_valid(
+        self, _: attr.Attribute, original_intent: Dict[str, Union[str, float]]  # type: ignore
+    ) -> None:
+        if not original_intent:
+            return
+        if not isinstance(original_intent, dict):
+            raise TypeError(
+                f"original_intent must be a dict, not {type(original_intent)}"
+            )
+        if const.NAME not in original_intent:
+            raise TypeError(
+                f"original_intent must contain {const.NAME} but {original_intent} was provided."
+            )
+        if not isinstance(original_intent[const.NAME], str):
+            raise TypeError(f"original_intent[{const.NAME}] must be a str, not {type(original_intent[const.NAME])}")
+        if const.SCORE not in original_intent:
+            raise TypeError(
+                f"original_intent must contain {const.SCORE} but {original_intent} was provided."
+            )
+        if not isinstance(original_intent[const.SCORE], float):
+            raise TypeError(f"original_intent[{const.SCORE}] must be a float, not {type(original_intent[const.SCORE])}")
+
+    def json(self: Output) -> Dict[str, Union[JSON_LIST_TYPE, ORIGINAL_INTENT_TYPE]]:
         """
         Serialize `Output`_ to a JSON-like dict.
 
@@ -109,8 +138,9 @@ class Output:
         :rtype: Dict[str, List[Dict[str, Any]]]
         """
         return {
-            "intents": [intent.json() for intent in self.intents],
-            "entities": [entity.json() for entity in self.entities],
+            const.INTENTS: [intent.json() for intent in self.intents],
+            const.ENTITIES: [entity.json() for entity in self.entities],
+            const.ORIGINAL_INTENT: self.original_intent,
         }
 
     @classmethod

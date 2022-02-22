@@ -12,6 +12,14 @@ dialogy.plugins.text.classification.mlp module
    :undoc-members:
    :show-inheritance:
 
+dialogy.plugins.text.classification.retain\_intent module
+---------------------------------------------------------
+
+.. automodule:: dialogy.plugins.text.classification.retain_intent
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dialogy.plugins.text.classification.tokenizers module
 -----------------------------------------------------
 

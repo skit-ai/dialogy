@@ -52,6 +52,14 @@ dialogy.utils.normalize\_utterance module
    :undoc-members:
    :show-inheritance:
 
+dialogy.utils.temperature\_scaling module
+-----------------------------------------
+
+.. automodule:: dialogy.utils.temperature_scaling
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
