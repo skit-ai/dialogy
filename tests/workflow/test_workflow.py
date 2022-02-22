@@ -59,8 +59,15 @@ def test_workflow_as_dict():
     workflow = Workflow()
     assert workflow.json() == {
         "input": None,
-        "output": {const.INTENTS: [], const.ENTITIES: []},
+        "output": {const.INTENTS: [], const.ENTITIES: [], const.ORIGINAL_INTENT: {}},
     }
+
+
+def test_workflow_set_path():
+    workflow = Workflow()
+    workflow.set("output.original_intent", {"name": "test", "score": 0.5})
+    workflow_dict = workflow.json()
+    assert workflow_dict["output"]["original_intent"] == {"name": "test", "score": 0.5}
 
 
 def test_workflow_invalid_set_path():

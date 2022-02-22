@@ -207,34 +207,23 @@ class Workflow:
         """
         dest, attribute = path.split(".")
 
-        if dest == "input":
+        if dest == const.INPUT:
             self.input = Input.from_dict({attribute: value}, reference=self.input)
-        elif dest == "output" and isinstance(value, list):
+        elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
+            if not replace and isinstance(value, list):
+                previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities # type: ignore
 
-            if replace:
-                self.output = Output.from_dict(
-                    {attribute: value}, reference=self.output
-                )
-            else:
-                if attribute == const.INTENTS:
-                    previous_value = self.output.intents  # type: ignore
-                elif attribute == const.ENTITIES:
-                    previous_value = self.output.entities  # type: ignore
-                else:
-                    raise ValueError(
-                        f"Unknown attribute {attribute} tracked on Output."
-                    )
-
-                combined_value = sorted(
+                value = sorted(
                     previous_value + value,
                     key=lambda parse: parse.score or 0,
                     reverse=True,
                 )
-                self.output = Output.from_dict(
-                    {attribute: combined_value}, reference=self.output
-                )
 
-        elif dest == "output":
+            self.output = Output.from_dict(
+                {attribute: value}, reference=self.output
+            )
+
+        elif dest == const.OUTPUT:
             raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
         else:
             raise ValueError(f"{path} is not a valid path.")

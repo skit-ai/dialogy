@@ -40,3 +40,27 @@ def test_output_invalid_entities_type():
 def test_output_invalid_entity_type():
     with pytest.raises(TypeError):
         Output(entities=[1])
+
+
+def test_output_invalid_original_intent_type():
+    with pytest.raises(TypeError):
+        Output(original_intent=1)
+
+
+def test_output_invalid_original_intent_score():
+    with pytest.raises(TypeError):
+        Output(original_intent={"score": "apples", "name": "test"})
+
+def test_output_invalid_original_intent_name():
+    with pytest.raises(TypeError):
+        Output(original_intent={"name": 1, "score": 0.5})
+
+
+def test_output_missing_original_intent_score():
+    with pytest.raises(TypeError):
+        Output(original_intent={"name": "test"})
+
+
+def test_output_missing_original_intent_name():
+    with pytest.raises(TypeError):
+        Output(original_intent={"score": 0.5})
