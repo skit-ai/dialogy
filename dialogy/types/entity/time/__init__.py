@@ -54,7 +54,9 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import attr
+import operator
 import pydash as py_
+from copy import deepcopy
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
@@ -77,7 +79,8 @@ class TimeEntity(BaseEntity):
     origin: str = attr.ib(default="value")
     dim: str = attr.ib(default="time")
     grain: str = attr.ib(default=None, validator=attr.validators.instance_of(str))
-
+    __TIMERANGE_OPERATION_ALIAS = {const.LTE: operator.le, const.GTE: operator.ge}
+    
     def get_value(self) -> Any:
         """
         Return the date string in ISO format from the dictionary passed
@@ -189,7 +192,21 @@ class TimeEntity(BaseEntity):
             self.entity_type = const.TIME
 
     @classmethod
-    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> TimeEntity:
+    def pick_constrained_duckling_entities(cls, d: Dict[str, Any], constraints: Dict[str, Any]) -> Dict[str, Any]:        
+        grain = d[const.VALUE][const.VALUES][0][const.GRAIN]
+        if grain in const.TIME_UNITS and (constraint := constraints.get(const.TIME)):
+            for comparison_type, limits in constraint.items():
+                operation = cls.__TIMERANGE_OPERATION_ALIAS.get(comparison_type)
+                for datetime_val in deepcopy(d[const.VALUE][const.VALUES]):
+                    datetime_ = datetime.strptime(datetime_val[const.VALUE], "%Y-%m-%dT%H:%M:%S.%f%z")
+                    if not operation(getattr(datetime_, const.HOUR), limits[const.HOUR]):
+                        d[const.VALUE][const.VALUES].remove(datetime_val)
+        return d
+
+    @classmethod
+    def from_duckling(cls, d: Dict[str, Any], alternative_index: int, constraints: Optional[Dict[str, Any]] = None) -> TimeEntity:
+        if len(d[const.VALUE][const.VALUES]) > 1 and constraints:
+            d = cls.pick_constrained_duckling_entities(d, constraints)
         time_entity = cls(
             range={const.START: d[const.START], const.END: d[const.END]},
             body=d[const.BODY],

@@ -173,6 +173,43 @@ def test_time_entity_grain_not_str_error():
             range={"from": 0, "to": len(body)}, body=body, entity_type="time", grain=0
         )
 
+def test_time_entities_with_constraint() -> None:
+    req_time = dt2timestamp(
+        datetime.fromisoformat("2022-03-06T12:00:00.000+05:30")
+    )
+    test_constraints = {
+        "time": {
+            "lte": {"hour": 21, "minute": 59},
+            "gte": {"hour": 7, "minute": 0}
+        }
+    }
+    d_multiple = {
+            'body': 'कल 12:00',
+            'start': 0,
+            'value': {
+                'values': [
+                    {
+                        'value': '2022-03-06T00:00:00.000+05:30',
+                        'grain': 'minute',
+                        'type': 'value'
+                    },
+                    {
+                        'value': '2022-03-06T12:00:00.000+05:30',
+                        'grain': 'minute',
+                        'type': 'value'
+                    }
+                ],
+                'value': '2022-03-06T00:00:00.000+05:30',
+                'grain': 'minute',
+                'type': 'value'
+            },
+            'end': 8,
+            'dim': 'time',
+            'latent': False
+    }
+    
+    time_entity = TimeEntity.from_duckling(d_multiple, 1, test_constraints)
+    assert req_time == dt2timestamp(time_entity.get_value())
 
 def test_time_interval_entity_value_not_dict_error():
     body = "from 4 pm to 12 am"

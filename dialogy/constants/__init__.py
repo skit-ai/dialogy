@@ -30,6 +30,7 @@ DUCKLING_TIME_INTERVAL_ENTITY_KEYS = (
 DATE = "date"
 TIME = "time"
 DATETIME = "datetime"
+MINUTE = "minute"
 HOUR = "hour"
 DAY = "day"
 MONTH = "month"
@@ -43,6 +44,9 @@ CREDIT_CARD_NUMBER = "credit-card-number"
 FUTURE = "future"
 PAST = "past"
 ANY = "__any__"
+
+LTE = "lte"
+GTE = "gte"
 
 DUCKLING_DIMS = [PEOPLE, NUMBER, AMOUNT_OF_MONEY, DURATION, CREDIT_CARD_NUMBER, TIME]
 
