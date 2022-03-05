@@ -51,7 +51,7 @@ Workflow Integration
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Callable
 
 import attr
 import operator
@@ -79,7 +79,7 @@ class TimeEntity(BaseEntity):
     origin: str = attr.ib(default="value")
     dim: str = attr.ib(default="time")
     grain: str = attr.ib(default=None, validator=attr.validators.instance_of(str))
-    __TIMERANGE_OPERATION_ALIAS = {const.LTE: operator.le, const.GTE: operator.ge}
+    __TIMERANGE_OPERATION_ALIAS: Dict[str, Any] = {const.LTE: operator.le, const.GTE: operator.ge}
     
     def get_value(self) -> Any:
         """
@@ -196,10 +196,10 @@ class TimeEntity(BaseEntity):
         grain = d[const.VALUE][const.VALUES][0][const.GRAIN]
         if grain in const.TIME_UNITS and (constraint := constraints.get(const.TIME)):
             for comparison_type, limits in constraint.items():
-                operation = cls.__TIMERANGE_OPERATION_ALIAS.get(comparison_type)
+                operation  = cls.__TIMERANGE_OPERATION_ALIAS.get(comparison_type)
                 for datetime_val in deepcopy(d[const.VALUE][const.VALUES]):
                     datetime_ = datetime.strptime(datetime_val[const.VALUE], "%Y-%m-%dT%H:%M:%S.%f%z")
-                    if not operation(getattr(datetime_, const.HOUR), limits[const.HOUR]):
+                    if operation and not operation(getattr(datetime_, const.HOUR), limits[const.HOUR]):
                         d[const.VALUE][const.VALUES].remove(datetime_val)
         return d
 
