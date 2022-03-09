@@ -226,7 +226,7 @@ def test_invalid_operations():
     assert xlmr_clf.inference(["text"])[0].name == "_error_"
 
     xlmr_clf_state.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
-    assert xlmr_clf_state.inference(["text"])[0].name == "_error_"
+    assert xlmr_clf_state.inference(["text"],["WORKING STATE"])[0].name == "_error_"
 
     with pytest.raises(ValueError):
         xlmr_clf.save()

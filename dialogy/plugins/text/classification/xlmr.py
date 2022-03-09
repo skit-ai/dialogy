@@ -145,13 +145,15 @@ class XLMRMultiClass(Plugin):
     def valid_labelencoder(self) -> bool:
         return hasattr(self.labelencoder, "classes_")
 
-    def inference(self, texts: Optional[List[str]]) -> List[Intent]:
+    def inference(self, texts: Optional[List[str]], state: Optional[List[str]] = None) -> List[Intent]:
         """
         Predict the intent of a list of texts.
         If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.
 
         :param texts: A list of strings, derived from ASR transcripts.
+        :param state: A list of states, mapped to the ASR transcripts.
         :type texts: List[str]
+        :type state: List[str]
         :raises AttributeError: In case the labelencoder is not available.
         :return: A list of intents corresponding to texts.
         :rtype: List[Intent]
@@ -165,20 +167,21 @@ class XLMRMultiClass(Plugin):
         if self.model is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
             return [fallback_output]
-        if self.use_state:
-            for text in texts:
-                if "<st>" not in text:
-                    logger.error(
-                        f"use_state = True but {text} doesn't contain <st> </st> tags, \
-                        which means that training data is different from this data. This can lead to anomalous results"
-                    )
-                    return [fallback_output]
+        if self.use_state and not state:
+            raise ValueError(
+                f"Plugin {self.__class__.__name__} requires state to be passed to the model."
+            )
+        elif self.use_state and state:
+            state_appended_texts = []
+            assert len(texts) == len(state)
+            for state,text in zip(state,texts):
+                state_appended_texts.append(f"{text} <s> {state} </s>")
+            texts = state_appended_texts
         if not self.valid_labelencoder:
             raise AttributeError(
                 "Seems like you forgot to "
                 f"save the {self.__class__.__name__} plugin."
             )
-
         predictions, logits = self.model.predict(texts)
         if not predictions:
             return [fallback_output]
@@ -255,7 +258,7 @@ class XLMRMultiClass(Plugin):
         )
         # Add state as an additonal field to text
         if self.use_state:
-            training_data[const.TEXT] += "<st> " + training_data["state"] + " </st>"
+            training_data[const.TEXT] += "<s> " + training_data["state"] + " </s>"
         training_data = training_data[[const.TEXT, const.LABELS]]
         self.init_model(len(encoder.classes_))
         logger.debug(
