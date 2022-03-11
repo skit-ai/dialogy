@@ -226,7 +226,7 @@ def test_invalid_operations():
     assert xlmr_clf.inference(["text"])[0].name == "_error_"
 
     xlmr_clf_state.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
-    assert xlmr_clf_state.inference(["text"],["WORKING STATE"])[0].name == "_error_"
+    assert xlmr_clf_state.inference(["text"], ["WORKING STATE"])[0].name == "_error_"
 
     with pytest.raises(ValueError):
         xlmr_clf.save()
@@ -259,13 +259,11 @@ def test_inference(payload):
         model_dir=directory,
         dest="output.intents",
         debug=False,
-        purpose = const.TEST,
+        purpose=const.TEST,
         args_map={
-            const.TEST: {
-                const.MODEL_CALIBRATION: True
-            },
+            const.TEST: {const.MODEL_CALIBRATION: True},
             const.TRAIN: {},
-            const.PRODUCTION: {}
+            const.PRODUCTION: {},
         },
     )
 

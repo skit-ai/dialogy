@@ -211,7 +211,7 @@ class Workflow:
             self.input = Input.from_dict({attribute: value}, reference=self.input)
         elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
             if not replace and isinstance(value, list):
-                previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities # type: ignore
+                previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities  # type: ignore
 
                 value = sorted(
                     previous_value + value,
@@ -219,9 +219,7 @@ class Workflow:
                     reverse=True,
                 )
 
-            self.output = Output.from_dict(
-                {attribute: value}, reference=self.output
-            )
+            self.output = Output.from_dict({attribute: value}, reference=self.output)
 
         elif dest == const.OUTPUT:
             raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")

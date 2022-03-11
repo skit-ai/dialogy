@@ -1,7 +1,7 @@
-from dialogy.plugins import RetainOriginalIntentPlugin
-from dialogy.workflow import Workflow
-from dialogy.types import Intent
 from dialogy.base import Input
+from dialogy.plugins import RetainOriginalIntentPlugin
+from dialogy.types import Intent
+from dialogy.workflow import Workflow
 
 
 def test_retain_original_intent():

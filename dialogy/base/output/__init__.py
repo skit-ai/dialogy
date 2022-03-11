@@ -48,12 +48,12 @@ from typing import Any, Dict, List, Optional, Union
 
 import attr
 
-from dialogy.types import BaseEntity, Intent
 from dialogy import constants as const
-
+from dialogy.types import BaseEntity, Intent
 
 JSON_LIST_TYPE = List[Dict[str, Any]]
 ORIGINAL_INTENT_TYPE = Dict[str, Union[str, float]]
+
 
 @attr.frozen
 class Output:
@@ -73,7 +73,9 @@ class Output:
     :ref:`ListEntityPlugin <ListEntityPlugin>` or :ref:`ListSearchPlugin <ListSearchPlugin>`.
     """
 
-    original_intent: ORIGINAL_INTENT_TYPE = attr.ib(default=attr.Factory(dict), kw_only=True)
+    original_intent: ORIGINAL_INTENT_TYPE = attr.ib(
+        default=attr.Factory(dict), kw_only=True
+    )
 
     @intents.validator  # type: ignore
     def _are_intents_valid(
@@ -120,13 +122,17 @@ class Output:
                 f"original_intent must contain {const.NAME} but {original_intent} was provided."
             )
         if not isinstance(original_intent[const.NAME], str):
-            raise TypeError(f"original_intent[{const.NAME}] must be a str, not {type(original_intent[const.NAME])}")
+            raise TypeError(
+                f"original_intent[{const.NAME}] must be a str, not {type(original_intent[const.NAME])}"
+            )
         if const.SCORE not in original_intent:
             raise TypeError(
                 f"original_intent must contain {const.SCORE} but {original_intent} was provided."
             )
         if not isinstance(original_intent[const.SCORE], float):
-            raise TypeError(f"original_intent[{const.SCORE}] must be a float, not {type(original_intent[const.SCORE])}")
+            raise TypeError(
+                f"original_intent[{const.SCORE}] must be a float, not {type(original_intent[const.SCORE])}"
+            )
 
     def json(self: Output) -> Dict[str, Union[JSON_LIST_TYPE, ORIGINAL_INTENT_TYPE]]:
         """

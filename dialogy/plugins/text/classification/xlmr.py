@@ -16,7 +16,7 @@ from sklearn import preprocessing
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
-from dialogy.utils import load_file, logger, save_file, read_from_json
+from dialogy.utils import load_file, logger, read_from_json, save_file
 
 
 class XLMRMultiClass(Plugin):
@@ -69,12 +69,13 @@ class XLMRMultiClass(Plugin):
         self.labelencoder_file_path = os.path.join(
             self.model_dir, const.LABELENCODER_FILE
         )
-        self.ts_parameter: float = read_from_json(
-            [const.TS_PARAMETER],
-            model_dir,
-            const.CALIBRATION_CONFIG_FILE
-        ).get(const.TS_PARAMETER) or 1.0
-        
+        self.ts_parameter: float = (
+            read_from_json(
+                [const.TS_PARAMETER], model_dir, const.CALIBRATION_CONFIG_FILE
+            ).get(const.TS_PARAMETER)
+            or 1.0
+        )
+
         self.threshold = threshold
         self.skip_labels = set(skip_labels or set())
         self.purpose = purpose
@@ -145,7 +146,9 @@ class XLMRMultiClass(Plugin):
     def valid_labelencoder(self) -> bool:
         return hasattr(self.labelencoder, "classes_")
 
-    def inference(self, texts: Optional[List[str]], state: Optional[List[str]] = None) -> List[Intent]:
+    def inference(
+        self, texts: Optional[List[str]], state: Optional[List[str]] = None
+    ) -> List[Intent]:
         """
         Predict the intent of a list of texts.
         If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.
@@ -174,7 +177,7 @@ class XLMRMultiClass(Plugin):
         elif self.use_state and state:
             state_appended_texts = []
             assert len(texts) == len(state)
-            for state,text in zip(state,texts):
+            for state, text in zip(state, texts):
                 state_appended_texts.append(f"{text} <s> {state} </s>")
             texts = state_appended_texts
         if not self.valid_labelencoder:
@@ -186,7 +189,6 @@ class XLMRMultiClass(Plugin):
         if not predictions:
             return [fallback_output]
 
-        
         logits = logits / self.ts_parameter
         confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
         intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
@@ -198,7 +200,9 @@ class XLMRMultiClass(Plugin):
         ]
 
         if self.use_calibration:
-            ordered_confidence_scores = [logits[0][idx] for idx in np.argsort(logits)[0][::-1]] # ordered logits for calibration
+            ordered_confidence_scores = [
+                logits[0][idx] for idx in np.argsort(logits)[0][::-1]
+            ]  # ordered logits for calibration
 
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(

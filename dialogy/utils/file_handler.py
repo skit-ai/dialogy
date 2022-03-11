@@ -1,8 +1,8 @@
-import os
 import json
-from json.decoder import JSONDecodeError
+import os
 from datetime import datetime
-from typing import Any, Dict, Optional, List
+from json.decoder import JSONDecodeError
+from typing import Any, Dict, List, Optional
 
 
 def load_file(
@@ -63,14 +63,16 @@ def save_file(
         with open(file_path, mode, encoding=encoding, newline=newline) as file:
             _ = file.write(content) if not writer else writer(content, file)
 
+
 def read_from_json(params: List[str], dir_path: str, file_name: str) -> Dict[str, Any]:
     full_path = os.path.join(dir_path, file_name)
     req_config = {}
     if os.path.exists(full_path):
         with open(full_path, "r") as json_file:
             config_ = json.load(json_file)
-            req_config = {param:config_.get(param) for param in params}
+            req_config = {param: config_.get(param) for param in params}
     return req_config
+
 
 def save_to_json(params: Dict[str, Any], dir_path: str, file_name: str) -> None:
     full_path = os.path.join(dir_path, file_name)
@@ -82,10 +84,13 @@ def save_to_json(params: Dict[str, Any], dir_path: str, file_name: str) -> None:
                 for key, val in params.items():
                     existing_config[key] = val
         except JSONDecodeError:
-            print(f"Failed to load json file {full_path}, writing on newly created file.")
+            print(
+                f"Failed to load json file {full_path}, writing on newly created file."
+            )
     params = existing_config or params
     with open(full_path, "w") as json_file:
-        json.dump(params, json_file, indent = 1, ensure_ascii = False)
+        json.dump(params, json_file, indent=1, ensure_ascii=False)
+
 
 def create_timestamps_path(
     directory: str,
