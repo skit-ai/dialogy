@@ -17,6 +17,7 @@ def deserialize_duckling_entity(
     reference_time: Optional[int] = None,
     timezone: str = "UTC",
     duration_cast_operator: Optional[str] = None,
+    constraints: Optional[Dict[str, Any]] = None,
 ) -> BaseEntity:
     keys = tuple(sorted(duckling_entity_dict.keys()))
     if keys != const.DUCKLING_ENTITY_KEYS:
@@ -37,7 +38,7 @@ def deserialize_duckling_entity(
 
     elif dimension == const.TIME:
         if value_keys == const.DUCKLING_TIME_VALUES_ENTITY_KEYS:
-            return TimeEntity.from_duckling(duckling_entity_dict, alternative_index)
+            return TimeEntity.from_duckling(duckling_entity_dict, alternative_index, constraints)
 
         elif (
             dimension == const.TIME

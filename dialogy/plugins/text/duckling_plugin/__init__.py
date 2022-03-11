@@ -505,6 +505,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         timeout: float = 0.5,
         url: str = "http://0.0.0.0:8000/parse",
         locale: str = "en_IN",
+        constraints: Optional[Dict[str, Any]] = None,
         temporal_intents: Optional[Dict[str, str]] = None,
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
@@ -539,6 +540,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.reference_time_column = reference_time_column
         self.datetime_filters = datetime_filters
         self.activate_latent_entities = activate_latent_entities
+        self.constraints = constraints
         self.session = requests.Session()
         self.session.mount(
             "http://",
@@ -710,6 +712,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 reference_time=reference_time,
                 timezone=self.timezone,
                 duration_cast_operator=duration_cast_operator,
+                constraints=self.constraints,
             )
             entity.add_parser(self)
             deserialized_entities.append(entity)

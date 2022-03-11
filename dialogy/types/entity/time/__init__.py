@@ -51,10 +51,12 @@ Workflow Integration
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Callable
 
 import attr
+import operator
 import pydash as py_
+from copy import deepcopy
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
@@ -77,7 +79,8 @@ class TimeEntity(BaseEntity):
     origin: str = attr.ib(default="value")
     dim: str = attr.ib(default="time")
     grain: str = attr.ib(default=None, validator=attr.validators.instance_of(str))
-
+    __TIMERANGE_OPERATION_ALIAS: Dict[str, Any] = {const.LTE: operator.le, const.GTE: operator.ge}
+    
     def get_value(self) -> Any:
         """
         Return the date string in ISO format from the dictionary passed
@@ -189,15 +192,44 @@ class TimeEntity(BaseEntity):
             self.entity_type = const.TIME
 
     @classmethod
-    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> TimeEntity:
+    def pick_value(cls, d_values: List[Dict[str, Any]], grain: str, constraints: Dict[str, Any]) -> List[Dict[str, Any]]:        
+        is_time = grain in const.TIME_UNITS 
+        constraint = constraints.get(const.TIME)
+        req_value = d_values[0]
+        if not is_time or not constraint:
+            return [req_value]
+
+        opt_items = [
+            (cls.__TIMERANGE_OPERATION_ALIAS.get(opt), measure) \
+                for opt, measure in constraint.items()
+        ]
+        for datetime_val in d_values:
+            datetime_ = datetime.fromisoformat(datetime_val[const.VALUE])
+            if all(
+                opt(getattr(datetime_, const.HOUR), measure[const.HOUR]) for opt, measure in opt_items if opt
+            ):
+                req_value = datetime_val
+                break
+        return [req_value]
+
+    @classmethod
+    def from_duckling(cls, d: Dict[str, Any], alternative_index: int, constraints: Optional[Dict[str, Any]] = None) -> TimeEntity:
+        datetime_values = d[const.VALUE][const.VALUES]
+        if len(datetime_values) > 1 and constraints:
+            datetime_values = cls.pick_value(
+                d_values=datetime_values,
+                grain=datetime_values[0][const.GRAIN],
+                constraints=constraints
+            )
+        
         time_entity = cls(
             range={const.START: d[const.START], const.END: d[const.END]},
             body=d[const.BODY],
             dim=d[const.DIM],
             alternative_index=alternative_index,
             latent=d[const.LATENT],
-            values=d[const.VALUE][const.VALUES],
-            grain=d[const.VALUE][const.VALUES][0][const.GRAIN],
+            values=datetime_values,
+            grain=datetime_values[0][const.GRAIN],
         )
         time_entity.set_entity_type()
         return time_entity
