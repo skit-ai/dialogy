@@ -96,7 +96,7 @@ class XLMRMultiClass(Plugin):
                 self.init_model()
         except EOFError:
             logger.error(
-                f"Plugin {self.__class__.__name__} Failed to load labelencoder from {self.labelencoder_file_path}. "
+                f"Plugin {self} Failed to load labelencoder from {self.labelencoder_file_path}. "
                 "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
             )
 
@@ -114,9 +114,8 @@ class XLMRMultiClass(Plugin):
             label_count = len(self.labelencoder.classes_)
             model_dir = self.model_dir
         if not label_count:
-            raise ValueError(
-                f"Plugin {self.__class__.__name__} needs either the training data or an existing labelencoder to initialize."
-            )
+            raise ValueError(f"Plugin {self} needs either the training data "
+                "or an existing labelencoder to initialize.")
         args = (
             self.args_map[self.purpose]
             if self.args_map and self.purpose in self.args_map
@@ -170,16 +169,14 @@ class XLMRMultiClass(Plugin):
         if self.model is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
             return [fallback_output]
+
         if self.use_state and not state:
             raise ValueError(
                 f"Plugin {self.__class__.__name__} requires state to be passed to the model."
             )
         elif self.use_state and state:
-            state_appended_texts = []
             assert len(texts) == len(state)
-            for state, text in zip(state, texts):
-                state_appended_texts.append(f"{text} <s> {state} </s>")
-            texts = state_appended_texts
+            texts = [f"{text} <s> {state} </s>" for state, text in zip(state, texts)]
         if not self.valid_labelencoder:
             raise AttributeError(
                 "Seems like you forgot to "
@@ -205,9 +202,7 @@ class XLMRMultiClass(Plugin):
             ]  # ordered logits for calibration
 
         return [
-            Intent(name=intent, score=round(score, self.round)).add_parser(
-                self.__class__.__name__
-            )
+            Intent(name=intent, score=round(score, self.round)).add_parser(self)
             for intent, score in zip(predicted_intents, ordered_confidence_scores)
         ]
 
@@ -252,6 +247,7 @@ class XLMRMultiClass(Plugin):
         training_data = training_data[~skip_labels_filter].copy()
 
         encoder = self.labelencoder.fit(training_data[self.label_column])
+        print(training_data)
         sample_size = 5 if len(training_data) > 5 else len(training_data)
         training_data.rename(
             columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
