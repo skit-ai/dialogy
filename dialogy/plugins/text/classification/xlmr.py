@@ -114,8 +114,10 @@ class XLMRMultiClass(Plugin):
             label_count = len(self.labelencoder.classes_)
             model_dir = self.model_dir
         if not label_count:
-            raise ValueError(f"Plugin {self} needs either the training data "
-                "or an existing labelencoder to initialize.")
+            raise ValueError(
+                f"Plugin {self} needs either the training data "
+                "or an existing labelencoder to initialize."
+            )
         args = (
             self.args_map[self.purpose]
             if self.args_map and self.purpose in self.args_map

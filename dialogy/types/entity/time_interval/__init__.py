@@ -149,7 +149,12 @@ class TimeIntervalEntity(TimeEntity):
             )
 
     @classmethod
-    def from_duckling(cls, d: Dict[str, Any], alternative_index: int, constraints: Optional[Dict[str, Any]] = None) -> TimeEntity:
+    def from_duckling(
+        cls,
+        d: Dict[str, Any],
+        alternative_index: int,
+        constraints: Optional[Dict[str, Any]] = None,
+    ) -> TimeEntity:
         from_value = d[const.VALUE].get(const.FROM)
         to_value = d[const.VALUE].get(const.TO)
         grain_source = from_value or to_value
