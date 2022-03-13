@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.slot_filler package" href="dialogy.plugins.text.slot_filler.html" /><link rel="prev" title="dialogy.plugins.text.classification package" href="dialogy.plugins.text.classification.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.duckling_plugin package - dialogy 0.9.5 documentation</title>
+        <title>dialogy.plugins.text.duckling_plugin package - dialogy 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.5 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.5 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -269,13 +269,22 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="gp">In [5]: </span><span class="o">%%time</span>
 <span class="gp">   ...: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="n">utterances</span><span class="p">))</span>
 <span class="gp">   ...: </span>
-<span class="go">CPU times: user 18.9 ms, sys: 10.9 ms, total: 29.8 ms</span>
-<span class="go">Wall time: 25.3 ms</span>
+<span class="go">CPU times: user 30 ms, sys: 2.47 ms, total: 32.5 ms</span>
+<span class="go">Wall time: 130 ms</span>
 
 <span class="gp">In [6]: </span><span class="n">output</span>
 <span class="gh">Out[6]: </span><span class="go"></span>
 <span class="go">{'intents': [],</span>
-<span class="go"> 'entities': [{'range': {'start': 0, 'end': 34},</span>
+<span class="go"> 'entities': [{'range': {'start': 11, 'end': 19},</span>
+<span class="go">   'body': 'tomorrow',</span>
+<span class="go">   'type': 'value',</span>
+<span class="go">   'parsers': ['DucklingPlugin'],</span>
+<span class="go">   'score': 0.16666666666666666,</span>
+<span class="go">   'alternative_index': 5,</span>
+<span class="go">   'value': '2022-03-14T00:00:00.000+00:00',</span>
+<span class="go">   'entity_type': 'date',</span>
+<span class="go">   'grain': 'day'},</span>
+<span class="go">  {'range': {'start': 0, 'end': 34},</span>
 <span class="go">   'body': 'between today 7pm and tomorrow 9pm',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.08333333333333333,</span>
@@ -283,17 +292,17 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="go">   'entity_type': 'datetime',</span>
 <span class="go">   'grain': 'hour',</span>
 <span class="go">   'type': 'interval',</span>
-<span class="go">   'from_value': '2022-02-22T19:00:00.000+00:00',</span>
-<span class="go">   'to_value': '2022-02-23T22:00:00.000+00:00',</span>
-<span class="go">   'value': {'from': '2022-02-22T19:00:00.000+00:00',</span>
-<span class="go">    'to': '2022-02-23T22:00:00.000+00:00'}},</span>
+<span class="go">   'from_value': '2022-03-13T19:00:00.000+00:00',</span>
+<span class="go">   'to_value': '2022-03-14T22:00:00.000+00:00',</span>
+<span class="go">   'value': {'from': '2022-03-13T19:00:00.000+00:00',</span>
+<span class="go">    'to': '2022-03-14T22:00:00.000+00:00'}},</span>
 <span class="go">  {'range': {'start': 14, 'end': 21},</span>
 <span class="go">   'body': 'at 6 am',</span>
 <span class="go">   'type': 'value',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.08333333333333333,</span>
 <span class="go">   'alternative_index': 1,</span>
-<span class="go">   'value': '2022-02-23T06:00:00.000+00:00',</span>
+<span class="go">   'value': '2022-03-14T06:00:00.000+00:00',</span>
 <span class="go">   'entity_type': 'time',</span>
 <span class="go">   'grain': 'hour'},</span>
 <span class="go">  {'range': {'start': 7, 'end': 15},</span>
@@ -338,27 +347,9 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.08333333333333333,</span>
 <span class="go">   'alternative_index': 4,</span>
-<span class="go">   'value': '2022-02-22T17:07:44.839+00:00',</span>
+<span class="go">   'value': '2022-03-13T12:38:46.089+00:00',</span>
 <span class="go">   'entity_type': 'datetime',</span>
 <span class="go">   'grain': 'second'},</span>
-<span class="go">  {'range': {'start': 11, 'end': 19},</span>
-<span class="go">   'body': 'tomorrow',</span>
-<span class="go">   'type': 'value',</span>
-<span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.08333333333333333,</span>
-<span class="go">   'alternative_index': 5,</span>
-<span class="go">   'value': '2022-02-23T00:00:00.000+00:00',</span>
-<span class="go">   'entity_type': 'date',</span>
-<span class="go">   'grain': 'day'},</span>
-<span class="go">  {'range': {'start': 4, 'end': 16},</span>
-<span class="go">   'body': 'about monday',</span>
-<span class="go">   'type': 'value',</span>
-<span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.08333333333333333,</span>
-<span class="go">   'alternative_index': 6,</span>
-<span class="go">   'value': '2022-02-28T00:00:00.000+00:00',</span>
-<span class="go">   'entity_type': 'date',</span>
-<span class="go">   'grain': 'day'},</span>
 <span class="go">  {'range': {'start': 8, 'end': 20},</span>
 <span class="go">   'body': 'on 5th march',</span>
 <span class="go">   'type': 'value',</span>
@@ -534,8 +525,8 @@ to guard itself in the <em>“SMALL_TALK”</em> state.</p>
 <span class="gp">In [11]: </span><span class="o">%%time</span>
 <span class="gp">   ....: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="n">utterances</span><span class="p">,</span> <span class="n">current_state</span><span class="o">=</span><span class="s2">"SMALL_TALK"</span><span class="p">))</span>
 <span class="gp">   ....: </span>
-<span class="go">CPU times: user 116 us, sys: 25 us, total: 141 us</span>
-<span class="go">Wall time: 143 us</span>
+<span class="go">CPU times: user 122 us, sys: 0 ns, total: 122 us</span>
+<span class="go">Wall time: 124 us</span>
 
 <span class="gp">In [12]: </span><span class="n">output</span>
 <span class="gh">Out[12]: </span><span class="go">{'intents': [], 'entities': [], 'original_intent': {}}</span>
@@ -695,7 +686,7 @@ to contain appropriate intents using the <code class="code docutils literal notr
 <span class="gp">In [30]: </span><span class="n">utterances</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"कल ही कर दी थी"</span><span class="p">]</span>
 <span class="gp">   ....: </span><span class="n">workflow</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"output.intents"</span><span class="p">,</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"already_paid"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)])</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[30]: </span><span class="go">Workflow(plugins=[&lt;dialogy.plugins.text.duckling_plugin.DucklingPlugin object at 0x7f395fdc9130&gt;], input=None, output=Output(intents=[Intent(name='already_paid', score=1.0, alternative_index=None)], entities=[], original_intent={}), debug=False)</span>
+<span class="gh">Out[30]: </span><span class="go">Workflow(plugins=[&lt;dialogy.plugins.text.duckling_plugin.DucklingPlugin object at 0x7f6c02324a90&gt;], input=None, output=Output(intents=[Intent(name='already_paid', score=1.0, alternative_index=None)], entities=[], original_intent={}), debug=False)</span>
 
 <span class="gp">In [31]: </span><span class="n">reference_dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="s2">"Asia/Kolkata"</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">reference_time</span> <span class="o">=</span> <span class="n">dt2timestamp</span><span class="p">(</span><span class="n">reference_dt</span><span class="p">)</span>
@@ -937,7 +928,7 @@ should be added or removed.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.plugins.text.duckling_plugin.DucklingPlugin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DucklingPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://0.0.0.0:8000/parse'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporal_intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activate_latent_entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_time_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reftime'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/duckling_plugin.html#DucklingPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.duckling_plugin.DucklingPlugin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DucklingPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://0.0.0.0:8000/parse'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporal_intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activate_latent_entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_time_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reftime'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/duckling_plugin.html#DucklingPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.duckling_plugin.DucklingPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.base.entity_extractor.html#dialogy.base.entity_extractor.EntityScoringMixin" title="dialogy.base.entity_extractor.EntityScoringMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.entity_extractor.EntityScoringMixin</span></code></a>, <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

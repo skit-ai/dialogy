@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.base.output - dialogy 0.9.5 documentation</title>
+        <title>dialogy.base.output - dialogy 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.9.5 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.5 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -268,12 +268,12 @@
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
-<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Intent</span>
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
-
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Intent</span>
 
 <span class="n">JSON_LIST_TYPE</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
 <span class="n">ORIGINAL_INTENT_TYPE</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
+
 
 <div class="viewcode-block" id="Output"><a class="viewcode-back" href="../../../source/dialogy.base.output.html#dialogy.base.output.Output">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">frozen</span>
 <span class="k">class</span> <span class="nc">Output</span><span class="p">:</span>
@@ -293,7 +293,9 @@
 <span class="sd">    :ref:`ListEntityPlugin &lt;ListEntityPlugin&gt;` or :ref:`ListSearchPlugin &lt;ListSearchPlugin&gt;`.</span>
 <span class="sd">    """</span>
 
-    <span class="n">original_intent</span><span class="p">:</span> <span class="n">ORIGINAL_INTENT_TYPE</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">dict</span><span class="p">),</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">original_intent</span><span class="p">:</span> <span class="n">ORIGINAL_INTENT_TYPE</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="nb">dict</span><span class="p">),</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
 
     <span class="nd">@intents</span><span class="o">.</span><span class="n">validator</span>  <span class="c1"># type: ignore</span>
     <span class="k">def</span> <span class="nf">_are_intents_valid</span><span class="p">(</span>
@@ -340,13 +342,17 @@
                 <span class="sa">f</span><span class="s2">"original_intent must contain </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="si">}</span><span class="s2"> but </span><span class="si">{</span><span class="n">original_intent</span><span class="si">}</span><span class="s2"> was provided."</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">original_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"original_intent[</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="si">}</span><span class="s2">] must be a str, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">original_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"original_intent[</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="si">}</span><span class="s2">] must be a str, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">original_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">SCORE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">original_intent</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"original_intent must contain </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="si">}</span><span class="s2"> but </span><span class="si">{</span><span class="n">original_intent</span><span class="si">}</span><span class="s2"> was provided."</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">original_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"original_intent[</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="si">}</span><span class="s2">] must be a float, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">original_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"original_intent[</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="si">}</span><span class="s2">] must be a float, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">original_intent</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="Output.json"><a class="viewcode-back" href="../../../source/dialogy.base.output.html#dialogy.base.output.Output.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">JSON_LIST_TYPE</span><span class="p">,</span> <span class="n">ORIGINAL_INTENT_TYPE</span><span class="p">]]:</span>
         <span class="sd">"""</span>

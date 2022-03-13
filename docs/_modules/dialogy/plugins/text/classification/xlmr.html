@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.classification.xlmr - dialogy 0.9.5 documentation</title>
+        <title>dialogy.plugins.text.classification.xlmr - dialogy 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.5 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.5 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -236,7 +236,7 @@
 <span class="kn">import</span> <span class="nn">dialogy.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span>
 <span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Intent</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">load_file</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">save_file</span><span class="p">,</span> <span class="n">read_from_json</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">load_file</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">read_from_json</span><span class="p">,</span> <span class="n">save_file</span>
 
 
 <div class="viewcode-block" id="XLMRMultiClass"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass">[docs]</a><span class="k">class</span> <span class="nc">XLMRMultiClass</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
@@ -289,12 +289,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">LABELENCODER_FILE</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts_parameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">read_from_json</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TS_PARAMETER</span><span class="p">],</span>
-            <span class="n">model_dir</span><span class="p">,</span>
-            <span class="n">const</span><span class="o">.</span><span class="n">CALIBRATION_CONFIG_FILE</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TS_PARAMETER</span><span class="p">)</span> <span class="ow">or</span> <span class="mf">1.0</span>
-        
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts_parameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">read_from_json</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TS_PARAMETER</span><span class="p">],</span> <span class="n">model_dir</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">CALIBRATION_CONFIG_FILE</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TS_PARAMETER</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="mf">1.0</span>
+        <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip_labels</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">skip_labels</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">purpose</span> <span class="o">=</span> <span class="n">purpose</span>
@@ -315,7 +316,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> Failed to load labelencoder from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> Failed to load labelencoder from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder_file_path</span><span class="si">}</span><span class="s2">. "</span>
                 <span class="s2">"Ignore this message if you are training but if you are using this in production or testing, then this is serious!"</span>
             <span class="p">)</span>
 
@@ -334,7 +335,8 @@
             <span class="n">model_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">label_count</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> needs either the training data or an existing labelencoder to initialize."</span>
+                <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> needs either the training data "</span>
+                <span class="s2">"or an existing labelencoder to initialize."</span>
             <span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">args_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">purpose</span><span class="p">]</span>
@@ -365,13 +367,17 @@
     <span class="k">def</span> <span class="nf">valid_labelencoder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span><span class="p">,</span> <span class="s2">"classes_"</span><span class="p">)</span>
 
-<div class="viewcode-block" id="XLMRMultiClass.inference"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
+<div class="viewcode-block" id="XLMRMultiClass.inference"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Predict the intent of a list of texts.</span>
 <span class="sd">        If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.</span>
 
 <span class="sd">        :param texts: A list of strings, derived from ASR transcripts.</span>
+<span class="sd">        :param state: A list of states, mapped to the ASR transcripts.</span>
 <span class="sd">        :type texts: List[str]</span>
+<span class="sd">        :type state: List[str]</span>
 <span class="sd">        :raises AttributeError: In case the labelencoder is not available.</span>
 <span class="sd">        :return: A list of intents corresponding to texts.</span>
 <span class="sd">        :rtype: List[Intent]</span>
@@ -385,25 +391,23 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No model found for plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">!"</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">fallback_output</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_state</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">"&lt;st&gt;"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"use_state = True but </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2"> doesn't contain &lt;st&gt; &lt;/st&gt; tags, </span><span class="se">\</span>
-<span class="s2">                        which means that training data is different from this data. This can lead to anomalous results"</span>
-                    <span class="p">)</span>
-                    <span class="k">return</span> <span class="p">[</span><span class="n">fallback_output</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_state</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">state</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires state to be passed to the model."</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_state</span> <span class="ow">and</span> <span class="n">state</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+            <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2"> &lt;s&gt; </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2"> &lt;/s&gt;"</span> <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">texts</span><span class="p">)]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_labelencoder</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
                 <span class="s2">"Seems like you forgot to "</span>
                 <span class="sa">f</span><span class="s2">"save the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> plugin."</span>
             <span class="p">)</span>
-
         <span class="n">predictions</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">predictions</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">fallback_output</span><span class="p">]</span>
 
-        
         <span class="n">logits</span> <span class="o">=</span> <span class="n">logits</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts_parameter</span>
         <span class="n">confidence_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logit</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logit</span><span class="p">))</span> <span class="k">for</span> <span class="n">logit</span> <span class="ow">in</span> <span class="n">logits</span><span class="p">]</span>
         <span class="n">intents_confidence_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">confidence_scores</span><span class="p">)[</span><span class="mi">0</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -415,12 +419,12 @@
         <span class="p">]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_calibration</span><span class="p">:</span>
-            <span class="n">ordered_confidence_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">logits</span><span class="p">)[</span><span class="mi">0</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="c1"># ordered logits for calibration</span>
+            <span class="n">ordered_confidence_scores</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">logits</span><span class="p">)[</span><span class="mi">0</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">]</span>  <span class="c1"># ordered logits for calibration</span>
 
         <span class="k">return</span> <span class="p">[</span>
-            <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">round</span><span class="p">))</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="p">)</span>
+            <span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">round</span><span class="p">))</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">intent</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">predicted_intents</span><span class="p">,</span> <span class="n">ordered_confidence_scores</span><span class="p">)</span>
         <span class="p">]</span></div>
 
@@ -465,6 +469,7 @@
         <span class="n">training_data</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="o">~</span><span class="n">skip_labels_filter</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_column</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
         <span class="n">sample_size</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
         <span class="n">training_data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_column</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">},</span>
@@ -475,7 +480,7 @@
         <span class="p">)</span>
         <span class="c1"># Add state as an additonal field to text</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_state</span><span class="p">:</span>
-            <span class="n">training_data</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">"&lt;st&gt; "</span> <span class="o">+</span> <span class="n">training_data</span><span class="p">[</span><span class="s2">"state"</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" &lt;/st&gt;"</span>
+            <span class="n">training_data</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">"&lt;s&gt; "</span> <span class="o">+</span> <span class="n">training_data</span><span class="p">[</span><span class="s2">"state"</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" &lt;/s&gt;"</span>
         <span class="n">training_data</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[[</span><span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">]]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
