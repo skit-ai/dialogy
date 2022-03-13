@@ -654,6 +654,9 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         else:
             operation = self.get_operator(filter_type)
 
+        if not self.reference_time:
+            return entities # pragma: no cover
+
         time_entities, other_entities = py_.partition(
             entities, lambda entity: entity.dim == const.TIME
         )

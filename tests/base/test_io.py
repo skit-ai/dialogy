@@ -51,6 +51,7 @@ def test_output_invalid_original_intent_score():
     with pytest.raises(TypeError):
         Output(original_intent={"score": "apples", "name": "test"})
 
+
 def test_output_invalid_original_intent_name():
     with pytest.raises(TypeError):
         Output(original_intent={"name": 1, "score": 0.5})

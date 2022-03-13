@@ -49,45 +49,31 @@ class MockClassifier:
         return
 
 
-def write_intent_to_workflow(w, v):
-    w.output[const.INTENTS] = v
-
-
-def update_input(w, v):
-    w.input[const.CLASSIFICATION_INPUT] = v
-
-
-def test_xlmr_plugin_no_module_error():
-    save_val = const.XLMR_MODULE
-    const.XLMR_MODULE = "this-module-doesn't-exist"
+def test_xlmr_plugin_no_module_error(mocker):
+    mocker.patch.object(const, "XLMR_MODULE", "invalid_module")
 
     with pytest.raises(ModuleNotFoundError):
         XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
-    const.XLMR_MODULE = save_val
 
 
-def test_xlmr_plugin_when_no_labelencoder_saved():
-    save_module_name = const.XLMR_MODULE
-    save_model_name = const.XLMR_MULTI_CLASS_MODEL
-    const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
-    const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
+def test_xlmr_plugin_when_no_labelencoder_saved(mocker):
+    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
     xlmr_clf = XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
     assert isinstance(xlmr_clf, XLMRMultiClass)
     assert xlmr_clf.model is None
-    const.XLMR_MODULE = save_module_name
-    const.XLMR_MULTI_CLASS_MODEL = save_model_name
 
 
-def test_xlmr_plugin_when_labelencoder_EOFError(capsys):
-    save_module_name = const.XLMR_MODULE
-    save_model_name = const.XLMR_MULTI_CLASS_MODEL
-    const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
-    const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
+def test_xlmr_plugin_when_labelencoder_EOFError(capsys, mocker, tmpdir):
+    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
+
     _, file_path = tempfile.mkstemp(suffix=".pkl")
     save_label_encoder_file = const.LABELENCODER_FILE
     directory, file_name = os.path.split(file_path)
     const.LABELENCODER_FILE = file_name
+
     with capsys.disabled():
         xlmr_plugin = XLMRMultiClass(
             model_dir=directory,
@@ -97,29 +83,20 @@ def test_xlmr_plugin_when_labelencoder_EOFError(capsys):
         assert xlmr_plugin.model is None
     os.remove(file_path)
     const.LABELENCODER_FILE = save_label_encoder_file
-    const.XLMR_MODULE = save_module_name
-    const.XLMR_MULTI_CLASS_MODEL = save_model_name
 
 
-def test_xlmr_init_mock():
-    save_module_name = const.XLMR_MODULE
-    save_model_name = const.XLMR_MULTI_CLASS_MODEL
-    const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
-    const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
+def test_xlmr_init_mock(mocker):
+    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
     xlmr_clf = XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
     xlmr_clf.init_model(5)
     assert xlmr_clf.model is not None
 
-    const.XLMR_MODULE = save_module_name
-    const.XLMR_MULTI_CLASS_MODEL = save_model_name
 
-
-def test_xlmr_init_mock():
-    save_module_name = const.XLMR_MODULE
-    save_model_name = const.XLMR_MULTI_CLASS_MODEL
-    const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
-    const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
+def test_xlmr_init_mock(mocker):
+    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
     with pytest.raises(ValueError):
         XLMRMultiClass(
@@ -128,17 +105,17 @@ def test_xlmr_init_mock():
             debug=False,
             args_map={"invalid": "value"},
         )
-    const.XLMR_MODULE = save_module_name
-    const.XLMR_MULTI_CLASS_MODEL = save_model_name
 
 
-def test_train_xlmr_mock():
-    save_module_name = const.XLMR_MODULE
-    save_model_name = const.XLMR_MULTI_CLASS_MODEL
-    const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
-    const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
+def test_train_xlmr_mock(mocker, tmpdir):
+    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
+
+
     directory = "/tmp"
-    file_path = os.path.join(directory, const.LABELENCODER_FILE)
+    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
+
 
     xlmr_clf = XLMRMultiClass(model_dir=directory, dest="output.intents", debug=False)
 
@@ -178,29 +155,15 @@ def test_train_xlmr_mock():
 
     assert len(xlmr_clf_copy.labelencoder.classes_) == 2
 
-    os.remove(file_path)
-    const.XLMR_MODULE = save_module_name
-    const.XLMR_MULTI_CLASS_MODEL = save_model_name
 
-
-def test_invalid_operations():
-    save_module_name = const.XLMR_MODULE
-    save_model_name = const.XLMR_MULTI_CLASS_MODEL
-    const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
-    const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
-
+def test_invalid_operations(mocker, tmpdir):
+    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
     directory = "/tmp"
-    file_path = os.path.join(directory, const.LABELENCODER_FILE)
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     xlmr_clf = XLMRMultiClass(model_dir=directory, dest="output.intents", debug=False)
-    xlmr_clf_state = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=False,
-        use_state=True,
-    )
 
     with pytest.raises(ValueError):
         xlmr_clf.init_model(None)
@@ -217,16 +180,13 @@ def test_invalid_operations():
     assert xlmr_clf.validate(train_df_empty) is False
 
     xlmr_clf.train(train_df_empty)
+
     assert load_file(file_path, mode="rb", loader=pickle.load) is None
     assert xlmr_clf.validate(train_df_invalid) is False
-    assert xlmr_clf_state.validate(train_df_invalid) is False
 
     xlmr_clf.train(train_df_invalid)
     assert load_file(file_path, mode="rb", loader=pickle.load) is None
     assert xlmr_clf.inference(["text"])[0].name == "_error_"
-
-    xlmr_clf_state.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
-    assert xlmr_clf_state.inference(["text"])[0].name == "_error_"
 
     with pytest.raises(ValueError):
         xlmr_clf.save()
@@ -235,22 +195,62 @@ def test_invalid_operations():
     with pytest.raises(AttributeError):
         xlmr_clf.inference(["text"])
 
-    if os.path.exists(file_path):
-        os.remove(file_path)
-    const.XLMR_MODULE = save_module_name
-    const.XLMR_MULTI_CLASS_MODEL = save_model_name
+
+def test_invalid_operations_with_state(mocker, tmpdir):
+    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
+    directory = "/tmp"
+    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
+
+    xlmr_clf_state = XLMRMultiClass(
+        model_dir=directory,
+        dest="output.intents",
+        debug=False,
+        use_state=True,
+    )
+
+    with pytest.raises(ValueError):
+        xlmr_clf_state.init_model(None)
+
+    train_df_empty = pd.DataFrame()
+    train_df_invalid = pd.DataFrame(
+        [
+            {"apples": "yes", "fruit": "fruit"},
+            {"apples": "yea", "fruit": "fruit"},
+            {"apples": "no", "fruit": "fruit"},
+            {"apples": "nope", "fruit": "fruit"},
+        ]
+    )
+    assert xlmr_clf_state.validate(train_df_empty) is False
+
+    xlmr_clf_state.train(train_df_empty)
+
+    assert load_file(file_path, mode="rb", loader=pickle.load) is None
+    assert xlmr_clf_state.validate(train_df_invalid) is False
+
+    xlmr_clf_state.train(train_df_invalid)
+    assert load_file(file_path, mode="rb", loader=pickle.load) is None
+    assert xlmr_clf_state.inference(["text"])[0].name == "_error_"
+
+    xlmr_clf_state.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
+    with pytest.raises(ValueError):
+        xlmr_clf_state.inference(["text"])
+
+    with pytest.raises(AttributeError):
+        xlmr_clf_state.inference(["text"], ["WORKING STATE"])
+
+    with pytest.raises(ValueError):
+        xlmr_clf_state.save()
 
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_inference(payload):
-    save_module_name = const.XLMR_MODULE
-    save_model_name = const.XLMR_MULTI_CLASS_MODEL
-    const.XLMR_MODULE = "tests.plugin.text.classification.test_xlmr"
-    const.XLMR_MULTI_CLASS_MODEL = "MockClassifier"
+def test_inference(payload, mocker, tmpdir):
+    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
     directory = "/tmp"
-    file_path = os.path.join(directory, const.LABELENCODER_FILE)
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     transcripts = payload.get("input")
     intent = payload["expected"]["label"]
@@ -259,13 +259,11 @@ def test_inference(payload):
         model_dir=directory,
         dest="output.intents",
         debug=False,
-        purpose = const.TEST,
+        purpose=const.TEST,
         args_map={
-            const.TEST: {
-                const.MODEL_CALIBRATION: True
-            },
+            const.TEST: {const.MODEL_CALIBRATION: True},
             const.TRAIN: {},
-            const.PRODUCTION: {}
+            const.PRODUCTION: {},
         },
     )
 
@@ -308,8 +306,3 @@ def test_inference(payload):
     )
     assert output[const.INTENTS][0]["name"] == intent
     assert output[const.INTENTS][0]["score"] > 0.9
-
-    if os.path.exists(file_path):
-        os.remove(file_path)
-    const.XLMR_MODULE = save_module_name
-    const.XLMR_MULTI_CLASS_MODEL = save_model_name

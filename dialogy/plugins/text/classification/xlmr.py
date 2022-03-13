@@ -16,7 +16,7 @@ from sklearn import preprocessing
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
-from dialogy.utils import load_file, logger, save_file, read_from_json
+from dialogy.utils import load_file, logger, read_from_json, save_file
 
 
 class XLMRMultiClass(Plugin):
@@ -69,12 +69,13 @@ class XLMRMultiClass(Plugin):
         self.labelencoder_file_path = os.path.join(
             self.model_dir, const.LABELENCODER_FILE
         )
-        self.ts_parameter: float = read_from_json(
-            [const.TS_PARAMETER],
-            model_dir,
-            const.CALIBRATION_CONFIG_FILE
-        ).get(const.TS_PARAMETER) or 1.0
-        
+        self.ts_parameter: float = (
+            read_from_json(
+                [const.TS_PARAMETER], model_dir, const.CALIBRATION_CONFIG_FILE
+            ).get(const.TS_PARAMETER)
+            or 1.0
+        )
+
         self.threshold = threshold
         self.skip_labels = set(skip_labels or set())
         self.purpose = purpose
@@ -95,7 +96,7 @@ class XLMRMultiClass(Plugin):
                 self.init_model()
         except EOFError:
             logger.error(
-                f"Plugin {self.__class__.__name__} Failed to load labelencoder from {self.labelencoder_file_path}. "
+                f"Plugin {self} Failed to load labelencoder from {self.labelencoder_file_path}. "
                 "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
             )
 
@@ -113,9 +114,8 @@ class XLMRMultiClass(Plugin):
             label_count = len(self.labelencoder.classes_)
             model_dir = self.model_dir
         if not label_count:
-            raise ValueError(
-                f"Plugin {self.__class__.__name__} needs either the training data or an existing labelencoder to initialize."
-            )
+            raise ValueError(f"Plugin {self} needs either the training data "
+                "or an existing labelencoder to initialize.")
         args = (
             self.args_map[self.purpose]
             if self.args_map and self.purpose in self.args_map
@@ -145,13 +145,17 @@ class XLMRMultiClass(Plugin):
     def valid_labelencoder(self) -> bool:
         return hasattr(self.labelencoder, "classes_")
 
-    def inference(self, texts: Optional[List[str]]) -> List[Intent]:
+    def inference(
+        self, texts: Optional[List[str]], state: Optional[List[str]] = None
+    ) -> List[Intent]:
         """
         Predict the intent of a list of texts.
         If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.
 
         :param texts: A list of strings, derived from ASR transcripts.
+        :param state: A list of states, mapped to the ASR transcripts.
         :type texts: List[str]
+        :type state: List[str]
         :raises AttributeError: In case the labelencoder is not available.
         :return: A list of intents corresponding to texts.
         :rtype: List[Intent]
@@ -165,25 +169,23 @@ class XLMRMultiClass(Plugin):
         if self.model is None:
             logger.error(f"No model found for plugin {self.__class__.__name__}!")
             return [fallback_output]
-        if self.use_state:
-            for text in texts:
-                if "<st>" not in text:
-                    logger.error(
-                        f"use_state = True but {text} doesn't contain <st> </st> tags, \
-                        which means that training data is different from this data. This can lead to anomalous results"
-                    )
-                    return [fallback_output]
+
+        if self.use_state and not state:
+            raise ValueError(
+                f"Plugin {self.__class__.__name__} requires state to be passed to the model."
+            )
+        elif self.use_state and state:
+            assert len(texts) == len(state)
+            texts = [f"{text} <s> {state} </s>" for state, text in zip(state, texts)]
         if not self.valid_labelencoder:
             raise AttributeError(
                 "Seems like you forgot to "
                 f"save the {self.__class__.__name__} plugin."
             )
-
         predictions, logits = self.model.predict(texts)
         if not predictions:
             return [fallback_output]
 
-        
         logits = logits / self.ts_parameter
         confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
         intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
@@ -195,12 +197,12 @@ class XLMRMultiClass(Plugin):
         ]
 
         if self.use_calibration:
-            ordered_confidence_scores = [logits[0][idx] for idx in np.argsort(logits)[0][::-1]] # ordered logits for calibration
+            ordered_confidence_scores = [
+                logits[0][idx] for idx in np.argsort(logits)[0][::-1]
+            ]  # ordered logits for calibration
 
         return [
-            Intent(name=intent, score=round(score, self.round)).add_parser(
-                self.__class__.__name__
-            )
+            Intent(name=intent, score=round(score, self.round)).add_parser(self)
             for intent, score in zip(predicted_intents, ordered_confidence_scores)
         ]
 
@@ -245,6 +247,7 @@ class XLMRMultiClass(Plugin):
         training_data = training_data[~skip_labels_filter].copy()
 
         encoder = self.labelencoder.fit(training_data[self.label_column])
+        print(training_data)
         sample_size = 5 if len(training_data) > 5 else len(training_data)
         training_data.rename(
             columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
@@ -255,7 +258,7 @@ class XLMRMultiClass(Plugin):
         )
         # Add state as an additonal field to text
         if self.use_state:
-            training_data[const.TEXT] += "<st> " + training_data["state"] + " </st>"
+            training_data[const.TEXT] += "<s> " + training_data["state"] + " </s>"
         training_data = training_data[[const.TEXT, const.LABELS]]
         self.init_model(len(encoder.classes_))
         logger.debug(
