@@ -1,72 +1,80 @@
+from functools import wraps
 from typing import Any, Dict, Optional
 
 from dialogy import constants as const
-from dialogy.types.entity.amount_of_money import CurrencyEntity
 from dialogy.types.entity.base_entity import BaseEntity
-from dialogy.types.entity.credit_card_number import CreditCardNumberEntity
-from dialogy.types.entity.duration import DurationEntity
-from dialogy.types.entity.numerical import NumericalEntity
-from dialogy.types.entity.people import PeopleEntity
-from dialogy.types.entity.time import TimeEntity
-from dialogy.types.entity.time_interval import TimeIntervalEntity
 
 
-def deserialize_duckling_entity(
-    duckling_entity_dict: Dict[str, Any],
-    alternative_index: int,
-    reference_time: Optional[int] = None,
-    timezone: str = "UTC",
-    duration_cast_operator: Optional[str] = None,
-    constraints: Optional[Dict[str, Any]] = None,
-) -> BaseEntity:
-    keys = tuple(sorted(duckling_entity_dict.keys()))
-    if keys != const.DUCKLING_ENTITY_KEYS:
-        raise ValueError(
-            f"Invalid Duckling entity keys: {keys} expected {const.DUCKLING_ENTITY_KEYS}."
-        )
+class EntityDeserializer:
+    entitiy_classes = {}
 
-    dimension = duckling_entity_dict[const.DIM]
-    if dimension not in const.DUCKLING_DIMS:
-        raise ValueError(
-            f"Invalid Duckling dimension: {dimension} expected {const.DUCKLING_DIMS}."
-        )
+    @classmethod
+    def register(cls, dim):
+        @wraps(cls)
+        def decorator(entity_class):
+            cls.entitiy_classes[dim] = entity_class
+            return entity_class
 
-    value_keys = tuple(sorted(duckling_entity_dict[const.VALUE].keys()))
+        return decorator
 
-    if dimension == const.PEOPLE:
-        return PeopleEntity.from_duckling(duckling_entity_dict, alternative_index)
-
-    elif dimension == const.TIME:
-        if value_keys == const.DUCKLING_TIME_VALUES_ENTITY_KEYS:
-            return TimeEntity.from_duckling(
-                duckling_entity_dict, alternative_index, constraints
-            )
-
-        elif (
-            dimension == const.TIME
-            and value_keys in const.DUCKLING_TIME_INTERVAL_ENTITY_KEYS
-        ):
-            return TimeIntervalEntity.from_duckling(
-                duckling_entity_dict, alternative_index
-            )
-
-        else:
+    @classmethod
+    def validate(cls, duckling_entity_dict):
+        keys = tuple(sorted(duckling_entity_dict.keys()))
+        if keys != const.DUCKLING_ENTITY_KEYS:
             raise ValueError(
-                f"Dimension {const.TIME} recieved invalid keys {value_keys} expected either {const.DUCKLING_TIME_VALUES_ENTITY_KEYS} or {const.DUCKLING_TIME_INTERVAL_ENTITY_KEYS}."
+                f"Invalid Duckling entity keys: {keys} expected {const.DUCKLING_ENTITY_KEYS}."
             )
 
-    elif dimension == const.AMOUNT_OF_MONEY:
-        return CurrencyEntity.from_duckling(duckling_entity_dict, alternative_index)
+        dimension = cls.get_dimension(duckling_entity_dict)
+        if dimension not in const.DUCKLING_DIMS:
+            raise ValueError(
+                f"Invalid Duckling dimension: {dimension} expected {const.DUCKLING_DIMS}."
+            )
 
-    elif dimension == const.NUMBER:
-        return NumericalEntity.from_duckling(duckling_entity_dict, alternative_index)
+    @staticmethod
+    def get_keys_in_value_as_str(duckling_entity_dict):
+        return " ".join(sorted(duckling_entity_dict[const.VALUE].keys()))
 
-    elif dimension == const.DURATION:
-        entity = DurationEntity.from_duckling(duckling_entity_dict, alternative_index)
-        if duration_cast_operator and reference_time:
-            return entity.as_time(reference_time, timezone, duration_cast_operator)
-        return entity
-    else:  # dimension == const.CREDIT_CARD_NUMBER:
-        return CreditCardNumberEntity.from_duckling(
-            duckling_entity_dict, alternative_index
+    @staticmethod
+    def get_dimension(duckling_entity_dict):
+        return duckling_entity_dict[const.DIM]
+
+    @classmethod
+    def get_entity_class_str(cls, duckling_entity_dict):
+        return (
+            const.TIME_INTERVAL
+            if cls.get_keys_in_value_as_str(duckling_entity_dict)
+            in const.DUCKLING_TIME_INTERVAL_ENTITY_KEYS
+            else cls.get_dimension(duckling_entity_dict)
         )
+
+    @classmethod
+    def deserialize_duckling(
+        cls,
+        duckling_entity_dict: Dict[str, Any],
+        alternative_index: int,
+        reference_time: Optional[int] = None,
+        timezone: str = "UTC",
+        duration_cast_operator: Optional[str] = None,
+        constraints: Optional[Dict[str, Any]] = None,
+    ) -> BaseEntity:
+        cls.validate(duckling_entity_dict)
+        entity_class_name = cls.get_entity_class_str(duckling_entity_dict)
+        EntityClass: BaseEntity = cls.entitiy_classes[entity_class_name]
+
+        try:
+            entity = EntityClass.from_duckling(
+                duckling_entity_dict,
+                alternative_index,
+                constraints=constraints,
+                duration_cast_operator=duration_cast_operator,
+                timezone=timezone,
+                reference_time=reference_time,
+            )
+        except KeyError as e:
+            raise ValueError(
+                f"Failed to deserialize {EntityClass} "
+                f"from duckling response: {duckling_entity_dict}. Exception: {e}"
+            ) from e
+
+        return entity

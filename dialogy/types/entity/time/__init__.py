@@ -60,8 +60,10 @@ import pydash as py_
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
+from dialogy.types.entity.deserialize import EntityDeserializer
 
 
+@EntityDeserializer.register(const.TIME)
 @attr.s
 class TimeEntity(BaseEntity):
     """
@@ -76,8 +78,8 @@ class TimeEntity(BaseEntity):
     - `grain` tells us the smallest unit of time in the utterance
     """
 
-    origin: str = attr.ib(default="value")
-    dim: str = attr.ib(default="time")
+    origin: str = attr.ib(default=const.VALUE)
+    dim: str = attr.ib(default=const.TIME)
     grain: str = attr.ib(default=None, validator=attr.validators.instance_of(str))
     __TIMERANGE_OPERATION_ALIAS: Dict[str, Any] = {
         const.LTE: operator.le,
@@ -225,6 +227,7 @@ class TimeEntity(BaseEntity):
         d: Dict[str, Any],
         alternative_index: int,
         constraints: Optional[Dict[str, Any]] = None,
+        **kwargs: Any
     ) -> TimeEntity:
         datetime_values = d[const.VALUE][const.VALUES]
         if len(datetime_values) > 1 and constraints:

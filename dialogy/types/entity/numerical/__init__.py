@@ -86,10 +86,12 @@ import attr
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
+from dialogy.types.entity.deserialize import EntityDeserializer
 from dialogy.types.entity.time import TimeEntity
 from dialogy.utils import unix_ts_to_datetime
 
 
+@EntityDeserializer.register(const.NUMBER)
 @attr.s
 class NumericalEntity(BaseEntity):
     """
@@ -109,11 +111,11 @@ class NumericalEntity(BaseEntity):
     origin = attr.ib(
         type=str, default="value", validator=attr.validators.instance_of(str)
     )
-    entity_type: Optional[str] = attr.ib(default="number", order=False)
+    entity_type: Optional[str] = attr.ib(default=const.NUMBER, order=False)
 
     @classmethod
     def from_duckling(
-        cls, d: Dict[str, Any], alternative_index: int
+        cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
     ) -> NumericalEntity:
         value = d[const.VALUE][const.VALUE]
         return cls(

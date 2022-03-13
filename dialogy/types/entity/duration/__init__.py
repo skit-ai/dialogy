@@ -48,16 +48,18 @@ from __future__ import annotations
 
 import operator
 from datetime import timedelta
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import attr
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
+from dialogy.types.entity.deserialize import EntityDeserializer
 from dialogy.types.entity.time import TimeEntity
 from dialogy.utils import unix_ts_to_datetime
 
 
+@EntityDeserializer.register(const.DURATION)
 @attr.s
 class DurationEntity(BaseEntity):
     """
@@ -75,12 +77,20 @@ class DurationEntity(BaseEntity):
     unit: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
     normalized: Dict[str, Any] = attr.ib(default=attr.Factory(dict))
     _meta: Dict[str, str] = attr.ib(default=attr.Factory(dict))
-    entity_type: str = attr.ib(default="duration", kw_only=True)
+    entity_type: str = attr.ib(default=const.DURATION, kw_only=True)
 
     @classmethod
-    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> DurationEntity:
+    def from_duckling(
+        cls,
+        d: Dict[str, Any],
+        alternative_index: int,
+        reference_time: Optional[int] = None,
+        timezone: Optional[str] = None,
+        duration_cast_operator: Optional[str] = None,
+        **kwargs: Any
+    ) -> DurationEntity:
         value = d[const.VALUE][const.NORMALIZED][const.VALUE]
-        return cls(
+        entity = cls(
             range={const.START: d[const.START], const.END: d[const.END]},
             body=d[const.BODY],
             dim=d[const.DIM],
@@ -90,6 +100,9 @@ class DurationEntity(BaseEntity):
             unit=d[const.VALUE][const.UNIT],
             normalized=d[const.VALUE][const.NORMALIZED],
         )
+        if reference_time and timezone and duration_cast_operator:
+            return entity.as_time(reference_time, timezone, duration_cast_operator)
+        return entity
 
     def as_time(
         self, reference_unix_ts: int, timezone: str, duration_cast_operator: str

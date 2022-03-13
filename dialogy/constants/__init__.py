@@ -19,16 +19,17 @@ NAME = "name"
 SLOTS = "slots"
 
 DUCKLING_ENTITY_KEYS = ("body", "dim", "end", "latent", "start", "value")
-DUCKLING_TIME_VALUES_ENTITY_KEYS = ("grain", "type", "value", "values")
+DUCKLING_TIME_VALUES_ENTITY_KEYS = "grain type value values"
 DUCKLING_TIME_INTERVAL_ENTITY_KEYS = (
-    ("from", "type", "values"),
-    ("to", "type", "values"),
-    ("from", "to", "type", "values"),
+    "from type values",
+    "to type values",
+    "from to type values",
 )
 
 # Time Entity types
 DATE = "date"
 TIME = "time"
+TIME_INTERVAL = "time_interval"
 DATETIME = "datetime"
 MINUTE = "minute"
 HOUR = "hour"

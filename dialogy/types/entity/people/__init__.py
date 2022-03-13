@@ -52,8 +52,10 @@ import attr
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
+from dialogy.types.entity.deserialize import EntityDeserializer
 
 
+@EntityDeserializer.register(const.PEOPLE)
 @attr.s
 class PeopleEntity(BaseEntity):
     """
@@ -66,10 +68,12 @@ class PeopleEntity(BaseEntity):
     """
 
     unit = attr.ib(type=str, default="", validator=attr.validators.instance_of(str))
-    entity_type: Optional[str] = attr.ib(default="people", order=False)
+    entity_type: Optional[str] = attr.ib(default=const.PEOPLE, order=False)
 
     @classmethod
-    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> PeopleEntity:
+    def from_duckling(
+        cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
+    ) -> PeopleEntity:
         value = d[const.VALUE][const.VALUE]
         return cls(
             range={const.START: d[const.START], const.END: d[const.END]},

@@ -54,9 +54,11 @@ from typing import Any, Dict, List, Optional
 import attr
 
 from dialogy import constants as const
+from dialogy.types.entity.deserialize import EntityDeserializer
 from dialogy.types.entity.time import TimeEntity
 
 
+@EntityDeserializer.register(const.TIME_INTERVAL)
 @attr.s
 class TimeIntervalEntity(TimeEntity):
     """
@@ -154,6 +156,7 @@ class TimeIntervalEntity(TimeEntity):
         d: Dict[str, Any],
         alternative_index: int,
         constraints: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
     ) -> TimeEntity:
         from_value = d[const.VALUE].get(const.FROM)
         to_value = d[const.VALUE].get(const.TO)
