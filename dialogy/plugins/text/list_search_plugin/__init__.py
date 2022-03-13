@@ -129,6 +129,12 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         :return: Token matches with the transcript.
         :rtype: List[MatchType]
         """
+        
+        """
+        Remove empty alternatives
+        """
+        transcripts = [x for x in transcripts if x and x!= '' and len(x) > 0]
+        
         logger.debug(f"style: {self.style}")
         logger.debug("transcripts")
         logger.debug(transcripts)
@@ -148,7 +154,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         final_match = None
 
         for pattern in entity_patterns:
-            result = re.search(pattern, query)
+            result = re.search(re.compile(r'\b' + pattern + r'\b'), query)
             if result:
                 match_value = match_dict[result.group()]
                 match_len = len(match_value)
@@ -170,40 +176,44 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         match_dict: Dict[Any, Any] = {},
     ) -> Tuple[Text, Label, Value, Span, Score]:
 
-        sentence = nlp(query).sentences[0]
-        value = ""
-        pos_tags = ["PROPN", "NOUN", "ADP"]
-        result_dict = {}
-        for word in sentence.words:
-            if word.upos in pos_tags:
-                if value == "":
-                    span_start = word.start_char
-                span_end = word.end_char
+        """
+        Make sure query != '' to avoid error: List index out of range
+        """
+        if not query == '' and len(query) > 0:
+            sentence = nlp(query).sentences[0]
+            value = ""
+            pos_tags = ["PROPN", "NOUN", "ADP"]
+            result_dict = {}
+            for word in sentence.words:
+                if word.upos in pos_tags:
+                    if value == "":
+                        span_start = word.start_char
+                    span_end = word.end_char
 
-                """
-                joining individual tokens that together are the real entity,
-                Since we are dealing with Multi-Word entities here
+                    """
+                    joining individual tokens that together are the real entity,
+                    Since we are dealing with Multi-Word entities here
 
-                """
-                value = value + str(word.text) + " "
-        if value != "":
-            for pattern in entity_patterns:
-                val = fuzz.ratio(pattern, value) / 100
-                if val > self.fuzzy_threshold:
-                    match_value = match_dict[pattern]
-                    result_dict[match_value] = val
-            if result_dict:
-                match_output = max(result_dict, key=lambda x: result_dict[x])
-                match_score = result_dict[match_output]
+                    """
+                    value = value + str(word.text) + " "
+            if value != "":
+                for pattern in entity_patterns:
+                    val = fuzz.ratio(pattern, value) / 100
+                    if val > self.fuzzy_threshold:
+                        match_value = match_dict[pattern]
+                        result_dict[match_value] = val
+                if result_dict:
+                    match_output = max(result_dict, key=lambda x: result_dict[x])
+                    match_score = result_dict[match_output]
 
-                return (
-                    value,
-                    entity_type,
-                    match_output,
-                    (span_start, span_end),
-                    match_score,
-                )
-        return (value, entity_type, "", (0, 0), 0.0)
+                    return (
+                        value,
+                        entity_type,
+                        match_output,
+                        (span_start, span_end),
+                        match_score,
+                    )
+        return (value, entity_type, "", (0, 0), float(0))
 
     # new method based on experiments done during development of channel parser
     def get_fuzzy_dp_search(self, transcript: str, lang: str = "") -> MatchType:
