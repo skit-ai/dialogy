@@ -28,9 +28,6 @@ class RetainOriginalIntentPlugin(Plugin):
         if not intents:
             return {}
 
-        if not isinstance(intents, list):
-            return {}
-
         intent, *_ = intents
         return {const.NAME: intent.name, const.SCORE: intent.score}
 
