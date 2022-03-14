@@ -1,18 +1,15 @@
 import os
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Tuple
 
-import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt
 import numpy as np
-import numpy.typing as npt
 import torch
+import numpy.typing as npt
 import torch.nn as nn
 import torch.optim as optim
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 from torch import Tensor
-from tqdm import tqdm
 
-import dialogy.constants as const
-from dialogy.utils import logger
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -61,10 +58,12 @@ def save_reliability_graph(
     prefix: str,
 ) -> None:
     ECE, MCE = get_metrics(preds, labels_oneh)
+
     bins, _, bin_accs, _, _ = calc_bins(preds, labels_oneh)
 
     fig = plt.figure(figsize=(8, 8))
     ax = fig.gca()
+
 
     # x/y limits
     ax.set_xlim(0, 1.05)
@@ -73,6 +72,7 @@ def save_reliability_graph(
     # x/y labels
     plt.xlabel("Confidence")
     plt.ylabel("Accuracy")
+
 
     # Create grid
     ax.set_axisbelow(True)
@@ -91,6 +91,7 @@ def save_reliability_graph(
     # ECE and MCE legend
     ECE_patch = mpatches.Patch(color="green", label="ECE = {:.2f}%".format(ECE * 100))
     MCE_patch = mpatches.Patch(color="red", label="MCE = {:.2f}%".format(MCE * 100))
+
     plt.legend(handles=[ECE_patch, MCE_patch])
 
     plt.savefig(
@@ -107,14 +108,17 @@ def fit_ts_parameter(
     labels_list: npt.NDArray[np.int64],
     lr: float = 0.001,
     max_iter: int = 10000,
+    device: str = DEVICE,
 ) -> float:
-    logits_tensor = torch.from_numpy(logits_list).to(DEVICE)
-    labels_tensor = torch.from_numpy(labels_list).to(DEVICE)
-    temperature = nn.Parameter(torch.ones(1).to(DEVICE))
+    logits_tensor = torch.from_numpy(logits_list).to(device)
+    labels_tensor = torch.from_numpy(labels_list).to(device)
+    temperature = nn.Parameter(torch.ones(1).to(device))
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.LBFGS(
         [temperature], lr=lr, max_iter=max_iter, line_search_fn="strong_wolfe"
     )
+
+    import time
 
     def _eval() -> Any:
         loss = criterion(T_scaling(logits_tensor, temperature), labels_tensor)

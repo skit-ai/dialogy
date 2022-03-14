@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import torch
+import pytest
 
 import dialogy.constants as const
 from dialogy.utils.temperature_scaling import (
@@ -34,14 +35,30 @@ def test_get_metrics():
     assert isinstance(mce, float)
 
 
-def test_save_reliability_graph():
+
+@pytest.fixture
+def full_path():
     prefix = "test"
     temp_dir = "/tmp"
     graph_name = "reliability_graph"
     full_path = os.path.join(temp_dir, f"{prefix}_{graph_name}.png")
+    yield full_path
+    os.remove(full_path)
+
+
+def mock_save_fig(full_path):
+    def fn(file_path, *args, **kwargs):
+        with open(full_path, "w") as f:
+            f.write("test")
+    return fn
+
+
+def test_save_reliability_graph(full_path, mocker):
+    prefix = "test"
+    temp_dir = "/tmp"
+    mocker.patch("matplotlib.pyplot.savefig", mock_save_fig(full_path))
     save_reliability_graph(preds, labels_oneh, temp_dir, prefix)
     assert os.path.exists(full_path)
-    os.remove(full_path)
 
 
 def test_T_scaling():
@@ -53,8 +70,8 @@ def test_T_scaling():
 
 
 def test_fit_ts_parameter():
-    res1 = fit_ts_parameter(logits, labels_list, lr=0, max_iter=1)
-    res2 = fit_ts_parameter(logits, labels_list, lr=0.1, max_iter=1)
+    res1 = fit_ts_parameter(logits, labels_list, lr=0, max_iter=1, device="cpu")
+    res2 = fit_ts_parameter(logits, labels_list, lr=0.1, max_iter=1, device="cpu")
     assert isinstance(res1, float)
     assert isinstance(res2, float)
     assert res1 != res2
