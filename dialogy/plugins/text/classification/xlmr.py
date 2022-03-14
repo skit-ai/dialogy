@@ -249,7 +249,7 @@ class XLMRMultiClass(Plugin):
         training_data = training_data[~skip_labels_filter].copy()
 
         encoder = self.labelencoder.fit(training_data[self.label_column])
-        print(training_data)
+
         sample_size = 5 if len(training_data) > 5 else len(training_data)
         training_data.rename(
             columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
