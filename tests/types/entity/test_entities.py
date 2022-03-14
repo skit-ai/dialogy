@@ -474,7 +474,7 @@ def test_numerical_entity_as_time() -> None:
         value="2021-01-04T02:00:00.000+05:30",
         grain="hour",
     )
-    print(numeric_entity.as_time(reference_time, "Asia/Kolkata"))
+
     assert (
         numeric_entity.as_time(reference_time, "Asia/Kolkata").get_value()
         == time_entity.get_value()
