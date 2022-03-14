@@ -51,9 +51,8 @@ Workflow Integration
 from __future__ import annotations
 
 import operator
-from copy import deepcopy
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import attr
 import pydash as py_

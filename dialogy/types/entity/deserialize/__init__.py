@@ -1,24 +1,23 @@
 from functools import wraps
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Callable
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
 
 
 class EntityDeserializer:
-    entitiy_classes = {}
+    entitiy_classes: Dict[str, BaseEntity] = {}
 
     @classmethod
-    def register(cls, dim):
+    def register(cls, dim: str) -> Callable[[Any], Any]:
         @wraps(cls)
-        def decorator(entity_class):
+        def decorator(entity_class: BaseEntity) -> BaseEntity:
             cls.entitiy_classes[dim] = entity_class
             return entity_class
-
         return decorator
 
     @classmethod
-    def validate(cls, duckling_entity_dict):
+    def validate(cls, duckling_entity_dict: Dict[str, Any]) -> None:
         keys = tuple(sorted(duckling_entity_dict.keys()))
         if keys != const.DUCKLING_ENTITY_KEYS:
             raise ValueError(
@@ -32,15 +31,15 @@ class EntityDeserializer:
             )
 
     @staticmethod
-    def get_keys_in_value_as_str(duckling_entity_dict):
+    def get_keys_in_value_as_str(duckling_entity_dict: Dict[str, Any]) -> str:
         return " ".join(sorted(duckling_entity_dict[const.VALUE].keys()))
 
     @staticmethod
-    def get_dimension(duckling_entity_dict):
+    def get_dimension(duckling_entity_dict: Dict[str, Any]) -> str:
         return duckling_entity_dict[const.DIM]
 
     @classmethod
-    def get_entity_class_str(cls, duckling_entity_dict):
+    def get_entity_class_str(cls, duckling_entity_dict: Dict[str, Any]) -> str:
         return (
             const.TIME_INTERVAL
             if cls.get_keys_in_value_as_str(duckling_entity_dict)

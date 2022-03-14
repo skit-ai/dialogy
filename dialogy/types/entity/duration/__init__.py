@@ -48,7 +48,7 @@ from __future__ import annotations
 
 import operator
 from datetime import timedelta
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 import attr
 
@@ -88,7 +88,7 @@ class DurationEntity(BaseEntity):
         timezone: Optional[str] = None,
         duration_cast_operator: Optional[str] = None,
         **kwargs: Any
-    ) -> DurationEntity:
+    ) -> Union[DurationEntity, TimeEntity]:
         value = d[const.VALUE][const.NORMALIZED][const.VALUE]
         entity = cls(
             range={const.START: d[const.START], const.END: d[const.END]},

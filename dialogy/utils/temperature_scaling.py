@@ -108,7 +108,7 @@ def fit_ts_parameter(
     labels_list: npt.NDArray[np.int64],
     lr: float = 0.001,
     max_iter: int = 10000,
-    device: str = DEVICE,
+    device: torch.device = DEVICE,
 ) -> float:
     logits_tensor = torch.from_numpy(logits_list).to(device)
     labels_tensor = torch.from_numpy(labels_list).to(device)

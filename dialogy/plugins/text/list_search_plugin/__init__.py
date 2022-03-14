@@ -166,7 +166,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         return ("", entity_type, "", (0, 0), 0.0)
 
 
-    def get_words_from_nlp(self, nlp, query) -> List[Dict[str, Any]]:
+    def get_words_from_nlp(self, nlp: stanza.Pipeline, query: str) -> List[Dict[str, Any]]:
         document: Document = nlp(query)
         document_json = document.to_dict()
         return document_json[0]
@@ -176,8 +176,8 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         query: str,
         nlp: stanza.Pipeline,
         entity_type: str = "",
-        entity_patterns: List[str] = None,
-        match_dict: Dict[Any, Any] = None,
+        entity_patterns: Optional[List[str]] = None,
+        match_dict: Optional[Dict[Any, Any]] = None,
     ) -> Tuple[Text, Label, Value, Span, Score]:
         entity_patterns = entity_patterns or []
         match_dict = match_dict or {}

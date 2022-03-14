@@ -56,7 +56,7 @@ class CurrencyEntity(BaseEntity):
 
     @classmethod
     def from_duckling(
-        cls, d: Dict[str, Any], alternative_index: int, **kwargs
+        cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
     ) -> CurrencyEntity:
         value = d[const.VALUE][const.VALUE]
         return cls(
