@@ -1,7 +1,7 @@
-import pandas as pd
+import json
 import pytest
 
-from dialogy.base import Input, Output
+from dialogy.base import Input
 from dialogy.plugins import ListSearchPlugin
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
@@ -19,8 +19,46 @@ class EntMocker:
         )
         return self
 
+class MockDocument():
+    def __init__(self, d) -> None:
+        self.d = d
 
-def test_not_supported_lang():
+    def to_dict(self):
+        return self.d
+
+
+def test_get_words_from_nlp(mocker):
+    mocker.patch("stanza.download", return_value=1)
+    mocker.patch("stanza.Pipeline", return_value={})
+    l = ListSearchPlugin(
+        dest="output.entities",
+        fuzzy_threshold=0.3,
+        fuzzy_dp_config={
+            "en": {
+                "location": {
+                    "New Delhi": "Delhi",
+                    "new deli": "Delhi",
+                    "delhi": "Delhi"
+                }
+            }
+        })
+    expected = json.loads("""[[{"id": 1, "text": "I", "lemma": "I", "upos": "PRON", "xpos": "PRP", 
+    "feats": "Case=Nom|Number=Sing|Person=1|PronType=Prs", "head": 2, "deprel": "nsubj", "misc": "", 
+    "start_char": 0, "end_char": 1, "ner": "O"}, {"id": 2, "text": "live", "lemma": "live", 
+    "upos": "VERB", "xpos": "VBP", "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin", "head": 0, "deprel": "root", 
+    "misc": "", "start_char": 2, "end_char": 6, "ner": "O"}, {"id": 3, "text": "in", "lemma": "in", 
+    "upos": "ADP", "xpos": "IN", "head": 4, "deprel": "case", "misc": "", "start_char": 7, "end_char": 9, 
+    "ner": "O"}, {"id": 4, "text": "punjab", "lemma": "punjab", "upos": "PROPN", 
+    "xpos": "NNP", "feats": "Number=Sing", "head": 2, "deprel": "obl", "misc": "", 
+    "start_char": 10, "end_char": 16, "ner": "O"}]]""")
+    def mock_nlp(query):
+        return MockDocument(expected)
+    assert expected[0] == l.get_words_from_nlp(mock_nlp, "I live in punjab")
+
+
+def test_not_supported_lang(mocker):
+    mocker.patch("stanza.download", return_value=1)
+    mocker.patch("stanza.Pipeline", return_value={})
     with pytest.raises(ValueError):
         l = ListSearchPlugin(
             dest="output.entities",
@@ -30,42 +68,30 @@ def test_not_supported_lang():
         l.get_entities(["........."], "te")
 
 
-def test_entity_not_found():
-    l = ListSearchPlugin(
-        dest="output.entities",
-        fuzzy_threshold=0.4,
-        fuzzy_dp_config={"en": {"location": {"delhi": "Delhi"}}},
-    )
-    assert l.get_entities(["I live in punjab"], "en") == []
-
-
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_get_list_entities(payload):
+def test_get_list_entities(payload, mocker):
     input_ = payload.get("input")
     lang_ = payload.get("lang")
     expected = payload.get("expected")
-    exception = payload.get("exception")
     config = payload.get("config")
+    nlp_words = payload.get("nlp_words")
     transcripts = [expectation["text"] for expectation in input_]
 
-    if expected:
-        list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)
+    mocker.patch("stanza.download", return_value=1)
+    mocker.patch("stanza.Pipeline", return_value={})
+    mocker.patch("dialogy.plugins.ListSearchPlugin.get_words_from_nlp", return_value=nlp_words)
 
-        workflow = Workflow([list_entity_plugin])
-        _, output = workflow.run(Input(utterances=transcripts, lang=lang_))
-        entities = output["entities"]
+    list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)
 
-        if not entities and expected:
-            pytest.fail("No entities found!")
+    workflow = Workflow([list_entity_plugin])
+    _, output = workflow.run(Input(utterances=transcripts, lang=lang_))
+    entities = output["entities"]
 
-        for i, entity in enumerate(entities):
-            assert entity["value"] == expected[i]["value"]
-            assert entity["type"] == expected[i]["type"]
-            if "score" in expected[i]:
-                assert entity["score"] == expected[i]["score"]
-    else:
-        with pytest.raises(EXCEPTIONS.get(exception)):
-            list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)
+    if not entities and expected:
+        pytest.fail("No entities found!")
 
-            workflow = Workflow([list_entity_plugin])
-            workflow.run(Input(utterances=transcripts, lang=lang_))
+    for i, entity in enumerate(entities):
+        assert entity["value"] == expected[i]["value"]
+        assert entity["type"] == expected[i]["type"]
+        if "score" in expected[i]:
+            assert entity["score"] == expected[i]["score"]
