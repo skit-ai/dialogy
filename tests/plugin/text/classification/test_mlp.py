@@ -1,15 +1,15 @@
 import json
 import os
-import tempfile
 from typing import List
 
 import joblib
 import pandas as pd
 import pytest
 import sklearn
+from sklearn.model_selection import GridSearchCV
 
 import dialogy.constants as const
-from dialogy.base import Guard, Input, Plugin
+from dialogy.base import Input
 from dialogy.plugins import MergeASROutputPlugin, MLPMultiClass
 from dialogy.utils import load_file
 from dialogy.workflow import Workflow
@@ -32,17 +32,22 @@ class MockMLPClassifier:
         return
 
 
+class MockGridSearchCV:
+    def __init__(self, *args, **kwargs):
+        self.best_params_ = {}
+
+    def fit(self, X, y):
+        self.classes_ = []
+
+
 def test_mlp_plugin_when_no_mlpmodel_saved():
     mlp_clf = MLPMultiClass(model_dir=".", dest="output.intents")
     assert isinstance(mlp_clf, MLPMultiClass)
     assert mlp_clf.model_pipeline is None
 
 
-def test_mlp_plugin_when_mlpmodel_EOFError(capsys):
-    _, file_path = tempfile.mkstemp(suffix=".pkl")
-    save_mlp_model_file = const.MLPMODEL_FILE
-    directory, file_name = os.path.split(file_path)
-    const.MLPMODEL_FILE = file_name
+def test_mlp_plugin_when_mlpmodel_EOFError(capsys, tmpdir):
+    directory = tmpdir.mkdir("mlp_plugin")
     with capsys.disabled():
         mlp_plugin = MLPMultiClass(
             model_dir=directory,
@@ -50,8 +55,6 @@ def test_mlp_plugin_when_mlpmodel_EOFError(capsys):
             debug=False,
         )
         assert mlp_plugin.model_pipeline is None
-    os.remove(file_path)
-    const.MLPMODEL_FILE = save_mlp_model_file
 
 
 def test_mlp_init_mock():
@@ -133,8 +136,8 @@ def test_mlp_gridsearch_argsmap():
         xlmr_clf_invalid.init_model()
 
 
-def test_train_mlp_mock():
-    directory = "/tmp"
+def test_train_mlp_mock(tmpdir):
+    directory = tmpdir.mkdir("mlp_plugin")
     file_path = os.path.join(directory, const.MLPMODEL_FILE)
 
     mlp_clf = MLPMultiClass(
@@ -165,12 +168,10 @@ def test_train_mlp_mock():
     mlp_clf_copy.load()
     assert isinstance(mlp_clf_copy.model_pipeline, sklearn.pipeline.Pipeline)
     assert mlp_clf_copy.valid_mlpmodel is True
-    os.remove(file_path)
 
 
-def test_train_mlp_gridsearch_mock():
-    directory = "/tmp"
-    file_path = os.path.join(directory, const.MLPMODEL_FILE)
+def test_train_mlp_gridsearch_mock(tmpdir, monkeypatch, mocker):
+    directory = tmpdir.mkdir("mlp_plugin")
     USE = "use"
     fake_args = {
         const.TRAIN: {
@@ -207,7 +208,7 @@ def test_train_mlp_gridsearch_mock():
         ]
     )
 
-    mlp_clf.train(train_df)
+    mlp_clf.train(train_df, param_search=MockGridSearchCV)
     assert mlp_clf.labels_num == 2
 
     # This copy loads from the same directory that was trained previously.
@@ -219,15 +220,11 @@ def test_train_mlp_gridsearch_mock():
     )
     mlp_clf_copy.load()
     assert mlp_clf_copy.valid_mlpmodel is True
-    mlp_clf_copy.train(train_df)  # When trying to train an already trained model
-    os.remove(file_path)
 
 
-def test_invalid_operations():
-    directory = "/tmp"
-    file_path = os.path.join(directory, const.MLPMODEL_FILE)
-    if os.path.exists(file_path):
-        os.remove(file_path)
+def test_invalid_operations(tmpdir):
+    directory = tmpdir.mkdir("mlp_plugin")
+    file_path = directory.join(const.MLPMODEL_FILE)
 
     mlp_clf = MLPMultiClass(
         model_dir=directory,
@@ -267,16 +264,11 @@ def test_invalid_operations():
     mlp_clf.model_pipeline = None
     assert mlp_clf.inference(["text"])[0].name == "_error_"
 
-    if os.path.exists(file_path):
-        os.remove(file_path)
-
 
 @pytest.mark.parametrize("payload", load_tests("mlp_cases", __file__))
-def test_inference(payload):
-    directory = "/tmp"
-    file_path = os.path.join(directory, const.MLPMODEL_FILE)
-    if os.path.exists(file_path):
-        os.remove(file_path)
+def test_inference(payload, tmpdir):
+    directory = tmpdir.mkdir("mlp_plugin")
+    file_path = directory.join(const.MLPMODEL_FILE)
 
     USE = "use"
     fake_args = {
@@ -350,5 +342,3 @@ def test_inference(payload):
     )
     assert output[const.INTENTS][0]["name"] == intent
     assert output[const.INTENTS][0]["score"] > 0.5
-    if os.path.exists(file_path):
-        os.remove(file_path)
