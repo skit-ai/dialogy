@@ -1,15 +1,14 @@
 import os
 from typing import Any, Tuple
 
-import numpy as np
-import torch
-import numpy.typing as npt
-import torch.nn as nn
-import torch.optim as optim
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
+import numpy as np
+import numpy.typing as npt
+import torch
+import torch.nn as nn
+import torch.optim as optim
 from torch import Tensor
-
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -64,7 +63,6 @@ def save_reliability_graph(
     fig = plt.figure(figsize=(8, 8))
     ax = fig.gca()
 
-
     # x/y limits
     ax.set_xlim(0, 1.05)
     ax.set_ylim(0, 1)
@@ -72,7 +70,6 @@ def save_reliability_graph(
     # x/y labels
     plt.xlabel("Confidence")
     plt.ylabel("Accuracy")
-
 
     # Create grid
     ax.set_axisbelow(True)

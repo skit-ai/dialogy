@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from typing import Any, Dict, List, Optional
+
 from loguru import logger
 
 
@@ -29,7 +30,7 @@ def load_file(
             else:
                 return loader(file)
     else:
-        return None # pragma: no cover
+        return None  # pragma: no cover
 
 
 def save_file(

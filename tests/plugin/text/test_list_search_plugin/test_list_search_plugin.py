@@ -1,4 +1,5 @@
 import json
+
 import pytest
 
 from dialogy.base import Input
@@ -19,7 +20,8 @@ class EntMocker:
         )
         return self
 
-class MockDocument():
+
+class MockDocument:
     def __init__(self, d) -> None:
         self.d = d
 
@@ -38,11 +40,13 @@ def test_get_words_from_nlp(mocker):
                 "location": {
                     "New Delhi": "Delhi",
                     "new deli": "Delhi",
-                    "delhi": "Delhi"
+                    "delhi": "Delhi",
                 }
             }
-        })
-    expected = json.loads("""[[{"id": 1, "text": "I", "lemma": "I", "upos": "PRON", "xpos": "PRP", 
+        },
+    )
+    expected = json.loads(
+        """[[{"id": 1, "text": "I", "lemma": "I", "upos": "PRON", "xpos": "PRP", 
     "feats": "Case=Nom|Number=Sing|Person=1|PronType=Prs", "head": 2, "deprel": "nsubj", "misc": "", 
     "start_char": 0, "end_char": 1, "ner": "O"}, {"id": 2, "text": "live", "lemma": "live", 
     "upos": "VERB", "xpos": "VBP", "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin", "head": 0, "deprel": "root", 
@@ -50,9 +54,12 @@ def test_get_words_from_nlp(mocker):
     "upos": "ADP", "xpos": "IN", "head": 4, "deprel": "case", "misc": "", "start_char": 7, "end_char": 9, 
     "ner": "O"}, {"id": 4, "text": "punjab", "lemma": "punjab", "upos": "PROPN", 
     "xpos": "NNP", "feats": "Number=Sing", "head": 2, "deprel": "obl", "misc": "", 
-    "start_char": 10, "end_char": 16, "ner": "O"}]]""")
+    "start_char": 10, "end_char": 16, "ner": "O"}]]"""
+    )
+
     def mock_nlp(query):
         return MockDocument(expected)
+
     assert expected[0] == l.get_words_from_nlp(mock_nlp, "I live in punjab")
 
 
@@ -79,7 +86,9 @@ def test_get_list_entities(payload, mocker):
 
     mocker.patch("stanza.download", return_value=1)
     mocker.patch("stanza.Pipeline", return_value={})
-    mocker.patch("dialogy.plugins.ListSearchPlugin.get_words_from_nlp", return_value=nlp_words)
+    mocker.patch(
+        "dialogy.plugins.ListSearchPlugin.get_words_from_nlp", return_value=nlp_words
+    )
 
     list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)
 

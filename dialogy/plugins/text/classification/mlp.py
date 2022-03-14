@@ -6,11 +6,11 @@ This module provides a trainable MLP classifier.
 import ast
 import operator
 import os
+from pprint import pformat
 from typing import Any, Dict, List, Optional
 
 import joblib
 import pandas as pd
-from pprint import pformat
 from sklearn.exceptions import NotFittedError
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import f1_score, make_scorer
@@ -123,7 +123,9 @@ class MLPMultiClass(Plugin):
         )
         USE = "use"
         if args and args[const.USE_GRIDSEARCH][USE]:
-            GRID = self.get_gridsearch_grid(pipeline, **args[const.USE_GRIDSEARCH][const.PARAMS])
+            GRID = self.get_gridsearch_grid(
+                pipeline, **args[const.USE_GRIDSEARCH][const.PARAMS]
+            )
             self.model_pipeline = param_search(
                 estimator=pipeline,
                 param_grid=GRID,
@@ -138,7 +140,9 @@ class MLPMultiClass(Plugin):
 
         return args
 
-    def get_gridsearch_grid(self, pipeline: Pipeline, **kwargs: Any) -> List[Dict[str, List[Any]]]:
+    def get_gridsearch_grid(
+        self, pipeline: Pipeline, **kwargs: Any
+    ) -> List[Dict[str, List[Any]]]:
         """
         Gets gridsearch hyperparameters for the model in proper grid params format.
 
@@ -149,10 +153,7 @@ class MLPMultiClass(Plugin):
         tfidf_params = pipeline[const.TFIDF].get_params().keys()
         mlp_params = pipeline[const.MLP].get_params().keys()
         for k, v in kwargs.items():
-            if (
-                k not in tfidf_params
-                and k not in mlp_params
-            ):
+            if k not in tfidf_params and k not in mlp_params:
                 raise ValueError(
                     f"Hyperparam defined for gridsearch {k} doesn't exist,\nRefer: https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html\nand https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html"
                 )
@@ -251,7 +252,9 @@ class MLPMultiClass(Plugin):
                 return False
         return True
 
-    def train(self, training_data: pd.DataFrame, param_search: BaseSearchCV = GridSearchCV) -> None:
+    def train(
+        self, training_data: pd.DataFrame, param_search: BaseSearchCV = GridSearchCV
+    ) -> None:
         """
         Train an intent-classifier on the provided training data.
 
@@ -266,8 +269,10 @@ class MLPMultiClass(Plugin):
             return
 
         if self.valid_mlpmodel:
-            logger.warning(f"Model already exists on {self.mlp_model_path}") # pragma: no cover
-            return # pragma: no cover
+            logger.warning(
+                f"Model already exists on {self.mlp_model_path}"
+            )  # pragma: no cover
+            return  # pragma: no cover
 
         skip_labels_filter = training_data[self.label_column].isin(self.skip_labels)
         training_data = training_data[~skip_labels_filter].copy()
@@ -286,7 +291,9 @@ class MLPMultiClass(Plugin):
         self.model_pipeline.fit(training_data[const.TEXT], training_data[const.LABELS])
         USE = "use"
         if args and args[const.USE_GRIDSEARCH][USE]:
-            logger.debug(f"Best gridsearch params found:\n{pformat(self.model_pipeline.best_params_)}")
+            logger.debug(
+                f"Best gridsearch params found:\n{pformat(self.model_pipeline.best_params_)}"
+            )
         self.save()
 
     def save(self) -> None:

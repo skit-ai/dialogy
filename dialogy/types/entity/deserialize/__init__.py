@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Any, Dict, Optional, Callable
+from typing import Any, Callable, Dict, Optional
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
@@ -14,6 +14,7 @@ class EntityDeserializer:
         def decorator(entity_class: BaseEntity) -> BaseEntity:
             cls.entitiy_classes[dim] = entity_class
             return entity_class
+
         return decorator
 
     @classmethod

@@ -250,7 +250,7 @@ class BaseEntity:
     def from_duckling(
         cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
     ) -> BaseEntity:
-        raise NotImplementedError # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
 
 # = entity_synthesis =

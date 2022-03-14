@@ -1,8 +1,8 @@
 import os
 
 import numpy as np
-import torch
 import pytest
+import torch
 
 import dialogy.constants as const
 from dialogy.utils.temperature_scaling import (
@@ -49,6 +49,7 @@ def mock_save_fig(full_path):
     def fn(file_path, *args, **kwargs):
         with open(full_path, "w") as f:
             f.write("test")
+
     return fn
 
 

@@ -12,8 +12,8 @@ import re
 from typing import Any, Dict, List, Optional, Tuple
 
 import stanza
-from stanza.models.common.doc import Document
 from loguru import logger
+from stanza.models.common.doc import Document
 from thefuzz import fuzz
 
 from dialogy import constants as const
@@ -145,7 +145,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         entity_patterns: Optional[List[str]] = None,
         match_dict: Optional[Dict[Any, Any]] = None,
     ) -> Tuple[Text, Label, Value, Span, Score]:
-        match_dict 
+        match_dict
         max_length = 0
         final_match = None
         entity_patterns = entity_patterns or []
@@ -165,8 +165,9 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             return (match_text, entity_type, final_match, match_span, 1.0)
         return ("", entity_type, "", (0, 0), 0.0)
 
-
-    def get_words_from_nlp(self, nlp: stanza.Pipeline, query: str) -> List[Dict[str, Any]]:
+    def get_words_from_nlp(
+        self, nlp: stanza.Pipeline, query: str
+    ) -> List[Dict[str, Any]]:
         document: Document = nlp(query)
         document_json = document.to_dict()
         return document_json[0]
