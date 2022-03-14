@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.7
+
+- [x] refactor: Faster test runs.
+- [x] refactor: Deserializer avoids if-else hell.
+- [x] update: Plugin debug flags are _anded_ with Workflow's debug flags.
+- [x] feat: XLMR plugin now supports state as a feature.
+
 ## 0.9.6
 
 - [x] add: `original_intent` to store the initial classifier output.
