@@ -249,7 +249,7 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid">
-<span class="sig-name descname"><span class="pre">get_gridsearch_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.get_gridsearch_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_gridsearch_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.get_gridsearch_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets gridsearch hyperparameters for the model in proper grid params format.</p>
 <dl class="simple">
 <dt>Raises:</dt><dd><p>ValueError: If a gridsearch parameter doesn’t exist in sklearns TFIDF and MLPClassifier modules.</p>
@@ -282,7 +282,7 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.init_model">
-<span class="sig-name descname"><span class="pre">init_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.init_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.init_model" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">init_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_search=&lt;class</span> <span class="pre">'sklearn.model_selection._search.GridSearchCV'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.init_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.init_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the model if artifacts are available.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -315,7 +315,7 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.classification.mlp.MLPMultiClass.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.train" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_search=&lt;class</span> <span class="pre">'sklearn.model_selection._search.GridSearchCV'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/classification/mlp.html#MLPMultiClass.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.classification.mlp.MLPMultiClass.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train an intent-classifier on the provided training data.</p>
 <p>The training is skipped if the data-format is not valid.
 :type training_data: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>

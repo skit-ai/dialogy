@@ -269,22 +269,13 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="gp">In [5]: </span><span class="o">%%time</span>
 <span class="gp">   ...: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="n">utterances</span><span class="p">))</span>
 <span class="gp">   ...: </span>
-<span class="go">CPU times: user 30 ms, sys: 2.47 ms, total: 32.5 ms</span>
+<span class="go">CPU times: user 37.2 ms, sys: 1.28 ms, total: 38.4 ms</span>
 <span class="go">Wall time: 130 ms</span>
 
 <span class="gp">In [6]: </span><span class="n">output</span>
 <span class="gh">Out[6]: </span><span class="go"></span>
 <span class="go">{'intents': [],</span>
-<span class="go"> 'entities': [{'range': {'start': 11, 'end': 19},</span>
-<span class="go">   'body': 'tomorrow',</span>
-<span class="go">   'type': 'value',</span>
-<span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.16666666666666666,</span>
-<span class="go">   'alternative_index': 5,</span>
-<span class="go">   'value': '2022-03-14T00:00:00.000+00:00',</span>
-<span class="go">   'entity_type': 'date',</span>
-<span class="go">   'grain': 'day'},</span>
-<span class="go">  {'range': {'start': 0, 'end': 34},</span>
+<span class="go"> 'entities': [{'range': {'start': 0, 'end': 34},</span>
 <span class="go">   'body': 'between today 7pm and tomorrow 9pm',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.08333333333333333,</span>
@@ -292,17 +283,17 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="go">   'entity_type': 'datetime',</span>
 <span class="go">   'grain': 'hour',</span>
 <span class="go">   'type': 'interval',</span>
-<span class="go">   'from_value': '2022-03-13T19:00:00.000+00:00',</span>
-<span class="go">   'to_value': '2022-03-14T22:00:00.000+00:00',</span>
-<span class="go">   'value': {'from': '2022-03-13T19:00:00.000+00:00',</span>
-<span class="go">    'to': '2022-03-14T22:00:00.000+00:00'}},</span>
+<span class="go">   'from_value': '2022-03-14T19:00:00.000+00:00',</span>
+<span class="go">   'to_value': '2022-03-15T22:00:00.000+00:00',</span>
+<span class="go">   'value': {'from': '2022-03-14T19:00:00.000+00:00',</span>
+<span class="go">    'to': '2022-03-15T22:00:00.000+00:00'}},</span>
 <span class="go">  {'range': {'start': 14, 'end': 21},</span>
 <span class="go">   'body': 'at 6 am',</span>
 <span class="go">   'type': 'value',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.08333333333333333,</span>
 <span class="go">   'alternative_index': 1,</span>
-<span class="go">   'value': '2022-03-14T06:00:00.000+00:00',</span>
+<span class="go">   'value': '2022-03-15T06:00:00.000+00:00',</span>
 <span class="go">   'entity_type': 'time',</span>
 <span class="go">   'grain': 'hour'},</span>
 <span class="go">  {'range': {'start': 7, 'end': 15},</span>
@@ -347,9 +338,27 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.08333333333333333,</span>
 <span class="go">   'alternative_index': 4,</span>
-<span class="go">   'value': '2022-03-13T12:38:46.089+00:00',</span>
+<span class="go">   'value': '2022-03-14T17:30:10.862+00:00',</span>
 <span class="go">   'entity_type': 'datetime',</span>
 <span class="go">   'grain': 'second'},</span>
+<span class="go">  {'range': {'start': 11, 'end': 19},</span>
+<span class="go">   'body': 'tomorrow',</span>
+<span class="go">   'type': 'value',</span>
+<span class="go">   'parsers': ['DucklingPlugin'],</span>
+<span class="go">   'score': 0.08333333333333333,</span>
+<span class="go">   'alternative_index': 5,</span>
+<span class="go">   'value': '2022-03-15T00:00:00.000+00:00',</span>
+<span class="go">   'entity_type': 'date',</span>
+<span class="go">   'grain': 'day'},</span>
+<span class="go">  {'range': {'start': 4, 'end': 16},</span>
+<span class="go">   'body': 'about monday',</span>
+<span class="go">   'type': 'value',</span>
+<span class="go">   'parsers': ['DucklingPlugin'],</span>
+<span class="go">   'score': 0.08333333333333333,</span>
+<span class="go">   'alternative_index': 6,</span>
+<span class="go">   'value': '2022-03-14T00:00:00.000+00:00',</span>
+<span class="go">   'entity_type': 'date',</span>
+<span class="go">   'grain': 'day'},</span>
 <span class="go">  {'range': {'start': 8, 'end': 20},</span>
 <span class="go">   'body': 'on 5th march',</span>
 <span class="go">   'type': 'value',</span>
@@ -525,8 +534,8 @@ to guard itself in the <em>“SMALL_TALK”</em> state.</p>
 <span class="gp">In [11]: </span><span class="o">%%time</span>
 <span class="gp">   ....: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="n">utterances</span><span class="p">,</span> <span class="n">current_state</span><span class="o">=</span><span class="s2">"SMALL_TALK"</span><span class="p">))</span>
 <span class="gp">   ....: </span>
-<span class="go">CPU times: user 122 us, sys: 0 ns, total: 122 us</span>
-<span class="go">Wall time: 124 us</span>
+<span class="go">CPU times: user 176 us, sys: 0 ns, total: 176 us</span>
+<span class="go">Wall time: 180 us</span>
 
 <span class="gp">In [12]: </span><span class="n">output</span>
 <span class="gh">Out[12]: </span><span class="go">{'intents': [], 'entities': [], 'original_intent': {}}</span>
@@ -686,7 +695,7 @@ to contain appropriate intents using the <code class="code docutils literal notr
 <span class="gp">In [30]: </span><span class="n">utterances</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"कल ही कर दी थी"</span><span class="p">]</span>
 <span class="gp">   ....: </span><span class="n">workflow</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"output.intents"</span><span class="p">,</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"already_paid"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)])</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[30]: </span><span class="go">Workflow(plugins=[&lt;dialogy.plugins.text.duckling_plugin.DucklingPlugin object at 0x7f6c02324a90&gt;], input=None, output=Output(intents=[Intent(name='already_paid', score=1.0, alternative_index=None)], entities=[], original_intent={}), debug=False)</span>
+<span class="gh">Out[30]: </span><span class="go">Workflow(plugins=[&lt;dialogy.plugins.text.duckling_plugin.DucklingPlugin object at 0x7fec70909340&gt;], input=None, output=Output(intents=[Intent(name='already_paid', score=1.0, alternative_index=None)], entities=[], original_intent={}), debug=False)</span>
 
 <span class="gp">In [31]: </span><span class="n">reference_dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="s2">"Asia/Kolkata"</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">reference_time</span> <span class="o">=</span> <span class="n">dt2timestamp</span><span class="p">(</span><span class="n">reference_dt</span><span class="p">)</span>

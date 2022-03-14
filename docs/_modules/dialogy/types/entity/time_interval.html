@@ -274,10 +274,12 @@
 <span class="kn">import</span> <span class="nn">attr</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity.deserialize</span> <span class="kn">import</span> <span class="n">EntityDeserializer</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity.time</span> <span class="kn">import</span> <span class="n">TimeEntity</span>
 
 
-<div class="viewcode-block" id="TimeIntervalEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<div class="viewcode-block" id="TimeIntervalEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity">[docs]</a><span class="nd">@EntityDeserializer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TIME_INTERVAL</span><span class="p">)</span>
+<span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
 <span class="k">class</span> <span class="nc">TimeIntervalEntity</span><span class="p">(</span><span class="n">TimeEntity</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">    Entities that can be parsed to obtain date, time or datetime interval.</span>
@@ -374,6 +376,7 @@
         <span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
         <span class="n">alternative_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEntity</span><span class="p">:</span>
         <span class="n">from_value</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FROM</span><span class="p">)</span>
         <span class="n">to_value</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TO</span><span class="p">)</span>

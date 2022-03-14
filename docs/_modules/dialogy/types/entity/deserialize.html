@@ -218,78 +218,86 @@
         </div>
         <article role="main">
           <h1>Source code for dialogy.types.entity.deserialize</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity.amount_of_money</span> <span class="kn">import</span> <span class="n">CurrencyEntity</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity.base_entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity.credit_card_number</span> <span class="kn">import</span> <span class="n">CreditCardNumberEntity</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity.duration</span> <span class="kn">import</span> <span class="n">DurationEntity</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity.numerical</span> <span class="kn">import</span> <span class="n">NumericalEntity</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity.people</span> <span class="kn">import</span> <span class="n">PeopleEntity</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity.time</span> <span class="kn">import</span> <span class="n">TimeEntity</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.entity.time_interval</span> <span class="kn">import</span> <span class="n">TimeIntervalEntity</span>
 
 
-<div class="viewcode-block" id="deserialize_duckling_entity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.deserialize.html#dialogy.types.entity.deserialize.deserialize_duckling_entity">[docs]</a><span class="k">def</span> <span class="nf">deserialize_duckling_entity</span><span class="p">(</span>
-    <span class="n">duckling_entity_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-    <span class="n">alternative_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"UTC"</span><span class="p">,</span>
-    <span class="n">duration_cast_operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEntity</span><span class="p">:</span>
-    <span class="n">keys</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-    <span class="k">if</span> <span class="n">keys</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_ENTITY_KEYS</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"Invalid Duckling entity keys: </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2"> expected </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_ENTITY_KEYS</span><span class="si">}</span><span class="s2">."</span>
-        <span class="p">)</span>
+<div class="viewcode-block" id="EntityDeserializer"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.deserialize.html#dialogy.types.entity.deserialize.EntityDeserializer">[docs]</a><span class="k">class</span> <span class="nc">EntityDeserializer</span><span class="p">:</span>
+    <span class="n">entitiy_classes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="n">dimension</span> <span class="o">=</span> <span class="n">duckling_entity_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">DIM</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_DIMS</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"Invalid Duckling dimension: </span><span class="si">{</span><span class="n">dimension</span><span class="si">}</span><span class="s2"> expected </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_DIMS</span><span class="si">}</span><span class="s2">."</span>
-        <span class="p">)</span>
+<div class="viewcode-block" id="EntityDeserializer.register"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.deserialize.html#dialogy.types.entity.deserialize.EntityDeserializer.register">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">entity_class</span><span class="p">:</span> <span class="n">BaseEntity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEntity</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">entitiy_classes</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity_class</span>
+            <span class="k">return</span> <span class="n">entity_class</span>
 
-    <span class="n">value_keys</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">decorator</span></div>
 
-    <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">PEOPLE</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">PeopleEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">,</span> <span class="n">alternative_index</span><span class="p">)</span>
-
-    <span class="k">elif</span> <span class="n">dimension</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">value_keys</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_TIME_VALUES_ENTITY_KEYS</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">TimeEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span>
-                <span class="n">duckling_entity_dict</span><span class="p">,</span> <span class="n">alternative_index</span><span class="p">,</span> <span class="n">constraints</span>
-            <span class="p">)</span>
-
-        <span class="k">elif</span> <span class="p">(</span>
-            <span class="n">dimension</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME</span>
-            <span class="ow">and</span> <span class="n">value_keys</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_TIME_INTERVAL_ENTITY_KEYS</span>
-        <span class="p">):</span>
-            <span class="k">return</span> <span class="n">TimeIntervalEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span>
-                <span class="n">duckling_entity_dict</span><span class="p">,</span> <span class="n">alternative_index</span>
-            <span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
+<div class="viewcode-block" id="EntityDeserializer.validate"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.deserialize.html#dialogy.types.entity.deserialize.EntityDeserializer.validate">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">duckling_entity_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">keys</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_ENTITY_KEYS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"Dimension </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">TIME</span><span class="si">}</span><span class="s2"> recieved invalid keys </span><span class="si">{</span><span class="n">value_keys</span><span class="si">}</span><span class="s2"> expected either </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_TIME_VALUES_ENTITY_KEYS</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_TIME_INTERVAL_ENTITY_KEYS</span><span class="si">}</span><span class="s2">."</span>
+                <span class="sa">f</span><span class="s2">"Invalid Duckling entity keys: </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2"> expected </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_ENTITY_KEYS</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">dimension</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">AMOUNT_OF_MONEY</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">CurrencyEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">,</span> <span class="n">alternative_index</span><span class="p">)</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_dimension</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_DIMS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Invalid Duckling dimension: </span><span class="si">{</span><span class="n">dimension</span><span class="si">}</span><span class="s2"> expected </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_DIMS</span><span class="si">}</span><span class="s2">."</span>
+            <span class="p">)</span></div>
 
-    <span class="k">elif</span> <span class="n">dimension</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">NUMBER</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">NumericalEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">,</span> <span class="n">alternative_index</span><span class="p">)</span>
+<div class="viewcode-block" id="EntityDeserializer.get_keys_in_value_as_str"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.deserialize.html#dialogy.types.entity.deserialize.EntityDeserializer.get_keys_in_value_as_str">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_keys_in_value_as_str</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span></div>
 
-    <span class="k">elif</span> <span class="n">dimension</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">DURATION</span><span class="p">:</span>
-        <span class="n">entity</span> <span class="o">=</span> <span class="n">DurationEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">,</span> <span class="n">alternative_index</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">duration_cast_operator</span> <span class="ow">and</span> <span class="n">reference_time</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">as_time</span><span class="p">(</span><span class="n">reference_time</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">duration_cast_operator</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">entity</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># dimension == const.CREDIT_CARD_NUMBER:</span>
-        <span class="k">return</span> <span class="n">CreditCardNumberEntity</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span>
-            <span class="n">duckling_entity_dict</span><span class="p">,</span> <span class="n">alternative_index</span>
+<div class="viewcode-block" id="EntityDeserializer.get_dimension"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.deserialize.html#dialogy.types.entity.deserialize.EntityDeserializer.get_dimension">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_dimension</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">duckling_entity_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">DIM</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="EntityDeserializer.get_entity_class_str"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.deserialize.html#dialogy.types.entity.deserialize.EntityDeserializer.get_entity_class_str">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_entity_class_str</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">duckling_entity_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">const</span><span class="o">.</span><span class="n">TIME_INTERVAL</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_keys_in_value_as_str</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">)</span>
+            <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">DUCKLING_TIME_INTERVAL_ENTITY_KEYS</span>
+            <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_dimension</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">)</span>
         <span class="p">)</span></div>
+
+<div class="viewcode-block" id="EntityDeserializer.deserialize_duckling"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.deserialize.html#dialogy.types.entity.deserialize.EntityDeserializer.deserialize_duckling">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">deserialize_duckling</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">duckling_entity_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">alternative_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">reference_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"UTC"</span><span class="p">,</span>
+        <span class="n">duration_cast_operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEntity</span><span class="p">:</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">)</span>
+        <span class="n">entity_class_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_entity_class_str</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">)</span>
+        <span class="n">EntityClass</span><span class="p">:</span> <span class="n">BaseEntity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">entitiy_classes</span><span class="p">[</span><span class="n">entity_class_name</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">entity</span> <span class="o">=</span> <span class="n">EntityClass</span><span class="o">.</span><span class="n">from_duckling</span><span class="p">(</span>
+                <span class="n">duckling_entity_dict</span><span class="p">,</span>
+                <span class="n">alternative_index</span><span class="p">,</span>
+                <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>
+                <span class="n">duration_cast_operator</span><span class="o">=</span><span class="n">duration_cast_operator</span><span class="p">,</span>
+                <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span><span class="p">,</span>
+                <span class="n">reference_time</span><span class="o">=</span><span class="n">reference_time</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Failed to deserialize </span><span class="si">{</span><span class="n">EntityClass</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="sa">f</span><span class="s2">"from duckling response: </span><span class="si">{</span><span class="n">duckling_entity_dict</span><span class="si">}</span><span class="s2">. Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+        <span class="k">return</span> <span class="n">entity</span></div></div>
 </pre></div>
         </article>
       </div>

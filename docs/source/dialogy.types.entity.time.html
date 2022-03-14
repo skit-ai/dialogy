@@ -238,7 +238,7 @@
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"tomorrow"</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-03-14T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
+<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-03-15T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
 
 <span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"monday"</span><span class="p">)</span>
 <span class="gh">Out[4]: </span><span class="go">[TimeEntity(body='monday', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-03-14T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
@@ -274,8 +274,17 @@
 <span class="go">   'body': 'tomorrow',</span>
 <span class="go">   'type': 'value',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.6666666666666666,</span>
+<span class="go">   'score': 0.3333333333333333,</span>
 <span class="go">   'alternative_index': 0,</span>
+<span class="go">   'value': '2022-03-15T00:00:00.000+05:30',</span>
+<span class="go">   'entity_type': 'date',</span>
+<span class="go">   'grain': 'day'},</span>
+<span class="go">  {'range': {'start': 0, 'end': 6},</span>
+<span class="go">   'body': 'monday',</span>
+<span class="go">   'type': 'value',</span>
+<span class="go">   'parsers': ['DucklingPlugin'],</span>
+<span class="go">   'score': 0.3333333333333333,</span>
+<span class="go">   'alternative_index': 1,</span>
 <span class="go">   'value': '2022-03-14T00:00:00.000+05:30',</span>
 <span class="go">   'entity_type': 'date',</span>
 <span class="go">   'grain': 'day'},</span>
@@ -321,7 +330,7 @@
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.from_duckling">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_duckling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.from_duckling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.from_duckling" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_duckling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.from_duckling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.from_duckling" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeEntity</span></code></a></p>
