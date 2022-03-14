@@ -35,7 +35,6 @@ def test_get_metrics():
     assert isinstance(mce, float)
 
 
-
 @pytest.fixture
 def full_path():
     prefix = "test"
