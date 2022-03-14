@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from json.decoder import JSONDecodeError
 from typing import Any, Dict, List, Optional
+from loguru import logger
 
 
 def load_file(
@@ -28,7 +29,7 @@ def load_file(
             else:
                 return loader(file)
     else:
-        return None
+        return None # pragma: no cover
 
 
 def save_file(
@@ -84,7 +85,7 @@ def save_to_json(params: Dict[str, Any], dir_path: str, file_name: str) -> None:
                 for key, val in params.items():
                     existing_config[key] = val
         except JSONDecodeError:
-            print(
+            logger.error(
                 f"Failed to load json file {full_path}, writing on newly created file."
             )
     params = existing_config or params

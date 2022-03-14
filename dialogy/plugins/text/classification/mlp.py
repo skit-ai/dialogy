@@ -77,8 +77,8 @@ class MLPMultiClass(Plugin):
         try:
             if os.path.exists(self.mlp_model_path):
                 self.init_model()
-        except EOFError:
-            logger.error(
+        except EOFError:  # pragma: no cover
+            logger.error(  # pragma: no cover
                 f"Plugin {self.__class__.__name__} Failed to load MLPClassifier Model from {self.mlp_model_path}. "
                 "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
             )
@@ -266,8 +266,8 @@ class MLPMultiClass(Plugin):
             return
 
         if self.valid_mlpmodel:
-            logger.warning(f"Model already exists on {self.mlp_model_path}")
-            return
+            logger.warning(f"Model already exists on {self.mlp_model_path}") # pragma: no cover
+            return # pragma: no cover
 
         skip_labels_filter = training_data[self.label_column].isin(self.skip_labels)
         training_data = training_data[~skip_labels_filter].copy()
@@ -295,9 +295,6 @@ class MLPMultiClass(Plugin):
 
         :raises ValueError: In case the mlp model is not trained.
         """
-        print(self.model_pipeline)
-        print(self.valid_mlpmodel)
-
         if not self.model_pipeline or not self.valid_mlpmodel:
             raise ValueError(
                 f"Plugin {self.__class__.__name__} seems to be un-trained."
