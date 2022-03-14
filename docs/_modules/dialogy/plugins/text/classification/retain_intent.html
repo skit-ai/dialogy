@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.classification.retain_intent - dialogy 0.9.5 documentation</title>
+        <title>dialogy.plugins.text.classification.retain_intent - dialogy 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.5 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.5 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -225,10 +225,11 @@
 <span class="sd">Here, we will track the original intent, the one produced by a classifier.</span>
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">Input</span>
+
+<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span>
 <span class="kn">from</span> <span class="nn">dialogy.base.output</span> <span class="kn">import</span> <span class="n">ORIGINAL_INTENT_TYPE</span>
 <span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Intent</span>
-<span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 
 
 <div class="viewcode-block" id="RetainOriginalIntentPlugin"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin">[docs]</a><span class="k">class</span> <span class="nc">RetainOriginalIntentPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
@@ -237,22 +238,18 @@
         <span class="n">replace_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">dest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"output.original_intent"</span><span class="p">,</span>
         <span class="n">guards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">replace_output</span><span class="o">=</span><span class="n">replace_output</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="n">guards</span><span class="o">=</span><span class="n">guards</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">replace_output</span><span class="o">=</span><span class="n">replace_output</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="n">guards</span><span class="o">=</span><span class="n">guards</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="RetainOriginalIntentPlugin.retain"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin.retain">[docs]</a>    <span class="k">def</span> <span class="nf">retain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ORIGINAL_INTENT_TYPE</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">intents</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">intents</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{}</span>
-
         <span class="n">intent</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">intents</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="n">intent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="p">:</span> <span class="n">intent</span><span class="o">.</span><span class="n">score</span>
-        <span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="n">intent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">SCORE</span><span class="p">:</span> <span class="n">intent</span><span class="o">.</span><span class="n">score</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="RetainOriginalIntentPlugin.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.retain_intent.RetainOriginalIntentPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ORIGINAL_INTENT_TYPE</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">retain</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span></div></div>

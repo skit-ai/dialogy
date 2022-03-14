@@ -445,7 +445,7 @@ from dialogy import constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
 from dialogy.types import BaseEntity, Intent
-from dialogy.types.entity.deserialize import deserialize_duckling_entity
+from dialogy.types.entity.deserialize import EntityDeserializer
 from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
 
 
@@ -655,7 +655,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             operation = self.get_operator(filter_type)
 
         if not self.reference_time:
-            return entities # pragma: no cover
+            return entities  # pragma: no cover
 
         time_entities, other_entities = py_.partition(
             entities, lambda entity: entity.dim == const.TIME
@@ -709,7 +709,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         """
         deserialized_entities = []
         for entity_json in entities_json:
-            entity = deserialize_duckling_entity(
+            entity = EntityDeserializer.deserialize_duckling(
                 entity_json,
                 alternative_index,
                 reference_time=reference_time,

@@ -246,6 +246,12 @@ class BaseEntity:
             return attr.evolve(reference, **dict_)
         return cls(**dict_)
 
+    @classmethod
+    def from_duckling(
+        cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
+    ) -> BaseEntity:
+        raise NotImplementedError  # pragma: no cover
+
 
 # = entity_synthesis =
 def entity_synthesis(entity: BaseEntity, property_: str, value: Any) -> BaseEntity:

@@ -57,7 +57,9 @@ def test_xlmr_plugin_no_module_error(mocker):
 
 
 def test_xlmr_plugin_when_no_labelencoder_saved(mocker):
-    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
     xlmr_clf = XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
@@ -66,7 +68,9 @@ def test_xlmr_plugin_when_no_labelencoder_saved(mocker):
 
 
 def test_xlmr_plugin_when_labelencoder_EOFError(capsys, mocker, tmpdir):
-    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
     _, file_path = tempfile.mkstemp(suffix=".pkl")
@@ -86,7 +90,9 @@ def test_xlmr_plugin_when_labelencoder_EOFError(capsys, mocker, tmpdir):
 
 
 def test_xlmr_init_mock(mocker):
-    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
     xlmr_clf = XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
@@ -95,7 +101,9 @@ def test_xlmr_init_mock(mocker):
 
 
 def test_xlmr_init_mock(mocker):
-    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
     with pytest.raises(ValueError):
@@ -108,14 +116,14 @@ def test_xlmr_init_mock(mocker):
 
 
 def test_train_xlmr_mock(mocker, tmpdir):
-    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-
 
     directory = "/tmp"
     file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
-
 
     xlmr_clf = XLMRMultiClass(model_dir=directory, dest="output.intents", debug=False)
 
@@ -157,7 +165,9 @@ def test_train_xlmr_mock(mocker, tmpdir):
 
 
 def test_invalid_operations(mocker, tmpdir):
-    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
     directory = "/tmp"
     file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
@@ -197,7 +207,9 @@ def test_invalid_operations(mocker, tmpdir):
 
 
 def test_invalid_operations_with_state(mocker, tmpdir):
-    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
     directory = "/tmp"
     file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
@@ -246,7 +258,9 @@ def test_invalid_operations_with_state(mocker, tmpdir):
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_inference(payload, mocker, tmpdir):
-    mocker.patch.object(const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr")
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
     directory = "/tmp"
     file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)

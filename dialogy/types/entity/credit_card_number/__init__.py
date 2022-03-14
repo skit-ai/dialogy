@@ -55,12 +55,14 @@ from this import d
 
 from dialogy import constants as const
 from dialogy.types import BaseEntity
+from dialogy.types.entity.deserialize import EntityDeserializer
 
 
+@EntityDeserializer.register(const.CREDIT_CARD_NUMBER)
 @attr.s
 class CreditCardNumberEntity(BaseEntity):
     entity_type: Optional[str] = attr.ib(
-        repr=False, default="credit-card-number", kw_only=True
+        repr=False, default=const.CREDIT_CARD_NUMBER, kw_only=True
     )
     issuer: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
     value: Optional[str] = attr.ib(default=None, kw_only=True)
@@ -70,7 +72,7 @@ class CreditCardNumberEntity(BaseEntity):
 
     @classmethod
     def from_duckling(
-        cls, d: Dict[str, Any], alternative_index: int
+        cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
     ) -> CreditCardNumberEntity:
         value = d[const.VALUE][const.VALUE]
         return cls(

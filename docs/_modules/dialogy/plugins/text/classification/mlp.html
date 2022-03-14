@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.classification.mlp - dialogy 0.9.1 documentation</title>
+        <title>dialogy.plugins.text.classification.mlp - dialogy 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.1 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.1 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,11 +160,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.workflow.html">Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.plugin.html">Base Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -173,7 +175,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -185,6 +186,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -224,6 +226,7 @@
 <span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">joblib</span>
@@ -232,6 +235,7 @@
 <span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">make_scorer</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection._search</span> <span class="kn">import</span> <span class="n">BaseSearchCV</span>
 <span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPClassifier</span>
 <span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
@@ -293,13 +297,13 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
                 <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> Failed to load MLPClassifier Model from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="si">}</span><span class="s2">. "</span>
                 <span class="s2">"Ignore this message if you are training but if you are using this in production or testing, then this is serious!"</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="MLPMultiClass.init_model"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.init_model">[docs]</a>    <span class="k">def</span> <span class="nf">init_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="MLPMultiClass.init_model"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.init_model">[docs]</a>    <span class="k">def</span> <span class="nf">init_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_search</span><span class="p">:</span> <span class="n">BaseSearchCV</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Initialize the model if artifacts are available.</span>
 <span class="sd">        """</span>
@@ -312,7 +316,7 @@
             <span class="k">else</span> <span class="p">{}</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="p">(</span>
                     <span class="n">const</span><span class="o">.</span><span class="n">TFIDF</span><span class="p">,</span>
@@ -339,9 +343,11 @@
         <span class="p">)</span>
         <span class="n">USE</span> <span class="o">=</span> <span class="s2">"use"</span>
         <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">USE</span><span class="p">]:</span>
-            <span class="n">GRID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gridsearch_grid</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">PARAMS</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
-                <span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">,</span>
+            <span class="n">GRID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gridsearch_grid</span><span class="p">(</span>
+                <span class="n">pipeline</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">PARAMS</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">param_search</span><span class="p">(</span>
+                <span class="n">estimator</span><span class="o">=</span><span class="n">pipeline</span><span class="p">,</span>
                 <span class="n">param_grid</span><span class="o">=</span><span class="n">GRID</span><span class="p">,</span>
                 <span class="n">cv</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">CV</span><span class="p">],</span>
                 <span class="n">n_jobs</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">GRIDSEARCH_WORKERS</span><span class="p">,</span>
@@ -349,10 +355,14 @@
                 <span class="n">scoring</span><span class="o">=</span><span class="n">make_scorer</span><span class="p">(</span><span class="n">f1_score</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">GRID_SCORETYPE</span><span class="p">),</span>
                 <span class="n">return_train_score</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">pipeline</span>
 
         <span class="k">return</span> <span class="n">args</span></div>
 
-<div class="viewcode-block" id="MLPMultiClass.get_gridsearch_grid"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid">[docs]</a>    <span class="k">def</span> <span class="nf">get_gridsearch_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]:</span>
+<div class="viewcode-block" id="MLPMultiClass.get_gridsearch_grid"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.get_gridsearch_grid">[docs]</a>    <span class="k">def</span> <span class="nf">get_gridsearch_grid</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Gets gridsearch hyperparameters for the model in proper grid params format.</span>
 
@@ -360,11 +370,10 @@
 <span class="sd">            ValueError: If a gridsearch parameter doesn't exist in sklearns TFIDF and MLPClassifier modules.</span>
 <span class="sd">        """</span>
         <span class="n">grid_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tfidf_params</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TFIDF</span><span class="p">]</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">mlp_params</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">MLP</span><span class="p">]</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TFIDF</span><span class="p">]</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-                <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">MLP</span><span class="p">]</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-            <span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tfidf_params</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mlp_params</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">"Hyperparam defined for gridsearch </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> doesn't exist,</span><span class="se">\n</span><span class="s2">Refer: https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html</span><span class="se">\n</span><span class="s2">and https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html"</span>
                 <span class="p">)</span>
@@ -463,7 +472,9 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="MLPMultiClass.train"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MLPMultiClass.train"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.mlp.MLPMultiClass.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">param_search</span><span class="p">:</span> <span class="n">BaseSearchCV</span> <span class="o">=</span> <span class="n">GridSearchCV</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Train an intent-classifier on the provided training data.</span>
 
@@ -478,8 +489,10 @@
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_mlpmodel</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Model already exists on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-            <span class="k">return</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Model already exists on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp_model_path</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">return</span>  <span class="c1"># pragma: no cover</span>
 
         <span class="n">skip_labels_filter</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_column</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_labels</span><span class="p">)</span>
         <span class="n">training_data</span> <span class="o">=</span> <span class="n">training_data</span><span class="p">[</span><span class="o">~</span><span class="n">skip_labels_filter</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -490,20 +503,16 @@
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_column</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">},</span>
             <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">()</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">(</span><span class="n">param_search</span><span class="o">=</span><span class="n">param_search</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">"Displaying a few samples (this goes into the model):</span><span class="se">\n</span><span class="si">{</span><span class="n">training_data</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">Labels: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">labels_num</span><span class="si">}</span><span class="s2">."</span>
         <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training_data</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TEXT</span><span class="p">],</span> <span class="n">training_data</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">LABELS</span><span class="p">])</span>
         <span class="n">USE</span> <span class="o">=</span> <span class="s2">"use"</span>
         <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">USE_GRIDSEARCH</span><span class="p">][</span><span class="n">USE</span><span class="p">]:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">"Best gridsearch params found:</span><span class="se">\n</span><span class="s2">"</span>
-                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                    <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                        <span class="nb">str</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="k">for</span> <span class="n">items</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="o">.</span><span class="n">best_params_</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
+                <span class="sa">f</span><span class="s2">"Best gridsearch params found:</span><span class="se">\n</span><span class="si">{</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_pipeline</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
@@ -567,5 +576,7 @@
     <script src="../../../../../_static/scripts/furo.js"></script>
     <script src="../../../../../_static/clipboard.min.js"></script>
     <script src="../../../../../_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.time - dialogy 0.9.3 documentation</title>
+        <title>dialogy.types.entity.time - dialogy 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.9.3 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.9.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.3 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -161,10 +161,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.output.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.workflow.html">Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Types</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.intent.html">Intent</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
@@ -173,7 +175,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.types.slots.html">Slots</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -269,6 +270,7 @@
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
@@ -277,9 +279,11 @@
 
 <span class="kn">from</span> <span class="nn">dialogy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 <span class="kn">from</span> <span class="nn">dialogy.types.entity.base_entity</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span> <span class="nn">dialogy.types.entity.deserialize</span> <span class="kn">import</span> <span class="n">EntityDeserializer</span>
 
 
-<div class="viewcode-block" id="TimeEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<div class="viewcode-block" id="TimeEntity"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity">[docs]</a><span class="nd">@EntityDeserializer</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+<span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
 <span class="k">class</span> <span class="nc">TimeEntity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">    Entities that can be parsed to obtain date, time or datetime values.</span>
@@ -293,9 +297,13 @@
 <span class="sd">    - `grain` tells us the smallest unit of time in the utterance</span>
 <span class="sd">    """</span>
 
-    <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">"value"</span><span class="p">)</span>
-    <span class="n">dim</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">"time"</span><span class="p">)</span>
+    <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">)</span>
+    <span class="n">dim</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
     <span class="n">grain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validator</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+    <span class="n">__TIMERANGE_OPERATION_ALIAS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">LTE</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">,</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">GTE</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">,</span>
+    <span class="p">}</span>
 
 <div class="viewcode-block" id="TimeEntity.get_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -407,16 +415,55 @@
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME</span></div>
 
+<div class="viewcode-block" id="TimeEntity.pick_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.pick_value">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pick_value</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">d_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">grain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">constraints</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="n">is_time</span> <span class="o">=</span> <span class="n">grain</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME_UNITS</span>
+        <span class="n">constraint</span> <span class="o">=</span> <span class="n">constraints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+        <span class="n">req_value</span> <span class="o">=</span> <span class="n">d_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_time</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">constraint</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">req_value</span><span class="p">]</span>
+
+        <span class="n">opt_items</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">__TIMERANGE_OPERATION_ALIAS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">opt</span><span class="p">),</span> <span class="n">measure</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">opt</span><span class="p">,</span> <span class="n">measure</span> <span class="ow">in</span> <span class="n">constraint</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">datetime_val</span> <span class="ow">in</span> <span class="n">d_values</span><span class="p">:</span>
+            <span class="n">datetime_</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">datetime_val</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">opt</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datetime_</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">HOUR</span><span class="p">),</span> <span class="n">measure</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HOUR</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">opt</span><span class="p">,</span> <span class="n">measure</span> <span class="ow">in</span> <span class="n">opt_items</span>
+                <span class="k">if</span> <span class="n">opt</span>
+            <span class="p">):</span>
+                <span class="n">req_value</span> <span class="o">=</span> <span class="n">datetime_val</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">req_value</span><span class="p">]</span></div>
+
 <div class="viewcode-block" id="TimeEntity.from_duckling"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.from_duckling">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_duckling</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">alternative_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEntity</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_duckling</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">alternative_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEntity</span><span class="p">:</span>
+        <span class="n">datetime_values</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datetime_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">constraints</span><span class="p">:</span>
+            <span class="n">datetime_values</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">pick_value</span><span class="p">(</span>
+                <span class="n">d_values</span><span class="o">=</span><span class="n">datetime_values</span><span class="p">,</span>
+                <span class="n">grain</span><span class="o">=</span><span class="n">datetime_values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">],</span>
+                <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>
+            <span class="p">)</span>
+
         <span class="n">time_entity</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">START</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">START</span><span class="p">],</span> <span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">]},</span>
             <span class="n">body</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">BODY</span><span class="p">],</span>
             <span class="n">dim</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">DIM</span><span class="p">],</span>
             <span class="n">alternative_index</span><span class="o">=</span><span class="n">alternative_index</span><span class="p">,</span>
             <span class="n">latent</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">LATENT</span><span class="p">],</span>
-            <span class="n">values</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">],</span>
-            <span class="n">grain</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">],</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">datetime_values</span><span class="p">,</span>
+            <span class="n">grain</span><span class="o">=</span><span class="n">datetime_values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">],</span>
         <span class="p">)</span>
         <span class="n">time_entity</span><span class="o">.</span><span class="n">set_entity_type</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">time_entity</span></div></div>

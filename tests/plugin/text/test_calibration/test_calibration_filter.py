@@ -1,8 +1,5 @@
-# type : ignore
-
 import json
 from copy import copy
-from typing import ValuesView
 
 import numpy as np
 import pandas as pd
@@ -10,7 +7,6 @@ from scipy import sparse
 
 from dialogy.base import Input, Output
 from dialogy.plugins.text.calibration.xgb import CalibrationModel
-from dialogy.types import utterances
 from tests import load_tests
 
 json_data = load_tests("df", __file__, ext=".json")

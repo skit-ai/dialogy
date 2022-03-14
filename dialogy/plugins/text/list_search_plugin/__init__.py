@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import stanza
 from loguru import logger
+from stanza.models.common.doc import Document
 from thefuzz import fuzz
 
 from dialogy import constants as const
@@ -141,11 +142,14 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         self,
         query: str,
         entity_type: str = "",
-        entity_patterns: List[str] = [""],
-        match_dict: Dict[Any, Any] = {},
+        entity_patterns: Optional[List[str]] = None,
+        match_dict: Optional[Dict[Any, Any]] = None,
     ) -> Tuple[Text, Label, Value, Span, Score]:
+        match_dict
         max_length = 0
         final_match = None
+        entity_patterns = entity_patterns or []
+        match_dict = match_dict or {}
 
         for pattern in entity_patterns:
             result = re.search(pattern, query)
@@ -161,31 +165,38 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             return (match_text, entity_type, final_match, match_span, 1.0)
         return ("", entity_type, "", (0, 0), 0.0)
 
+    def get_words_from_nlp(
+        self, nlp: stanza.Pipeline, query: str
+    ) -> List[Dict[str, Any]]:
+        document: Document = nlp(query)
+        document_json = document.to_dict()
+        return document_json[0]
+
     def dp_search(
         self,
         query: str,
-        nlp: Any,
+        nlp: stanza.Pipeline,
         entity_type: str = "",
-        entity_patterns: List[str] = [""],
-        match_dict: Dict[Any, Any] = {},
+        entity_patterns: Optional[List[str]] = None,
+        match_dict: Optional[Dict[Any, Any]] = None,
     ) -> Tuple[Text, Label, Value, Span, Score]:
-
-        sentence = nlp(query).sentences[0]
+        entity_patterns = entity_patterns or []
+        match_dict = match_dict or {}
+        words = self.get_words_from_nlp(nlp, query)
         value = ""
         pos_tags = ["PROPN", "NOUN", "ADP"]
         result_dict = {}
-        for word in sentence.words:
-            if word.upos in pos_tags:
+        for word in words:
+            if word["upos"] in pos_tags:
                 if value == "":
-                    span_start = word.start_char
-                span_end = word.end_char
+                    span_start = word["start_char"]
+                span_end = word["end_char"]
 
                 """
                 joining individual tokens that together are the real entity,
                 Since we are dealing with Multi-Word entities here
-
                 """
-                value = value + str(word.text) + " "
+                value = value + str(word["text"]) + " "
         if value != "":
             for pattern in entity_patterns:
                 val = fuzz.ratio(pattern, value) / 100

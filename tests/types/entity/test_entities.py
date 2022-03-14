@@ -173,56 +173,54 @@ def test_time_entity_grain_not_str_error():
             range={"from": 0, "to": len(body)}, body=body, entity_type="time", grain=0
         )
 
+
 def test_time_entities_with_constraint() -> None:
-    req_time = dt2timestamp(
-        datetime.fromisoformat("2022-03-06T12:00:00.000+05:30")
-    )
+    req_time = dt2timestamp(datetime.fromisoformat("2022-03-06T12:00:00.000+05:30"))
     no_constraint_time = dt2timestamp(
         datetime.fromisoformat("2022-03-06T00:00:00.000+05:30")
     )
     test_constraints = {
-        "time": {
-            "lte": {"hour": 21, "minute": 59},
-            "gte": {"hour": 7, "minute": 0}
-        }
+        "time": {"lte": {"hour": 21, "minute": 59}, "gte": {"hour": 7, "minute": 0}}
     }
     not_time_constraints = {
-        "date":{
+        "date": {
             "start": {"year": 2010, "month": 1, "day": 1},
-            "end": {"year": 2020, "month": 1, "day": 1}
+            "end": {"year": 2020, "month": 1, "day": 1},
         }
     }
     d_multiple = {
-            'body': 'कल 12:00',
-            'start': 0,
-            'value': {
-                'values': [
-                    {
-                        'value': '2022-03-06T00:00:00.000+05:30',
-                        'grain': 'minute',
-                        'type': 'value'
-                    },
-                    {
-                        'value': '2022-03-06T12:00:00.000+05:30',
-                        'grain': 'minute',
-                        'type': 'value'
-                    }
-                ],
-                'value': '2022-03-06T00:00:00.000+05:30',
-                'grain': 'minute',
-                'type': 'value'
-            },
-            'end': 8,
-            'dim': 'time',
-            'latent': False
+        "body": "कल 12:00",
+        "start": 0,
+        "value": {
+            "values": [
+                {
+                    "value": "2022-03-06T00:00:00.000+05:30",
+                    "grain": "minute",
+                    "type": "value",
+                },
+                {
+                    "value": "2022-03-06T12:00:00.000+05:30",
+                    "grain": "minute",
+                    "type": "value",
+                },
+            ],
+            "value": "2022-03-06T00:00:00.000+05:30",
+            "grain": "minute",
+            "type": "value",
+        },
+        "end": 8,
+        "dim": "time",
+        "latent": False,
     }
-    
+
     time_entity = TimeEntity.from_duckling(d_multiple, 1, test_constraints)
-    no_constraint_time_entity = TimeEntity.from_duckling(d_multiple, 1, not_time_constraints)
+    no_constraint_time_entity = TimeEntity.from_duckling(
+        d_multiple, 1, not_time_constraints
+    )
     assert req_time == dt2timestamp(time_entity.get_value())
     assert no_constraint_time == dt2timestamp(no_constraint_time_entity.get_value())
-    
-    
+
+
 def test_time_interval_entity_value_not_dict_error():
     body = "from 4 pm to 12 am"
     with pytest.raises(TypeError):
@@ -476,7 +474,7 @@ def test_numerical_entity_as_time() -> None:
         value="2021-01-04T02:00:00.000+05:30",
         grain="hour",
     )
-    print(numeric_entity.as_time(reference_time, "Asia/Kolkata"))
+
     assert (
         numeric_entity.as_time(reference_time, "Asia/Kolkata").get_value()
         == time_entity.get_value()

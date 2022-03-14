@@ -15,7 +15,7 @@ typecheck:
 	@mypy -p dialogy
 
 test: ## Run the tests.conf
-	@pytest --cov=dialogy --cov-report html --cov-report term:skip-covered tests/
+	@pytest --cov=dialogy --cov-report html --durations=5 --cov-report term:skip-covered tests/
 
 docs:
 	@echo -e "🦆🦕🐬🐶"

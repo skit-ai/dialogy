@@ -28,7 +28,7 @@ reservation :ref:`intents<intent>`.
 from dialogy.types.entity.amount_of_money import CurrencyEntity
 from dialogy.types.entity.base_entity import BaseEntity, entity_synthesis
 from dialogy.types.entity.credit_card_number import CreditCardNumberEntity
-from dialogy.types.entity.deserialize import deserialize_duckling_entity
+from dialogy.types.entity.deserialize import EntityDeserializer
 from dialogy.types.entity.duration import DurationEntity
 from dialogy.types.entity.keyword import KeywordEntity
 from dialogy.types.entity.numerical import NumericalEntity

@@ -114,8 +114,10 @@ class XLMRMultiClass(Plugin):
             label_count = len(self.labelencoder.classes_)
             model_dir = self.model_dir
         if not label_count:
-            raise ValueError(f"Plugin {self} needs either the training data "
-                "or an existing labelencoder to initialize.")
+            raise ValueError(
+                f"Plugin {self} needs either the training data "
+                "or an existing labelencoder to initialize."
+            )
         args = (
             self.args_map[self.purpose]
             if self.args_map and self.purpose in self.args_map
@@ -247,7 +249,7 @@ class XLMRMultiClass(Plugin):
         training_data = training_data[~skip_labels_filter].copy()
 
         encoder = self.labelencoder.fit(training_data[self.label_column])
-        print(training_data)
+
         sample_size = 5 if len(training_data) > 5 else len(training_data)
         training_data.rename(
             columns={self.data_column: const.TEXT, self.label_column: const.LABELS},

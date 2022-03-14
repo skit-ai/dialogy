@@ -13,8 +13,10 @@ import attr
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
+from dialogy.types.entity.deserialize import EntityDeserializer
 
 
+@EntityDeserializer.register(const.AMOUNT_OF_MONEY)
 @attr.s
 class CurrencyEntity(BaseEntity):
     """
@@ -33,7 +35,7 @@ class CurrencyEntity(BaseEntity):
 
     unit: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
     entity_type: str = attr.ib(
-        default="amount-of-money",
+        default=const.AMOUNT_OF_MONEY,
         validator=attr.validators.instance_of(str),
         kw_only=True,
     )
@@ -53,7 +55,9 @@ class CurrencyEntity(BaseEntity):
         return f"{self.unit}{value:.2f}"
 
     @classmethod
-    def from_duckling(cls, d: Dict[str, Any], alternative_index: int) -> CurrencyEntity:
+    def from_duckling(
+        cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
+    ) -> CurrencyEntity:
         value = d[const.VALUE][const.VALUE]
         return cls(
             range={const.START: d[const.START], const.END: d[const.END]},
