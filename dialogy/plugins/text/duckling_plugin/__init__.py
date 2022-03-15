@@ -425,6 +425,82 @@ In case we need to always cast duration as a future or a past value we can do:
        ...: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))
        ...: output
 
+Setting Time Range Constraints
+------------------------------
+
+Sometimes there are cases where you'd expect the user to say a time between only a particular acceptable range,
+if the user says *"कल 12:00 बजे"* or *"tomorrow at 12:00"* at 6pm being the current time, now given our context mostly we know that user meant
+12pm here next day and not 12am, so if we say our acceptable time range constraint is >= 7am but <= 11pm,
+we can capture the time entity correctly.
+
+Problem
+^^^^^^^
+
+.. ipython::
+
+    In [1]: import pytz
+       ...: from datetime import datetime
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.utils import dt2timestamp
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["datetime"],
+       ...:     timezone="Asia/Kolkata",
+       ...:     locale="hi_IN"
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: utterances = ["कल 12:00 बजे"]
+    
+    In [5]: reference_dt = datetime(2022, 3, 16, 18, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))
+       ...: reference_time = dt2timestamp(reference_dt)
+
+    In [6]: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))
+
+    In [7]: output
+
+Given that current datetime is *"2022-03-16T18:00:00+05:30"* we can see duckling gives the value as *"2022-03-17T00:00:00+05:30"* but we wanted
+to capture *"2022-03-17T12:00:00+05:30"* so for that we can define a time range constraint.
+
+.. ipython::
+
+    In [1]: import pytz
+       ...: from datetime import datetime
+       ...: from dialogy.workflow import Workflow
+       ...: from dialogy.base import Input
+       ...: from dialogy.plugins import DucklingPlugin
+       ...: from dialogy.utils import dt2timestamp
+
+    In [2]: duckling_plugin = DucklingPlugin(
+       ...:     dest="output.entities",
+       ...:     dimensions=["datetime"],
+       ...:     timezone="Asia/Kolkata",
+       ...:     locale="hi_IN",
+       ...:     constraints={
+       ...:         "time": {
+       ...:             "gte": {"hour": 7, "minute": 0},
+       ...:             "lte": {"hour": 22, "minute": 59}
+       ...:         }
+       ...:     }
+       ...: )
+
+    In [3]: workflow = Workflow([duckling_plugin])
+
+    In [4]: utterances = ["कल 12:00 बजे"]
+    
+    In [5]: reference_dt = datetime(2022, 3, 16, 18, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))
+       ...: reference_time = dt2timestamp(reference_dt)
+
+    In [6]: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))
+
+    In [7]: output
+
+Now we can see that it gives the correct entity value i.e *"2022-03-17T12:00:00+05:30"*
+
 """
 import json
 import operator
