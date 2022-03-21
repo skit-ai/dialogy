@@ -1,4 +1,4 @@
-SHELL := /bin/zsh
+SHELL := /bin/bash
 python_version = 3.8.5
 
 .PHONY: all test docs

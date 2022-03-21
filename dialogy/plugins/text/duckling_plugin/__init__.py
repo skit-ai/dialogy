@@ -743,7 +743,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         )
 
         reference_time = unix_ts_to_datetime(
-            self.reference_time, timezone="Asia/Kolkata"
+            self.reference_time, timezone=self.timezone
         )
         reference_time = reference_time.replace(
             hour=reference_time.hour, minute=0, second=0, microsecond=0
