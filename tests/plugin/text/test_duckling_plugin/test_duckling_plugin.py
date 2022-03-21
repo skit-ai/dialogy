@@ -1,5 +1,6 @@
 import operator
 import time
+from datetime import datetime
 from http.client import REQUESTED_RANGE_NOT_SATISFIABLE
 
 import httpretty
@@ -10,7 +11,7 @@ import requests
 from dialogy.base import Input, Output
 from dialogy.plugins import DucklingPlugin
 from dialogy.types import BaseEntity, Intent, KeywordEntity, TimeEntity
-from dialogy.utils import make_unix_ts
+from dialogy.utils import dt2timestamp, make_unix_ts
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
@@ -98,6 +99,116 @@ def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
     assert duckling_plugin.remove_low_scoring_entities([entity_A, entity_B]) == [
         entity_B,
     ]
+
+
+def test_datetime_filters_future_entities():
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        threshold=0.2,
+        datetime_filters="future",
+    )
+    reference_time = "2022-03-21T18:00:00"
+    duckling_plugin.reference_time = dt2timestamp(
+        datetime.strptime(reference_time, "%Y-%m-%dT%H:%M:%S")
+    )
+
+    bodyA = "5 pm"
+    bodyB = "6 pm"
+    bodyC = "7 pm"
+
+    entityA = TimeEntity(
+        range={
+            "start": 0,
+            "end": len(bodyA),
+        },
+        body=bodyA,
+        dim="time",
+        values=[{"value": "2022-03-21T17:00:00"}],
+        grain="hour",
+    )
+
+    entityB = TimeEntity(
+        range={
+            "start": 0,
+            "end": len(bodyB),
+        },
+        body=bodyB,
+        dim="time",
+        values=[{"value": "2022-03-21T18:00:00"}],
+        grain="hour",
+    )
+
+    entityC = TimeEntity(
+        range={
+            "start": 0,
+            "end": len(bodyC),
+        },
+        body=bodyC,
+        dim="time",
+        values=[{"value": "2022-03-21T19:00:00"}],
+        grain="hour",
+    )
+
+    assert duckling_plugin.select_datetime(
+        [entityA, entityB, entityC], filter_type=duckling_plugin.datetime_filters
+    ) == [entityB, entityC]
+
+
+def test_datetime_filters_past_entities():
+    duckling_plugin = DucklingPlugin(
+        locale="en_IN",
+        dimensions=["time"],
+        timezone="Asia/Kolkata",
+        threshold=0.2,
+        datetime_filters="past",
+    )
+    reference_time = "2022-03-21T18:00:00"
+    duckling_plugin.reference_time = dt2timestamp(
+        datetime.strptime(reference_time, "%Y-%m-%dT%H:%M:%S")
+    )
+
+    bodyA = "5 pm"
+    bodyB = "6 pm"
+    bodyC = "7 pm"
+
+    entityA = TimeEntity(
+        range={
+            "start": 0,
+            "end": len(bodyA),
+        },
+        body=bodyA,
+        dim="time",
+        values=[{"value": "2022-03-21T17:00:00"}],
+        grain="hour",
+    )
+
+    entityB = TimeEntity(
+        range={
+            "start": 0,
+            "end": len(bodyB),
+        },
+        body=bodyB,
+        dim="time",
+        values=[{"value": "2022-03-21T18:00:00"}],
+        grain="hour",
+    )
+
+    entityC = TimeEntity(
+        range={
+            "start": 0,
+            "end": len(bodyC),
+        },
+        body=bodyC,
+        dim="time",
+        values=[{"value": "2022-03-21T19:00:00"}],
+        grain="hour",
+    )
+
+    assert duckling_plugin.select_datetime(
+        [entityA, entityB, entityC], filter_type=duckling_plugin.datetime_filters
+    ) == [entityA, entityB]
 
 
 def test_duckling_connection_error() -> None:

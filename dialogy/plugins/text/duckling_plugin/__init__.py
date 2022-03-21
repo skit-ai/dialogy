@@ -522,7 +522,12 @@ from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.base.entity_extractor import EntityScoringMixin
 from dialogy.types import BaseEntity, Intent
 from dialogy.types.entity.deserialize import EntityDeserializer
-from dialogy.utils import dt2timestamp, lang_detect_from_text, logger
+from dialogy.utils import (
+    dt2timestamp,
+    lang_detect_from_text,
+    logger,
+    unix_ts_to_datetime,
+)
 
 
 class DucklingPlugin(EntityScoringMixin, Plugin):
@@ -737,10 +742,17 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             entities, lambda entity: entity.dim == const.TIME
         )
 
+        reference_time = unix_ts_to_datetime(
+            self.reference_time, timezone="Asia/Kolkata"
+        )
+        reference_time = reference_time.replace(
+            hour=reference_time.hour, minute=0, second=0, microsecond=0
+        )
+
         filtered_time_entities = [
             entity
             for entity in time_entities
-            if operation(dt2timestamp(entity.get_value()), self.reference_time)
+            if operation(dt2timestamp(entity.get_value()), dt2timestamp(reference_time))
         ]
         return filtered_time_entities + other_entities
 
