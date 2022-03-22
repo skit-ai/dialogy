@@ -109,9 +109,9 @@ def test_datetime_filters_future_entities():
         threshold=0.2,
         datetime_filters="future",
     )
-    reference_time = "2022-03-21T18:00:00"
+    reference_time = "2022-03-21T18:00:00+05:30"
     duckling_plugin.reference_time = dt2timestamp(
-        datetime.strptime(reference_time, "%Y-%m-%dT%H:%M:%S")
+        datetime.fromisoformat(reference_time)
     )
 
     bodyA = "5 pm"
@@ -125,7 +125,7 @@ def test_datetime_filters_future_entities():
         },
         body=bodyA,
         dim="time",
-        values=[{"value": "2022-03-21T17:00:00"}],
+        values=[{"value": "2022-03-21T17:00:00+05:30"}],
         grain="hour",
     )
 
@@ -136,7 +136,7 @@ def test_datetime_filters_future_entities():
         },
         body=bodyB,
         dim="time",
-        values=[{"value": "2022-03-21T18:00:00"}],
+        values=[{"value": "2022-03-21T18:00:00+05:30"}],
         grain="hour",
     )
 
@@ -147,7 +147,7 @@ def test_datetime_filters_future_entities():
         },
         body=bodyC,
         dim="time",
-        values=[{"value": "2022-03-21T19:00:00"}],
+        values=[{"value": "2022-03-21T19:00:00+05:30"}],
         grain="hour",
     )
 
@@ -164,9 +164,9 @@ def test_datetime_filters_past_entities():
         threshold=0.2,
         datetime_filters="past",
     )
-    reference_time = "2022-03-21T18:00:00"
+    reference_time = "2022-03-21T18:00:00+05:30"
     duckling_plugin.reference_time = dt2timestamp(
-        datetime.strptime(reference_time, "%Y-%m-%dT%H:%M:%S")
+        datetime.fromisoformat(reference_time)
     )
 
     bodyA = "5 pm"
@@ -180,7 +180,7 @@ def test_datetime_filters_past_entities():
         },
         body=bodyA,
         dim="time",
-        values=[{"value": "2022-03-21T17:00:00"}],
+        values=[{"value": "2022-03-21T17:00:00+05:30"}],
         grain="hour",
     )
 
@@ -191,7 +191,7 @@ def test_datetime_filters_past_entities():
         },
         body=bodyB,
         dim="time",
-        values=[{"value": "2022-03-21T18:00:00"}],
+        values=[{"value": "2022-03-21T18:00:00+05:30"}],
         grain="hour",
     )
 
@@ -202,7 +202,7 @@ def test_datetime_filters_past_entities():
         },
         body=bodyC,
         dim="time",
-        values=[{"value": "2022-03-21T19:00:00"}],
+        values=[{"value": "2022-03-21T19:00:00+05:30"}],
         grain="hour",
     )
 
