@@ -265,6 +265,41 @@ helps in this task, it requires a pattern-map, we call it <code class="code docu
 <span class="go"> 'original_intent': {}}</span>
 </pre></div>
 </div>
+<section id="numeric-values">
+<h4>Numeric Values<a class="headerlink" href="#numeric-values" title="Permalink to this headline">¶</a></h4>
+<p>We can also process numeric entities like so:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">candidates</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">   ...: </span>     <span class="s2">"phone-number"</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">   ...: </span>         <span class="s2">"__value__"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"\d</span><span class="si">{10}</span><span class="s2">"</span><span class="p">],</span>
+<span class="gp">   ...: </span>     <span class="p">},</span> 
+<span class="gp">   ...: </span>   <span class="p">}</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [6]: </span><span class="n">list_entity_plugin</span> <span class="o">=</span> <span class="n">ListEntityPlugin</span><span class="p">(</span>
+<span class="gp">   ...: </span>  <span class="n">candidates</span><span class="o">=</span><span class="n">candidates</span><span class="p">,</span>
+<span class="gp">   ...: </span>  <span class="n">style</span><span class="o">=</span><span class="s2">"regex"</span><span class="p">,</span>
+<span class="gp">   ...: </span>  <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">list_entity_plugin</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"my number is 9999999999"</span><span class="p">))</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [7]: </span><span class="n">output</span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">{'intents': [],</span>
+<span class="go"> 'entities': [{'range': {'start': 13, 'end': 23},</span>
+<span class="go">   'body': '9999999999',</span>
+<span class="go">   'type': 'phone-number',</span>
+<span class="go">   'parsers': ['ListEntityPlugin'],</span>
+<span class="go">   'score': 1.0,</span>
+<span class="go">   'alternative_index': 0,</span>
+<span class="go">   'value': '9999999999',</span>
+<span class="go">   'entity_type': 'phone-number',</span>
+<span class="go">   '_meta': {}}],</span>
+<span class="go"> 'original_intent': {}}</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="spacy-ner">
 <h3>Spacy NER<a class="headerlink" href="#spacy-ner" title="Permalink to this headline">¶</a></h3>
@@ -306,9 +341,7 @@ helps in this task, it requires a pattern-map, we call it <code class="code docu
 <dt class="sig sig-object py" id="dialogy.plugins.text.list_entity_plugin.ListEntityPlugin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ListEntityPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">style=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidates=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacy_nlp=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column='alternatives'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_transform=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags=RegexFlag.None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/list_entity_plugin.html#ListEntityPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.list_entity_plugin.ListEntityPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.base.entity_extractor.html#dialogy.base.entity_extractor.EntityScoringMixin" title="dialogy.base.entity_extractor.EntityScoringMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.entity_extractor.EntityScoringMixin</span></code></a>, <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
-<blockquote>
-<div><p>A <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugin</span></a> for extracting entities using spacy or a list of regex patterns.</p>
-</div></blockquote>
+<p>A <a class="reference internal" href="dialogy.base.plugin.html#abstractplugin"><span class="std std-ref">Plugin</span></a> for extracting entities using spacy or a list of regex patterns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -464,7 +497,10 @@ values and their patterns.</p></li>
             <ul>
 <li><a class="reference internal" href="#">dialogy.plugins.text.list_entity_plugin package</a><ul>
 <li><a class="reference internal" href="#module-dialogy.plugins.text.list_entity_plugin">Module contents</a><ul>
-<li><a class="reference internal" href="#regex-search">Regex Search</a></li>
+<li><a class="reference internal" href="#regex-search">Regex Search</a><ul>
+<li><a class="reference internal" href="#numeric-values">Numeric Values</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#spacy-ner">Spacy NER</a></li>
 </ul>
 </li>

@@ -238,10 +238,10 @@
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"weekend"</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">[TimeIntervalEntity(body='weekend', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='datetime', origin='value', dim='time', grain='hour', type='interval', from_value='2022-03-18T18:00:00.000+05:30', to_value='2022-03-21T00:00:00.000+05:30', values=[{'to': {'value': '2022-03-21T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-03-18T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-03-28T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-03-25T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-04-04T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-01T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-03-18T18:00:00.000+05:30', 'to': '2022-03-21T00:00:00.000+05:30'})]</span>
+<span class="gh">Out[3]: </span><span class="go">[TimeIntervalEntity(body='weekend', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='datetime', origin='value', dim='time', grain='hour', type='interval', from_value='2022-04-01T18:00:00.000+05:30', to_value='2022-04-04T00:00:00.000+05:30', values=[{'to': {'value': '2022-04-04T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-01T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-04-11T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-08T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-04-18T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-15T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-04-01T18:00:00.000+05:30', 'to': '2022-04-04T00:00:00.000+05:30'})]</span>
 
 <span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"between 4 to 5pm"</span><span class="p">)</span>
-<span class="gh">Out[4]: </span><span class="go">[TimeIntervalEntity(body='between 4 to 5pm', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='time', origin='value', dim='time', grain='hour', type='interval', from_value='2022-03-16T16:00:00.000+05:30', to_value='2022-03-16T18:00:00.000+05:30', values=[{'to': {'value': '2022-03-16T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-03-16T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-03-17T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-03-17T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-03-18T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-03-18T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-03-16T16:00:00.000+05:30', 'to': '2022-03-16T18:00:00.000+05:30'})]</span>
+<span class="gh">Out[4]: </span><span class="go">[TimeIntervalEntity(body='between 4 to 5pm', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='time', origin='value', dim='time', grain='hour', type='interval', from_value='2022-03-30T16:00:00.000+05:30', to_value='2022-03-30T18:00:00.000+05:30', values=[{'to': {'value': '2022-03-30T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-03-30T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-03-31T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-03-31T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-04-01T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-01T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-03-30T16:00:00.000+05:30', 'to': '2022-03-30T18:00:00.000+05:30'})]</span>
 </pre></div>
 </div>
 </section>
@@ -275,10 +275,10 @@
 <span class="go">   'entity_type': 'datetime',</span>
 <span class="go">   'grain': 'hour',</span>
 <span class="go">   'type': 'interval',</span>
-<span class="go">   'from_value': '2022-03-18T18:00:00.000+05:30',</span>
-<span class="go">   'to_value': '2022-03-21T00:00:00.000+05:30',</span>
-<span class="go">   'value': {'from': '2022-03-18T18:00:00.000+05:30',</span>
-<span class="go">    'to': '2022-03-21T00:00:00.000+05:30'}},</span>
+<span class="go">   'from_value': '2022-04-01T18:00:00.000+05:30',</span>
+<span class="go">   'to_value': '2022-04-04T00:00:00.000+05:30',</span>
+<span class="go">   'value': {'from': '2022-04-01T18:00:00.000+05:30',</span>
+<span class="go">    'to': '2022-04-04T00:00:00.000+05:30'}},</span>
 <span class="go">  {'range': {'start': 0, 'end': 16},</span>
 <span class="go">   'body': 'between 4 to 5pm',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
@@ -287,10 +287,10 @@
 <span class="go">   'entity_type': 'time',</span>
 <span class="go">   'grain': 'hour',</span>
 <span class="go">   'type': 'interval',</span>
-<span class="go">   'from_value': '2022-03-16T16:00:00.000+05:30',</span>
-<span class="go">   'to_value': '2022-03-16T18:00:00.000+05:30',</span>
-<span class="go">   'value': {'from': '2022-03-16T16:00:00.000+05:30',</span>
-<span class="go">    'to': '2022-03-16T18:00:00.000+05:30'}}],</span>
+<span class="go">   'from_value': '2022-03-30T16:00:00.000+05:30',</span>
+<span class="go">   'to_value': '2022-03-30T18:00:00.000+05:30',</span>
+<span class="go">   'value': {'from': '2022-03-30T16:00:00.000+05:30',</span>
+<span class="go">    'to': '2022-03-30T18:00:00.000+05:30'}}],</span>
 <span class="go"> 'original_intent': {}}</span>
 </pre></div>
 </div>

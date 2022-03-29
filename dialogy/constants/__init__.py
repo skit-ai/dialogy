@@ -199,3 +199,4 @@ REFERENCE_TIME = "reftime"
 ENTITY_COLUMN = "entities"
 
 FUZZY_DP = "fuzzy_dp"
+ENTITY_VALUE_TOKEN = "__value__"

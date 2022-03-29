@@ -51,7 +51,6 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 import attr
-from this import d
 
 from dialogy import constants as const
 from dialogy.types import BaseEntity
