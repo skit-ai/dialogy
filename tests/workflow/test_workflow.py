@@ -1,11 +1,12 @@
 from typing import final
+
 import pytest
 
 import dialogy.constants as const
 from dialogy.base import Input, Output, Plugin
 from dialogy.plugins import MergeASROutputPlugin
-from dialogy.workflow import Workflow
 from dialogy.types import Intent
+from dialogy.workflow import Workflow
 
 
 def test_workflow_get_input() -> None:
@@ -112,7 +113,7 @@ def test_flush_on_exception():
             super().__init__(dest=dest, debug=debug)
 
         def utility(self, _: Input, _o: Output) -> int:
-            return 0/0
+            return 0 / 0
 
     workflow = Workflow([FailingPlugin()])
     workflow.set("output.intents", [Intent(name="test", score=0.5)])

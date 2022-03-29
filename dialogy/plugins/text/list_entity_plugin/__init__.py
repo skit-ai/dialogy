@@ -346,9 +346,13 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         for entity_type, entity_value_dict in self.compiled_patterns.items():
             for entity_value, entity_patterns in entity_value_dict.items():
                 for pattern in entity_patterns:
-                    matches = pattern.search(transcript) 
+                    matches = pattern.search(transcript)
                     if matches:
-                        entity_value = matches.group() if entity_value == const.ENTITY_VALUE_TOKEN else entity_value
+                        entity_value = (
+                            matches.group()
+                            if entity_value == const.ENTITY_VALUE_TOKEN
+                            else entity_value
+                        )
                         entity_tokens.append(
                             (matches.group(), entity_type, entity_value, matches.span())
                         )
