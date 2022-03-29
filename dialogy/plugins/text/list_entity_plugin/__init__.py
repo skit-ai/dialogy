@@ -33,6 +33,30 @@ helps in this task, it requires a pattern-map, we call it :code:`candidates`.
 
     In [3]: output
 
+Numeric Values
+^^^^^^^^^^^^^^
+
+We can also process numeric entities like so:
+
+.. ipython::
+
+    In [1]: candidates = {
+       ...:      "phone-number": {
+       ...:          "__value__": ["\d{10}"],
+       ...:      }, 
+       ...:    }
+
+    In [2]: list_entity_plugin = ListEntityPlugin(
+       ...:   candidates=candidates,
+       ...:   style="regex",
+       ...:   dest="output.entities"
+       ...: )
+       ...: workflow = Workflow([list_entity_plugin])
+       ...: _, output = workflow.run(Input(utterances="my number is 9999999999"))
+
+    In [3]: output
+
+
 Spacy NER
 -----------
 
@@ -80,13 +104,7 @@ MatchType = List[Tuple[Text, Label, Value, Span]]
 
 class ListEntityPlugin(EntityScoringMixin, Plugin):
     """
-     A :ref:`Plugin<AbstractPlugin>` for extracting entities using spacy or a list of regex patterns.
-
-     .. attention:
-
-        This class will undergo a series of refactoring changes. FWIW, :ref:`ListSearchPlugin<ListSearchPlugin>`
-        is more more performant in terms of entity capture rates but not as responsive. :code:`ListEntityPlugin`
-        is fast. So make choices with bearing this in mind.
+    A :ref:`Plugin<AbstractPlugin>` for extracting entities using spacy or a list of regex patterns.
 
     :param style: One of ["regex", "spacy"]
     :type style: Optional[str]
@@ -328,8 +346,9 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         for entity_type, entity_value_dict in self.compiled_patterns.items():
             for entity_value, entity_patterns in entity_value_dict.items():
                 for pattern in entity_patterns:
-                    matches = pattern.search(transcript)
+                    matches = pattern.search(transcript) 
                     if matches:
+                        entity_value = matches.group() if entity_value == const.ENTITY_VALUE_TOKEN else entity_value
                         entity_tokens.append(
                             (matches.group(), entity_type, entity_value, matches.span())
                         )
