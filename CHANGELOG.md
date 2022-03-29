@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.8
+
+- [x] fix: **Exceptions that leak over turns**. [#136](https://github.com/skit-ai/dialogy/issues/136)
+- [x] add: Support for grouping by regex match. [#135](https://github.com/skit-ai/dialogy/issues/135)
+- [x] fix: Remove zen of python from all commands.
+
 ## 0.9.7
 
 - [x] refactor: Faster test runs.
