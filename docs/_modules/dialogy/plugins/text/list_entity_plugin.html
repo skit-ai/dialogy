@@ -566,9 +566,13 @@
         <span class="k">for</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">entity_value_dict</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_patterns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">entity_value</span><span class="p">,</span> <span class="n">entity_patterns</span> <span class="ow">in</span> <span class="n">entity_value_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">entity_patterns</span><span class="p">:</span>
-                    <span class="n">matches</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">transcript</span><span class="p">)</span> 
+                    <span class="n">matches</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">transcript</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
-                        <span class="n">entity_value</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">()</span> <span class="k">if</span> <span class="n">entity_value</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ENTITY_VALUE_TOKEN</span> <span class="k">else</span> <span class="n">entity_value</span>
+                        <span class="n">entity_value</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">entity_value</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ENTITY_VALUE_TOKEN</span>
+                            <span class="k">else</span> <span class="n">entity_value</span>
+                        <span class="p">)</span>
                         <span class="n">entity_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                             <span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(),</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">entity_value</span><span class="p">,</span> <span class="n">matches</span><span class="o">.</span><span class="n">span</span><span class="p">())</span>
                         <span class="p">)</span>
