@@ -1,9 +1,11 @@
+from typing import final
 import pytest
 
 import dialogy.constants as const
-from dialogy.base import Input, Output
+from dialogy.base import Input, Output, Plugin
 from dialogy.plugins import MergeASROutputPlugin
 from dialogy.workflow import Workflow
+from dialogy.types import Intent
 
 
 def test_workflow_get_input() -> None:
@@ -102,3 +104,22 @@ def test_safe_flush():
     i, o = workflow.flush()
     assert i == {}
     assert o == {}
+
+
+def test_flush_on_exception():
+    class FailingPlugin(Plugin):
+        def __init__(self, dest: str = None, debug: bool = False) -> None:
+            super().__init__(dest=dest, debug=debug)
+
+        def utility(self, _: Input, _o: Output) -> int:
+            return 0/0
+
+    workflow = Workflow([FailingPlugin()])
+    workflow.set("output.intents", [Intent(name="test", score=0.5)])
+    try:
+        workflow.run(Input(utterances=["apples"]))
+    except ZeroDivisionError:
+        pass
+    finally:
+        assert workflow.output == Output()
+        assert workflow.input == None

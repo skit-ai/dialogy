@@ -277,7 +277,10 @@ class Workflow:
         """
         with self.lock:
             self.input = input_
-            return self.execute().flush()
+            try:
+                return self.execute().flush()
+            finally:
+                self.__reset()
 
     def flush(self) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """
