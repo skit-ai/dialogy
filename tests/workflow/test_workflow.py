@@ -107,7 +107,6 @@ def test_safe_flush():
 
 
 def test_flush_on_exception():
-
     class FailingPlugin(Plugin):
         def __init__(self, dest: str = None, debug: bool = False) -> None:
             super().__init__(dest=dest, debug=debug)
@@ -115,11 +114,12 @@ def test_flush_on_exception():
         def utility(self, _: Input, _o: Output) -> int:
             return 0/0
 
-    workflow = Workflow([FailingPlugin])
-    workflow.set("output.intent", Intent(name="test", score=0.5))
+    workflow = Workflow([FailingPlugin()])
+    workflow.set("output.intents", [Intent(name="test", score=0.5)])
     try:
         workflow.run(Input(utterances=["apples"]))
     except ZeroDivisionError:
         pass
     finally:
         assert workflow.output == Output()
+        assert workflow.input == None
