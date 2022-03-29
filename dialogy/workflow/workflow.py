@@ -279,8 +279,6 @@ class Workflow:
             self.input = input_
             try:
                 return self.execute().flush()
-            except Exception as e:
-                raise e
             finally:
                 self.__reset()
 
