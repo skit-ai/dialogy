@@ -679,7 +679,7 @@
 <span class="sd">    In [5]: reference_dt = datetime(2022, 3, 16, 18, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))</span>
 <span class="sd">       ...: reference_time = dt2timestamp(reference_dt)</span>
 
-<span class="sd">    In [6]: input_, output = workflow.run(Input(utterances=utterances))</span>
+<span class="sd">    In [6]: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))</span>
 
 <span class="sd">    In [7]: output</span>
 
@@ -715,7 +715,7 @@
 <span class="sd">    In [5]: reference_dt = datetime(2022, 3, 16, 18, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata"))</span>
 <span class="sd">       ...: reference_time = dt2timestamp(reference_dt)</span>
 
-<span class="sd">    In [6]: input_, output = workflow.run(Input(utterances=utterances))</span>
+<span class="sd">    In [6]: input_, output = workflow.run(Input(utterances=utterances, reference_time=reference_time))</span>
 
 <span class="sd">    In [7]: output</span>
 
