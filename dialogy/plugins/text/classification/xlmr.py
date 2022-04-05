@@ -148,7 +148,7 @@ class XLMRMultiClass(Plugin):
         return hasattr(self.labelencoder, "classes_")
 
     def inference(
-        self, texts: Optional[List[str]], state: Optional[List[str]] = None
+        self, texts: Optional[List[str]], state: Optional[str] = None
     ) -> List[Intent]:
         """
         Predict the intent of a list of texts.
@@ -177,8 +177,7 @@ class XLMRMultiClass(Plugin):
                 f"Plugin {self.__class__.__name__} requires state to be passed to the model."
             )
         elif self.use_state and state:
-            assert len(texts) == len(state)
-            texts = [f"{text} <s> {state} </s>" for state, text in zip(state, texts)]
+            texts = [f"{text} <s> {state} </s>" for text in texts]
         if not self.valid_labelencoder:
             raise AttributeError(
                 "Seems like you forgot to "
@@ -295,4 +294,4 @@ class XLMRMultiClass(Plugin):
         )
 
     def utility(self, input: Input, _: Output) -> List[Intent]:
-        return self.inference(input.clf_feature)
+        return self.inference(input.clf_feature, input.current_state)
