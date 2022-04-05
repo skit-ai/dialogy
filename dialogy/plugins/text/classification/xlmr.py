@@ -155,7 +155,7 @@ class XLMRMultiClass(Plugin):
         If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.
 
         :param texts: A list of strings, derived from ASR transcripts.
-        :param state: A list of states, mapped to the ASR transcripts.
+        :param state: state, mapped to the ASR transcripts.
         :type texts: List[str]
         :type state: List[str]
         :raises AttributeError: In case the labelencoder is not available.
