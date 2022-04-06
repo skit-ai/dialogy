@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.9
+
+- [x] fix: `XLMRMultiClass::inference` type signature for `state`.
+
 ## 0.9.8
 
 - [x] fix: **Exceptions that leak over turns**. [#136](https://github.com/skit-ai/dialogy/issues/136)
