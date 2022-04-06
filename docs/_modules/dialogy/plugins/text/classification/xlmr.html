@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.classification.xlmr - dialogy 0.9.7 documentation</title>
+        <title>dialogy.plugins.text.classification.xlmr - dialogy 0.9.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.7 documentation</div></a>
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.7 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.9 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -368,14 +368,14 @@
         <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labelencoder</span><span class="p">,</span> <span class="s2">"classes_"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="XLMRMultiClass.inference"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Predict the intent of a list of texts.</span>
 <span class="sd">        If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.</span>
 
 <span class="sd">        :param texts: A list of strings, derived from ASR transcripts.</span>
-<span class="sd">        :param state: A list of states, mapped to the ASR transcripts.</span>
+<span class="sd">        :param state: state, mapped to the ASR transcripts.</span>
 <span class="sd">        :type texts: List[str]</span>
 <span class="sd">        :type state: List[str]</span>
 <span class="sd">        :raises AttributeError: In case the labelencoder is not available.</span>
@@ -397,8 +397,7 @@
                 <span class="sa">f</span><span class="s2">"Plugin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires state to be passed to the model."</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_state</span> <span class="ow">and</span> <span class="n">state</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-            <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2"> &lt;s&gt; </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2"> &lt;/s&gt;"</span> <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">texts</span><span class="p">)]</span>
+            <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2"> &lt;s&gt; </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2"> &lt;/s&gt;"</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_labelencoder</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
                 <span class="s2">"Seems like you forgot to "</span>
@@ -515,7 +514,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="XLMRMultiClass.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.classification.html#dialogy.plugins.text.classification.xlmr.XLMRMultiClass.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">clf_feature</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">clf_feature</span><span class="p">,</span> <span class="nb">input</span><span class="o">.</span><span class="n">current_state</span><span class="p">)</span></div></div>
 </pre></div>
         </article>
       </div>
