@@ -80,6 +80,7 @@ The default assumption is to use the number as :code:`day` but we can also repla
 from __future__ import annotations
 
 from datetime import datetime
+from tkinter import E
 from typing import Any, Dict, Optional
 
 import attr
@@ -128,7 +129,7 @@ class NumericalEntity(BaseEntity):
         )
 
     def as_time(
-        self, reference_unix_ts: int, timezone: str, replace: str = "day"
+        self, reference_unix_ts: int, timezone: str, temp: str = "", num2datetime: Optional[Dict[str, str]] = None, current_state: str = "" #, replace: str = "day" 
     ) -> TimeEntity:
         """
         Converts a duration entity to a time entity.
@@ -138,24 +139,41 @@ class NumericalEntity(BaseEntity):
         reference_datetime: datetime = unix_ts_to_datetime(
             reference_unix_ts, timezone=timezone
         )
-        if replace not in [const.HOUR, const.DAY, const.MONTH]:
-            raise RuntimeError(
-                f"Expected replace to be one of {[const.HOUR, const.DAY, const.MONTH]}"
-            )
-        value = reference_datetime.replace(**{replace: self.value}).isoformat()
 
-        entity = TimeEntity(
-            range={
-                const.START: self.range[const.START],
-                const.END: self.range[const.END],
-            },
-            body=self.body,
-            score=self.score,
-            dim="time",
-            alternative_index=self.alternative_index,
-            latent=self.latent,
-            values=[{const.VALUE: value}],
-            grain=replace,
-        )
-        entity.set_entity_type()
-        return entity
+        if (current_state != "") and (len(num2datetime)>0):
+
+            if current_state in num2datetime.keys():
+
+                replace = num2datetime[current_state]
+
+                if replace not in [const.HOUR, const.DAY, const.MONTH]:
+                    raise RuntimeError(
+                        f"Expected replace to be one of {[const.HOUR, const.DAY, const.MONTH]}"
+                    )
+                value = reference_datetime.replace(**{replace: self.value}).isoformat()
+
+                entity = TimeEntity(
+                    range={
+                        const.START: self.range[const.START],
+                        const.END: self.range[const.END],
+                    },
+                    body=self.body,
+                    score=self.score,
+                    dim="time",
+                    alternative_index=self.alternative_index,
+                    latent=self.latent,
+                    values=[{const.VALUE: value}],
+                    grain=replace,
+                )
+                entity.set_entity_type()
+
+                return entity               
+
+            else:
+                raise RuntimeError(
+                        f"Current State not in provided Num to Date Time Dictionary")
+
+        else:
+            raise RuntimeError(
+                        f"Current State or Num to Date Time Dictionary not passed")
+
