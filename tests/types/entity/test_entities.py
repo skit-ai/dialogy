@@ -175,14 +175,17 @@ def test_time_entity_grain_not_str_error():
 
 
 def test_time_entities_with_constraint() -> None:
-    req_time = dt2timestamp(datetime.fromisoformat("2022-03-06T12:00:00.000+05:30"))
-    no_constraint_time = dt2timestamp(
-        datetime.fromisoformat("2022-03-06T00:00:00.000+05:30")
-    )
-    test_constraints = {
+    req_time_A = dt2timestamp(datetime.fromisoformat("2022-03-06T12:00:00.000+05:30"))
+    req_time_C = dt2timestamp(datetime.fromisoformat("2022-03-06T00:00:00.000+05:30"))
+    test_constraints_A = {
         "time": {"lte": {"hour": 21, "minute": 59}, "gte": {"hour": 7, "minute": 0}}
     }
-    not_time_constraints = {
+
+    test_constraints_B = {
+        "time": {"lte": {"hour": 21, "minute": 59}, "gte": {"hour": 13, "minute": 0}}
+    }
+
+    test_constraints_C = {
         "date": {
             "start": {"year": 2010, "month": 1, "day": 1},
             "end": {"year": 2020, "month": 1, "day": 1},
@@ -213,10 +216,9 @@ def test_time_entities_with_constraint() -> None:
         "latent": False,
     }
 
-    time_entity = TimeEntity.from_duckling(d_multiple, 1, test_constraints)
-    no_constraint_time_entity = TimeEntity.from_duckling(
-        d_multiple, 1, not_time_constraints
-    )
+    time_entity_A = TimeEntity.from_duckling(d_multiple, 1, test_constraints_A)
+    time_entity_B = TimeEntity.from_duckling(d_multiple, 1, test_constraints_B)
+    time_entity_C = TimeEntity.from_duckling(d_multiple, 1, test_constraints_C)
     d_values = [
         {
             "value": "2022-03-06T12:00:00.000+05:30",
@@ -225,9 +227,10 @@ def test_time_entities_with_constraint() -> None:
         }
     ]
 
-    assert req_time == dt2timestamp(time_entity.get_value())
-    assert d_values == time_entity.values
-    assert no_constraint_time == dt2timestamp(no_constraint_time_entity.get_value())
+    assert req_time_A == dt2timestamp(time_entity_A.get_value())
+    assert d_values == time_entity_A.values
+    assert len(time_entity_B.values) == 0
+    assert req_time_C == dt2timestamp(time_entity_C.get_value())
 
 
 def test_time_interval_entities_with_constraint() -> None:

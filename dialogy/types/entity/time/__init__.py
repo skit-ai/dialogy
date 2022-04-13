@@ -227,25 +227,25 @@ class TimeEntity(BaseEntity):
         alternative_index: int,
         constraints: Optional[Dict[str, Any]] = None,
         **kwargs: Any
-    ) -> Optional[TimeEntity]:
+    ) -> TimeEntity:
         datetime_values = d[const.VALUE][const.VALUES]
+        grain = datetime_values[0][const.GRAIN]
+
         if constraints:
             datetime_values = cls.pick_value(
                 d_values=datetime_values,
-                grain=datetime_values[0][const.GRAIN],
+                grain=grain,
                 constraints=constraints,
             )
 
-        if datetime_values:
-            time_entity = cls(
-                range={const.START: d[const.START], const.END: d[const.END]},
-                body=d[const.BODY],
-                dim=d[const.DIM],
-                alternative_index=alternative_index,
-                latent=d[const.LATENT],
-                values=datetime_values,
-                grain=datetime_values[0][const.GRAIN],
-            )
-            time_entity.set_entity_type()
-            return time_entity
-        return None
+        time_entity = cls(
+            range={const.START: d[const.START], const.END: d[const.END]},
+            body=d[const.BODY],
+            dim=d[const.DIM],
+            alternative_index=alternative_index,
+            latent=d[const.LATENT],
+            values=datetime_values,
+            grain=grain,
+        )
+        time_entity.set_entity_type()
+        return time_entity

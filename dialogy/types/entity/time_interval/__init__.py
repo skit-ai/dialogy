@@ -194,7 +194,7 @@ class TimeIntervalEntity(TimeEntity):
                     opt(
                         getattr(
                             datetime.fromisoformat(
-                                datetime_val.get(const.FROM)[const.VALUE]
+                                datetime_val.get(const.FROM, {}).get(const.VALUE)
                             ),
                             const.HOUR,
                         ),
@@ -209,7 +209,7 @@ class TimeIntervalEntity(TimeEntity):
                     opt(
                         getattr(
                             datetime.fromisoformat(
-                                datetime_val.get(const.TO)[const.VALUE]
+                                datetime_val.get(const.TO, {}).get(const.VALUE)
                             ),
                             const.HOUR,
                         ),
@@ -231,7 +231,9 @@ class TimeIntervalEntity(TimeEntity):
                 )
             elif to_:
                 datetime_val[const.FROM][const.VALUE] = (
-                    datetime.fromisoformat(datetime_val.get(const.FROM)[const.VALUE])
+                    datetime.fromisoformat(
+                        datetime_val.get(const.FROM, {}).get(const.VALUE)
+                    )
                     .replace(
                         hour=constraint[const.GTE][const.HOUR],
                         minute=constraint[const.GTE][const.MINUTE],
@@ -251,7 +253,7 @@ class TimeIntervalEntity(TimeEntity):
         alternative_index: int,
         constraints: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
-    ) -> Optional[TimeEntity]:
+    ) -> TimeEntity:
         from_value = d[const.VALUE].get(const.FROM)
         to_value = d[const.VALUE].get(const.TO)
         grain_source = from_value or to_value
@@ -266,18 +268,15 @@ class TimeIntervalEntity(TimeEntity):
                 constraints=constraints,
             )
 
-        if datetime_values:
-            time_interval_entity = cls(
-                range={const.START: d[const.START], const.END: d[const.END]},
-                body=d[const.BODY],
-                dim=d[const.DIM],
-                alternative_index=alternative_index,
-                latent=d[const.LATENT],
-                values=datetime_values,
-                type=d[const.VALUE][const.TYPE],
-                grain=grain,
-            )
-            time_interval_entity.set_entity_type()
-            return time_interval_entity
-        else:
-            return None
+        time_interval_entity = cls(
+            range={const.START: d[const.START], const.END: d[const.END]},
+            body=d[const.BODY],
+            dim=d[const.DIM],
+            alternative_index=alternative_index,
+            latent=d[const.LATENT],
+            values=datetime_values,
+            type=d[const.VALUE][const.TYPE],
+            grain=grain,
+        )
+        time_interval_entity.set_entity_type()
+        return time_interval_entity
