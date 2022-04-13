@@ -256,8 +256,13 @@ def test_time_interval_entities_with_constraint() -> None:
         }
     }
 
+    test_constraints_D = {
+        "time": {"lte": {"hour": 23, "minute": 59}, "gte": {"hour": 6, "minute": 0}}
+    }
+
     req_time_A = dt2timestamp(datetime.fromisoformat("2022-04-13T09:00:00.000+05:30"))
     req_time_C = dt2timestamp(datetime.fromisoformat("2022-04-13T06:00:00.000+05:30"))
+    req_time_D = dt2timestamp(datetime.fromisoformat("2022-04-13T06:00:00.000+05:30"))
     d_multiple = {
         "body": "६ बजे से 10",
         "start": 0,
@@ -282,7 +287,7 @@ def test_time_interval_entities_with_constraint() -> None:
         "dim": "time",
         "latent": False,
     }
-    d_values = [
+    d_values_A = [
         {
             "from": {"grain": "hour", "value": "2022-04-13T09:00:00+05:30"},
             "to": {"grain": "hour", "value": "2022-04-13T11:00:00.000+05:30"},
@@ -290,6 +295,19 @@ def test_time_interval_entities_with_constraint() -> None:
         },
         {
             "from": {"grain": "hour", "value": "2022-04-13T18:00:00.000+05:30"},
+            "type": "interval",
+        },
+    ]
+
+    d_values_D = [
+        {
+            "to": {"value": "2022-04-13T11:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-04-13T06:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        },
+        {
+            "to": {"value": "2022-04-13T23:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-04-13T18:00:00.000+05:30", "grain": "hour"},
             "type": "interval",
         },
     ]
@@ -303,11 +321,16 @@ def test_time_interval_entities_with_constraint() -> None:
     time_interval_entity_C = TimeIntervalEntity.from_duckling(
         copy.deepcopy(d_multiple), 1, test_constraints_C
     )
+    time_interval_entity_D = TimeIntervalEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_D
+    )
 
     assert req_time_A == dt2timestamp(time_interval_entity_A.get_value())
-    assert time_interval_entity_A.values == d_values
+    assert time_interval_entity_A.values == d_values_A
     assert len(time_interval_entity_B.values) == 0
     assert req_time_C == dt2timestamp(time_interval_entity_C.get_value())
+    assert req_time_D == dt2timestamp(time_interval_entity_D.get_value())
+    assert time_interval_entity_D.values == d_values_D
 
 
 def test_time_interval_entity_value_not_dict_error():
