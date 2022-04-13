@@ -201,14 +201,15 @@ class TimeEntity(BaseEntity):
     ) -> List[Dict[str, Any]]:
         is_time = grain in const.TIME_UNITS
         constraint = constraints.get(const.TIME)
-        req_value = d_values[0]
         if not is_time or not constraint:
-            return [req_value]
+            return d_values
 
         opt_items = [
             (cls.__TIMERANGE_OPERATION_ALIAS.get(opt), measure)
             for opt, measure in constraint.items()
         ]
+
+        constrained_d_values = []
         for datetime_val in d_values:
             datetime_ = datetime.fromisoformat(datetime_val[const.VALUE])
             if all(
@@ -216,9 +217,8 @@ class TimeEntity(BaseEntity):
                 for opt, measure in opt_items
                 if opt
             ):
-                req_value = datetime_val
-                break
-        return [req_value]
+                constrained_d_values.append(datetime_val)
+        return constrained_d_values
 
     @classmethod
     def from_duckling(
@@ -229,21 +229,23 @@ class TimeEntity(BaseEntity):
         **kwargs: Any
     ) -> TimeEntity:
         datetime_values = d[const.VALUE][const.VALUES]
-        if len(datetime_values) > 1 and constraints:
+        if constraints:
             datetime_values = cls.pick_value(
                 d_values=datetime_values,
                 grain=datetime_values[0][const.GRAIN],
                 constraints=constraints,
             )
 
-        time_entity = cls(
-            range={const.START: d[const.START], const.END: d[const.END]},
-            body=d[const.BODY],
-            dim=d[const.DIM],
-            alternative_index=alternative_index,
-            latent=d[const.LATENT],
-            values=datetime_values,
-            grain=datetime_values[0][const.GRAIN],
-        )
-        time_entity.set_entity_type()
-        return time_entity
+        if datetime_values:
+            time_entity = cls(
+                range={const.START: d[const.START], const.END: d[const.END]},
+                body=d[const.BODY],
+                dim=d[const.DIM],
+                alternative_index=alternative_index,
+                latent=d[const.LATENT],
+                values=datetime_values,
+                grain=datetime_values[0][const.GRAIN],
+            )
+            time_entity.set_entity_type()
+            return time_entity
+        return None
