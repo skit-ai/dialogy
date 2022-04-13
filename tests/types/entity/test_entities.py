@@ -1,6 +1,7 @@
 """
 Tests for entities
 """
+import copy
 from ast import Num
 from datetime import datetime
 from unicodedata import numeric
@@ -216,9 +217,15 @@ def test_time_entities_with_constraint() -> None:
         "latent": False,
     }
 
-    time_entity_A = TimeEntity.from_duckling(d_multiple, 1, test_constraints_A)
-    time_entity_B = TimeEntity.from_duckling(d_multiple, 1, test_constraints_B)
-    time_entity_C = TimeEntity.from_duckling(d_multiple, 1, test_constraints_C)
+    time_entity_A = TimeEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_A
+    )
+    time_entity_B = TimeEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_B
+    )
+    time_entity_C = TimeEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_C
+    )
     d_values = [
         {
             "value": "2022-03-06T12:00:00.000+05:30",
@@ -242,7 +249,15 @@ def test_time_interval_entities_with_constraint() -> None:
         "time": {"lte": {"hour": 17, "minute": 59}, "gte": {"hour": 12, "minute": 0}}
     }
 
-    req_time = dt2timestamp(datetime.fromisoformat("2022-04-13T09:00:00.000+05:30"))
+    test_constraints_C = {
+        "date": {
+            "start": {"year": 2010, "month": 1, "day": 1},
+            "end": {"year": 2020, "month": 1, "day": 1},
+        }
+    }
+
+    req_time_A = dt2timestamp(datetime.fromisoformat("2022-04-13T09:00:00.000+05:30"))
+    req_time_C = dt2timestamp(datetime.fromisoformat("2022-04-13T06:00:00.000+05:30"))
     d_multiple = {
         "body": "६ बजे से 10",
         "start": 0,
@@ -280,15 +295,19 @@ def test_time_interval_entities_with_constraint() -> None:
     ]
 
     time_interval_entity_A = TimeIntervalEntity.from_duckling(
-        d_multiple, 1, test_constraints_A
+        copy.deepcopy(d_multiple), 1, test_constraints_A
     )
     time_interval_entity_B = TimeIntervalEntity.from_duckling(
-        d_multiple, 1, test_constraints_B
+        copy.deepcopy(d_multiple), 1, test_constraints_B
+    )
+    time_interval_entity_C = TimeIntervalEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_C
     )
 
-    assert req_time == dt2timestamp(time_interval_entity_A.get_value())
+    assert req_time_A == dt2timestamp(time_interval_entity_A.get_value())
     assert time_interval_entity_A.values == d_values
     assert len(time_interval_entity_B.values) == 0
+    assert req_time_C == dt2timestamp(time_interval_entity_C.get_value())
 
 
 def test_time_interval_entity_value_not_dict_error():
