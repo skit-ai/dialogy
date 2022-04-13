@@ -227,7 +227,7 @@ class TimeEntity(BaseEntity):
         alternative_index: int,
         constraints: Optional[Dict[str, Any]] = None,
         **kwargs: Any
-    ) -> TimeEntity:
+    ) -> Optional[TimeEntity]:
         datetime_values = d[const.VALUE][const.VALUES]
         if constraints:
             datetime_values = cls.pick_value(
