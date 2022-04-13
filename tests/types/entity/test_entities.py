@@ -217,8 +217,75 @@ def test_time_entities_with_constraint() -> None:
     no_constraint_time_entity = TimeEntity.from_duckling(
         d_multiple, 1, not_time_constraints
     )
+    d_values = [
+        {
+            "value": "2022-03-06T12:00:00.000+05:30",
+            "grain": "minute",
+            "type": "value",
+        }
+    ]
+
     assert req_time == dt2timestamp(time_entity.get_value())
+    assert d_values == time_entity.values
     assert no_constraint_time == dt2timestamp(no_constraint_time_entity.get_value())
+
+
+def test_time_interval_entities_with_constraint() -> None:
+    test_constraints_A = {
+        "time": {"lte": {"hour": 20, "minute": 59}, "gte": {"hour": 9, "minute": 0}}
+    }
+
+    test_constraints_B = {
+        "time": {"lte": {"hour": 17, "minute": 59}, "gte": {"hour": 12, "minute": 0}}
+    }
+
+    req_time = dt2timestamp(datetime.fromisoformat("2022-04-13T09:00:00.000+05:30"))
+    d_multiple = {
+        "body": "६ बजे से 10",
+        "start": 0,
+        "value": {
+            "values": [
+                {
+                    "to": {"value": "2022-04-13T11:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-04-13T06:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+                {
+                    "to": {"value": "2022-04-13T23:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-04-13T18:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+            ],
+            "to": {"value": "2022-04-13T11:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-04-13T06:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        },
+        "end": 11,
+        "dim": "time",
+        "latent": False,
+    }
+    d_values = [
+        {
+            "from": {"grain": "hour", "value": "2022-04-13T09:00:00+05:30"},
+            "to": {"grain": "hour", "value": "2022-04-13T11:00:00.000+05:30"},
+            "type": "interval",
+        },
+        {
+            "from": {"grain": "hour", "value": "2022-04-13T18:00:00.000+05:30"},
+            "type": "interval",
+        },
+    ]
+
+    time_interval_entity_A = TimeIntervalEntity.from_duckling(
+        d_multiple, 1, test_constraints_A
+    )
+    time_interval_entity_B = TimeIntervalEntity.from_duckling(
+        d_multiple, 1, test_constraints_B
+    )
+
+    assert req_time == dt2timestamp(time_interval_entity_A.get_value())
+    assert time_interval_entity_A.values == d_values
+    assert time_interval_entity_B == None
 
 
 def test_time_interval_entity_value_not_dict_error():
