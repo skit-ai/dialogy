@@ -793,8 +793,9 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 duration_cast_operator=duration_cast_operator,
                 constraints=self.constraints,
             )
-            entity.add_parser(self)
-            deserialized_entities.append(entity)
+            if entity:
+                entity.add_parser(self)
+                deserialized_entities.append(entity)
         return deserialized_entities
 
     def _get_entities(
