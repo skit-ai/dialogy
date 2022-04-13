@@ -285,7 +285,7 @@ def test_time_interval_entities_with_constraint() -> None:
 
     assert req_time == dt2timestamp(time_interval_entity_A.get_value())
     assert time_interval_entity_A.values == d_values
-    assert time_interval_entity_B == None
+    assert len(time_interval_entity_B.values) == 0
 
 
 def test_time_interval_entity_value_not_dict_error():
