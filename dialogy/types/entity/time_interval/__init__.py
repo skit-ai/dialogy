@@ -50,7 +50,7 @@ from __future__ import annotations
 
 import operator
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import attr
 
@@ -81,10 +81,6 @@ class TimeIntervalEntity(TimeEntity):
     to_value: Optional[datetime] = attr.ib(default=None, order=False)
     values: List[Dict[str, Any]] = attr.ib(default=None, kw_only=True)
     value: Dict[str, Any] = attr.ib(default=None, kw_only=True)
-    __TIMERANGE_OPERATION_ALIAS: Dict[str, Any] = {
-        const.LTE: operator.le,
-        const.GTE: operator.ge,
-    }
 
     @values.validator  # type: ignore
     def _check_values(
@@ -182,42 +178,17 @@ class TimeIntervalEntity(TimeEntity):
         if not is_time or not constraint:
             return d_values
 
-        opt_items = [
-            (cls.__TIMERANGE_OPERATION_ALIAS.get(opt), measure)
-            for opt, measure in constraint.items()
-        ]
-
         constrained_d_values = []
         for datetime_val in d_values:
-            from_ = datetime_val.get(const.FROM) and all(
-                [
-                    opt(
-                        getattr(
-                            datetime.fromisoformat(
-                                datetime_val.get(const.FROM, {}).get(const.VALUE)
-                            ),
-                            const.HOUR,
-                        ),
-                        measure[const.HOUR],
-                    )
-                    for opt, measure in opt_items
-                    if opt
-                ]
+            from_datetime_val = datetime_val.get(const.FROM, {})
+            to_datetime_val = datetime_val.get(const.TO, {})
+            from_ = from_datetime_val and cls.apply_constraint(
+                datetime.fromisoformat(from_datetime_val.get(const.VALUE)),
+                constraint,
             )
-            to_ = datetime_val.get(const.TO) and all(
-                [
-                    opt(
-                        getattr(
-                            datetime.fromisoformat(
-                                datetime_val.get(const.TO, {}).get(const.VALUE)
-                            ),
-                            const.HOUR,
-                        ),
-                        measure[const.HOUR],
-                    )
-                    for opt, measure in opt_items
-                    if opt
-                ]
+            to_ = to_datetime_val and cls.apply_constraint(
+                datetime.fromisoformat(to_datetime_val.get(const.VALUE)),
+                constraint,
             )
 
             if from_ and to_:
