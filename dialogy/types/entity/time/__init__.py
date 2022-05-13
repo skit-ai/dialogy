@@ -52,7 +52,7 @@ from __future__ import annotations
 
 import operator
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import attr
 import pydash as py_
@@ -80,7 +80,7 @@ class TimeEntity(BaseEntity):
     origin: str = attr.ib(default=const.VALUE)
     dim: str = attr.ib(default=const.TIME)
     grain: str = attr.ib(default=None, validator=attr.validators.instance_of(str))
-    __TIMERANGE_OPERATION_ALIAS: Dict[str, Any] = {
+    __TIMERANGE_OPERATION_ALIAS: Dict[str, Callable[[Any, Any], bool]] = {
         const.LTE: operator.le,
         const.GTE: operator.ge,
     }
@@ -196,29 +196,45 @@ class TimeEntity(BaseEntity):
             self.entity_type = const.TIME
 
     @classmethod
+    def apply_constraint(
+        cls,
+        date_time: datetime,
+        constraint: Dict[str, Dict[str, int]],
+    ) -> bool:
+        """
+        Check if date_time is inside constraint (LOWER_BOUND < date_time < UPPER_BOUND)
+        :param date_time: An instance of datetime.
+        :type date_time: datetime
+        :param constraint: :code:`{'gte': {'hour': 9, 'minute': 0}, 'lte': {'hour': 20, 'minute': 59}}`
+
+        :type constraint: Dict[str, Dict[str,int]]
+        :return: True if date_time > constraint[LOWER_BOUND] and date_time < constraint[UPPER_BOUND]
+        :rtype: bool
+        """
+        within_range = []
+        for opt, measure in constraint.items():
+            date_time_measure = date_time.replace(
+                minute=measure.get(const.MINUTE, 0), hour=measure[const.HOUR]
+            )
+            _opt = cls.__TIMERANGE_OPERATION_ALIAS[opt]
+            within_range.append(_opt(date_time, date_time_measure))
+        return all(within_range)
+
+    @classmethod
     def pick_value(
         cls, d_values: List[Dict[str, Any]], grain: str, constraints: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
         is_time = grain in const.TIME_UNITS
         constraint = constraints.get(const.TIME)
-        req_value = d_values[0]
         if not is_time or not constraint:
-            return [req_value]
+            return d_values
 
-        opt_items = [
-            (cls.__TIMERANGE_OPERATION_ALIAS.get(opt), measure)
-            for opt, measure in constraint.items()
-        ]
+        constrained_d_values = []
         for datetime_val in d_values:
             datetime_ = datetime.fromisoformat(datetime_val[const.VALUE])
-            if all(
-                opt(getattr(datetime_, const.HOUR), measure[const.HOUR])
-                for opt, measure in opt_items
-                if opt
-            ):
-                req_value = datetime_val
-                break
-        return [req_value]
+            if cls.apply_constraint(datetime_, constraint):
+                constrained_d_values.append(datetime_val)
+        return constrained_d_values
 
     @classmethod
     def from_duckling(
@@ -229,10 +245,12 @@ class TimeEntity(BaseEntity):
         **kwargs: Any
     ) -> TimeEntity:
         datetime_values = d[const.VALUE][const.VALUES]
-        if len(datetime_values) > 1 and constraints:
+        grain = datetime_values[0][const.GRAIN]
+
+        if constraints:
             datetime_values = cls.pick_value(
                 d_values=datetime_values,
-                grain=datetime_values[0][const.GRAIN],
+                grain=grain,
                 constraints=constraints,
             )
 
@@ -243,7 +261,7 @@ class TimeEntity(BaseEntity):
             alternative_index=alternative_index,
             latent=d[const.LATENT],
             values=datetime_values,
-            grain=datetime_values[0][const.GRAIN],
+            grain=grain,
         )
         time_entity.set_entity_type()
         return time_entity

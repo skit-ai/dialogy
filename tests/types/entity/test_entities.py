@@ -1,6 +1,7 @@
 """
 Tests for entities
 """
+import copy
 from ast import Num
 from datetime import datetime
 from unicodedata import numeric
@@ -175,14 +176,17 @@ def test_time_entity_grain_not_str_error():
 
 
 def test_time_entities_with_constraint() -> None:
-    req_time = dt2timestamp(datetime.fromisoformat("2022-03-06T12:00:00.000+05:30"))
-    no_constraint_time = dt2timestamp(
-        datetime.fromisoformat("2022-03-06T00:00:00.000+05:30")
-    )
-    test_constraints = {
+    req_time_A = dt2timestamp(datetime.fromisoformat("2022-03-06T12:00:00.000+05:30"))
+    req_time_C = dt2timestamp(datetime.fromisoformat("2022-03-06T00:00:00.000+05:30"))
+    test_constraints_A = {
         "time": {"lte": {"hour": 21, "minute": 59}, "gte": {"hour": 7, "minute": 0}}
     }
-    not_time_constraints = {
+
+    test_constraints_B = {
+        "time": {"lte": {"hour": 21, "minute": 59}, "gte": {"hour": 13, "minute": 0}}
+    }
+
+    test_constraints_C = {
         "date": {
             "start": {"year": 2010, "month": 1, "day": 1},
             "end": {"year": 2020, "month": 1, "day": 1},
@@ -213,12 +217,120 @@ def test_time_entities_with_constraint() -> None:
         "latent": False,
     }
 
-    time_entity = TimeEntity.from_duckling(d_multiple, 1, test_constraints)
-    no_constraint_time_entity = TimeEntity.from_duckling(
-        d_multiple, 1, not_time_constraints
+    time_entity_A = TimeEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_A
     )
-    assert req_time == dt2timestamp(time_entity.get_value())
-    assert no_constraint_time == dt2timestamp(no_constraint_time_entity.get_value())
+    time_entity_B = TimeEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_B
+    )
+    time_entity_C = TimeEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_C
+    )
+    d_values = [
+        {
+            "value": "2022-03-06T12:00:00.000+05:30",
+            "grain": "minute",
+            "type": "value",
+        }
+    ]
+
+    assert req_time_A == dt2timestamp(time_entity_A.get_value())
+    assert d_values == time_entity_A.values
+    assert len(time_entity_B.values) == 0
+    assert req_time_C == dt2timestamp(time_entity_C.get_value())
+
+
+def test_time_interval_entities_with_constraint() -> None:
+    test_constraints_A = {
+        "time": {"lte": {"hour": 20, "minute": 59}, "gte": {"hour": 9, "minute": 0}}
+    }
+
+    test_constraints_B = {
+        "time": {"lte": {"hour": 17, "minute": 59}, "gte": {"hour": 12, "minute": 0}}
+    }
+
+    test_constraints_C = {
+        "date": {
+            "start": {"year": 2010, "month": 1, "day": 1},
+            "end": {"year": 2020, "month": 1, "day": 1},
+        }
+    }
+
+    test_constraints_D = {
+        "time": {"lte": {"hour": 23, "minute": 59}, "gte": {"hour": 6, "minute": 0}}
+    }
+
+    req_time_A = dt2timestamp(datetime.fromisoformat("2022-04-13T09:00:00.000+05:30"))
+    req_time_C = dt2timestamp(datetime.fromisoformat("2022-04-13T06:00:00.000+05:30"))
+    req_time_D = dt2timestamp(datetime.fromisoformat("2022-04-13T06:00:00.000+05:30"))
+    d_multiple = {
+        "body": "६ बजे से 10",
+        "start": 0,
+        "value": {
+            "values": [
+                {
+                    "to": {"value": "2022-04-13T11:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-04-13T06:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+                {
+                    "to": {"value": "2022-04-13T23:00:00.000+05:30", "grain": "hour"},
+                    "from": {"value": "2022-04-13T18:00:00.000+05:30", "grain": "hour"},
+                    "type": "interval",
+                },
+            ],
+            "to": {"value": "2022-04-13T11:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-04-13T06:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        },
+        "end": 11,
+        "dim": "time",
+        "latent": False,
+    }
+    d_values_A = [
+        {
+            "from": {"grain": "hour", "value": "2022-04-13T09:00:00+05:30"},
+            "to": {"grain": "hour", "value": "2022-04-13T11:00:00.000+05:30"},
+            "type": "interval",
+        },
+        {
+            "from": {"grain": "hour", "value": "2022-04-13T18:00:00.000+05:30"},
+            "type": "interval",
+        },
+    ]
+
+    d_values_D = [
+        {
+            "to": {"value": "2022-04-13T11:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-04-13T06:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        },
+        {
+            "to": {"value": "2022-04-13T23:00:00.000+05:30", "grain": "hour"},
+            "from": {"value": "2022-04-13T18:00:00.000+05:30", "grain": "hour"},
+            "type": "interval",
+        },
+    ]
+
+    time_interval_entity_A = TimeIntervalEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_A
+    )
+    time_interval_entity_B = TimeIntervalEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_B
+    )
+    time_interval_entity_C = TimeIntervalEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_C
+    )
+    time_interval_entity_D = TimeIntervalEntity.from_duckling(
+        copy.deepcopy(d_multiple), 1, test_constraints_D
+    )
+
+    assert req_time_A == dt2timestamp(time_interval_entity_A.get_value())
+    assert time_interval_entity_A.values == d_values_A
+    assert len(time_interval_entity_B.values) == 0
+    assert req_time_C == dt2timestamp(time_interval_entity_C.get_value())
+    assert req_time_D == dt2timestamp(time_interval_entity_D.get_value())
+    assert time_interval_entity_D.values == d_values_D
 
 
 def test_time_interval_entity_value_not_dict_error():

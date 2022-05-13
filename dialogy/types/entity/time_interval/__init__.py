@@ -48,8 +48,9 @@ Workflow Integration
 """
 from __future__ import annotations
 
+import operator
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import attr
 
@@ -151,6 +152,72 @@ class TimeIntervalEntity(TimeEntity):
             )
 
     @classmethod
+    def pick_value(
+        cls, d_values: List[Dict[str, Any]], grain: str, constraints: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
+        """
+        Filters interval datetime values outside of timerange constraint
+
+        Filter logic apply constraint on both "from" and "to" individually:
+        - both FROM and TO present and inside constraint
+            - no filtering
+        - both FROM and TO present but only FROM inside constraint
+            - filter TO
+        - both FROM and TO present but only TO inside constraint
+            - replace FROM value with constraint lowerbound datetime value
+        - both FROM and TO present but outside constraint
+            - filter both TO and FROM
+        - only FROM present and inside constraint
+            - no filtering
+        - only FROM present and outside constraint
+            - filter FROM
+
+        """
+        is_time = grain in const.TIME_UNITS
+        constraint = constraints.get(const.TIME)
+        if not is_time or not constraint:
+            return d_values
+
+        constrained_d_values = []
+        for datetime_val in d_values:
+            from_datetime_val = datetime_val.get(const.FROM, {})
+            to_datetime_val = datetime_val.get(const.TO, {})
+            from_ = from_datetime_val and cls.apply_constraint(
+                datetime.fromisoformat(from_datetime_val.get(const.VALUE)),
+                constraint,
+            )
+            to_ = to_datetime_val and cls.apply_constraint(
+                datetime.fromisoformat(to_datetime_val.get(const.VALUE)),
+                constraint,
+            )
+
+            if from_ and to_:
+                constrained_d_values.append(datetime_val)
+            elif from_:
+                constrained_d_values.append(
+                    {
+                        const.FROM: datetime_val.get(const.FROM),
+                        const.TYPE: datetime_val.get(const.TYPE),
+                    }
+                )
+            elif to_:
+                datetime_val[const.FROM][const.VALUE] = (
+                    datetime.fromisoformat(
+                        datetime_val.get(const.FROM, {}).get(const.VALUE)
+                    )
+                    .replace(
+                        hour=constraint[const.GTE][const.HOUR],
+                        minute=constraint[const.GTE][const.MINUTE],
+                        second=0,
+                        microsecond=0,
+                    )
+                    .isoformat()
+                )
+                constrained_d_values.append(datetime_val)
+
+        return constrained_d_values
+
+    @classmethod
     def from_duckling(
         cls,
         d: Dict[str, Any],
@@ -162,13 +229,23 @@ class TimeIntervalEntity(TimeEntity):
         to_value = d[const.VALUE].get(const.TO)
         grain_source = from_value or to_value
         grain = grain_source.get(const.GRAIN)
+
+        datetime_values = d[const.VALUE][const.VALUES]
+
+        if constraints:
+            datetime_values = cls.pick_value(
+                d_values=datetime_values,
+                grain=grain,
+                constraints=constraints,
+            )
+
         time_interval_entity = cls(
             range={const.START: d[const.START], const.END: d[const.END]},
             body=d[const.BODY],
             dim=d[const.DIM],
             alternative_index=alternative_index,
             latent=d[const.LATENT],
-            values=d[const.VALUE][const.VALUES],
+            values=datetime_values,
             type=d[const.VALUE][const.TYPE],
             grain=grain,
         )
