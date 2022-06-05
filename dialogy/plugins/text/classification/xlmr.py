@@ -87,7 +87,7 @@ class XLMRMultiClass(Plugin):
         ):
             raise ValueError(
                 f"Attempting to set invalid {args_map}. "
-                "It is missing some of {const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
+                f"It is missing some of {const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
             )
         self.args_map = args_map
         self.kwargs = kwargs or {}
