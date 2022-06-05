@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.10
+
+- [x] add: Support python for 3.10.
+
 ## 0.9.9
 
 - [x] fix: `XLMRMultiClass::inference` type signature for `state`.
