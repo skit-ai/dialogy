@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.deserialize - dialogy 0.9.7 documentation</title>
+        <title>dialogy.types.entity.deserialize - dialogy 0.9.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.9.7 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.9.11 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.7 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.11 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -277,7 +277,7 @@
         <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"UTC"</span><span class="p">,</span>
         <span class="n">duration_cast_operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEntity</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]:</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">)</span>
         <span class="n">entity_class_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_entity_class_str</span><span class="p">(</span><span class="n">duckling_entity_dict</span><span class="p">)</span>
         <span class="n">EntityClass</span><span class="p">:</span> <span class="n">BaseEntity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">entitiy_classes</span><span class="p">[</span><span class="n">entity_class_name</span><span class="p">]</span>

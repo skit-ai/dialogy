@@ -1,5 +1,6 @@
 import pytest
-from dialogy.types.intent.swap_rules import SwapRule, Dependants, DependencyOp
+
+from dialogy.types.intent.swap_rules import Dependants, DependencyOp, SwapRule
 
 
 def test_eq_swap_rule_from_dict():

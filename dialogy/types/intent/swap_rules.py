@@ -1,4 +1,9 @@
+"""
+.. _SwapRulesModule:
+"""
+
 from typing import Any, Dict, Set, Union
+
 import attr
 
 
@@ -52,7 +57,7 @@ class DependencyOp:
         We have a condition and comparators for one of the given operations.
         We check if the condition is True using the given value.
 
-        .. ipython:: python
+        .. ipython::
 
             In [1]: from dialogy.types.intent.swap_rules import DependencyOp
 
@@ -100,7 +105,7 @@ class Dependants:
         """
         Evaluate if all conditions pass.
 
-        .. ipython:: python
+        .. ipython::
 
             In [1]: from dialogy.types.intent.swap_rules import Dependants
 
@@ -147,7 +152,7 @@ class SwapRule:
         """
         Evaluate if all conditions pass.
 
-        .. ipython:: python
+        .. ipython::
 
             In [1]: from dialogy.types.intent.swap_rules import SwapRule
 

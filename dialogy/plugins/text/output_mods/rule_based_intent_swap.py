@@ -1,14 +1,16 @@
-from typing import Any, List, Dict
+from typing import Any, Dict, List
 
 from loguru import logger
 
-from dialogy.base import Plugin, Input, Output
-from dialogy.types import Intent, BaseEntity
+from dialogy.base import Input, Output, Plugin
+from dialogy.types import BaseEntity, Intent
 from dialogy.types.intent.swap_rules import SwapRule
 
 
 class RuleBasedIntentSwap(Plugin):
     """
+    .. _RuleBasedIntentSwap:
+
     We require custom logic to handle arbitrary transitions. Giving a detailed look, the transitions
     appear to have simple relationships that can even be serialized and expressed as configs.
 
@@ -59,8 +61,8 @@ class RuleBasedIntentSwap(Plugin):
     3. in - containership
     4. nin - inverse containership
     5. intersects - an intersection between two sets (or array-like) quantities.
-    
-    This can help in cases where there is a dire shortage of data.
+
+    This can help in cases where there is a dire shortage of data. The **source** code of :ref:`swap rules<SwapRulesModule>` could be a helpful read.
     """
     def __init__(self, rules: List[SwapRule], dest=None, **kwargs) -> None:
         super().__init__(dest=dest, **kwargs)

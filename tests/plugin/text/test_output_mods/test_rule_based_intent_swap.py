@@ -1,10 +1,10 @@
 import pytest
 
-from tests import load_tests
+from dialogy.base import Input, Output
 from dialogy.plugins import RuleBasedIntentSwap
 from dialogy.types import Intent
 from dialogy.workflow import Workflow
-from dialogy.base import Input, Output
+from tests import load_tests
 
 
 @pytest.mark.parametrize("test_case", load_tests("cases", __file__))

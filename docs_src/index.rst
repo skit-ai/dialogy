@@ -193,6 +193,7 @@ Index
    Entity Scoring <./source/dialogy.base.entity_extractor>
    Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
    Combine DateTime Over Slots <./source/dialogy.plugins.text.combine_date_time>
+   Rule Based Intent Transitions <./source/dialogy.plugins.text.output_mods>
 
 .. toctree::
    :maxdepth: 1
