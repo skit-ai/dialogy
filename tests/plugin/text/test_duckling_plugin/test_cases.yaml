@@ -133,6 +133,33 @@
   'latent': False}]
   expected: [{"entity_type": "date"}]
 
+- description: "test time entity with value over 10k."
+  input: "10000"
+  duckling:
+    dimensions: ["time"]
+    locale: "en_IN"
+    timezone: "Asia/Kolkata"
+  mock_entity_json: [{
+    "body": "10000",
+    "start": 0,
+    "value": {
+      "values": [
+        {
+          "value": "10000-01-01T00:00:00.000+00:00",
+          "grain": "year",
+          "type": "value"
+        }
+      ],
+      "value": "10000-01-01T00:00:00.000+00:00",
+      "grain": "year",
+      "type": "value"
+    },
+    "end": 5,
+    "dim": "time",
+    "latent": true
+  }]
+  expected: []
+
 - description: "test time interval."
   input: "between 2 to 4 am"
   duckling:
