@@ -8,6 +8,60 @@ from dialogy.types.intent.swap_rules import SwapRule
 
 
 class RuleBasedIntentSwap(Plugin):
+    """
+    We require custom logic to handle arbitrary transitions. Giving a detailed look, the transitions
+    appear to have simple relationships that can even be serialized and expressed as configs.
+
+    Taking an example:
+
+    If we have discovered in an utterance, that the current state is :code:`S1` and the intent is :code:`I2` and in this case,
+    we should transition to :code:`I2`. Then this can be expressed by the following rule:
+
+    .. code-block:: python
+
+        rules = [{
+            rename: "I2",
+            depends_on: {
+                "intent": "I1",
+                "state": "S1"
+            }
+        }]
+
+    We can do more; say we have discovered
+
+    entity types as: :code:`["e1", "e2"]`
+    state as :code:`s1`
+    and we need to transition to :code:`I2`?
+
+    .. code-block:: python
+
+        rules = [{
+        rename: "I2",
+            depends_on: {
+                "entities": {
+                    "intersects": ["e1"]
+                },
+                "state": "S1"
+            }
+        }]
+
+    We have also identified that these transitions currently exist for the following properties:
+
+    1. The predicted intent with most confidence.
+    2. The current state
+    3. The list of entity types
+    4. The previous intent
+    
+    By accommodating 5 operations for each of the 4 properties we can produce a moderately strong rule transition, namely:
+
+    1. eq - equality check, also the default operation
+    2. ne - not equal
+    3. in - containership
+    4. nin - inverse containership
+    5. intersects - an intersection between two sets (or array-like) quantities.
+    
+    This can help in cases where there is a dire shortage of data.
+    """
     def __init__(self, rules: List[SwapRule], dest=None, **kwargs) -> None:
         super().__init__(dest=dest, **kwargs)
         self.rules = [SwapRule(**r) for r in rules]
