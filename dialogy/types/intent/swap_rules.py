@@ -73,7 +73,7 @@ class DependencyOp:
         :rtype: bool
         """
         d: Dict[str, Union[str, Set[str]]] = attr.asdict(self)
-        op_name = list(d.keys())[0]
+        op_name = {k for k, v in d.items() if v}.pop()
         cmp = d[op_name]
         return DependencyOp.operations[op_name](as_set(value), cmp)
 
