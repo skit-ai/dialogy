@@ -50,6 +50,7 @@ sphinx-autodoc-typehints = "^1.16.0"
 sphinxcontrib-mermaid = "^0.7.1"
 pytest-mock = "^3.7.0"
 spacy = "^3.3.1"
+ipykernel = "^6.15.0"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
