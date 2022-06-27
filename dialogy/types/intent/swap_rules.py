@@ -69,8 +69,6 @@ class DependencyOp:
         """
         d: Dict[str, Union[str, Set(str)]] = attr.asdict(self)
         for op_name, cmp in d.items():
-            if cmp == "__any__":
-                return True
             if cmp:
                 return DependencyOp.operations[op_name](as_set(value), cmp)
 

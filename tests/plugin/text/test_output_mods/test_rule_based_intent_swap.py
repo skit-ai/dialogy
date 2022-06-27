@@ -20,7 +20,6 @@ def test_rule_based_intent_swap_with_workflow():
         RuleBasedIntentSwap([{
             "rename": "_collect_datetime_",
             "depends_on": {
-                "intent": "__any__",
                 "state": "COLLECT_DATETIME"
             }
         }], dest="output.intents")

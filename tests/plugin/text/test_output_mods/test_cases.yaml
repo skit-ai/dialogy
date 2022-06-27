@@ -17,7 +17,6 @@
 - description: "Transition current intent from any intent -> collect datetime"
   rules:
     - depends_on:
-        intent: "__any__"
         entity_types: {
           "intersects": ["time"]
         }
