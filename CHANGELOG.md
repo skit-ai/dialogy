@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.11
+
+- [x] fix: https://github.com/skit-ai/dialogy/issues/148
+
+
 ## 0.9.10
 
 - [x] add: Support python for 3.10.
