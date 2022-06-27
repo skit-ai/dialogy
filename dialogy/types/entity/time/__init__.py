@@ -270,5 +270,11 @@ class TimeEntity(BaseEntity):
             values=datetime_values,
             grain=grain,
         )
+
+        try:
+            time_entity.collect_datetime_values()
+        except ValueError:
+            return None
+
         time_entity.set_entity_type()
         return time_entity
