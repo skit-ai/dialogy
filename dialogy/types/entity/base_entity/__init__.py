@@ -249,7 +249,7 @@ class BaseEntity:
     @classmethod
     def from_duckling(
         cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
-    ) -> BaseEntity:
+    ) -> Optional[BaseEntity]:
         raise NotImplementedError  # pragma: no cover
 
 

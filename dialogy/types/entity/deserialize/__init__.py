@@ -57,7 +57,7 @@ class EntityDeserializer:
         timezone: str = "UTC",
         duration_cast_operator: Optional[str] = None,
         constraints: Optional[Dict[str, Any]] = None,
-    ) -> BaseEntity:
+    ) -> Optional[BaseEntity]:
         cls.validate(duckling_entity_dict)
         entity_class_name = cls.get_entity_class_str(duckling_entity_dict)
         EntityClass: BaseEntity = cls.entitiy_classes[entity_class_name]
