@@ -62,6 +62,13 @@ from dialogy.types.entity.base_entity import BaseEntity
 from dialogy.types.entity.deserialize import EntityDeserializer
 
 
+def dt_from_isoformat(iso_datetime: str) -> datetime:
+    """
+    Converts an ISO-formatted datetime string to a datetime object.
+    """
+    return datetime.fromisoformat(iso_datetime)
+
+
 @EntityDeserializer.register(const.TIME)
 @attr.s
 class TimeEntity(BaseEntity):
@@ -103,7 +110,7 @@ class TimeEntity(BaseEntity):
         :rtype: Optional[datetime]
         """
         entity_date_value = super().get_value()
-        return datetime.fromisoformat(entity_date_value)
+        return dt_from_isoformat(entity_date_value)
 
     def collect_datetime_values(self) -> List[datetime]:
         """
@@ -112,7 +119,7 @@ class TimeEntity(BaseEntity):
         :return: List of datetime values
         :rtype: List[str]
         """
-        return [datetime.fromisoformat(value[const.VALUE]) for value in self.values]
+        return [dt_from_isoformat(value[const.VALUE]) for value in self.values]
 
     def is_uniq_date_from_values(self) -> bool:
         """
@@ -231,7 +238,7 @@ class TimeEntity(BaseEntity):
 
         constrained_d_values = []
         for datetime_val in d_values:
-            datetime_ = datetime.fromisoformat(datetime_val[const.VALUE])
+            datetime_ = dt_from_isoformat(datetime_val[const.VALUE])
             if cls.apply_constraint(datetime_, constraint):
                 constrained_d_values.append(datetime_val)
         return constrained_d_values
@@ -243,7 +250,7 @@ class TimeEntity(BaseEntity):
         alternative_index: int,
         constraints: Optional[Dict[str, Any]] = None,
         **kwargs: Any
-    ) -> TimeEntity:
+    ) -> Optional[TimeEntity]:
         datetime_values = d[const.VALUE][const.VALUES]
         grain = datetime_values[0][const.GRAIN]
 
