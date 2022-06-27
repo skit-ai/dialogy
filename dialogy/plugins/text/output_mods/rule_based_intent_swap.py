@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 from loguru import logger
 
@@ -64,16 +64,16 @@ class RuleBasedIntentSwap(Plugin):
 
     This can help in cases where there is a dire shortage of data. The **source** code of :ref:`swap rules<SwapRulesModule>` could be a helpful read.
     """
-    def __init__(self, rules: List[SwapRule], dest=None, **kwargs) -> None:
+    def __init__(self, rules: List[Dict[str, Any]], dest: str = "output.intents", **kwargs: Any) -> None:
         super().__init__(dest=dest, **kwargs)
         self.rules = [SwapRule(**r) for r in rules]
 
     def make_payload(
         self,
         intents: List[Intent],
-        current_state: str,
+        current_state: Union[None, str],
         entities: List[BaseEntity],
-        previous_intent: str) -> Any:
+        previous_intent: Union[None, str]) -> Any:
         """
         Make payload in the acceptable format for swap function for this class.
         """
@@ -84,7 +84,7 @@ class RuleBasedIntentSwap(Plugin):
             'previous_intent': previous_intent
         }
 
-    def swap(self, payload: Dict[str, Any], intents: List[Intent]):
+    def swap(self, payload: Dict[str, Any], intents: List[Intent]) -> List[Intent]:
         """
         Swap intent name based on the rules defined in config.yaml under intent_swap 
         """

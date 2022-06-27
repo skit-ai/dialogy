@@ -17,9 +17,9 @@ def as_set(value: Any) -> Any:
 class DependencyOp:
     eq: Union[None, str] = attr.ib(default=None, kw_only=True)
     ne: Union[None, str] = attr.ib(default=None, kw_only=True)
-    in_: Union[None, Set[str]] = attr.ib(factory=set, converter=as_set, kw_only=True)
-    nin: Union[None, Set[str]] = attr.ib(factory=set, converter=as_set, kw_only=True)
-    intersects: Union[None, Set[str]] = attr.ib(factory=set, converter=as_set, kw_only=True)
+    in_: Union[None, Set[str]] = attr.ib(default=None, converter=as_set, kw_only=True)
+    nin: Union[None, Set[str]] = attr.ib(default=None, converter=as_set, kw_only=True)
+    intersects: Union[None, Set[str]] = attr.ib(default=None, converter=as_set, kw_only=True)
     operations = {
         'eq': lambda a, b: a == b,
         'ne': lambda a, b: a != b,
@@ -28,27 +28,27 @@ class DependencyOp:
         'intersects': lambda a, b: a.intersection(b),
     }
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self) -> None:
         d = attr.asdict(self)
         values = [v for v in d.values() if v]
         if len(values) > 1:
             raise ValueError("Only one operation can be specified.")
 
     @classmethod
-    def from_dict(cls, d: Union[None, str, Dict[str, Any], 'DependencyOp']) -> 'DependencyOp':
-        if d is None:
-            return None
-        elif isinstance(d, cls):
+    def from_dict(cls, d: Union[None, str, Dict[str, Any], 'DependencyOp']) -> 'Union[None, DependencyOp]':
+        if isinstance(d, cls):
             return d
         elif isinstance(d, str):
             return cls(eq=d)
-        return cls(
-            eq=d.get("eq"),
-            ne=d.get("ne"),
-            in_=d.get("in_"),
-            nin=d.get("nin"),
-            intersects=d.get("intersects"),
-        )
+        elif isinstance(d, dict):
+            return cls(
+                eq=d.get("eq"),
+                ne=d.get("ne"),
+                in_=d.get("in_"),
+                nin=d.get("nin"),
+                intersects=d.get("intersects"),
+            )
+        return None
 
     def parse(self, value: Union[str, Set[str]]) -> bool:
         """
@@ -72,10 +72,10 @@ class DependencyOp:
         :return: True if condition passes.
         :rtype: bool
         """
-        d: Dict[str, Union[str, Set(str)]] = attr.asdict(self)
-        for op_name, cmp in d.items():
-            if cmp:
-                return DependencyOp.operations[op_name](as_set(value), cmp)
+        d: Dict[str, Union[str, Set[str]]] = attr.asdict(self)
+        op_name = list(d.keys())[0]
+        cmp = d[op_name]
+        return DependencyOp.operations[op_name](as_set(value), cmp)
 
 
 DependencyType = Union[None, DependencyOp]
@@ -83,23 +83,23 @@ DependencyType = Union[None, DependencyOp]
 
 @attr.s
 class Dependants:
-    entity_types: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True)
-    intent: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True)
-    previous_intent: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True)
-    state: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True)
+    entity_types: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
+    intent: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
+    previous_intent: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
+    state: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
 
     @classmethod
-    def from_dict(cls, d: Union[None, Dict[str, Any], 'Dependants']) -> 'Dependants':
-        if d is None:
-            return None
-        elif isinstance(d, cls):
+    def from_dict(cls, d: Union[None, Dict[str, Any], 'Dependants']) -> 'Union[None, Dependants]':
+        if isinstance(d, cls):
             return d
-        return cls(
-            entity_types=d.get("entity_types"),
-            intent=d.get("intent"),
-            previous_intent=d.get("previous_intent"),
-            state=d.get("state")
-        )
+        elif isinstance(d, dict):
+            return cls(
+                entity_types=d.get("entity_types"),
+                intent=d.get("intent"),
+                previous_intent=d.get("previous_intent"),
+                state=d.get("state")
+            )
+        return None
 
     def parse(self, values: Dict[str, Any]) -> bool:
         """
@@ -128,17 +128,17 @@ class Dependants:
         return all(d[name].parse(value) for name, value in values.items() if d[name])
 
 
-def exclude_none_values(_: attr.Attribute, value: Any) -> Dict[str, Any]:
+def exclude_none_values(_: Any, value: Any) -> bool:
     return value is not None
 
 
-def non_empty_string(_, attr, value):
-    return value and isinstance(value, str)
+def non_empty_string(_: Any, attr: Any, value: str) -> bool:
+    return bool(value) and isinstance(value, str)
 
 
 @attr.s
 class SwapRule:
-    depends_on: Dependants = attr.ib(kw_only=True, converter=Dependants.from_dict)
+    depends_on: Dependants = attr.ib(kw_only=True, converter=Dependants.from_dict) # type: ignore
     rename: str = attr.ib(kw_only=True, validator=non_empty_string)
 
     @classmethod
