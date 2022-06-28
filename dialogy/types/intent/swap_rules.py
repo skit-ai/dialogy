@@ -84,6 +84,7 @@ DependencyType = Union[None, DependencyOp]
 @attr.s
 class Dependants:
     entity_types: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
+    entity_values: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
     intent: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
     previous_intent: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
     state: DependencyType = attr.ib(default=None, converter=DependencyOp.from_dict, kw_only=True) # type: ignore
@@ -95,6 +96,7 @@ class Dependants:
         elif isinstance(d, dict):
             return cls(
                 entity_types=d.get("entity_types"),
+                entity_values=d.get("entity_values"),
                 intent=d.get("intent"),
                 previous_intent=d.get("previous_intent"),
                 state=d.get("state")

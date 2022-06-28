@@ -78,10 +78,11 @@ class RuleBasedIntentSwap(Plugin):
         Make payload in the acceptable format for swap function for this class.
         """
         return {
-            'intent': intents[0].name,
-            'state': current_state,
-            'entity_types': [entity.entity_type for entity in entities],
-            'previous_intent': previous_intent
+            "intent": intents[0].name,
+            "state": current_state,
+            "entity_types": [entity.entity_type for entity in entities],
+            "entity_values": [entity.get_value() for entity in entities],
+            "previous_intent": previous_intent
         }
 
     def swap(self, payload: Dict[str, Any], intents: List[Intent]) -> List[Intent]:
