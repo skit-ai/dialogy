@@ -5,7 +5,7 @@ on:
      tags:
      - '*'
 jobs:
-  build-n-publish:
+  build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -52,6 +52,10 @@ jobs:
       with:
         script: |
             core.setFailed('Code Coverage is less than 100%')
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
     - name: Build and Publish to PYPI
       env:
         TWINE_USERNAME: __token__
