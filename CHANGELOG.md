@@ -2,8 +2,8 @@
 
 ## 0.9.11
 
-- [x] fix: https://github.com/skit-ai/dialogy/issues/148
-
+- [x] fix: duckling datetime parsing for year > 9999. [We won't return entities](https://github.com/skit-ai/dialogy/issues/148) in these cases.
+- [x] feat: A rule engine to define intent transitions.
 
 ## 0.9.10
 
