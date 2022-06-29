@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.utils package" href="dialogy.utils.html" /><link rel="prev" title="dialogy.plugins.text.combine_date_time package" href="dialogy.plugins.text.combine_date_time.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.output_mods package - dialogy 0.9.11 documentation</title>
+        <title>dialogy.plugins.text.output_mods package - dialogy 0.9.13 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.11 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.13 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.11 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.13 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -228,7 +228,7 @@
 <span id="dialogy-plugins-text-output-mods-rule-based-intent-swap-module"></span><h2>dialogy.plugins.text.output_mods.rule_based_intent_swap module<a class="headerlink" href="#module-dialogy.plugins.text.output_mods.rule_based_intent_swap" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.plugins.text.output_mods.rule_based_intent_swap.RuleBasedIntentSwap">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RuleBasedIntentSwap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/output_mods/rule_based_intent_swap.html#RuleBasedIntentSwap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.output_mods.rule_based_intent_swap.RuleBasedIntentSwap" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RuleBasedIntentSwap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'output.intents'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/output_mods/rule_based_intent_swap.html#RuleBasedIntentSwap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.output_mods.rule_based_intent_swap.RuleBasedIntentSwap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
 <p id="rulebasedintentswap">We require custom logic to handle arbitrary transitions. Giving a detailed look, the transitions
 appear to have simple relationships that can even be serialized and expressed as configs.</p>
@@ -274,7 +274,7 @@ and we need to transition to <code class="code docutils literal notranslate"><sp
 <li><p>nin - inverse containership</p></li>
 <li><p>intersects - an intersection between two sets (or array-like) quantities.</p></li>
 </ol>
-<p>This can help in cases where there is a dire shortage of data. The source code of <a class="reference internal" href="dialogy.types.intent.html#swaprulesmodule"><span class="std std-ref">swap rules</span></a> could be a helpful read.</p>
+<p>This can help in cases where there is a dire shortage of data. The <strong>source</strong> code of <a class="reference internal" href="dialogy.types.intent.html#swaprulesmodule"><span class="std std-ref">swap rules</span></a> could be a helpful read.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.output_mods.rule_based_intent_swap.RuleBasedIntentSwap.make_payload">
 <span class="sig-name descname"><span class="pre">make_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_intent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/output_mods/rule_based_intent_swap.html#RuleBasedIntentSwap.make_payload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.output_mods.rule_based_intent_swap.RuleBasedIntentSwap.make_payload" title="Permalink to this definition">¶</a></dt>
@@ -289,6 +289,11 @@ and we need to transition to <code class="code docutils literal notranslate"><sp
 <dt class="sig sig-object py" id="dialogy.plugins.text.output_mods.rule_based_intent_swap.RuleBasedIntentSwap.swap">
 <span class="sig-name descname"><span class="pre">swap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intents</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/output_mods/rule_based_intent_swap.html#RuleBasedIntentSwap.swap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.output_mods.rule_based_intent_swap.RuleBasedIntentSwap.swap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Swap intent name based on the rules defined in config.yaml under intent_swap</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Intent</span></code></a>]</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.output_mods.rule_based_intent_swap.RuleBasedIntentSwap.utility">
