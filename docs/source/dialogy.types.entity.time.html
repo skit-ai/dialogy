@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.time_interval package" href="dialogy.types.entity.time_interval.html" /><link rel="prev" title="dialogy.types.entity.people package" href="dialogy.types.entity.people.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.time package - dialogy 0.9.9 documentation</title>
+        <title>dialogy.types.entity.time package - dialogy 0.9.13 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.9 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.13 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.9 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.13 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -188,6 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.output_mods.html">Rule Based Intent Transitions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -238,10 +239,10 @@
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"tomorrow"</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-04-07T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
+<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-06-30T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
 
 <span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"monday"</span><span class="p">)</span>
-<span class="gh">Out[4]: </span><span class="go">[TimeEntity(body='monday', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-04-11T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
+<span class="gh">Out[4]: </span><span class="go">[TimeEntity(body='monday', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-07-04T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
 
 <span class="gp">In [5]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"27th jan"</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go">[TimeEntity(body='27th jan', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2023-01-27T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
@@ -276,7 +277,7 @@
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.3333333333333333,</span>
 <span class="go">   'alternative_index': 0,</span>
-<span class="go">   'value': '2022-04-07T00:00:00.000+05:30',</span>
+<span class="go">   'value': '2022-06-30T00:00:00.000+05:30',</span>
 <span class="go">   'entity_type': 'date',</span>
 <span class="go">   'grain': 'day'},</span>
 <span class="go">  {'range': {'start': 0, 'end': 6},</span>
@@ -285,7 +286,7 @@
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.3333333333333333,</span>
 <span class="go">   'alternative_index': 1,</span>
-<span class="go">   'value': '2022-04-11T00:00:00.000+05:30',</span>
+<span class="go">   'value': '2022-07-04T00:00:00.000+05:30',</span>
 <span class="go">   'entity_type': 'date',</span>
 <span class="go">   'grain': 'day'},</span>
 <span class="go">  {'range': {'start': 0, 'end': 8},</span>
@@ -312,6 +313,24 @@
 <p>Attributes:
 - <cite>grain</cite> tells us the smallest unit of time in the utterance</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.apply_constraint">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.apply_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.apply_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if date_time is inside constraint (LOWER_BOUND &lt; date_time &lt; UPPER_BOUND)
+:type date_time: <code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>
+:param date_time: An instance of datetime.
+:type date_time: datetime
+:type constraint: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]
+:param constraint: <code class="code docutils literal notranslate"><span class="pre">{'gte':</span> <span class="pre">{'hour':</span> <span class="pre">9,</span> <span class="pre">'minute':</span> <span class="pre">0},</span> <span class="pre">'lte':</span> <span class="pre">{'hour':</span> <span class="pre">20,</span> <span class="pre">'minute':</span> <span class="pre">59}}</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if date_time &gt; constraint[LOWER_BOUND] and date_time &lt; constraint[UPPER_BOUND]</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="dialogy.types.entity.time.TimeEntity.collect_datetime_values">
 <span class="sig-name descname"><span class="pre">collect_datetime_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.collect_datetime_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.collect_datetime_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Collect all datetime values from the entity</p>
@@ -333,7 +352,7 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_duckling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#TimeEntity.from_duckling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.TimeEntity.from_duckling" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeEntity</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeEntity</span></code></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -466,6 +485,16 @@ else the entity type is TIME.</p>
 </dd>
 </dl>
 </dd></dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.types.entity.time.dt_from_isoformat">
+<span class="sig-name descname"><span class="pre">dt_from_isoformat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iso_datetime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time.html#dt_from_isoformat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time.dt_from_isoformat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an ISO-formatted datetime string to a datetime object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 </section>
 </section>

@@ -11,15 +11,9 @@ import pytest
 
 from dialogy.base import Input, Plugin
 from dialogy.plugins import DucklingPlugin
-from dialogy.types import (
-    BaseEntity,
-    CreditCardNumberEntity,
-    NumericalEntity,
-    PeopleEntity,
-    TimeEntity,
-    TimeIntervalEntity,
-    entity_synthesis,
-)
+from dialogy.types import (BaseEntity, CreditCardNumberEntity, NumericalEntity,
+                           PeopleEntity, TimeEntity, TimeIntervalEntity,
+                           entity_synthesis)
 from dialogy.utils import dt2timestamp
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder

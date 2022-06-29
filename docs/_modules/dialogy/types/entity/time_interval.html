@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.time_interval - dialogy 0.9.7 documentation</title>
+        <title>dialogy.types.entity.time_interval - dialogy 0.9.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.9.7 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.9.11 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.7 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.11 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -268,8 +268,9 @@
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
@@ -370,6 +371,72 @@
                 <span class="sa">f</span><span class="s2">"Expected at least 1 of `from` or `to` in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span></div>
 
+<div class="viewcode-block" id="TimeIntervalEntity.pick_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity.pick_value">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pick_value</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">d_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">grain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">constraints</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Filters interval datetime values outside of timerange constraint</span>
+
+<span class="sd">        Filter logic apply constraint on both "from" and "to" individually:</span>
+<span class="sd">        - both FROM and TO present and inside constraint</span>
+<span class="sd">            - no filtering</span>
+<span class="sd">        - both FROM and TO present but only FROM inside constraint</span>
+<span class="sd">            - filter TO</span>
+<span class="sd">        - both FROM and TO present but only TO inside constraint</span>
+<span class="sd">            - replace FROM value with constraint lowerbound datetime value</span>
+<span class="sd">        - both FROM and TO present but outside constraint</span>
+<span class="sd">            - filter both TO and FROM</span>
+<span class="sd">        - only FROM present and inside constraint</span>
+<span class="sd">            - no filtering</span>
+<span class="sd">        - only FROM present and outside constraint</span>
+<span class="sd">            - filter FROM</span>
+
+<span class="sd">        """</span>
+        <span class="n">is_time</span> <span class="o">=</span> <span class="n">grain</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">TIME_UNITS</span>
+        <span class="n">constraint</span> <span class="o">=</span> <span class="n">constraints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_time</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">constraint</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">d_values</span>
+
+        <span class="n">constrained_d_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">datetime_val</span> <span class="ow">in</span> <span class="n">d_values</span><span class="p">:</span>
+            <span class="n">from_datetime_val</span> <span class="o">=</span> <span class="n">datetime_val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FROM</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">to_datetime_val</span> <span class="o">=</span> <span class="n">datetime_val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TO</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">from_</span> <span class="o">=</span> <span class="n">from_datetime_val</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">apply_constraint</span><span class="p">(</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">from_datetime_val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">)),</span>
+                <span class="n">constraint</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">to_</span> <span class="o">=</span> <span class="n">to_datetime_val</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">apply_constraint</span><span class="p">(</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">to_datetime_val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">)),</span>
+                <span class="n">constraint</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">from_</span> <span class="ow">and</span> <span class="n">to_</span><span class="p">:</span>
+                <span class="n">constrained_d_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime_val</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">from_</span><span class="p">:</span>
+                <span class="n">constrained_d_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="n">const</span><span class="o">.</span><span class="n">FROM</span><span class="p">:</span> <span class="n">datetime_val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FROM</span><span class="p">),</span>
+                        <span class="n">const</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="n">datetime_val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TYPE</span><span class="p">),</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">to_</span><span class="p">:</span>
+                <span class="n">datetime_val</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">FROM</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span>
+                        <span class="n">datetime_val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FROM</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                        <span class="n">hour</span><span class="o">=</span><span class="n">constraint</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">GTE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">HOUR</span><span class="p">],</span>
+                        <span class="n">minute</span><span class="o">=</span><span class="n">constraint</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">GTE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">MINUTE</span><span class="p">],</span>
+                        <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+                <span class="p">)</span>
+                <span class="n">constrained_d_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime_val</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">constrained_d_values</span></div>
+
 <div class="viewcode-block" id="TimeIntervalEntity.from_duckling"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time_interval.html#dialogy.types.entity.time_interval.TimeIntervalEntity.from_duckling">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_duckling</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
@@ -382,13 +449,23 @@
         <span class="n">to_value</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TO</span><span class="p">)</span>
         <span class="n">grain_source</span> <span class="o">=</span> <span class="n">from_value</span> <span class="ow">or</span> <span class="n">to_value</span>
         <span class="n">grain</span> <span class="o">=</span> <span class="n">grain_source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">GRAIN</span><span class="p">)</span>
+
+        <span class="n">datetime_values</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">constraints</span><span class="p">:</span>
+            <span class="n">datetime_values</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">pick_value</span><span class="p">(</span>
+                <span class="n">d_values</span><span class="o">=</span><span class="n">datetime_values</span><span class="p">,</span>
+                <span class="n">grain</span><span class="o">=</span><span class="n">grain</span><span class="p">,</span>
+                <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>
+            <span class="p">)</span>
+
         <span class="n">time_interval_entity</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="nb">range</span><span class="o">=</span><span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">START</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">START</span><span class="p">],</span> <span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">END</span><span class="p">]},</span>
             <span class="n">body</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">BODY</span><span class="p">],</span>
             <span class="n">dim</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">DIM</span><span class="p">],</span>
             <span class="n">alternative_index</span><span class="o">=</span><span class="n">alternative_index</span><span class="p">,</span>
             <span class="n">latent</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">LATENT</span><span class="p">],</span>
-            <span class="n">values</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">],</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">datetime_values</span><span class="p">,</span>
             <span class="nb">type</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">TYPE</span><span class="p">],</span>
             <span class="n">grain</span><span class="o">=</span><span class="n">grain</span><span class="p">,</span>
         <span class="p">)</span>

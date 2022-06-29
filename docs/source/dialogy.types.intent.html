@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.base_entity package" href="dialogy.types.entity.base_entity.html" /><link rel="prev" title="dialogy.base.plugin package" href="dialogy.base.plugin.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.intent package - dialogy 0.9.9 documentation</title>
+        <title>dialogy.types.intent package - dialogy 0.9.13 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.9 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.13 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.9 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.13 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -188,6 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.output_mods.html">Rule Based Intent Transitions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -220,6 +221,229 @@
         <article role="main">
           <section id="dialogy-types-intent-package">
 <h1>dialogy.types.intent package<a class="headerlink" href="#dialogy-types-intent-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-dialogy.types.intent.swap_rules">
+<span id="dialogy-types-intent-swap-rules-module"></span><h2>dialogy.types.intent.swap_rules module<a class="headerlink" href="#module-dialogy.types.intent.swap_rules" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="swaprulesmodule"></span><dl class="py class">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.Dependants">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Dependants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#Dependants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.Dependants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.Dependants.entity_types">
+<span class="sig-name descname"><span class="pre">entity_types</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#dialogy.types.intent.swap_rules.DependencyOp" title="dialogy.types.intent.swap_rules.DependencyOp"><span class="pre">dialogy.types.intent.swap_rules.DependencyOp</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.Dependants.entity_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.Dependants.entity_values">
+<span class="sig-name descname"><span class="pre">entity_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#dialogy.types.intent.swap_rules.DependencyOp" title="dialogy.types.intent.swap_rules.DependencyOp"><span class="pre">dialogy.types.intent.swap_rules.DependencyOp</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.Dependants.entity_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.Dependants.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#Dependants.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.Dependants.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#dialogy.types.intent.swap_rules.Dependants" title="dialogy.types.intent.swap_rules.Dependants"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dependants</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.Dependants.intent">
+<span class="sig-name descname"><span class="pre">intent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#dialogy.types.intent.swap_rules.DependencyOp" title="dialogy.types.intent.swap_rules.DependencyOp"><span class="pre">dialogy.types.intent.swap_rules.DependencyOp</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.Dependants.intent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.Dependants.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#Dependants.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.Dependants.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate if all conditions pass.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.types.intent.swap_rules</span> <span class="kn">import</span> <span class="n">Dependants</span>
+
+<span class="gp">In [2]: </span><span class="n">dep</span> <span class="o">=</span> <span class="n">Dependants</span><span class="p">(</span><span class="n">entity_types</span><span class="o">=</span><span class="p">{</span><span class="s2">"in_"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"baz"</span><span class="p">]},</span> <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="s2">"eq"</span><span class="p">:</span> <span class="s2">"bar"</span><span class="p">})</span>
+
+<span class="gp">In [3]: </span><span class="n">dep</span><span class="o">.</span><span class="n">parse</span><span class="p">({</span><span class="s2">"entity_types"</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">})</span>
+<span class="gh">Out[3]: </span><span class="go">True</span>
+
+<span class="gp">In [4]: </span><span class="n">dep</span><span class="o">.</span><span class="n">parse</span><span class="p">({</span><span class="s2">"entity_types"</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"intent"</span><span class="p">:</span> <span class="s2">"bar"</span><span class="p">})</span>
+<span class="gh">Out[4]: </span><span class="go">True</span>
+</pre></div>
+</div>
+<p>We try to check if every dependency that has been specified with a condition,
+evaluates to <code class="code docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A dictionary with keys same as attributes of this object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if all the conditions pass.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.Dependants.previous_intent">
+<span class="sig-name descname"><span class="pre">previous_intent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#dialogy.types.intent.swap_rules.DependencyOp" title="dialogy.types.intent.swap_rules.DependencyOp"><span class="pre">dialogy.types.intent.swap_rules.DependencyOp</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.Dependants.previous_intent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.Dependants.state">
+<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#dialogy.types.intent.swap_rules.DependencyOp" title="dialogy.types.intent.swap_rules.DependencyOp"><span class="pre">dialogy.types.intent.swap_rules.DependencyOp</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.Dependants.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DependencyOp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ne</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intersects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#DependencyOp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp.eq">
+<span class="sig-name descname"><span class="pre">eq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp.eq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#DependencyOp.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#dialogy.types.intent.swap_rules.DependencyOp" title="dialogy.types.intent.swap_rules.DependencyOp"><code class="xref py py-class docutils literal notranslate"><span class="pre">DependencyOp</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp.in_">
+<span class="sig-name descname"><span class="pre">in_</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp.in_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp.intersects">
+<span class="sig-name descname"><span class="pre">intersects</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp.intersects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp.ne">
+<span class="sig-name descname"><span class="pre">ne</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp.ne" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp.nin">
+<span class="sig-name descname"><span class="pre">nin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp.nin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp.operations">
+<span class="sig-name descname"><span class="pre">operations</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'eq':</span> <span class="pre">&lt;function</span> <span class="pre">DependencyOp.&lt;lambda&gt;&gt;,</span> <span class="pre">'in_':</span> <span class="pre">&lt;function</span> <span class="pre">DependencyOp.&lt;lambda&gt;&gt;,</span> <span class="pre">'intersects':</span> <span class="pre">&lt;function</span> <span class="pre">DependencyOp.&lt;lambda&gt;&gt;,</span> <span class="pre">'ne':</span> <span class="pre">&lt;function</span> <span class="pre">DependencyOp.&lt;lambda&gt;&gt;,</span> <span class="pre">'nin':</span> <span class="pre">&lt;function</span> <span class="pre">DependencyOp.&lt;lambda&gt;&gt;}</span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp.operations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.DependencyOp.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#DependencyOp.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.DependencyOp.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the condition using the value.</p>
+<p>We have a condition and comparators for one of the given operations.
+We check if the condition is True using the given value.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.types.intent.swap_rules</span> <span class="kn">import</span> <span class="n">DependencyOp</span>
+
+<span class="gp">In [2]: </span><span class="n">op</span> <span class="o">=</span> <span class="n">DependencyOp</span><span class="p">(</span><span class="n">eq</span><span class="o">=</span><span class="s2">"foo"</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">op</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[2]: </span><span class="go">True</span>
+
+<span class="gp">In [3]: </span><span class="n">op</span> <span class="o">=</span> <span class="n">DependencyOp</span><span class="p">(</span><span class="n">nin</span><span class="o">=</span><span class="p">{</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"bar"</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">op</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[3]: </span><span class="go">False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>str</em>) – A string to compare against.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if condition passes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.SwapRule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SwapRule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depends_on</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#SwapRule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.SwapRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.SwapRule.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#SwapRule.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.SwapRule.as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.SwapRule.depends_on">
+<span class="sig-name descname"><span class="pre">depends_on</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dialogy.types.intent.swap_rules.Dependants" title="dialogy.types.intent.swap_rules.Dependants"><span class="pre">dialogy.types.intent.swap_rules.Dependants</span></a></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.SwapRule.depends_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.SwapRule.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#SwapRule.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.SwapRule.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#dialogy.types.intent.swap_rules.SwapRule" title="dialogy.types.intent.swap_rules.SwapRule"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapRule</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.SwapRule.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#SwapRule.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.SwapRule.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate if all conditions pass.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">dialogy.types.intent.swap_rules</span> <span class="kn">import</span> <span class="n">SwapRule</span>
+
+<span class="gp">In [2]: </span><span class="n">rule</span> <span class="o">=</span> <span class="n">SwapRule</span><span class="p">(</span><span class="n">depends_on</span><span class="o">=</span><span class="p">{</span><span class="s2">"entity_types"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"in_"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"baz"</span><span class="p">]},</span> <span class="s2">"intent"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"eq"</span><span class="p">:</span> <span class="s2">"bar"</span><span class="p">}},</span> <span class="n">rename</span><span class="o">=</span><span class="s2">"bar"</span><span class="p">)</span>
+
+<span class="gp">In [3]: </span><span class="n">rule</span><span class="o">.</span><span class="n">parse</span><span class="p">({</span><span class="s2">"entity_types"</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">})</span>
+<span class="gh">Out[3]: </span><span class="go">True</span>
+
+<span class="gp">In [4]: </span><span class="n">rule</span><span class="o">.</span><span class="n">parse</span><span class="p">({</span><span class="s2">"entity_types"</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"intent"</span><span class="p">:</span> <span class="s2">"bar"</span><span class="p">})</span>
+<span class="gh">Out[4]: </span><span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A dictionary with keys same as attributes of this object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if all the conditions pass.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.SwapRule.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.types.intent.swap_rules.SwapRule.rename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.as_set">
+<span class="sig-name descname"><span class="pre">as_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#as_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.as_set" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.exclude_none_values">
+<span class="sig-name descname"><span class="pre">exclude_none_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#exclude_none_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.exclude_none_values" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="dialogy.types.intent.swap_rules.non_empty_string">
+<span class="sig-name descname"><span class="pre">non_empty_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/intent/swap_rules.html#non_empty_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.intent.swap_rules.non_empty_string" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+</section>
 <section id="module-dialogy.types.intent">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.types.intent" title="Permalink to this headline">¶</a></h2>
 <section id="intent-classification">
@@ -451,6 +675,8 @@ More details are available in the doc for <a class="reference internal" href="di
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">dialogy.types.intent package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.types.intent.swap_rules">dialogy.types.intent.swap_rules module</a></li>
 <li><a class="reference internal" href="#module-dialogy.types.intent">Module contents</a><ul>
 <li><a class="reference internal" href="#intent-classification">Intent Classification</a></li>
 </ul>

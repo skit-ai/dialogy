@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.types.entity.duration package" href="dialogy.types.entity.duration.html" /><link rel="prev" title="dialogy.types.entity.time package" href="dialogy.types.entity.time.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.time_interval package - dialogy 0.9.9 documentation</title>
+        <title>dialogy.types.entity.time_interval package - dialogy 0.9.13 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.9 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.13 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.9 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.13 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -188,6 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.output_mods.html">Rule Based Intent Transitions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -238,10 +239,10 @@
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"weekend"</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">[TimeIntervalEntity(body='weekend', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='datetime', origin='value', dim='time', grain='hour', type='interval', from_value='2022-04-08T18:00:00.000+05:30', to_value='2022-04-11T00:00:00.000+05:30', values=[{'to': {'value': '2022-04-11T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-08T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-04-18T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-15T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-04-25T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-22T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-04-08T18:00:00.000+05:30', 'to': '2022-04-11T00:00:00.000+05:30'})]</span>
+<span class="gh">Out[3]: </span><span class="go">[TimeIntervalEntity(body='weekend', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='datetime', origin='value', dim='time', grain='hour', type='interval', from_value='2022-07-01T18:00:00.000+05:30', to_value='2022-07-04T00:00:00.000+05:30', values=[{'to': {'value': '2022-07-04T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-07-01T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-07-11T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-07-08T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-07-18T00:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-07-15T18:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-07-01T18:00:00.000+05:30', 'to': '2022-07-04T00:00:00.000+05:30'})]</span>
 
 <span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"between 4 to 5pm"</span><span class="p">)</span>
-<span class="gh">Out[4]: </span><span class="go">[TimeIntervalEntity(body='between 4 to 5pm', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='time', origin='value', dim='time', grain='hour', type='interval', from_value='2022-04-06T16:00:00.000+05:30', to_value='2022-04-06T18:00:00.000+05:30', values=[{'to': {'value': '2022-04-06T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-06T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-04-07T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-07T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-04-08T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-04-08T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-04-06T16:00:00.000+05:30', 'to': '2022-04-06T18:00:00.000+05:30'})]</span>
+<span class="gh">Out[4]: </span><span class="go">[TimeIntervalEntity(body='between 4 to 5pm', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, entity_type='time', origin='value', dim='time', grain='hour', type='interval', from_value='2022-06-29T16:00:00.000+05:30', to_value='2022-06-29T18:00:00.000+05:30', values=[{'to': {'value': '2022-06-29T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-06-29T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-06-30T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-06-30T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}, {'to': {'value': '2022-07-01T18:00:00.000+05:30', 'grain': 'hour'}, 'from': {'value': '2022-07-01T16:00:00.000+05:30', 'grain': 'hour'}, 'type': 'interval'}], value={'from': '2022-06-29T16:00:00.000+05:30', 'to': '2022-06-29T18:00:00.000+05:30'})]</span>
 </pre></div>
 </div>
 </section>
@@ -275,10 +276,10 @@
 <span class="go">   'entity_type': 'datetime',</span>
 <span class="go">   'grain': 'hour',</span>
 <span class="go">   'type': 'interval',</span>
-<span class="go">   'from_value': '2022-04-08T18:00:00.000+05:30',</span>
-<span class="go">   'to_value': '2022-04-11T00:00:00.000+05:30',</span>
-<span class="go">   'value': {'from': '2022-04-08T18:00:00.000+05:30',</span>
-<span class="go">    'to': '2022-04-11T00:00:00.000+05:30'}},</span>
+<span class="go">   'from_value': '2022-07-01T18:00:00.000+05:30',</span>
+<span class="go">   'to_value': '2022-07-04T00:00:00.000+05:30',</span>
+<span class="go">   'value': {'from': '2022-07-01T18:00:00.000+05:30',</span>
+<span class="go">    'to': '2022-07-04T00:00:00.000+05:30'}},</span>
 <span class="go">  {'range': {'start': 0, 'end': 16},</span>
 <span class="go">   'body': 'between 4 to 5pm',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
@@ -287,10 +288,10 @@
 <span class="go">   'entity_type': 'time',</span>
 <span class="go">   'grain': 'hour',</span>
 <span class="go">   'type': 'interval',</span>
-<span class="go">   'from_value': '2022-04-06T16:00:00.000+05:30',</span>
-<span class="go">   'to_value': '2022-04-06T18:00:00.000+05:30',</span>
-<span class="go">   'value': {'from': '2022-04-06T16:00:00.000+05:30',</span>
-<span class="go">    'to': '2022-04-06T18:00:00.000+05:30'}}],</span>
+<span class="go">   'from_value': '2022-06-29T16:00:00.000+05:30',</span>
+<span class="go">   'to_value': '2022-06-29T18:00:00.000+05:30',</span>
+<span class="go">   'value': {'from': '2022-06-29T16:00:00.000+05:30',</span>
+<span class="go">    'to': '2022-06-29T18:00:00.000+05:30'}}],</span>
 <span class="go"> 'original_intent': {}}</span>
 </pre></div>
 </div>
@@ -365,6 +366,60 @@
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.origin">
 <span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'interval'</span></em><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.origin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.pick_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pick_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/types/entity/time_interval.html#TimeIntervalEntity.pick_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.pick_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters interval datetime values outside of timerange constraint</p>
+<p>Filter logic apply constraint on both “from” and “to” individually:
+- both FROM and TO present and inside constraint</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>no filtering</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>both FROM and TO present but only FROM inside constraint</dt><dd><ul>
+<li><p>filter TO</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>both FROM and TO present but only TO inside constraint</dt><dd><ul>
+<li><p>replace FROM value with constraint lowerbound datetime value</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>both FROM and TO present but outside constraint</dt><dd><ul>
+<li><p>filter both TO and FROM</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>only FROM present and inside constraint</dt><dd><ul>
+<li><p>no filtering</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>only FROM present and outside constraint</dt><dd><ul>
+<li><p>filter FROM</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dialogy.types.entity.time_interval.TimeIntervalEntity.to_value">
 <span class="sig-name descname"><span class="pre">to_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.types.entity.time_interval.TimeIntervalEntity.to_value" title="Permalink to this definition">¶</a></dt>

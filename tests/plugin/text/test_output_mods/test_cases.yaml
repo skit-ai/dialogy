@@ -1,0 +1,51 @@
+- description: "Transition current intent from oos -> collect datetime"
+  rules:
+    - depends_on:
+        intent: "_oos_"
+        entity_types: {
+          "intersects": ["time"]
+        }
+      rename: "_collect_datetime_"
+  payload:
+    intent: "_oos_"
+    entity_types: ["time"]
+    state: "COLLECT_DATETIME"
+    previous_intent: "NA"
+  expected: "_collect_datetime_"
+
+
+- description: "Transition current intent from any intent -> collect datetime"
+  rules:
+    - depends_on:
+        entity_types: {
+          "intersects": ["time"]
+        }
+      rename: "_collect_datetime_"
+  payload:
+    intent: "_oos_"
+    entity_types: ["time"]
+    state: "COLLECT_DATETIME"
+    previous_intent: "NA"
+  expected: "_collect_datetime_"
+
+
+- description: "No transition since multiple rules match"
+  rules:
+    - rename: "_collect_datetime_"
+      depends_on:
+        intent: "_oos_"
+        entity_types: {
+          "intersects": ["time"]
+        }
+    
+    - rename: "_collect_bill_"
+      depends_on:
+        intent: "_oos_"
+        state: "COLLECT_DATETIME"
+
+  payload:
+    intent: "_oos_"
+    entity_types: ["time"]
+    state: "COLLECT_DATETIME"
+    previous_intent: "NA"
+  expected: "_oos_"

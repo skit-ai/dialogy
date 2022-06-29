@@ -5,13 +5,9 @@ import shutil
 import tempfile
 from datetime import datetime
 
-from dialogy.utils.file_handler import (
-    create_timestamps_path,
-    load_file,
-    read_from_json,
-    save_file,
-    save_to_json,
-)
+from dialogy.utils.file_handler import (create_timestamps_path, load_file,
+                                        read_from_json, save_file,
+                                        save_to_json)
 
 
 def test_load_file_json():
