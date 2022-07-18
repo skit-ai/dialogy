@@ -1,4 +1,8 @@
-# Changelog
+ Changelog
+
+## 0.9.14
+
+- [x] fix: slots returned in sorted order of scores.
 
 ## 0.9.13
 
