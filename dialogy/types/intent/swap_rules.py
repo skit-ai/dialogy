@@ -141,7 +141,23 @@ def non_empty_string(_: Any, attr: Any, value: str) -> bool:
 @attr.s
 class SwapRule:
     depends_on: Dependants = attr.ib(kw_only=True, converter=Dependants.from_dict) # type: ignore
+    """
+    A set of conditions that can trigger an intent swap.
+    """
+
+    loop: Dependants = attr.ib(kw_only=True, converter=Dependants.from_dict) # type: ignore
+    """
+    A set of conditions that can trigger an intent swap for each intent.
+    """
+
     rename: str = attr.ib(kw_only=True, validator=non_empty_string)
+    """
+    The name of the intent to swap to.
+    """
+
+    def __attrs_post_init__(self) -> None:
+        if self.depends_on and self.foreach:
+            raise ValueError("Swap rule can only depend on depends_on or foreach.")
 
     @classmethod
     def from_dict(cls, config: Dict[str, Any]) -> 'SwapRule':
@@ -169,4 +185,5 @@ class SwapRule:
         :return: True if all the conditions pass.
         :rtype: bool
         """
+        if self.foreach
         return self.depends_on.parse(values)

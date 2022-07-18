@@ -22,10 +22,21 @@ class RuleBasedIntentSwap(Plugin):
     .. code-block:: python
 
         rules = [{
-            rename: "I2",
-            depends_on: {
+            "rename": "I2",
+            "depends_on": {
                 "intent": "I1",
                 "state": "S1"
+            }
+        }, {
+            "rename": "__match__",
+            "default": "_oos_",
+            "loop": {
+                "intent_name": {
+                    "nin": ["some", "intent"]
+                },
+                "intent_score": {
+                    "gt": 0.5
+                }
             }
         }]
 
@@ -103,3 +114,62 @@ class RuleBasedIntentSwap(Plugin):
     def utility(self, input_: Input, output: Output) -> Any:
         payload = self.make_payload(output.intents, input_.current_state, output.entities, input_.previous_intent)
         return self.swap(payload, output.intents)
+
+
+class ErrorRecovery(Plugin):
+    """
+
+    .. code-block:: yaml
+
+        error_recovery:
+            -
+                update: predicted_intent
+                value: "I2"
+                when:
+                    - predicted_intent = "I1"
+                    - current_state in ["S1"]
+                    - entity_types subset ["e1"]
+
+            -
+                update: predicted_intent
+                value: "I4"
+                when:
+                    - predicted_intent != "I1"
+                    - current_state !in ["S1"]
+                    - entity_types !subset ["e1"]
+
+            -
+                # Remove time entities with granularity of seconds.
+                remove: entities
+                while:
+                    - entity.grain = "seconds"
+                    - entity.entity_type = "time"
+
+            -
+                # Remove intents with low confidence
+                remove: intents
+                while:
+                    - intent.score < 0.5
+                    - intent.name in ["I1", "I2"]
+
+            -
+                # For utterances like "this month" we get 1st day of the current month. We want
+                # the last date of the current month instead.
+                update: entities
+                value:
+                    day: last_day_of_month(entity.value)
+                when:
+                    - entity.entity_type = "time"
+                    - entity.grain = "month"
+                    - predicted_intent = "future"
+                    - day(entity.value) = first_day_of_month(entity.value)
+
+            -
+                # Cast number entities to datetime entities.
+                update: entities
+                type: as_time(entity)
+                while:
+                    - entity.entity_type = "number"
+                    - current_state = "S1"
+    """
+    ...
