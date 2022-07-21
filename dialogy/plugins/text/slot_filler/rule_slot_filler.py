@@ -9,7 +9,7 @@ role. This plugin orchestrates the execution of slot filling via methods availab
 #. Once entities are found, we check if the slots can fill them using the :ref:`fill<FillSlot>` method.
 #. If no slots were filled, we remove the placeholders using :ref:`cleanup<CleanupSlot>` method.
 """
-from typing import List, Optional
+from typing import List, Union, Set
 
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import BaseEntity
@@ -47,8 +47,8 @@ class RuleBasedSlotFillerPlugin(Plugin):
     def __init__(
         self,
         rules: Rule,
-        dest: Optional[str] = None,
-        guards: Optional[List[Guard]] = None,
+        dest: Union[str, None] = None,
+        guards: Union[List[Guard], None] = None,
         replace_output: bool = True,
         fill_multiple: bool = True,
         debug: bool = False,
@@ -75,7 +75,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
-    def fill(self, intents: List[Intent], entities: List[BaseEntity]) -> List[Intent]:
+    def fill(self, intents: List[Intent], entities: List[BaseEntity], expected_slots: Union[Set[str], None] = None) -> List[Intent]:
         if not intents:
             return intents
 
@@ -84,10 +84,10 @@ class RuleBasedSlotFillerPlugin(Plugin):
         intent.apply(self.rules)
 
         for entity in entities:
-            intent.fill_slot(entity, fill_multiple=self.fill_multiple)
+            intent.fill_slot(entity, fill_multiple=self.fill_multiple, expected_slots=expected_slots)
 
         intent.cleanup()
         return [intent, *rest]
 
-    def utility(self, _: Input, output: Output) -> List[Intent]:
-        return self.fill(output.intents, output.entities)
+    def utility(self, input_: Input, output: Output) -> List[Intent]:
+        return self.fill(output.intents, output.entities, input_.expected_slots)

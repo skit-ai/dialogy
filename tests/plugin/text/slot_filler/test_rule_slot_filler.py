@@ -380,3 +380,59 @@ def test_slot_filling_order() -> None:
 
     slot_values = output["intents"][0]["slots"][0]["values"]
     assert all(slot_values[i]["score"] >= slot_values[i+1]["score"] for i in range(len(slot_values) - 1))
+
+
+def test_slot_filling_with_expected_slots() -> None:
+    """
+    Here, we will see that entities of same type filled in a slot are sorted by their score in descending order.
+    Only if the slots are expected.
+    """
+    intent_name = "intent_2"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(
+        rules=rules, dest="output.intents", fill_multiple=True
+    )
+
+    # Create a mock `workflow`
+    workflow = Workflow([slot_filler])
+
+    # ... a mock `Intent`
+    intent = Intent(name=intent_name, score=0.8)
+
+    # Here we have three entities which have different scores.
+    body = "12th december"
+    entity_1 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        score=0.2,
+        entity_type="entity_1",
+        values=[{"value": "value_1"}],
+    )
+
+    entity_2 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        score=0.9,
+        entity_type="entity_2",
+        values=[{"value": "value_2"}],
+    )
+
+    entity_3 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        score=0.5,
+        entity_type="entity_1",
+        values=[{"value": "value_3"}],
+    )
+
+    workflow.set("output.intents", [intent]).set(
+        "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
+    ) # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
+
+    _, output = workflow.run(Input(utterances=body, expected_slots=["entity_1_slot"]))
+
+    assert [s["name"] for s in output["intents"][0]["slots"]] == ["entity_1_slot"]
