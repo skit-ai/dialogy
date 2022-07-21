@@ -1,5 +1,10 @@
  Changelog
 
+## 0.9.15
+
+- [x] fix: Filling multiple slots with multiple entities was disabled.
+- [x] feat: We fill slots using `expected_slots` if present.
+
 ## 0.9.14
 
 - [x] fix: slots returned in sorted order of scores.
