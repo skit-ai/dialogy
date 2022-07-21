@@ -199,8 +199,7 @@ class Intent:
                     logger.debug(f"filling {entity} into {self.name}.")
                     self.slots[slot_name].add(entity)
                     return self
-
-                if not self.slots[slot_name].values:
+                elif not self.slots[slot_name].values:
                     logger.debug(f"filling {entity} into {self.name}.")
                     self.slots[slot_name].add(entity)
                 else:
