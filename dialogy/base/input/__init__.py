@@ -212,7 +212,7 @@ class Input:
     Points at the active state (or node) within the conversation graph.
     """
 
-    expected_slots: Optional[Set[str]] = attr.ib(factory=set, kw_only=True)
+    expected_slots: Optional[Set[str]] = attr.ib(default=None, kw_only=True)
     """
     In a given turn, the expected number of slots to fill.
     """
