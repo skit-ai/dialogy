@@ -200,7 +200,7 @@ class Intent:
                 if fill_multiple:
                     logger.debug(f"filling {entity} into {self.name}.")
                     self.slots[slot_name].add(entity)
-                    return self
+
                 elif not self.slots[slot_name].values:
                     logger.debug(f"filling {entity} into {self.name}.")
                     self.slots[slot_name].add(entity)
