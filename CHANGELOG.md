@@ -1,5 +1,9 @@
  Changelog
 
+## 0.9.16
+
+- [x] update: multiple slots can be filled if multiple entities are supposed to fill each slot.
+
 ## 0.9.15
 
 - [x] fix: Filling multiple slots with multiple entities was disabled.
@@ -17,7 +21,6 @@
 ## 0.9.11
 
 - [x] fix: https://github.com/skit-ai/dialogy/issues/148
-
 
 ## 0.9.10
 
