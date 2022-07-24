@@ -36,7 +36,6 @@ from dialogy.types.entity.people import PeopleEntity
 from dialogy.types.entity.time import TimeEntity
 from dialogy.types.entity.time_interval import TimeIntervalEntity
 from dialogy.types.intent import Intent
-from dialogy.types.intent.swap_rules import SwapRule
 from dialogy.types.plugin import PluginFn
 from dialogy.types.signal.signal import Signal
 from dialogy.types.slots import Slot
