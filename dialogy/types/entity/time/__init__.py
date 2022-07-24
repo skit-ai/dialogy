@@ -92,6 +92,132 @@ class TimeEntity(BaseEntity):
         const.GTE: operator.ge,
     }
 
+    @property
+    def day(self) -> int:
+        """
+        Returns the day of the month for the first datetime value.
+
+        :return: Day of the month
+        :rtype: int
+        """
+        dt = self.get_value()
+        return dt.day
+
+    @day.setter
+    def day(self, value: int) -> None:
+        """
+        Set the day of the month for the first datetime value.
+        """
+        dt = self.get_value()
+        dt = dt.replace(day=value)
+        self.values[0][const.VALUE] = dt.isoformat()
+        self.value = dt.isoformat()
+
+    @property
+    def month(self) -> int:
+        """
+        Returns the day of the month for the first datetime value.
+
+        :return: Day of the month
+        :rtype: int
+        """
+        dt = self.get_value()
+        return dt.month
+
+    @month.setter
+    def month(self, value: int) -> None:
+        """
+        Set the month for the first datetime value.
+        """
+        dt = self.get_value()
+        dt = dt.replace(month=value)
+        self.values[0][const.VALUE] = dt.isoformat()
+        self.value = dt.isoformat()
+
+    @property
+    def year(self) -> int:
+        """
+        Returns the day of the month for the first datetime value.
+
+        :return: Day of the month
+        :rtype: int
+        """
+        dt = self.get_value()
+        return dt.year
+
+    @year.setter
+    def year(self, value: int) -> None:
+        """
+        Set the year for the first datetime value.
+        """
+        dt = self.get_value()
+        dt = dt.replace(year=value)
+        self.values[0][const.VALUE] = dt.isoformat()
+        self.value = dt.isoformat()
+
+    @property
+    def hour(self) -> int:
+        """
+        Returns the hour for the first datetime value.
+
+        :return: Hour
+        :rtype: int
+        """
+        dt = self.get_value()
+        return dt.hour
+    
+    @hour.setter
+    def hour(self, value: int) -> None:
+        """
+        Set the hour for the first datetime value.
+        """
+        dt = self.get_value()
+        dt = dt.replace(hour=value)
+        self.values[0][const.VALUE] = dt.isoformat()
+        self.value = dt.isoformat()
+
+    @property
+    def minute(self) -> int:
+        """
+        Returns the minute for the first datetime value.
+
+        :return: Minute
+        :rtype: int
+        """
+        dt = self.get_value()
+        return dt.minute
+
+    @minute.setter
+    def minute(self, value: int) -> None:
+        """
+        Set the minute for the first datetime value.
+        """
+        dt = self.get_value()
+        dt = dt.replace(minute=value)
+        self.values[0][const.VALUE] = dt.isoformat()
+        self.value = dt.isoformat()
+
+    @property
+    def second(self) -> int:
+        """
+        Returns the second for the first datetime value.
+
+        :return: Second
+        :rtype: int
+        """
+        dt = self.get_value()
+        return dt.second
+
+    @second.setter
+    def second(self, value: int) -> None:
+        """
+        Set the second for the first datetime value.
+        """
+        dt = self.get_value()
+        dt = dt.replace(second=value)
+        self.values[0][const.VALUE] = dt.isoformat()
+        self.value = dt.isoformat()
+
     def get_value(self) -> Any:
         """
         Return the date string in ISO format from the dictionary passed

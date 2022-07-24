@@ -12,11 +12,11 @@ Subpackages
    dialogy.plugins.text.classification
    dialogy.plugins.text.combine_date_time
    dialogy.plugins.text.duckling_plugin
+   dialogy.plugins.text.error_recovery
    dialogy.plugins.text.lb_plugin
    dialogy.plugins.text.list_entity_plugin
    dialogy.plugins.text.list_search_plugin
    dialogy.plugins.text.merge_asr_output
-   dialogy.plugins.text.output_mods
    dialogy.plugins.text.slot_filler
    dialogy.plugins.text.voting
 

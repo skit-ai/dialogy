@@ -1,0 +1,739 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
+        <title>dialogy.plugins.text.error_recovery.error_recovery - dialogy 0.9.16 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?digest=0af69da206d614734f649b27d4cdc2dd6c31f41d" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../../index.html"><div class="brand">dialogy 0.9.16 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">dialogy 0.9.16 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.output.html">Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.workflow.html">Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.slots.html">Slots</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.keyword.html">Pattern Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.numerical.html">Numeric Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.people.html">People Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.time.html">Time Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.types.entity.duration.html">Duration Entity</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.plugins.text.error_recovery.html">Error Recovery</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../source/dialogy.utils.html">Utils</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for dialogy.plugins.text.error_recovery.error_recovery</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">.. _ErrorRecovery:</span>
+
+<span class="sd">The goal of this module is to enable:</span>
+
+<span class="sd">#. Richer transitions. Most of our transtions are expressed by maps, we don't have a way to express transitions as a function over known variables. </span>
+<span class="sd">#. We have :code:`trigger`s that map to the next :code:`state` in the conversation.</span>
+<span class="sd">#. :code:`triggers` are :code:`intents` in most cases. </span>
+<span class="sd">#. ML components produce confidence scores for a prediction. Only in cases of low confidence, should we opt for explicit confirmation.</span>
+<span class="sd">#. As per our current capabilities, we always have a prompt to confirm.</span>
+<span class="sd">#. Here the rule for transition is :code:`(intent, score) -&gt; state` instead of :code:`{intent: state}`.</span>
+<span class="sd">#. Handling ambiguity at the interface. We don't have an expression to implement "Did you mean X or Y" for resolving ambiguities. We have such prompts for certain deployment yet the effort is the same for enabling such for entities other than X, Y and repeats for every deployment.</span>
+<span class="sd">#. Conversation level defaults. In the above example, we can should be able to define conversation level defaults for certain entities.</span>
+<span class="sd">#. Personalization. We don't have provisions for handling user information. We have seen cases where speaker's information has to be passed around microservices and the API design is driven by urgency. Does this speaker like when the prompts are faster? slower? shorter? longer? While such information is not logged, we also don't have a way to use it.</span>
+
+<span class="sd">These requirements are met by a mature, feature-rich, battle-tested high level language. A language that must expose little noise to its users and offer strong guaranatees of reproducibility, safety and consistency. Building such a language would span work over quarters with dedicated bandwidth of an experienced engineer. Hence we will drop a lot of responsibilities to draft a version that does much less but promises to extend itself to offer coverage of the aforementioned features.</span>
+
+<span class="sd">- The language should be approachable for existing engineers in the solutions team.</span>
+<span class="sd">- It should take a few hours (&lt; 3) to get productive. </span>
+<span class="sd">- We will implement rich transitions and conversation level defaults.</span>
+<span class="sd">"""</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">Guard</span>
+<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Intent</span><span class="p">,</span> <span class="n">TimeEntity</span>
+
+
+<span class="n">TRemove</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="n">TUpdate</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Environment">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">Environment</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    The scope of variables for error-recovery rules are defined by this class.</span>
+<span class="sd">    Referencing SLU input and output variables for filtering and updates.</span>
+<span class="sd">    """</span>
+    <span class="n">intents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">"""</span>
+<span class="sd">    Refer to :ref:`Intent&lt;Intent&gt;`</span>
+
+<span class="sd">    Contains the list of intents predicted expected in sorted order of confidence score. </span>
+<span class="sd">    Iterable field, can also be modified by update queries.</span>
+<span class="sd">    """</span>
+
+    <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">"""</span>
+<span class="sd">    Refer to :ref:`BaseEntity&lt;BaseEntity&gt;`</span>
+<span class="sd">    Contains a list of entities of varying types.</span>
+<span class="sd">    Iterable field, can also be modified by update queries.</span>
+<span class="sd">    """</span>
+
+    <span class="n">previous_intent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="sd">"""</span>
+<span class="sd">    Read only; used to filter intents/entities if a condition is met. :ref:`Read More&lt;Input&gt;`</span>
+<span class="sd">    """</span>
+
+    <span class="n">current_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="sd">"""</span>
+<span class="sd">    Read only; used to filter intents/entities if a condition is met. :ref:`Read More&lt;Input&gt;`</span>
+<span class="sd">    """</span>
+
+    <span class="n">expected_slots</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="nb">set</span><span class="p">)</span>
+    <span class="sd">"""</span>
+<span class="sd">    Read only; used to filter intents/entities if a condition is met. :ref:`Read More&lt;Input&gt;`</span>
+<span class="sd">    """</span>
+
+    <span class="n">bindings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">"""</span>
+<span class="sd">    Sub-commands and other variables should be stored here. API is WIP.</span>
+<span class="sd">    """</span>
+    <span class="n">resources</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"intents"</span><span class="p">,</span> <span class="s2">"entities"</span><span class="p">}</span>
+    <span class="n">iterables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"intent"</span><span class="p">,</span> <span class="s2">"entity"</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">predicted_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        We are assuming intents would be sorted in descending order of confidence scores.</span>
+<span class="sd">        Hence the first element is the predicted intent as it has the best score.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="Environment.last_day_of_month"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Environment.last_day_of_month">[docs]</a>    <span class="k">def</span> <span class="nf">last_day_of_month</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">TimeEntity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the last day of the month for the given TimeEntity.</span>
+
+<span class="sd">        :param item: A time entity.</span>
+<span class="sd">        :type item: TimeEntity</span>
+<span class="sd">        :return: The last day of the month</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        """</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">last</span></div>
+
+<div class="viewcode-block" id="Environment.last_day_of_week"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Environment.last_day_of_week">[docs]</a>    <span class="k">def</span> <span class="nf">last_day_of_week</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">TimeEntity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the last day of the week for the given TimeEntity.</span>
+
+<span class="sd">        :param item: A time entity.</span>
+<span class="sd">        :type item: TimeEntity</span>
+<span class="sd">        :return: The last day of the week.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="n">weekday</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">weekday</span><span class="p">()</span>
+        <span class="n">weekend</span> <span class="o">=</span> <span class="n">dt</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">weekday</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">weekend</span><span class="o">.</span><span class="n">day</span></div>
+
+<div class="viewcode-block" id="Environment.get"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Environment.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Seek a variable from the context set in the environment.</span>
+
+<span class="sd">        :param item: Either an intent or entity.</span>
+<span class="sd">        :type item: Union[Intent, BaseEntity]</span>
+<span class="sd">        :param key: A property within the item or environment.</span>
+<span class="sd">        :type key: str</span>
+<span class="sd">        :return: The value bound to the key.</span>
+<span class="sd">        :rtype: Any</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="s2">"."</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">Environment</span><span class="o">.</span><span class="n">iterables</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Environment.set"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Environment.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Bind a value to a variable in the environment.</span>
+
+<span class="sd">        :param key: A variable name defined in the environment.</span>
+<span class="sd">        :type key: str</span>
+<span class="sd">        :param value: The value to bound to the variable.</span>
+<span class="sd">        :type value: List[Union[Intent, BaseEntity]]</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">Environment</span><span class="o">.</span><span class="n">resources</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Environment.set_item"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Environment.set_item">[docs]</a>    <span class="k">def</span> <span class="nf">set_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Bind a value to either Intent or Entity.</span>
+
+<span class="sd">        :param item: Either an intent or entity.</span>
+<span class="sd">        :type item: Union[Intent, BaseEntity]</span>
+<span class="sd">        :param key: A property within the item.</span>
+<span class="sd">        :type key: str</span>
+<span class="sd">        :param value: The value to bound to the property or a function identifier.</span>
+<span class="sd">        :type value: Any</span>
+<span class="sd">        """</span>
+        <span class="n">obj</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">":"</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">Environment</span><span class="o">.</span><span class="n">iterables</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="BinaryCondition"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">BinaryCondition</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    This class encodes conditions between two operands.</span>
+
+<span class="sd">    Currently supported operators are:</span>
+
+<span class="sd">    - :code:`eq` Equality</span>
+<span class="sd">    - :code:`ne` Non-equality</span>
+<span class="sd">    - :code:`gte` Greater than</span>
+<span class="sd">    - :code:`ge` Greater than or equal to</span>
+<span class="sd">    - :code:`lte` Less than</span>
+<span class="sd">    - :code:`le` Less than or equal to</span>
+<span class="sd">    - :code:`in` Inclusion</span>
+<span class="sd">    - :code:`nin` Exclusion</span>
+
+<span class="sd">    :return: _description_</span>
+<span class="sd">    :rtype: _type_</span>
+<span class="sd">    """</span>
+    <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">operations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'eq'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">,</span>
+        <span class="s1">'ne'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">b</span><span class="p">,</span>
+        <span class="s1">'in'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">b</span><span class="p">,</span>
+        <span class="s1">'nin'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">b</span><span class="p">,</span>
+        <span class="s1">'gt'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">,</span>
+        <span class="s1">'gte'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">,</span>
+        <span class="s1">'lt'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">,</span>
+        <span class="s1">'lte'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="BinaryCondition.from_dict"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">'BinaryCondition'</span><span class="p">:</span>
+        <span class="n">default_op_name</span> <span class="o">=</span> <span class="s2">"eq"</span>
+
+        <span class="n">var_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">op_name</span> <span class="o">=</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">var_name</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">default_op_name</span><span class="p">)</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">op_name</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">var_name</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">d</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">variable</span><span class="o">=</span><span class="n">var_name</span><span class="p">,</span>
+            <span class="n">operator</span><span class="o">=</span><span class="n">BinaryCondition</span><span class="o">.</span><span class="n">operations</span><span class="p">[</span><span class="n">op_name</span><span class="p">],</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BinaryCondition.from_list"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.from_list">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">'BinaryCondition'</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="p">]</span></div></div>
+
+<div class="viewcode-block" id="Rule"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Rule">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">Rule</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    We encode events within a conversation turn as a rule.</span>
+
+<span class="sd">    A rule can be broken down to 2 operations:</span>
+
+<span class="sd">    1. Search: We apply filters to a resource (one of intents or entities).</span>
+<span class="sd">    2. Action: We perform an action on the resource (one of update, remove).</span>
+<span class="sd">    """</span>
+    <span class="n">find</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">where</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BinaryCondition</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">converter</span><span class="o">=</span><span class="n">BinaryCondition</span><span class="o">.</span><span class="n">from_list</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+    <span class="n">remove</span><span class="p">:</span> <span class="n">TRemove</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">update</span><span class="p">:</span> <span class="n">TUpdate</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Rule.on_conditions"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Rule.on_conditions">[docs]</a>    <span class="k">def</span> <span class="nf">on_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Pick items within resources when all conditions match.</span>
+
+<span class="sd">        We require this to update a set of items that match the conditions.</span>
+
+<span class="sd">        :param environment: A data-structure that describes a set of bound variables.</span>
+<span class="sd">        :type environment: Environment</span>
+<span class="sd">        :return: A function that can be used to filter a resource.</span>
+<span class="sd">        :rtype: Callable[[Union[Intent, BaseEntity]], bool]</span>
+<span class="sd">        """</span>
+        <span class="n">conditions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">where</span>
+        <span class="k">def</span> <span class="nf">foreach</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">condition</span><span class="o">.</span><span class="n">operator</span><span class="p">(</span>
+                    <span class="n">environment</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">condition</span><span class="o">.</span><span class="n">variable</span><span class="p">),</span>
+                    <span class="n">condition</span><span class="o">.</span><span class="n">value</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">condition</span> <span class="ow">in</span> <span class="n">conditions</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">foreach</span></div>
+
+<div class="viewcode-block" id="Rule.on_inverse"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Rule.on_inverse">[docs]</a>    <span class="k">def</span> <span class="nf">on_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Pick items within resources when no conditions match.</span>
+
+<span class="sd">        We require this to retain a set of items that don't match the conditions.</span>
+<span class="sd">        That is the remove operation.</span>
+
+<span class="sd">        :param environment: A data-structure that describes a set of bound variables.</span>
+<span class="sd">        :type environment: Environment</span>
+<span class="sd">        :return: A function that can be used to filter a resource.</span>
+<span class="sd">        :rtype: Callable[[Union[Intent, BaseEntity]], bool]</span>
+<span class="sd">        """</span>
+        <span class="n">conditions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">where</span>
+        <span class="k">def</span> <span class="nf">foreach</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">condition</span><span class="o">.</span><span class="n">operator</span><span class="p">(</span>
+                    <span class="n">environment</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">condition</span><span class="o">.</span><span class="n">variable</span><span class="p">),</span>
+                    <span class="n">condition</span><span class="o">.</span><span class="n">value</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">condition</span> <span class="ow">in</span> <span class="n">conditions</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">foreach</span></div>
+
+    <span class="k">def</span> <span class="nf">_find</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">clause</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">],</span>
+        <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Find items within a resource that match a condition.</span>
+
+<span class="sd">        :param resource: One of "intents" or "entities".</span>
+<span class="sd">        :type resource: str</span>
+<span class="sd">        :param clause: A function that can be used to filter a resource.</span>
+<span class="sd">        :type clause: Callable[[Union[Intent, BaseEntity]], bool]</span>
+<span class="sd">        :param environment: A data-structure that describes a set of bound variables.</span>
+<span class="sd">        :type environment: Environment</span>
+<span class="sd">        :return: An iterable of resources filtered by the clause.</span>
+<span class="sd">        :rtype: Iterable[Union[Intent, BaseEntity]]</span>
+<span class="sd">        """</span>
+        <span class="n">resources</span> <span class="o">=</span> <span class="p">(</span><span class="n">environment</span><span class="o">.</span><span class="n">intents</span>
+            <span class="k">if</span> <span class="n">resource</span> <span class="o">==</span> <span class="s2">"intents"</span>
+            <span class="k">else</span> <span class="n">environment</span><span class="o">.</span><span class="n">entities</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="n">clause</span><span class="p">,</span> <span class="n">resources</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span> <span class="nf">_remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Rule'</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Remove items within a resource that match a condition.</span>
+
+<span class="sd">        :param environment: A data-structure that describes a set of bound variables.</span>
+<span class="sd">        :type environment: Environment</span>
+<span class="sd">        :rtype: Rule</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span> <span class="c1"># pragma: no cover</span>
+        <span class="n">resource_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span>
+        <span class="n">resources</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find</span><span class="p">(</span><span class="n">resource_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_inverse</span><span class="p">(</span><span class="n">environment</span><span class="p">),</span> <span class="n">environment</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">resource_name</span> <span class="ow">in</span> <span class="n">Environment</span><span class="o">.</span><span class="n">resources</span> <span class="ow">and</span> <span class="n">resources</span><span class="p">:</span>
+            <span class="n">environment</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">,</span> <span class="n">resources</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Transform items within a resource as per update rules.</span>
+
+<span class="sd">        :param environment: A data-structure that describes a set of bound variables.</span>
+<span class="sd">        :type environment: Environment</span>
+<span class="sd">        :return: A function that can be used to transform a resource.</span>
+<span class="sd">        :rtype: Callable[[Union[Intent, BaseEntity]], Union[Intent, BaseEntity]]</span>
+<span class="sd">        """</span>
+        <span class="k">def</span> <span class="nf">foreach</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Intent</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">item</span> <span class="c1"># pragma: no cover</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">environment</span><span class="o">.</span><span class="n">set_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">item</span>
+        <span class="k">return</span> <span class="n">foreach</span>
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Rule'</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Update items within a resource as per update rules.</span>
+
+<span class="sd">        :param environment: A data-structure that describes a set of bound variables.</span>
+<span class="sd">        :type environment: Environment</span>
+<span class="sd">        :rtype: Rule</span>
+<span class="sd">        """</span>
+        <span class="n">resource_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span>
+        <span class="n">resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find</span><span class="p">(</span><span class="n">resource_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_conditions</span><span class="p">(</span><span class="n">environment</span><span class="p">),</span> <span class="n">environment</span><span class="p">)</span>
+        <span class="n">resources</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">environment</span><span class="p">),</span> <span class="n">resources</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">resource_name</span> <span class="ow">in</span> <span class="n">Environment</span><span class="o">.</span><span class="n">resources</span> <span class="ow">and</span> <span class="n">resources</span><span class="p">:</span>
+            <span class="n">environment</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">,</span> <span class="n">resources</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="Rule.parse"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Rule.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Rule'</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Parse a rule and update the environment.</span>
+
+<span class="sd">        We parse the rule and either update or remove items within intents or entities as per</span>
+<span class="sd">        the clause described in the rule.</span>
+
+<span class="sd">        :param environment: A data-structure that describes a set of bound variables.</span>
+<span class="sd">        :type environment: Environment</span>
+<span class="sd">        :return: Remove or Update resources.</span>
+<span class="sd">        :rtype: Rule</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="c1"># pragma: no cover</span></div>
+
+<div class="viewcode-block" id="Rule.from_dict"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Rule.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rule</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">'Rule'</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">find</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"find"</span><span class="p">)),</span>
+            <span class="n">where</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"where"</span><span class="p">),</span>
+            <span class="n">remove</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"remove"</span><span class="p">),</span>
+            <span class="n">update</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"update"</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rule.from_list"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Rule.from_list">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_list</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">rules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">'Rule'</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="ErrorRecoveryPlugin"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.ErrorRecoveryPlugin">[docs]</a><span class="k">class</span> <span class="nc">ErrorRecoveryPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
+    <span class="sd">"""</span>
+
+<span class="sd">    .. code-block:: yaml</span>
+
+<span class="sd">          rules:</span>
+<span class="sd">            -</span>
+<span class="sd">                find: entities</span>
+<span class="sd">                where:</span>
+<span class="sd">                    - entity.grain: month</span>
+<span class="sd">                    - entity.entity_type:</span>
+<span class="sd">                        in: ["date", "time", "datetime"]</span>
+<span class="sd">                update:</span>
+<span class="sd">                    entity.day: :last_day_of_month</span>
+
+<span class="sd">    We can use the above rule like so:</span>
+
+<span class="sd">    .. ipython::</span>
+
+<span class="sd">        In [1]: import yaml</span>
+<span class="sd">           ...: from dialogy.plugins import ErrorRecoveryPlugin, DucklingPlugin</span>
+<span class="sd">           ...: from dialogy.workflow import Workflow</span>
+<span class="sd">           ...: from dialogy.base import Input</span>
+<span class="sd">           ...: from dialogy.types import Intent</span>
+
+<span class="sd">        In [2]: error_recovery_config = yaml.safe_load('''</span>
+<span class="sd">           ...:   rules: </span>
+<span class="sd">           ...:     -</span>
+<span class="sd">           ...:         find: entities</span>
+<span class="sd">           ...:         where:</span>
+<span class="sd">           ...:             - entity.grain: month</span>
+<span class="sd">           ...:             - entity.entity_type:</span>
+<span class="sd">           ...:                 in: ["date", "time", "datetime"]</span>
+<span class="sd">           ...:             - predicted_intent: "future_date"</span>
+<span class="sd">           ...:         update:</span>
+<span class="sd">           ...:             entity.day: :last_day_of_month</span>
+<span class="sd">           ...: ''')</span>
+
+<span class="sd">        In [3]: duckling_plugin = DucklingPlugin(dimensions=["time"], dest="output.entities")</span>
+<span class="sd">           ...: workflow = Workflow([duckling_plugin])</span>
+<span class="sd">           ...: workflow.set("output.intents", [Intent(name="future_date", score=0.99)])</span>
+<span class="sd">           ...: _, out = workflow.run(input_=Input(utterances="this month"))</span>
+<span class="sd">           ...: # The default value is 1st of the month</span>
+<span class="sd">           ...: out["entities"][0]</span>
+
+<span class="sd">        In [4]: error_recovery_plugin = ErrorRecoveryPlugin(rules=error_recovery_config["rules"])</span>
+<span class="sd">           ...: duckling_plugin = DucklingPlugin(dimensions=["time"], dest="output.entities")</span>
+<span class="sd">           ...: workflow = Workflow([duckling_plugin, error_recovery_plugin])</span>
+<span class="sd">           ...: workflow.set("output.intents", [Intent(name="future_date", score=0.99)])</span>
+<span class="sd">           ...: _, out = workflow.run(input_=Input(utterances="this month"))</span>
+<span class="sd">           ...: # But with error recovery, we get the last day of the month</span>
+<span class="sd">           ...: out["entities"][0] </span>
+
+<span class="sd">        In [5]: error_recovery_config = yaml.safe_load('''</span>
+<span class="sd">           ...:   rules: </span>
+<span class="sd">           ...:     -</span>
+<span class="sd">           ...:         find: entities</span>
+<span class="sd">           ...:         where:</span>
+<span class="sd">           ...:             - entity.grain: month</span>
+<span class="sd">           ...:             - entity.entity_type:</span>
+<span class="sd">           ...:                 in: ["date", "time", "datetime"]</span>
+<span class="sd">           ...:             - predicted_intent: "some-other-intent" # Hence the rule won't match</span>
+<span class="sd">           ...:         update:</span>
+<span class="sd">           ...:             entity.day: :last_day_of_month</span>
+<span class="sd">           ...: ''')</span>
+
+<span class="sd">        In [6]: error_recovery_plugin = ErrorRecoveryPlugin(rules=error_recovery_config["rules"])</span>
+<span class="sd">           ...: duckling_plugin = DucklingPlugin(dimensions=["time"], dest="output.entities")</span>
+<span class="sd">           ...: workflow = Workflow([duckling_plugin, error_recovery_plugin])</span>
+<span class="sd">           ...: workflow.set("output.intents", [Intent(name="future_date", score=0.99)])</span>
+<span class="sd">           ...: _, out = workflow.run(input_=Input(utterances="this month"))</span>
+<span class="sd">           ...: # Only if the conditions are satisfactory.</span>
+<span class="sd">           ...: out["entities"][0]</span>
+<span class="sd">    """</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">dest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">guards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">replace_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="n">Rule</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dest</span> <span class="o">=</span> <span class="n">dest</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">guards</span> <span class="o">=</span> <span class="n">guards</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">replace_output</span> <span class="o">=</span> <span class="n">replace_output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
+
+<div class="viewcode-block" id="ErrorRecoveryPlugin.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.ErrorRecoveryPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">environment</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span>
+            <span class="n">intents</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">intents</span><span class="p">,</span>
+            <span class="n">entities</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">entities</span><span class="p">,</span>
+            <span class="n">previous_intent</span><span class="o">=</span><span class="n">input_</span><span class="o">.</span><span class="n">previous_intent</span><span class="p">,</span>
+            <span class="n">current_state</span><span class="o">=</span><span class="n">input_</span><span class="o">.</span><span class="n">current_state</span><span class="p">,</span>
+            <span class="n">expected_slots</span><span class="o">=</span><span class="n">input_</span><span class="o">.</span><span class="n">expected_slots</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+            <span class="n">rule</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">"intents"</span><span class="p">,</span> <span class="n">environment</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">"entities"</span><span class="p">,</span> <span class="n">environment</span><span class="o">.</span><span class="n">entities</span><span class="p">)</span></div></div>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169;  |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/scripts/furo.js"></script>
+    <script src="../../../../../_static/clipboard.min.js"></script>
+    <script src="../../../../../_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>
