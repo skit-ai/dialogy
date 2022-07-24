@@ -654,6 +654,74 @@ def test_time_interval_generation() -> None:
     assert generated.get_value() == datetime.fromisoformat(modification)
 
 
+def test_time_entity_get_day():
+    time_entity = TimeEntity(
+        body="today",
+        range={"start": 0, "end": 5},
+        value="2021-01-22T00:00:00.000+05:30",
+        grain="day",
+    )
+    assert time_entity.day == 22
+
+
+def test_time_entity_set_month():
+    time_entity = TimeEntity(
+        body="today",
+        range={"start": 0, "end": 5},
+        value="2021-01-22T00:00:00.000+05:30",
+        grain="day",
+    )
+    time_entity.month = 12
+    assert time_entity.value == "2021-12-22T00:00:00+05:30"
+
+
+def test_time_entity_set_year():
+    time_entity = TimeEntity(
+        body="today",
+        range={"start": 0, "end": 5},
+        value="2021-01-22T00:00:00.000+05:30",
+        grain="day",
+    )
+    time_entity.year = 2022
+    assert time_entity.value == "2022-01-22T00:00:00+05:30"
+
+
+def test_time_entity_set_hour():
+    time_entity = TimeEntity(
+        body="today",
+        range={"start": 0, "end": 5},
+        value="2021-01-22T00:00:00.000+05:30",
+        grain="day",
+    )
+    assert time_entity.hour == 0
+    time_entity.hour = 12
+    assert time_entity.value == "2021-01-22T12:00:00+05:30"
+
+
+def test_time_entity_set_minute():
+    time_entity = TimeEntity(
+        body="today",
+        range={"start": 0, "end": 5},
+        value="2021-01-22T00:00:00.000+05:30",
+        grain="day",
+    )
+    assert time_entity.minute == 0
+    time_entity.minute = 30
+    assert time_entity.value == "2021-01-22T00:30:00+05:30"
+
+
+def test_time_entity_set_second():
+    time_entity = TimeEntity(
+        body="today",
+        range={"start": 0, "end": 5},
+        value="2021-01-22T00:00:00.000+05:30",
+        grain="day",
+    )
+    assert time_entity.second == 0
+    time_entity.second = 30
+    assert time_entity.value == "2021-01-22T00:00:30+05:30"
+
+
 def test_time_interval_entity_no_value() -> None:
     body = "to 4 am"
     d = {
