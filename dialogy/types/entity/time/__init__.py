@@ -93,7 +93,7 @@ class TimeEntity(BaseEntity):
     }
 
     @property
-    def day(self) -> Optional[int]:
+    def day(self) -> int:
         """
         Returns the day of the month for the first datetime value.
 
@@ -104,7 +104,7 @@ class TimeEntity(BaseEntity):
         return dt.day
 
     @day.setter
-    def day(self, value) -> None:
+    def day(self, value: int) -> None:
         """
         Set the day of the month for the first datetime value.
         """
@@ -114,7 +114,7 @@ class TimeEntity(BaseEntity):
         self.value = dt.isoformat()
 
     @property
-    def month(self) -> Optional[int]:
+    def month(self) -> int:
         """
         Returns the day of the month for the first datetime value.
 
@@ -125,7 +125,7 @@ class TimeEntity(BaseEntity):
         return dt.month
 
     @month.setter
-    def month(self, value) -> None:
+    def month(self, value: int) -> None:
         """
         Set the month for the first datetime value.
         """
@@ -135,7 +135,7 @@ class TimeEntity(BaseEntity):
         self.value = dt.isoformat()
 
     @property
-    def year(self) -> Optional[int]:
+    def year(self) -> int:
         """
         Returns the day of the month for the first datetime value.
 
@@ -146,7 +146,7 @@ class TimeEntity(BaseEntity):
         return dt.year
 
     @year.setter
-    def year(self, value) -> None:
+    def year(self, value: int) -> None:
         """
         Set the year for the first datetime value.
         """
@@ -156,7 +156,7 @@ class TimeEntity(BaseEntity):
         self.value = dt.isoformat()
 
     @property
-    def hour(self) -> Optional[int]:
+    def hour(self) -> int:
         """
         Returns the hour for the first datetime value.
 
@@ -167,7 +167,7 @@ class TimeEntity(BaseEntity):
         return dt.hour
     
     @hour.setter
-    def hour(self, value) -> None:
+    def hour(self, value: int) -> None:
         """
         Set the hour for the first datetime value.
         """
@@ -177,7 +177,7 @@ class TimeEntity(BaseEntity):
         self.value = dt.isoformat()
 
     @property
-    def minute(self) -> Optional[int]:
+    def minute(self) -> int:
         """
         Returns the minute for the first datetime value.
 
@@ -188,7 +188,7 @@ class TimeEntity(BaseEntity):
         return dt.minute
 
     @minute.setter
-    def minute(self, value) -> None:
+    def minute(self, value: int) -> None:
         """
         Set the minute for the first datetime value.
         """
@@ -198,7 +198,7 @@ class TimeEntity(BaseEntity):
         self.value = dt.isoformat()
 
     @property
-    def second(self) -> Optional[int]:
+    def second(self) -> int:
         """
         Returns the second for the first datetime value.
 
@@ -209,7 +209,7 @@ class TimeEntity(BaseEntity):
         return dt.second
 
     @second.setter
-    def second(self, value) -> None:
+    def second(self, value: int) -> None:
         """
         Set the second for the first datetime value.
         """

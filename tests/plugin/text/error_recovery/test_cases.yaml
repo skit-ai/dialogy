@@ -121,7 +121,7 @@
    'latent': False}]
   rules:
     -
-      doc: "Update datetime entities such that day is set to month's last date."
+      doc: "Update datetime entities such that day is set to week's last date."
       find: entities
       where:
         - entity.grain: week
