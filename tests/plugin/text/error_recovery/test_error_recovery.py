@@ -73,7 +73,8 @@ def test_error_recovery_plugin():
         ],
         "update": {
             "entity.day": ":last_day_of_week"
-        }}]
+        }
+    }]
     workflow = Workflow([ErrorRecoveryPlugin(
         rules=rules
     )])
@@ -96,5 +97,5 @@ def test_error_recovery_plugin():
         for entity in entities
     ])
 
-    workflow.run(input_=Input(utterances="this week"))
-    
+    _, output = workflow.run(input_=Input(utterances="this week"))
+    assert output["entities"][0]["value"] == "2022-07-24T00:00:00+00:00"
