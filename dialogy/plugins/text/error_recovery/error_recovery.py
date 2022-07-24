@@ -1,175 +1,214 @@
-from typing import Any, Dict, List, Union
+import calendar
+from datetime import timedelta
+from typing import Any, Dict, List, Set, Union, Callable, Iterable, Optional
 
-from loguru import logger
+import attr
 
-from dialogy.base import Input, Output, Plugin
-from dialogy.types import BaseEntity, Intent
-from dialogy.types.intent.swap_rules import SwapRule
+from dialogy.base import Input, Output, Plugin, Guard
+from dialogy.types import BaseEntity, Intent, TimeEntity
 
 
-class RuleBasedIntentSwap(Plugin):
-    """
-    .. _RuleBasedIntentSwap:
+TRemove = Optional[str]
+TUpdate = Optional[Dict[str, Any]]
 
-    We require custom logic to handle arbitrary transitions. Giving a detailed look, the transitions
-    appear to have simple relationships that can even be serialized and expressed as configs.
 
-    Taking an example:
+@attr.s
+class Environment:
+    intents: List[Intent] = attr.ib(kw_only=True)
+    entities: List[BaseEntity] = attr.ib(kw_only=True)
+    previous_intent: str = attr.ib(kw_only=True)
+    current_state: str = attr.ib(kw_only=True)
+    expected_slots: Set[str] = attr.ib(kw_only=True, converter=set)
+    bindings: Dict[str, Any] = attr.ib(factory=dict, kw_only=True)
+    resources = {"intents", "entities"}
+    iterables = {"intent", "entity"}
 
-    If we have discovered in an utterance, that the current state is :code:`S1` and the intent is :code:`I2` and in this case,
-    we should transition to :code:`I2`. Then this can be expressed by the following rule:
+    @property
+    def predicted_intent(self) -> str:
+        return self.intents[0].name
 
-    .. code-block:: python
+    def last_day_of_month(self, item: TimeEntity) -> int:
+        _, last = calendar.monthrange(item.year, item.month)
+        return last
 
-        rules = [{
-            "rename": "I2",
-            "depends_on": {
-                "intent": "I1",
-                "state": "S1"
-            }
-        }, {
-            "rename": "__match__",
-            "default": "_oos_",
-            "loop": {
-                "intent_name": {
-                    "nin": ["some", "intent"]
-                },
-                "intent_score": {
-                    "gt": 0.5
-                }
-            }
-        }]
+    def last_day_of_week(self, item: TimeEntity) -> int:
+        dt = item.get_value()
+        weekday = dt.weekday()
+        weekend = dt - timedelta(days=weekday) + timedelta(days=6)
+        return weekend.day
 
-    We can do more; say we have discovered
+    def get(self, item: Union[Intent, BaseEntity], key: str) -> Any:
+        if "." in key:
+            obj, attribute = key.split(".")
+            if obj in Environment.iterables:
+                return getattr(item, attribute)
+        return getattr(self, key)
 
-    entity types as: :code:`["e1", "e2"]`
-    state as :code:`s1`
-    and we need to transition to :code:`I2`?
+    def set(self, key: str, value: List[Union[Intent, BaseEntity]]) -> 'Environment':
+        if key in Environment.resources:
+            return setattr(self, key, value)
 
-    .. code-block:: python
+    def set_item(self, item: Union[Intent, BaseEntity], key: str, value: Any) -> 'Environment':
+        obj, attribute = key.split(".")
+        if value.startswith(":"):
+            value = self.get(item, value[1:])
+        if obj in Environment.iterables:
+            value = value(item) if callable(value) else value
+            return setattr(item, attribute, value)
 
-        rules = [{
-        rename: "I2",
-            depends_on: {
-                "entities": {
-                    "intersects": ["e1"]
-                },
-                "state": "S1"
-            }
-        }]
+@attr.s
+class BinaryCondition:
+    variable: str = attr.ib(kw_only=True)
+    value: Union[str, Set[str]] = attr.ib(kw_only=True)
+    operator: Callable[[Any, Any], bool] = attr.ib(kw_only=True)
+    operations = {
+        'eq': lambda a, b: a == b,
+        'ne': lambda a, b: a != b,
+        'in': lambda a, b: a in b,
+        'nin': lambda a, b: a not in b,
+        'gt': lambda a, b: a > b,
+        'gte': lambda a, b: a >= b,
+        'lt': lambda a, b: a < b,
+        'lte': lambda a, b: a <= b,
+    }
 
-    We have also identified that these transitions currently exist for the following properties:
+    @classmethod
+    def from_dict(cls, d: Union[str, Dict[str, Any]]) -> 'BinaryCondition':
+        default_op_name = "eq"
 
-    1. The predicted intent with most confidence.
-    2. The current state
-    3. The list of entity types
-    4. The previous intent
-    
-    By accommodating 5 operations for each of the 4 properties we can produce a moderately strong rule transition, namely:
+        var_name = list(d.keys()).pop()
+        op_name = (list(d[var_name].keys()).pop()
+            if isinstance(d[var_name], dict)
+            else default_op_name)
 
-    1. eq - equality check, also the default operation
-    2. ne - not equal
-    3. in - containership
-    4. nin - inverse containership
-    5. intersects - an intersection between two sets (or array-like) quantities.
+        value = d[var_name][op_name] if isinstance(d[var_name], dict) else d[var_name]
+        if isinstance(value, list):
+            value = set(value)
 
-    This can help in cases where there is a dire shortage of data. The **source** code of :ref:`swap rules<SwapRulesModule>` could be a helpful read.
-    """
-    def __init__(self, rules: List[Dict[str, Any]], dest: str = "output.intents", **kwargs: Any) -> None:
-        super().__init__(dest=dest, **kwargs)
-        self.rules = [SwapRule(**r) for r in rules]
+        return cls(
+            variable=var_name,
+            operator=BinaryCondition.operations.get(op_name),
+            value=value
+        )
 
-    def make_payload(
+    @classmethod
+    def from_list(cls, d: Union[str, Dict[str, Any]]) -> List['BinaryCondition']:
+        return [cls.from_dict(c) for c in d]
+
+@attr.s
+class Rule:
+    find: str = attr.ib(kw_only=True)
+    where: List[BinaryCondition] = attr.ib(converter=BinaryCondition.from_list, kw_only=True)
+    remove: TRemove = attr.ib(kw_only=True)
+    update: TUpdate = attr.ib(kw_only=True)
+
+    def on_conditions(self, environment: Environment):
+        conditions = self.where
+        def foreach(item):
+            return all(
+                condition.operator(
+                    environment.get(item, condition.variable),
+                    condition.value
+                )
+                for condition in conditions
+            )
+        return foreach
+
+    def on_inverse(self, environment: Environment) -> bool:
+        conditions = self.where
+        def foreach(item):
+            return not all(
+                condition.operator(
+                    environment.get(item, condition.variable),
+                    condition.value
+                )
+                for condition in conditions
+            )
+        return foreach
+
+    def _find(
         self,
-        intents: List[Intent],
-        current_state: Union[None, str],
-        entities: List[BaseEntity],
-        previous_intent: Union[None, str]) -> Any:
-        """
-        Make payload in the acceptable format for swap function for this class.
-        """
-        return {
-            "intent": intents[0].name,
-            "state": current_state,
-            "entity_types": [entity.entity_type for entity in entities],
-            "entity_values": [entity.get_value() for entity in entities],
-            "previous_intent": previous_intent
-        }
+        /,
+        resource: str,
+        clause: Callable[[Any], bool],
+        environment: Environment
+    ) -> Iterable[Union[Intent, BaseEntity]]:
+        resources = (environment.intents
+            if resource == "intents"
+            else environment.entities)
+        return filter(clause(environment), resources)
 
-    def swap(self, payload: Dict[str, Any], intents: List[Intent]) -> List[Intent]:
-        """
-        Swap intent name based on the rules defined in config.yaml under intent_swap 
-        """
-        updates = [rule.rename for rule in self.rules if rule.parse(payload)]
-        if len(updates) == 1:
-            intents[0].name = updates[0]
-            intents[0].add_parser(self.__class__.__name__)
+    def _remove(self, environment: Environment) -> 'Rule':
+        resource_name = self.remove
+        resources = self._find(resource=resource_name, clause=self.on_inverse, environment=environment)
+        if resource_name in Environment.resources:
+            environment.set(self.remove, list(resources))
+        return self
 
-        if len(updates) > 1:
-            logger.error(f"More than one rule matched for {payload}")
+    def _transform(self, environment: Environment):
+        def foreach(item: Union[Intent, BaseEntity]) -> Union[Intent, BaseEntity]:
+            for key, value in self.update.items():
+                environment.set_item(item, key, value)
+            return item
+        return foreach
 
-        return intents
+    def _update(self, environment: Environment) -> 'Rule':
+        resource_name = self.find
+        resources = self._find(resource=resource_name, clause=self.on_conditions, environment=environment)
+        resources = map(self._transform(environment), resources)
+        if resource_name in Environment.resources:
+            environment.set(self.find, list(resources))
+        return self
+
+    def parse(self, environment: Environment) -> 'Rule':
+        if self.remove:
+            return self._remove(environment)
+        if self.update:
+            return self._update(environment)
+
+    @classmethod
+    def from_dict(cls, rule: Dict[str, Any]) -> 'Rule':
+        return cls(
+            find=rule.get("find"),
+            where=rule.get("where"),
+            remove=rule.get("remove"),
+            update=rule.get("update"),
+        )
+
+    @classmethod
+    def from_list(
+        cls,
+        rules: List[Dict[str, Any]]) -> List['Rule']:
+        return [cls.from_dict(rule) for rule in rules]
 
 
-    def utility(self, input_: Input, output: Output) -> Any:
-        payload = self.make_payload(output.intents, input_.current_state, output.entities, input_.previous_intent)
-        return self.swap(payload, output.intents)
+class ErrorRecoveryPlugin(Plugin):
+    def __init__(
+        self,
+        rules: List[str],
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
+        replace_output: bool = True,
+        debug: bool = False,
+    ) -> None:
+        self.rules = Rule.from_list(rules)
+        self.dest = dest
+        self.guards = guards or []
+        self.replace_output = replace_output
+        self.debug = debug
 
+    def parse_rules(self):
+        self.rules = Rule.from_list(self.rules)
 
-class ErrorRecovery(Plugin):
-    """
+    def utility(self, input_: Input, output: Output) -> None:
+        environment = Environment(
+            intents=output.intents,
+            entities=output.entities,
+            previous_intent=input_.previous_intent,
+            current_state=input_.current_state,
+        )
+        for rule in self.rules:
+            rule.parse(environment)
 
-    .. code-block:: yaml
-
-        error_recovery:
-            -
-                update: predicted_intent
-                value: "I2"
-                when:
-                    - predicted_intent = "I1"
-                    - current_state in ["S1"]
-                    - entity_types subset ["e1"]
-
-            -
-                update: predicted_intent
-                value: "I4"
-                when:
-                    - predicted_intent != "I1"
-                    - current_state !in ["S1"]
-                    - entity_types !subset ["e1"]
-
-            -
-                # Remove time entities with granularity of seconds.
-                remove: entities
-                while:
-                    - entity.grain = "seconds"
-                    - entity.entity_type = "time"
-
-            -
-                # Remove intents with low confidence
-                remove: intents
-                while:
-                    - intent.score < 0.5
-                    - intent.name in ["I1", "I2"]
-
-            -
-                # For utterances like "this month" we get 1st day of the current month. We want
-                # the last date of the current month instead.
-                update: entities
-                value:
-                    day: last_day_of_month(entity.value)
-                when:
-                    - entity.entity_type = "time"
-                    - entity.grain = "month"
-                    - predicted_intent = "future"
-                    - day(entity.value) = first_day_of_month(entity.value)
-
-            -
-                # Cast number entities to datetime entities.
-                update: entities
-                type: as_time(entity)
-                while:
-                    - entity.entity_type = "number"
-                    - current_state = "S1"
-    """
-    ...
+        output.intents = environment.intents
+        output.entities = environment.entities
