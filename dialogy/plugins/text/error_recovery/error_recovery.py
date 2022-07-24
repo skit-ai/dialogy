@@ -197,18 +197,16 @@ class ErrorRecoveryPlugin(Plugin):
         self.replace_output = replace_output
         self.debug = debug
 
-    def parse_rules(self):
-        self.rules = Rule.from_list(self.rules)
-
     def utility(self, input_: Input, output: Output) -> None:
         environment = Environment(
             intents=output.intents,
             entities=output.entities,
             previous_intent=input_.previous_intent,
             current_state=input_.current_state,
+            expected_slots=input_.expected_slots or set(),
         )
         for rule in self.rules:
             rule.parse(environment)
 
-        output.intents = environment.intents
-        output.entities = environment.entities
+        object.__setattr__(output, "intents", environment.intents)
+        object.__setattr__(output, "entities", environment.entities)
