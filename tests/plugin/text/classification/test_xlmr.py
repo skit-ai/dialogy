@@ -329,15 +329,14 @@ def test_train_xlmr_prompt_1(mocker, tmpdir):
     use_prompt: True
     train_using_all_prompts: False
     """
-    print("\nRunning test_train_xlmr_prompt_1")
+    # print("\nRunning test_train_xlmr_prompt_1")
     
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-
     directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     prompts_map = {
@@ -385,15 +384,13 @@ def test_train_xlmr_prompt_2(mocker, tmpdir):
     use_prompt: True
     train_using_all_prompts: True
     """
-    print("\nRunning test_train_xlmr_prompt_2")
-    
+    # print("\nRunning test_train_xlmr_prompt_2")
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-
     directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     prompts_map = {
@@ -440,15 +437,12 @@ def test_train_xlmr_prompt_3(mocker, tmpdir):
     use_prompt: True
     train_using_all_prompts: True
     """
-    print("\nRunning test_train_xlmr_prompt_2")
-    
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-
     directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     prompts_map = {
@@ -499,15 +493,12 @@ def test_train_xlmr_prompt_4(mocker, tmpdir):
     train_using_all_prompts: False
 
     """
-    print("\nRunning test_train_xlmr_prompt_2")
-    
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-
     directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     prompts_map = {
@@ -551,7 +542,7 @@ def test_invalid_operations_with_prompt(mocker, tmpdir):
     )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
     directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     xlmr_clf_prompt = XLMRMultiClass(
@@ -605,7 +596,14 @@ def test_invalid_operations_with_prompt(mocker, tmpdir):
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_inference_with_prompt_1(payload, mocker, tmpdir):
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
     directory = "/tmp"
+    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
+    
     prompts_map = {
         'lang1': {'state1': ['prompt1', 'prompt2', 'prompt3'],'state2': ['prompt1', 'prompt2']},
         'lang2': {'state1': ['prompt1', 'prompt2'], 'state2': ['prompt1', 'prompt2']}
