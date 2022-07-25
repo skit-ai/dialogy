@@ -1,0 +1,10 @@
+- input:
+  alternatives:
+    - "9"
+    - "new"
+    - "no"
+  
+  
+  expected:
+    label: "_cancel_"
+    scores: 1

@@ -250,7 +250,7 @@ def test_invalid_operations_with_state(mocker, tmpdir):
         xlmr_clf_state.inference(["text"])
 
     with pytest.raises(AttributeError):
-        xlmr_clf_state.inference(["text"], ["WORKING STATE"])
+        xlmr_clf_state.inference(["text"], "WORKING STATE")
 
     with pytest.raises(ValueError):
         xlmr_clf_state.save()
@@ -320,3 +320,346 @@ def test_inference(payload, mocker, tmpdir):
     )
     assert output[const.INTENTS][0]["name"] == intent
     assert output[const.INTENTS][0]["score"] > 0.9
+
+
+def test_train_xlmr_prompt_1(mocker, tmpdir):
+    """
+    Code to test xlmr workflow, with the following parameters:
+    use_state: False
+    use_prompt: True
+    train_using_all_prompts: False
+    """
+    print("\nRunning test_train_xlmr_prompt_1")
+    
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
+
+    directory = "/tmp"
+    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
+
+    prompts_map = {
+        'en': {'state1': ['prompt1', 'prompt2', 'prompt3'],'state2': ['prompt1', 'prompt2']},
+        'hi': {'state1': ['prompt1', 'prompt2'], 'state2': ['prompt1', 'prompt2']}
+    }
+
+    xlmr_clf_prompt = XLMRMultiClass(
+        model_dir=directory,
+        dest="output.intents",
+        debug=False,
+        prompts_map=prompts_map,
+        use_state=False,
+        use_prompt=True,
+        train_using_all_prompts=False
+    )
+
+    train_df_prompt = pd.DataFrame(
+        [
+            {"data": "yes", "labels": "_confirm_", "state": "state1", "lang": "lang1"},
+            {"data": "yea", "labels": "_confirm_", "state": "state2", "lang":"lang1"},
+            {"data": "no", "labels": "_cancel_", "state": "state1", "lang":"lang2"},
+            {"data": "nope", "labels": "_cancel_", "state": "state2", "lang":"lang2"},
+        ]
+    )
+
+    try:
+        xlmr_clf_prompt.train(train_df_prompt)
+    except ValueError:
+        pass
+
+    # This copy loads from the same directory that was trained previously.
+    # So this instance would have read the labelencoder saved.
+    xlmr_clf_copy = XLMRMultiClass(
+        model_dir=directory, dest="output.intents", debug=False
+    )
+
+    assert len(xlmr_clf_copy.labelencoder.classes_) == 2
+
+
+def test_train_xlmr_prompt_2(mocker, tmpdir):
+    """
+    Code to test xlmr workflow, with the following parameters:
+    use_state: False
+    use_prompt: True
+    train_using_all_prompts: True
+    """
+    print("\nRunning test_train_xlmr_prompt_2")
+    
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
+
+    directory = "/tmp"
+    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
+
+    prompts_map = {
+        'en': {'state1': ['prompt1', 'prompt2', 'prompt3'],'state2': ['prompt1', 'prompt2']},
+        'hi': {'state1': ['prompt1', 'prompt2'], 'state2': ['prompt1', 'prompt2']}
+    }
+
+    xlmr_clf_prompt = XLMRMultiClass(
+        model_dir=directory,
+        dest="output.intents",
+        debug=False,
+        prompts_map=prompts_map,
+        use_state=False,
+        use_prompt=True,
+        train_using_all_prompts=True
+    )
+
+    train_df_prompt = pd.DataFrame(
+        [
+            {"data": "yes", "labels": "_confirm_", "state": "state1", "lang": "lang1"},
+            {"data": "yea", "labels": "_confirm_", "state": "state2", "lang":"lang1"},
+            {"data": "no", "labels": "_cancel_", "state": "state1", "lang":"lang2"},
+            {"data": "nope", "labels": "_cancel_", "state": "state2", "lang":"lang2"},
+        ]
+    )
+
+    try:
+        xlmr_clf_prompt.train(train_df_prompt)
+    except ValueError:
+        pass
+    # This copy loads from the same directory that was trained previously.
+    # So this instance would have read the labelencoder saved.
+    xlmr_clf_copy = XLMRMultiClass(
+        model_dir=directory, dest="output.intents", debug=False
+    )
+
+    assert len(xlmr_clf_copy.labelencoder.classes_) == 2
+
+
+def test_train_xlmr_prompt_3(mocker, tmpdir):
+    """
+    Code to test xlmr workflow, with the following parameters:
+    use_state: True
+    use_prompt: True
+    train_using_all_prompts: True
+    """
+    print("\nRunning test_train_xlmr_prompt_2")
+    
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
+
+    directory = "/tmp"
+    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
+
+    prompts_map = {
+        'en': {'state1': ['prompt1', 'prompt2', 'prompt3'],'state2': ['prompt1', 'prompt2']},
+        'hi': {'state1': ['prompt1', 'prompt2'], 'state2': ['prompt1', 'prompt2']}
+    }
+
+    xlmr_clf_prompt = XLMRMultiClass(
+        model_dir=directory,
+        dest="output.intents",
+        debug=True,
+        prompts_map=prompts_map,
+        use_state=True,
+        use_prompt=True,
+        train_using_all_prompts=True
+    )
+
+    train_df_prompt = pd.DataFrame(
+        [
+            {"data": "yes", "labels": "_confirm_", "state": "state1", "lang": "lang1"},
+            {"data": "yea", "labels": "_confirm_", "state": "state2", "lang":"lang1"},
+            {"data": "no", "labels": "_cancel_", "state": "state1", "lang":"lang2"},
+            {"data": "nope", "labels": "_cancel_", "state": "state3", "lang":"lang3"},
+        ]
+    )
+
+    try:
+        xlmr_clf_prompt.train(train_df_prompt)
+    except ValueError:
+        pass
+
+    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="lang1", state="state1")) > 0
+
+    # This copy loads from the same directory that was trained previously.
+    # So this instance would have read the labelencoder saved.
+    xlmr_clf_copy = XLMRMultiClass(
+        model_dir=directory, dest="output.intents", debug=False
+    )
+
+    assert len(xlmr_clf_copy.labelencoder.classes_) == 2
+
+
+def test_train_xlmr_prompt_4(mocker, tmpdir):
+    """
+    Code to test xlmr workflow, with the following parameters:
+    use_state: True
+    use_prompt: True
+    train_using_all_prompts: False
+
+    """
+    print("\nRunning test_train_xlmr_prompt_2")
+    
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
+
+    directory = "/tmp"
+    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
+
+    prompts_map = {
+        'en': {'state1': ['prompt1', 'prompt2', 'prompt3'],'state2': ['prompt1', 'prompt2']},
+        'hi': {'state1': ['prompt1', 'prompt2'], 'state2': ['prompt1', 'prompt2']}
+    }
+
+    xlmr_clf_prompt = XLMRMultiClass(
+        model_dir=directory,
+        dest="output.intents",
+        debug=False,
+        prompts_map=prompts_map,
+        use_state=True,
+        use_prompt=True,
+        train_using_all_prompts=False
+    )
+
+    train_df_prompt = pd.DataFrame(
+        [
+            {"data": "yes", "labels": "_confirm_", "state": "state1", "lang": "lang1"},
+            {"data": "yea", "labels": "_confirm_", "state": "state2", "lang":"lang1"},
+            {"data": "no", "labels": "_cancel_", "state": "state1", "lang":"lang2"},
+            {"data": "nope", "labels": "_cancel_", "state": "state2", "lang":"lang2"},
+        ]
+    )
+    try:
+        xlmr_clf_prompt.train(train_df_prompt)
+    except ValueError:
+        pass
+    # This copy loads from the same directory that was trained previously.
+    # So this instance would have read the labelencoder saved.
+    xlmr_clf_copy = XLMRMultiClass(
+        model_dir=directory, dest="output.intents", debug=False
+    )
+
+    assert len(xlmr_clf_copy.labelencoder.classes_) == 2
+
+def test_invalid_operations_with_prompt(mocker, tmpdir):
+    mocker.patch.object(
+        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
+    )
+    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
+    directory = "/tmp"
+    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
+    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
+
+    xlmr_clf_prompt = XLMRMultiClass(
+        model_dir=directory,
+        dest="output.intents",
+        debug=True,
+        use_state=True,
+        use_prompt=True,
+        prompts_map={},
+        train_using_all_prompts=True
+    )
+
+    with pytest.raises(ValueError):
+        xlmr_clf_prompt.init_model(None)
+
+    train_df_empty = pd.DataFrame()
+    train_df_invalid = pd.DataFrame(
+        [
+            {"apples": "yes", "fruit": "fruit"},
+            {"apples": "yea", "fruit": "fruit"},
+            {"apples": "no", "fruit": "fruit"},
+            {"apples": "nope", "fruit": "fruit"},
+        ]
+    )
+
+    assert xlmr_clf_prompt.validate(train_df_empty) is False
+
+    xlmr_clf_prompt.train(train_df_empty)
+
+    assert load_file(file_path, mode="rb", loader=pickle.load) is None
+    assert xlmr_clf_prompt.validate(train_df_invalid) is False
+
+    xlmr_clf_prompt.train(train_df_invalid)
+    assert load_file(file_path, mode="rb", loader=pickle.load) is None
+    assert xlmr_clf_prompt.inference(["text"])[0].name == "_error_"
+
+    xlmr_clf_prompt.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
+
+    with pytest.raises(ValueError):
+        xlmr_clf_prompt.inference(texts=["text"])
+
+    with pytest.raises(ValueError):
+        xlmr_clf_prompt.inference(texts=["text"], state="WORKING STATE")
+
+    with pytest.raises(ValueError):
+        xlmr_clf_prompt.inference(texts=["text"], state=None, lang="hi")
+
+    with pytest.raises(ValueError):
+        xlmr_clf_prompt.save()
+        
+
+@pytest.mark.parametrize("payload", load_tests("cases", __file__))
+def test_inference_with_prompt_1(payload, mocker, tmpdir):
+    directory = "/tmp"
+    prompts_map = {
+        'lang1': {'state1': ['prompt1', 'prompt2', 'prompt3'],'state2': ['prompt1', 'prompt2']},
+        'lang2': {'state1': ['prompt1', 'prompt2'], 'state2': ['prompt1', 'prompt2']}
+    }
+    train_df_prompt = pd.DataFrame(
+        [
+            {"data": "yes", "labels": "_confirm_", "state": "state1", "lang": "lang1"},
+            {"data": "yea", "labels": "_confirm_", "state": "state2", "lang":"lang1"},
+            {"data": "no", "labels": "_cancel_", "state": "state1", "lang":"lang2"},
+            {"data": "nope", "labels": "_cancel_", "state": "state2", "lang":"lang2"},
+        ]
+    )
+
+    xlmr_clf_prompt = XLMRMultiClass(
+        model_dir=directory,
+        dest="output.intents",
+        debug=True,
+        prompts_map=prompts_map,
+        use_state=False,
+        use_prompt=True,
+        train_using_all_prompts=False
+    )
+
+    merge_asr_output_plugin = MergeASROutputPlugin(
+        dest="input.clf_feature", debug=False
+    )
+    try:
+        xlmr_clf_prompt.train(train_df_prompt)
+    except ValueError:
+        pass
+
+    train_df_empty = pd.DataFrame()
+    train_df_invalid = pd.DataFrame(
+        [
+            {"apples": "yes", "fruit": "fruit"},
+            {"apples": "yea", "fruit": "fruit"},
+            {"apples": "no", "fruit": "fruit"},
+            {"apples": "nope", "fruit": "fruit"},
+        ]
+    )
+
+    assert xlmr_clf_prompt.validate(train_df_empty) is False
+    assert xlmr_clf_prompt.validate(train_df_invalid) is False
+
+    with pytest.raises(ValueError):
+        xlmr_clf_prompt.inference(texts=["yes"], lang="lang1", state=None)
+
+    with pytest.raises(ValueError):
+        xlmr_clf_prompt.inference(texts=["yes"], lang=None, state="state1")
+
+    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="lang1", state="state1")) > 0
+
+    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="unsupported_lang", state="state1")) > 0
+
+    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="lang1", state="unsupported_state")) > 0
+
+    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="unsupported_lang", state="unsupported_state")) > 0

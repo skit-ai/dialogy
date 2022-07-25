@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 from sklearn import preprocessing
 from tqdm import tqdm
+import random
 
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
@@ -46,9 +47,10 @@ class XLMRMultiClass(Plugin):
         lang_column: str = const.LANG,
         args_map: Optional[Dict[str, Any]] = None,
         skip_labels: Optional[List[str]] = None,
-        prompts_map: Any = None,
+        prompts_map: dict = None,
         use_prompt: bool = False,
         train_using_all_prompts: bool = True,
+        null_prompt_token: str = const.NULL_PROMPT_TOKEN,
         kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
         try:
@@ -108,6 +110,8 @@ class XLMRMultiClass(Plugin):
         self.prompts_map = prompts_map
         self.use_prompt = use_prompt
         self.train_using_all_prompts = train_using_all_prompts
+        self.null_prompt_token = null_prompt_token
+        self.debug = debug
 
     def init_model(self, label_count: Optional[int] = None) -> None:
         """
@@ -159,6 +163,7 @@ class XLMRMultiClass(Plugin):
     def inference(
         self, texts: Optional[List[str]], state: Optional[str] = None, lang: Optional[str] = None,
     ) -> List[Intent]:
+        
         """
         Predict the intent of a list of texts.
         If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.
@@ -171,8 +176,10 @@ class XLMRMultiClass(Plugin):
         :return: A list of intents corresponding to texts.
         :rtype: List[Intent]
         """
-        # logger.debug(f"Classifier input:\n{texts}")
+        logger.debug(f"Classifier Input:\n{texts}")
+        
         fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
+
         if not texts:
             logger.error(f"texts passed to model {texts}!")
             return [fallback_output]
@@ -185,7 +192,7 @@ class XLMRMultiClass(Plugin):
             raise ValueError(
                 f"Plugin {self.__class__.__name__} requires state to be passed to the model."
             )
-        
+
         if self.use_prompt and not state:
             raise ValueError(
                 f"In order to use prompts as feature, Plugin {self.__class__.__name__} is requires state to be passed to the model."
@@ -196,20 +203,25 @@ class XLMRMultiClass(Plugin):
                 f"In order to use prompts as feature, Plugin {self.__class__.__name__} is requires lang to be passed to the model."
             )
 
-        elif self.use_state and state:
-            texts.append(state)
-            # logger.debug(f"Classifition input (State as a feature enabled):\n{texts}")
+        if self.use_prompt and state:
+            texts[0] += "<s> " + self.lookup_prompt(lang, state)[0] + " </s>"
+            if self.debug:
+                logger.debug(f"Classification input (Prompt as a feature enabled):\n{texts}")
+                logger.debug(texts)
+                # logger.debug(self.lookup_prompt(lang, state)[0])
 
-        elif self.use_prompt and state:
-            texts.append(self.prompts_map.lookup_prompt(lang, state)[0])
-            # logger.debug(f"Classification input (Prompt as a feature enabled):\n{texts}")
+        if self.use_state and state:
+            texts[0] += "<s> " + state + " </s>"
+            if self.debug:
+                logger.debug(texts)
+                logger.debug(f"Classifition input (State as a feature enabled):\n{texts}")
 
         if not self.valid_labelencoder:
             raise AttributeError(
                 "Seems like you forgot to "
                 f"save the {self.__class__.__name__} plugin."
             )
-        
+            
         predictions, logits = self.model.predict(texts)
         if not predictions:
             return [fallback_output]
@@ -294,53 +306,55 @@ class XLMRMultiClass(Plugin):
 
         # Append state to text
         if self.use_state:
+            # logger.debug(training_data[const.STATE])
             training_data[const.TEXT] += "<s> " + training_data[self.state_column] + " </s>"
 
         # Append prompt to text
         if self.use_prompt:
-            training_data_ = training_data.copy().reset_index(drop=True)
-
             logger.debug("Adding prompts to input text")
-            for i in tqdm(range(training_data.shape[0]), desc="progress bar:"):
-                _lang = training_data.iloc[i][self.lang_column]
-                _state = training_data.iloc[i][self.state_column]
-                
-                if not self.train_using_all_prompts:
-                    _prompt =  self.prompts_map.get_prompt(_lang, _state)[0]
-                    training_data_.at[i, const.TEXT] = training_data.iloc[i][const.TEXT] \
+
+            if not self.train_using_all_prompts:
+                for i in tqdm(range(training_data.shape[0]), desc="progress bar:"):
+                    _lang = training_data.iloc[i][self.lang_column]
+                    _state = training_data.iloc[i][self.state_column]
+                    _prompt =  self.lookup_prompt(_lang, _state)[0]
+                    training_data.at[i, const.TEXT] = training_data.iloc[i][const.TEXT] \
                             + "<s> " \
                             + _prompt \
                             + " </s>"
-                else:
-                    _prompts =  self.prompts_map.get_prompt(_lang, _state, return_all=True)
-                    for prompt  in _prompts:
-                        _row = pd.DataFrame(training_data.iloc[i]).T.reset_index(drop=True)
-                        _row.at[0,const.TEXT] = training_data.iloc[i][const.TEXT] \
+            else:
+                training_data_ = pd.DataFrame(columns=[const.TEXT, const.LABELS])
+                for i in tqdm(range(training_data.shape[0]), desc="progress bar:"):
+                    _lang = training_data.iloc[i][self.lang_column]
+                    _state = training_data.iloc[i][self.state_column]
+                    _prompts =  self.lookup_prompt(_lang, _state, return_all=True)
+                    for prompt in _prompts:
+                        _row = {
+                            const.TEXT : [
+                            training_data.iloc[i][const.TEXT] \
                             + "<s> " \
                             + prompt \
                             + " </s>"
-                        training_data_ = pd.concat([training_data_, _row])
-
-                    if i in training_data_.index:
-                        training_data_ = training_data_.drop(i, axis=0)
-
-                    training_data_ = training_data_.reset_index(drop=True)
+                            ],
+                            const.LABELS: [training_data.iloc[i][const.LABELS]]
+                        }
+                        training_data_ = pd.concat([training_data_, pd.DataFrame(_row)], ignore_index=True)
+                        # training_data_ = training_data_.append(_row, ignore_index=True)
+                        training_data_.reset_index(drop=True)
             
-            if self.train_using_all_prompts:
                 logger.debug(f"Training dataset size (original): {training_data.shape}")
                 logger.debug(f"Training dataset size (after adding prompts): {training_data_.shape}")
 
-            training_data = training_data_
-            del training_data_
-                    
+                training_data = training_data_
+                del training_data_
+
+        training_data.to_csv("/tmp/xlmr-data-train.csv",index=False)                    
         training_data = training_data[[const.TEXT, const.LABELS]]
         self.init_model(len(encoder.classes_))
         logger.debug(
             f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}\nLabels: {len(encoder.classes_)}."
         )
-        print(
-            f"\n\nSample Input: {training_data[const.TEXT].sample()}\n\n"
-        )
+
         self.model.train_model(training_data)
         self.save()
 
@@ -361,6 +375,18 @@ class XLMRMultiClass(Plugin):
             writer=pickle.dump,
         )
 
+    def lookup_prompt(self, lang: str, state: str, return_all: bool = False) -> List[str]:
+        """
+        Same as get_prompt() method, but built for faster lookup to reduce latency during inference. 
+        """
+        try:
+            return random.sample(self.prompts_map.get(lang).get(state), 1)
+        except Exception as e:
+            if self.debug:
+                logger.debug(e)
+                logger.debug(f"Prompt not found for Lang: {lang} \t State: {state}")
+            return [self.null_prompt_token]
+            
     def load(self) -> None:
         """
         Load the plugin artifacts.
