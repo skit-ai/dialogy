@@ -674,6 +674,44 @@
 <span class="sd">           ...: _, out = workflow.run(input_=Input(utterances="this month"))</span>
 <span class="sd">           ...: # Only if the conditions are satisfactory.</span>
 <span class="sd">           ...: out["entities"][0]</span>
+
+<span class="sd">    To migrate from the previous intent renaming plugin, here's an example config:</span>
+
+<span class="sd">    .. code-block:: yaml</span>
+
+<span class="sd">        intent_swap:</span>
+<span class="sd">        - </span>
+<span class="sd">            depends_on:</span>
+<span class="sd">                intent: _confirm_</span>
+<span class="sd">                state:</span>
+<span class="sd">                    in:</span>
+<span class="sd">                        - CONFIRM_VIEWING_POST_HR</span>
+<span class="sd">                        - CONFIRM_VIEWING_POST_ACCOUNT_RESUMPTION</span>
+<span class="sd">                        - CONFIRM_VIEWING_POST_ACCOUNT_ACTIVATION</span>
+<span class="sd">                        - CONFIRM_VIEWING_POST_ASSET_RESUMPTION</span>
+<span class="sd">                        - CONFIRM_VIEWING_POST_INPUT_CHECK</span>
+<span class="sd">                        - CONFIRM_VIEWING_POST_RECONNECTION</span>
+<span class="sd">        rename: _issue_resolved_</span>
+
+<span class="sd">    You would express this as:</span>
+
+<span class="sd">    .. code-block:: yaml</span>
+
+<span class="sd">        rules:</span>
+<span class="sd">            -</span>
+<span class="sd">                find: intents</span>
+<span class="sd">                where:</span>
+<span class="sd">                - intent.name: _confirm_</span>
+<span class="sd">                - state:</span>
+<span class="sd">                    in:</span>
+<span class="sd">                    - CONFIRM_VIEWING_POST_HR</span>
+<span class="sd">                    - CONFIRM_VIEWING_POST_ACCOUNT_RESUMPTION</span>
+<span class="sd">                    - CONFIRM_VIEWING_POST_ACCOUNT_ACTIVATION</span>
+<span class="sd">                    - CONFIRM_VIEWING_POST_ASSET_RESUMPTION</span>
+<span class="sd">                    - CONFIRM_VIEWING_POST_INPUT_CHECK</span>
+<span class="sd">                    - CONFIRM_VIEWING_POST_RECONNECTION</span>
+<span class="sd">                update:</span>
+<span class="sd">                    intent.name: _issue_resolved_</span>
 <span class="sd">    """</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>

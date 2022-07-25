@@ -558,6 +558,40 @@ Hence the first element is the predicted intent as it has the best score.</p>
 <span class="go"> 'grain': 'month'}</span>
 </pre></div>
 </div>
+<p>To migrate from the previous intent renaming plugin, here’s an example config:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">intent_swap</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">intent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_confirm_</span><span class="w"></span>
+<span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">in</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_HR</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ACCOUNT_RESUMPTION</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ACCOUNT_ACTIVATION</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ASSET_RESUMPTION</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_INPUT_CHECK</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_RECONNECTION</span><span class="w"></span>
+<span class="nt">rename</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_issue_resolved_</span><span class="w"></span>
+</pre></div>
+</div>
+<p>You would express this as:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"></span>
+<span class="w">        </span><span class="nt">find</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">intents</span><span class="w"></span>
+<span class="w">        </span><span class="nt">where</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">intent.name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_confirm_</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">state</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">in</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_HR</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ACCOUNT_RESUMPTION</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ACCOUNT_ACTIVATION</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ASSET_RESUMPTION</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_INPUT_CHECK</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_RECONNECTION</span><span class="w"></span>
+<span class="w">        </span><span class="nt">update</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">intent.name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_issue_resolved_</span><span class="w"></span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.ErrorRecoveryPlugin.utility">
 <span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#ErrorRecoveryPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.ErrorRecoveryPlugin.utility" title="Permalink to this definition">¶</a></dt>

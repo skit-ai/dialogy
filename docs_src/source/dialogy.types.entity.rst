@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   dialogy.types.entity.address
    dialogy.types.entity.amount_of_money
    dialogy.types.entity.base_entity
    dialogy.types.entity.credit_card_number

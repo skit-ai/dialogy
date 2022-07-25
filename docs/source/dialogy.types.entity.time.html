@@ -239,7 +239,7 @@
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"tomorrow"</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-07-25T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
+<span class="gh">Out[3]: </span><span class="go">[TimeEntity(body='tomorrow', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-07-26T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
 
 <span class="gp">In [4]: </span><span class="n">duckling_plugin</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"monday"</span><span class="p">)</span>
 <span class="gh">Out[4]: </span><span class="go">[TimeEntity(body='monday', type='value', parsers=['DucklingPlugin'], score=1.0, alternative_index=0, alternative_indices=[0], latent=False, value='2022-07-25T00:00:00.000+05:30', entity_type='date', origin='value', dim='time', grain='day')]</span>
@@ -275,8 +275,17 @@
 <span class="go">   'body': 'tomorrow',</span>
 <span class="go">   'type': 'value',</span>
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
-<span class="go">   'score': 0.6666666666666666,</span>
+<span class="go">   'score': 0.3333333333333333,</span>
 <span class="go">   'alternative_index': 0,</span>
+<span class="go">   'value': '2022-07-26T00:00:00.000+05:30',</span>
+<span class="go">   'entity_type': 'date',</span>
+<span class="go">   'grain': 'day'},</span>
+<span class="go">  {'range': {'start': 0, 'end': 6},</span>
+<span class="go">   'body': 'monday',</span>
+<span class="go">   'type': 'value',</span>
+<span class="go">   'parsers': ['DucklingPlugin'],</span>
+<span class="go">   'score': 0.3333333333333333,</span>
+<span class="go">   'alternative_index': 1,</span>
 <span class="go">   'value': '2022-07-25T00:00:00.000+05:30',</span>
 <span class="go">   'entity_type': 'date',</span>
 <span class="go">   'grain': 'day'},</span>

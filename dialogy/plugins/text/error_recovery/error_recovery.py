@@ -453,6 +453,44 @@ class ErrorRecoveryPlugin(Plugin):
            ...: _, out = workflow.run(input_=Input(utterances="this month"))
            ...: # Only if the conditions are satisfactory.
            ...: out["entities"][0]
+
+    To migrate from the previous intent renaming plugin, here's an example config:
+
+    .. code-block:: yaml
+
+        intent_swap:
+        - 
+            depends_on:
+                intent: _confirm_
+                state:
+                    in:
+                        - CONFIRM_VIEWING_POST_HR
+                        - CONFIRM_VIEWING_POST_ACCOUNT_RESUMPTION
+                        - CONFIRM_VIEWING_POST_ACCOUNT_ACTIVATION
+                        - CONFIRM_VIEWING_POST_ASSET_RESUMPTION
+                        - CONFIRM_VIEWING_POST_INPUT_CHECK
+                        - CONFIRM_VIEWING_POST_RECONNECTION
+        rename: _issue_resolved_
+
+    You would express this as:
+
+    .. code-block:: yaml
+
+        rules:
+            -
+                find: intents
+                where:
+                - intent.name: _confirm_
+                - state:
+                    in:
+                    - CONFIRM_VIEWING_POST_HR
+                    - CONFIRM_VIEWING_POST_ACCOUNT_RESUMPTION
+                    - CONFIRM_VIEWING_POST_ACCOUNT_ACTIVATION
+                    - CONFIRM_VIEWING_POST_ASSET_RESUMPTION
+                    - CONFIRM_VIEWING_POST_INPUT_CHECK
+                    - CONFIRM_VIEWING_POST_RECONNECTION
+                update:
+                    intent.name: _issue_resolved_
     """
     def __init__(
         self,
