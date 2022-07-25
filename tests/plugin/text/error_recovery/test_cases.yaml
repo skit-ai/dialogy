@@ -1,134 +1,183 @@
-- entities: [{'body': 'now',
-   'start': 0,
-   'value': {'values': [{'value': '2022-07-23T16:43:57.522+00:00',
-      'grain': 'second',
-      'type': 'value'}],
-    'value': '2022-07-23T16:43:57.522+00:00',
-    'grain': 'second',
-    'type': 'value'},
-   'end': 3,
-   'dim': 'time',
-   'latent': False}, {'body': '23rd july',
-   'start': 0,
-   'value': {'values': [{'value': '2022-07-23T00:00:00.000+00:00',
-      'grain': 'day',
-      'type': 'value'},
-     {'value': '2023-07-23T00:00:00.000+00:00',
-      'grain': 'day',
-      'type': 'value'},
-     {'value': '2024-07-23T00:00:00.000+00:00',
-      'grain': 'day',
-      'type': 'value'}],
-    'value': '2022-07-23T00:00:00.000+00:00',
-    'grain': 'day',
-    'type': 'value'},
-   'end': 9,
-   'dim': 'time',
-   'latent': False}]
-  rules:
-    -
-      doc: "Remove entities that belong to `now` if other time entities are present."
-      remove: entities
-      where:
-        - entity.grain: second
-        - entity.entity_type:
-            in: ["time", "datetime"]
-        - entity.type: "value"
+- entities:
+  - body: now
+    dim: time
+    end: 3
+    latent: false
+    start: 0
+    value:
+      grain: second
+      type: value
+      value: '2022-07-23T16:43:57.522+00:00'
+      values:
+      - grain: second
+        type: value
+        value: '2022-07-23T16:43:57.522+00:00'
+  - body: 23rd july
+    dim: time
+    end: 9
+    latent: false
+    start: 0
+    value:
+      grain: day
+      type: value
+      value: '2022-07-23T00:00:00.000+00:00'
+      values:
+      - grain: day
+        type: value
+        value: '2022-07-23T00:00:00.000+00:00'
+      - grain: day
+        type: value
+        value: '2023-07-23T00:00:00.000+00:00'
+      - grain: day
+        type: value
+        value: '2024-07-23T00:00:00.000+00:00'
   expect:
-    entities: [{'range': {'start': 0, 'end': 9}, 'body': '23rd july', 'type': 'value', 'parsers': [], 'score': null, 'alternative_index': 0, 'value': '2022-07-23T00:00:00.000+00:00', 'entity_type': 'date', 'grain': 'day'}]
-
-- intents: 
-  - name: placeholder
-    score: 0.8
-  - name: _oos_
-    score: 0.5
-  current_state: "non_placeholder"
+    entities:
+    - alternative_index: 0
+      body: 23rd july
+      entity_type: date
+      grain: day
+      parsers: []
+      range:
+        end: 9
+        start: 0
+      score: null
+      type: value
+      value: '2022-07-23T00:00:00.000+00:00'
   rules:
-    -
-      doc: "Remove intent named placeholder."
-      remove: intents
-      where:
-        - intent.name:
-            in: [placeholder]
-        - current_state:
-            in: ["non_placeholder", "unsafe"]
+  - doc: Remove entities that belong to `now` if other time entities are present.
+    remove: entities
+    where:
+    - entity.grain: second
+    - entity.entity_type:
+        in:
+        - time
+        - datetime
+    - entity.type: value
+- current_state: non_placeholder
   expect:
     intent:
       name: _oos_
       score: 0.5
-
-- intents: 
+  intents:
   - name: placeholder
     score: 0.8
   - name: _oos_
     score: 0.5
-  current_state: "non_placeholder"
   rules:
-    - 
-      doc: "Rename the intent with highest confidence to _confirm_ if state is one of the expected."
-      find: intents
-      where:
-        - intent.name:
-            in: [placeholder]
-        - current_state:
-            in: ["non_placeholder", "unsafe"]
-      update:
-        intent.name: _confirm_
+  - doc: Remove intent named placeholder.
+    remove: intents
+    where:
+    - intent.name:
+        in:
+        - placeholder
+    - current_state:
+        in:
+        - non_placeholder
+        - unsafe
+- current_state: non_placeholder
   expect:
     intent:
       name: _confirm_
       score: 0.8
-
-
-- entities: [{'body': 'this month',
-   'start': 0,
-   'value': {'values': [{'value': '2022-07-01T00:00:00.000+00:00',
-      'grain': 'month',
-      'type': 'value'}],
-    'value': '2022-07-01T00:00:00.000+00:00',
-    'grain': 'month',
-    'type': 'value'},
-   'end': 10,
-   'dim': 'time',
-   'latent': False}]
+  intents:
+  - name: placeholder
+    score: 0.8
+  - name: _oos_
+    score: 0.5
   rules:
-    - 
-      doc: "Update datetime entities such that day is set to month's last date."
-      find: entities
-      where:
-        - entity.grain: month
-        - entity.entity_type:
-            in: ["date", "time", "datetime"]
-      update:
-        entity.day: :last_day_of_month
+  - doc: Rename the intent with highest confidence to _confirm_ if state is one of
+      the expected.
+    find: intents
+    update:
+      intent.name: _confirm_
+    where:
+    - intent.name:
+        in:
+        - placeholder
+    - current_state:
+        in:
+        - non_placeholder
+        - unsafe
+- entities:
+  - body: this month
+    dim: time
+    end: 10
+    latent: false
+    start: 0
+    value:
+      grain: month
+      type: value
+      value: '2022-07-01T00:00:00.000+00:00'
+      values:
+      - grain: month
+        type: value
+        value: '2022-07-01T00:00:00.000+00:00'
   expect:
-    entities: [{'range': {'start': 0, 'end': 10}, 'body': 'this month', 'type': 'value', 'parsers': [], 'score': null, 'alternative_index': 0, 'value': '2022-07-31T00:00:00+00:00', 'entity_type': 'date', 'grain': 'month'}]
-
-
-- intents:
-  - name: "future_date"
+    entities:
+    - alternative_index: 0
+      body: this month
+      entity_type: date
+      grain: month
+      parsers: []
+      range:
+        end: 10
+        start: 0
+      score: null
+      type: value
+      value: '2022-07-31T00:00:00+00:00'
+  rules:
+  - doc: Update datetime entities such that day is set to month's last date.
+    find: entities
+    update:
+      entity.day: :last_day_of_month
+    where:
+    - entity.grain: month
+    - entity.entity_type:
+        in:
+        - date
+        - time
+        - datetime
+- entities:
+  - body: this week
+    dim: time
+    end: 9
+    latent: false
+    start: 0
+    value:
+      grain: week
+      type: value
+      value: '2022-07-18T00:00:00.000+00:00'
+      values:
+      - grain: week
+        type: value
+        value: '2022-07-18T00:00:00.000+00:00'
+  expect:
+    entities:
+    - alternative_index: 0
+      body: this week
+      entity_type: date
+      grain: week
+      parsers: []
+      range:
+        end: 9
+        start: 0
+      score: null
+      type: value
+      value: '2022-07-24T00:00:00+00:00'
+  intents:
+  - name: future_date
     score: 0.99
-  entities: [{'body': 'this week',
-   'start': 0,
-   'value': {'values': [{'value': '2022-07-18T00:00:00.000+00:00',
-      'grain': 'week',
-      'type': 'value'}],
-    'value': '2022-07-18T00:00:00.000+00:00',
-    'grain': 'week',
-    'type': 'value'},
-   'end': 9,
-   'dim': 'time',
-   'latent': False}]
   rules:
-    -
-      doc: "Update datetime entities such that day is set to week's last date."
-      find: entities
-      where:
-        - entity.grain: week
-        - entity.entity_type:
-            in: ["date", "time", "datetime"]
-        - predicted_intent: "future_date" 
-      update:
-        entity.day: :last_day_of_week
-  expect:
-    entities: [{'range': {'start': 0, 'end': 9}, 'body': 'this week', 'type': 'value', 'parsers': [], 'score': null, 'alternative_index': 0, 'value': '2022-07-24T00:00:00+00:00', 'entity_type': 'date', 'grain': 'week'}]
+  - doc: Update datetime entities such that day is set to week's last date.
+    find: entities
+    update:
+      entity.day: :last_day_of_week
+    where:
+    - entity.grain: week
+    - entity.entity_type:
+        in:
+        - date
+        - time
+        - datetime
+    - predicted_intent: future_date
