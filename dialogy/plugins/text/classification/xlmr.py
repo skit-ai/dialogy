@@ -47,7 +47,7 @@ class XLMRMultiClass(Plugin):
         lang_column: str = const.LANG,
         args_map: Optional[Dict[str, Any]] = None,
         skip_labels: Optional[List[str]] = None,
-        prompts_map: dict = {},
+        prompts_map: Dict[Any, Any] = {},
         use_prompt: bool = False,
         train_using_all_prompts: bool = True,
         null_prompt_token: str = const.NULL_PROMPT_TOKEN,
@@ -204,7 +204,7 @@ class XLMRMultiClass(Plugin):
             )
 
         if self.use_prompt and state:
-            texts[0] += "<s> " + self.lookup_prompt(lang, state)[0] + " </s>"
+            texts[0] += "<s> " + self.lookup_prompt(lang=lang, state=state)[0] + " </s>"
             if self.debug:
                 logger.debug(f"Classification input (Prompt as a feature enabled):\n{texts}")
                 logger.debug(texts)
@@ -317,7 +317,7 @@ class XLMRMultiClass(Plugin):
                 for i in tqdm(range(training_data.shape[0]), desc="progress bar:"):
                     _lang = training_data.iloc[i][self.lang_column]
                     _state = training_data.iloc[i][self.state_column]
-                    _prompt =  self.lookup_prompt(_lang, _state)[0]
+                    _prompt =  self.lookup_prompt(lang=_lang, state=_state)[0]
                     training_data.at[i, const.TEXT] = training_data.iloc[i][const.TEXT] \
                             + "<s> " \
                             + _prompt \
@@ -327,7 +327,7 @@ class XLMRMultiClass(Plugin):
                 for i in tqdm(range(training_data.shape[0]), desc="progress bar:"):
                     _lang = training_data.iloc[i][self.lang_column]
                     _state = training_data.iloc[i][self.state_column]
-                    _prompts =  self.lookup_prompt(_lang, _state, return_all=True)
+                    _prompts =  self.lookup_prompt(lang=_lang, state=_state, return_all=True)
                     for prompt in _prompts:
                         _row = {
                             const.TEXT : [
@@ -375,12 +375,12 @@ class XLMRMultiClass(Plugin):
             writer=pickle.dump,
         )
 
-    def lookup_prompt(self, lang: str, state: str, return_all: bool = False) -> List[str]:
+    def lookup_prompt(self, lang: Optional[str], state: Optional[str], return_all: bool = False) -> List[str]:
         """
         Same as get_prompt() method, but built for faster lookup to reduce latency during inference. 
         """
         try:
-            return random.sample(self.prompts_map.get(lang).get(state), 1)
+            return random.sample(self.prompts_map[lang][state], 1)
         except Exception as e:
             if self.debug:
                 logger.debug(e)
