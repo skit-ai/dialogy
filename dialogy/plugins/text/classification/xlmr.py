@@ -7,13 +7,13 @@ This module provides a trainable XLMR classifier.
 import importlib
 import os
 import pickle
+import random
 from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing
 from tqdm import tqdm
-import random
 
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
@@ -47,7 +47,7 @@ class XLMRMultiClass(Plugin):
         lang_column: str = const.LANG,
         args_map: Optional[Dict[str, Any]] = None,
         skip_labels: Optional[List[str]] = None,
-        prompts_map: dict = None,
+        prompts_map: dict = {},
         use_prompt: bool = False,
         train_using_all_prompts: bool = True,
         null_prompt_token: str = const.NULL_PROMPT_TOKEN,
