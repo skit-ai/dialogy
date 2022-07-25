@@ -270,7 +270,7 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="gp">In [5]: </span><span class="o">%%time</span>
 <span class="gp">   ...: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="n">utterances</span><span class="p">))</span>
 <span class="gp">   ...: </span>
-<span class="go">CPU times: user 15.9 ms, sys: 3.2 ms, total: 19.1 ms</span>
+<span class="go">CPU times: user 16.6 ms, sys: 2.31 ms, total: 18.9 ms</span>
 <span class="go">Wall time: 19.5 ms</span>
 
 <span class="gp">In [6]: </span><span class="n">output</span>
@@ -339,7 +339,7 @@ means to connect from the implementation here. Here’s a big example for variou
 <span class="go">   'parsers': ['DucklingPlugin'],</span>
 <span class="go">   'score': 0.08333333333333333,</span>
 <span class="go">   'alternative_index': 4,</span>
-<span class="go">   'value': '2022-07-25T15:19:59.974+00:00',</span>
+<span class="go">   'value': '2022-07-25T15:23:14.619+00:00',</span>
 <span class="go">   'entity_type': 'datetime',</span>
 <span class="go">   'grain': 'second'},</span>
 <span class="go">  {'range': {'start': 11, 'end': 19},</span>
@@ -535,8 +535,8 @@ to guard itself in the <em>“SMALL_TALK”</em> state.</p>
 <span class="gp">In [11]: </span><span class="o">%%time</span>
 <span class="gp">   ....: </span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="n">utterances</span><span class="p">,</span> <span class="n">current_state</span><span class="o">=</span><span class="s2">"SMALL_TALK"</span><span class="p">))</span>
 <span class="gp">   ....: </span>
-<span class="go">CPU times: user 102 us, sys: 27 us, total: 129 us</span>
-<span class="go">Wall time: 130 us</span>
+<span class="go">CPU times: user 96 us, sys: 27 us, total: 123 us</span>
+<span class="go">Wall time: 125 us</span>
 
 <span class="gp">In [12]: </span><span class="n">output</span>
 <span class="gh">Out[12]: </span><span class="go">{'intents': [], 'entities': [], 'original_intent': {}}</span>
@@ -696,7 +696,7 @@ to contain appropriate intents using the <code class="code docutils literal notr
 <span class="gp">In [30]: </span><span class="n">utterances</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"कल ही कर दी थी"</span><span class="p">]</span>
 <span class="gp">   ....: </span><span class="n">workflow</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"output.intents"</span><span class="p">,</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"already_paid"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)])</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[30]: </span><span class="go">Workflow(plugins=[&lt;dialogy.plugins.text.duckling_plugin.DucklingPlugin object at 0x7f3f55ae51b0&gt;], input=None, output=Output(intents=[Intent(name='already_paid', score=1.0, alternative_index=None)], entities=[], original_intent={}), debug=False)</span>
+<span class="gh">Out[30]: </span><span class="go">Workflow(plugins=[&lt;dialogy.plugins.text.duckling_plugin.DucklingPlugin object at 0x7f914e5e9db0&gt;], input=None, output=Output(intents=[Intent(name='already_paid', score=1.0, alternative_index=None)], entities=[], original_intent={}), debug=False)</span>
 
 <span class="gp">In [31]: </span><span class="n">reference_dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="s2">"Asia/Kolkata"</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">reference_time</span> <span class="o">=</span> <span class="n">dt2timestamp</span><span class="p">(</span><span class="n">reference_dt</span><span class="p">)</span>

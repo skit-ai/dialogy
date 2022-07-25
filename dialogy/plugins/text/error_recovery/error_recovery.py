@@ -4,7 +4,7 @@
 The goal of this module is to enable:
 
 #. Richer transitions. Most of our transtions are expressed by maps, we don't have a way to express transitions as a function over known variables. 
-#. We have :code:`trigger`s that map to the next :code:`state` in the conversation.
+#. We have :code:`triggers` that map to the next :code:`state` in the conversation.
 #. :code:`triggers` are :code:`intents` in most cases. 
 #. ML components produce confidence scores for a prediction. Only in cases of low confidence, should we opt for explicit confirmation.
 #. As per our current capabilities, we always have a prompt to confirm.
