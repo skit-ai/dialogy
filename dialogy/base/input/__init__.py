@@ -83,7 +83,7 @@ from typing import Any, Dict, List, Optional
 import attr
 
 from dialogy.types import Utterance
-from dialogy.utils import is_unix_ts, normalize
+from dialogy.utils import is_unix_ts, normalize, get_best_transcript
 
 
 @attr.frozen
@@ -121,6 +121,11 @@ class Input:
     We use this to :ref:`normalize <normalize>` utterances.
     """
 
+    best_transcript: str = attr.ib(default=None)
+    """
+    A derived attribute. Contains the best alternative selected out of the utterances.
+    """
+    
     clf_feature: Optional[List[str]] = attr.ib(  # type: ignore
         kw_only=True,
         factory=list,
@@ -225,6 +230,7 @@ class Input:
     def __attrs_post_init__(self) -> None:
         try:
             object.__setattr__(self, "transcripts", normalize(self.utterances))
+            object.__setattr__(self, "best_transcript", get_best_transcript(self.transcripts))
         except TypeError:
             ...
 
