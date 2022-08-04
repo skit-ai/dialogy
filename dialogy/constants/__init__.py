@@ -41,6 +41,8 @@ NUMBER = "number"
 AMOUNT_OF_MONEY = "amount-of-money"
 DURATION = "duration"
 CREDIT_CARD_NUMBER = "credit-card-number"
+ADDRESS = "address"
+PINCODE = "pincode"
 
 FUTURE = "future"
 PAST = "past"
