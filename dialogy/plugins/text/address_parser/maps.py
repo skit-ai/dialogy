@@ -19,7 +19,7 @@ mapmyindia = mapmyindia.MapMyIndia(MMI_CLIENT_ID, MMI_CLIENT_SECRET)
 
 
 def get_matching_address_from_gmaps_autocomplete(
-    most_confident_transcription: str, country_code: str = "IN", language: str = "en-IN"
+    most_confident_transcription: str, country_code: str = "IN", language: str = "en-IN", pin: str = None, **kwargs
 ) -> str:
     """Get the matching address from autocomplete results
 
@@ -37,7 +37,7 @@ def get_matching_address_from_gmaps_autocomplete(
             )
 
             response = gmaps.places_autocomplete(
-                input_text=most_confident_transcription,
+                input_text=" ".join([most_confident_transcription, pin]),
                 session_token=session_token,
                 components={"country": [country_code]},
                 language=language,
@@ -106,8 +106,9 @@ def get_all_numbers_from_a_string(string):
 
 def get_address_from_mapmyindia_geocode(
     most_confident_transcription: str,
-    region: str = "ind",
+    country_code: str = "ind",
     pin: str = None,
+    **kwargs
 ) -> str:
 
     matching_address = ""
@@ -120,8 +121,8 @@ def get_address_from_mapmyindia_geocode(
                 most_confident_transcription
             )
             response = mapmyindia.geocode(
-                most_confident_transcription,
-                region,
+                address=most_confident_transcription,
+                region=country_code,
                 pin=pin,
             )
 
@@ -144,4 +145,4 @@ def get_address_from_mapmyindia_geocode(
 
     except Exception as e:
         logger.error(e)
-    return matching_address, confidence, geocode_level
+    return matching_address
