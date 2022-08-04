@@ -14,3 +14,4 @@ from dialogy.plugins.text.output_mods.rule_based_intent_swap import \
     RuleBasedIntentSwap
 from dialogy.plugins.text.slot_filler.rule_slot_filler import \
     RuleBasedSlotFillerPlugin
+from dialogy.plugins.text.address_parser import AddressParserPlugin
