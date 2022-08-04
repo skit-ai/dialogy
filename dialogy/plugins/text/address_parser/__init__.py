@@ -2,17 +2,15 @@ from typing import Any, Dict, List, Optional
 import copy
 
 from dialogy.base.plugin import Plugin, Input, Output
-from dialogy.types import Intent
-from dialogy.types.slots import Slot
 from dialogy.types.entity import address
 
-from maps import (
+from dialogy.plugins.text.address_parser.maps import (
     get_address_from_mapmyindia_geocode,
     get_matching_address_from_gmaps_autocomplete,
 )
 
 
-class MapsAPIPlugin(Plugin):
+class AddressParserPlugin(Plugin):
     def __init__(
         self,
         dest=None,
@@ -20,18 +18,24 @@ class MapsAPIPlugin(Plugin):
         provider: str = None,
         address_capturing_intents: List[str] = None,
         pincode_capturing_intents: List[str] = None,
+        pincode_slot_name: str = None,
         country_code: str = None,
         language: str = None,
+        location: str = None,
         debug: bool = False,
+        **kwargs
     ) -> None:
         """A Plugin to hit the Google Maps API to fill the slot with the returned address"""
-        super().__init__(
-            debug=debug,
+        super().__init__(dest=dest,
+            debug=debug, **kwargs
         )
         self.address_capturing_intents = address_capturing_intents
         self.pincode_capturing_intents = pincode_capturing_intents
+        self.pincode_slot_name = pincode_slot_name
         self.country_code = country_code
         self.language = language
+        self.location = location
+
 
         provider_functions = {
                             "google": get_matching_address_from_gmaps_autocomplete, 
@@ -44,7 +48,7 @@ class MapsAPIPlugin(Plugin):
         intents = output.intents
         context = input_
 
-        pincode = None
+        pincode = ""
         matching_address = None
 
         # Create a function out of this
@@ -57,22 +61,25 @@ class MapsAPIPlugin(Plugin):
         
         if (not intents) or (not isinstance(intents, list)):
             return
-
+        
         if first_intent.name in self.address_capturing_intents:
             
-            if pincode:    
-                matching_address = self.provider_fn(most_confident_transcript=context.best_transcript,
+            if pincode != "":    
+                matching_address = self.provider_fn(context.best_transcript,
                     country_code=self.country_code,
                     language=self.language,
-                    pin=pincode
+                    pin=pincode,
+                    location=self.location
                 )
             if not matching_address:
-                matching_address = self.provider_fn(most_confident_transcript=context.best_transcript,
+                matching_address = self.provider_fn(context.best_transcript,
                     country_code=self.country_code,
-                    language=self.language
+                    language=self.language,
+                    location=self.location
                 )
-      
+            
             if matching_address:
-                matching_address = address(context.best_transcript, matching_address, 0)
-
+                matching_address = address.AddressEntity.from_maps(context.best_transcript, matching_address, 0)
+                matching_address.add_parser(self)
+        
         return [matching_address]

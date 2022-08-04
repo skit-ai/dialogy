@@ -1,3 +1,4 @@
+from email.policy import strict
 import os
 import uuid
 
@@ -6,7 +7,7 @@ import googlemaps
 from dotenv import load_dotenv
 
 from loguru import logger
-import mapmyindia
+from dialogy.plugins.text.address_parser import mapmyindia
 
 load_dotenv(override=True)
 GOOGLE_MAPS_API_TOKEN = os.getenv("GOOGLE_MAPS_API_TOKEN")
@@ -19,7 +20,7 @@ mapmyindia = mapmyindia.MapMyIndia(MMI_CLIENT_ID, MMI_CLIENT_SECRET)
 
 
 def get_matching_address_from_gmaps_autocomplete(
-    most_confident_transcription: str, country_code: str = "IN", language: str = "en-IN", pin: str = None, **kwargs
+    most_confident_transcription: str, country_code: str = "in", language: str = "en", pin: str = "", location: str=None, **kwargs
 ) -> str:
     """Get the matching address from autocomplete results
 
@@ -29,7 +30,13 @@ def get_matching_address_from_gmaps_autocomplete(
     :rtype: str
     """
     matching_address = ""
+    strict_bounds = False
+
+    if location:
+        strict_bounds = True
+
     if most_confident_transcription:
+        print(most_confident_transcription)
         try:
 
             house_number_from_transcript = get_house_number(
@@ -41,10 +48,11 @@ def get_matching_address_from_gmaps_autocomplete(
                 session_token=session_token,
                 components={"country": [country_code]},
                 language=language,
-                strict_bounds=True,
+                location=location,
+                strict_bounds=strict_bounds,
             )
 
-            if response and len(response):
+            if response:
                 matching_address = response[0].get("description", "")
                 logger.debug(f"matching_address: {matching_address}")
 
