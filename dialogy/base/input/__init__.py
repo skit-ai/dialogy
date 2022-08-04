@@ -274,10 +274,11 @@ class Input:
 
     def find_slot(self, intent_name=None, slot_name=None, slot_type=None):
         if self.history:
-            for intent in self.history[: : -1]["intents"]:
-                if intent["name"] == intent_name:
-                    for slot in intent["slots"]:
-                        if slot_name == slot.entity_name:
-                            return slot
-                        if slot_type == slot.entity_type:
-                            return slot
+            for level in self.history[: : -1]:
+                for intent in level["intents"]:
+                    if intent["name"] == intent_name:
+                        for slot in intent["slots"]:
+                            if slot_name == slot.entity_name:
+                                return slot
+                            if slot_type == slot.entity_type:
+                                return slot
