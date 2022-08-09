@@ -44,7 +44,7 @@ def get_matching_address_from_gmaps_autocomplete(
             )
 
             response = gmaps.places_autocomplete(
-                input_text=" ".join([most_confident_transcription, pin]),
+                input_text=f"{most_confident_transcription} {pin}",
                 session_token=session_token,
                 components={"country": [country_code]},
                 language=language,

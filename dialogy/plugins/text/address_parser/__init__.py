@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 import copy
 
 from dialogy.base.plugin import Plugin, Input, Output
-from dialogy.types.entity import address
+from dialogy.types import AddressEntity, PincodeEntity
 
 from dialogy.plugins.text.address_parser.maps import (
     get_address_from_mapmyindia_geocode,
@@ -46,40 +46,39 @@ class AddressParserPlugin(Plugin):
     def utility(self, input_: Input, output: Output) -> Any:
         
         intents = output.intents
-        context = input_
-
         pincode = ""
         matching_address = None
 
-        # Create a function out of this
-        pincode_slot = context.find_slot(intent_name=self.pincode_capturing_intents, slot_name=self.pincode_slot_name)
-
-        if pincode_slot:
-            pincode = pincode_slot["values"][0]["value"]
+        entities = input_.find_entities_in_history(intent_name=self.pincode_capturing_intents, slot_name=self.pincode_slot_name)
+        entities = [entity for entity in entities if entity["type"]=="pincode"]
+         
+        pincode =  PincodeEntity.from_dict(entities[0]).get_value()
         
         first_intent, *rest = intents
         
         if (not intents) or (not isinstance(intents, list)):
             return
         
-        if first_intent.name in self.address_capturing_intents:
+        if first_intent.name in self.address_capturing_intents and pincode != "": #parallel API calls
             
-            if pincode != "":    
-                matching_address = self.provider_fn(context.best_transcript,
-                    country_code=self.country_code,
-                    language=self.language,
-                    pin=pincode,
-                    location=self.location
-                )
-            if not matching_address:
-                matching_address = self.provider_fn(context.best_transcript,
-                    country_code=self.country_code,
-                    language=self.language,
-                    location=self.location
-                )
+            matching_address = self.provider_fn(input_.best_transcript,
+                country_code=self.country_code,
+                language=self.language,
+                pin=pincode,
+                location=self.location
+            )
+        if first_intent.name in self.address_capturing_intents and not matching_address:
+            matching_address = self.provider_fn(input_.best_transcript,
+                country_code=self.country_code,
+                language=self.language,
+                location=self.location
+            )
             
-            if matching_address:
-                matching_address = address.AddressEntity.from_maps(context.best_transcript, matching_address, 0)
-                matching_address.add_parser(self)
+        if matching_address:
+            matching_address = AddressEntity.from_maps(input_.best_transcript, matching_address, 0)
+            matching_address.add_parser(self)
         
-        return [matching_address]
+        if matching_address:
+            return [matching_address] #don't return none
+        
+        return []

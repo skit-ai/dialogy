@@ -47,7 +47,7 @@ class MapMyIndia:
 
         return addresses
 
-    def geocode(self, address, region="ind", pin=None):
+    def geocode(self, address, region="ind", pin=None): #aiohttp
         url = "https://atlas.mapmyindia.com/api/places/geocode?"
 
         params = {
