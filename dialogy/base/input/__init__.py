@@ -272,13 +272,11 @@ class Input:
             return attr.evolve(reference, **d)
         return attr.evolve(cls(utterances=d["utterances"]), **d)  # type: ignore
 
-    def find_slot(self, intent_name=None, slot_name=None, slot_type=None):
+    def find_entities_in_history(self, intent_name=None, slot_name=None, slot_type=None):
         if self.history:
             for level in self.history[: : -1]:
                 for intent in level["intents"]:
                     if intent["name"] == intent_name:
                         for slot in intent["slots"]:
-                            if slot_name == slot.entity_name:
-                                return slot
-                            if slot_type == slot.entity_type:
-                                return slot
+                            if slot_name == slot["name"]:
+                                return slot["values"]
