@@ -25,6 +25,7 @@ We use :ref:`slots<slot>` within :ref:`intents<intent>` to associate relationshi
 So these :ref:`entities<base_entity>` would be filled within their respective :ref:`slots<slot>` already expected by the
 reservation :ref:`intents<intent>`.
 """
+from dialogy.types.entity.address import AddressEntity
 from dialogy.types.entity.amount_of_money import CurrencyEntity
 from dialogy.types.entity.base_entity import BaseEntity, entity_synthesis
 from dialogy.types.entity.credit_card_number import CreditCardNumberEntity
@@ -33,6 +34,7 @@ from dialogy.types.entity.duration import DurationEntity
 from dialogy.types.entity.keyword import KeywordEntity
 from dialogy.types.entity.numerical import NumericalEntity
 from dialogy.types.entity.people import PeopleEntity
+from dialogy.types.entity.pincode import PincodeEntity
 from dialogy.types.entity.time import TimeEntity
 from dialogy.types.entity.time_interval import TimeIntervalEntity
 from dialogy.types.intent import Intent
