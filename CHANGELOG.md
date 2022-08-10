@@ -1,5 +1,11 @@
  Changelog
 
+
+## 0.9.18
+
+- [x] fix: Stanza download instructions removed from `ListSearchPlugin`.
+
+
 ## 0.9.17
 
 - [x] feat: A [DSL](https://github.com/skit-ai/dialogy/pull/155) for error-recovery and transitions.
