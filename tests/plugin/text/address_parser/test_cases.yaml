@@ -1,0 +1,593 @@
+- description: "Test address with house number and pincode"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: 104 skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - 104 skit ai
+    best_transcript: 104 skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 11
+        body: 104 skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value: 104  skit ai 560038
+        entity_type: address
+    original_intent: {}
+- description: "Test address with pincode"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 7
+        body: skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value: " skit ai 560038"
+        entity_type: address
+    original_intent: {}
+- description: "Test address where pincode is missing"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots: []
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 7
+        body: skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value: " skit ai "
+        entity_type: address
+    original_intent: {}
