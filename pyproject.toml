@@ -30,6 +30,8 @@ types-pytz = "^2021.3.5"
 types-requests = "^2.27.11"
 types-setuptools = "^57.4.10"
 black = "20.8b1"
+googlemaps = "^4.6.0"
+python-dotenv = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
