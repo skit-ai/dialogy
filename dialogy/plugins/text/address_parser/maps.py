@@ -36,7 +36,6 @@ def get_matching_address_from_gmaps_autocomplete(
         strict_bounds = True
 
     if most_confident_transcription:
-        print(most_confident_transcription)
         try:
 
             house_number_from_transcript = get_house_number(
