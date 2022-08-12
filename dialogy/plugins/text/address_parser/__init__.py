@@ -50,9 +50,13 @@ class AddressParserPlugin(Plugin):
         matching_address = None
 
         entities = input_.find_entities_in_history(intent_name=self.pincode_capturing_intents, slot_name=self.pincode_slot_name)
-        entities = [entity for entity in entities if entity["type"]=="pincode"]
-         
-        pincode =  PincodeEntity.from_dict(entities[0]).get_value()
+        
+        if entities:
+            entities = [entity for entity in entities if entity["type"]=="pincode"]
+            
+            pincode =  entities[0]["value"]
+
+            
         
         first_intent, *rest = intents
         
