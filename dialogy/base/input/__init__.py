@@ -78,7 +78,7 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import attr
 
@@ -125,7 +125,7 @@ class Input:
     """
     A derived attribute. Contains the best alternative selected out of the utterances.
     """
-    
+
     clf_feature: Optional[List[str]] = attr.ib(  # type: ignore
         kw_only=True,
         factory=list,
@@ -230,7 +230,9 @@ class Input:
     def __attrs_post_init__(self) -> None:
         try:
             object.__setattr__(self, "transcripts", normalize(self.utterances))
-            object.__setattr__(self, "best_transcript", get_best_transcript(self.transcripts))
+            object.__setattr__(
+                self, "best_transcript", get_best_transcript(self.transcripts)
+            )
         except TypeError:
             ...
 
@@ -272,11 +274,16 @@ class Input:
             return attr.evolve(reference, **d)
         return attr.evolve(cls(utterances=d["utterances"]), **d)  # type: ignore
 
-    def find_entities_in_history(self, intent_name=None, slot_name=None, slot_type=None):
+    def find_entities_in_history(
+        self,
+        intent_names: Optional[List[str]] = None,
+        slot_names: Optional[List[str]] = None,
+    ) -> Union[List[Dict[str, Any]], None]:
         if self.history:
-            for level in self.history[: : -1]:
+            for level in self.history[::-1]:
                 for intent in level["intents"]:
-                    if intent["name"] == intent_name:
+                    if intent["name"] in intent_names:
                         for slot in intent["slots"]:
-                            if slot_name == slot["name"]:
+                            if slot["name"] in slot_names:
                                 return slot["values"]
+        return None

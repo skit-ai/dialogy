@@ -20,8 +20,8 @@ from dialogy.types.entity.deserialize import EntityDeserializer
 @EntityDeserializer.register(const.PINCODE)
 @attr.s
 class PincodeEntity(BaseEntity):
-    dim = attr.ib(default="pincode", kw_only=True)
-    entity_type = attr.ib(default="pincode", kw_only=True)
+    dim: str = attr.ib(default="pincode", kw_only=True)
+    entity_type: str = attr.ib(default="pincode", kw_only=True)
 
     @classmethod
     def from_pattern(

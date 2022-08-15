@@ -1,6 +1,7 @@
-from email.policy import strict
 import os
+import re
 import uuid
+from typing import Type, List, Dict, Any, Optional, Union
 
 import googlemaps
 
@@ -16,11 +17,16 @@ session_token = uuid.uuid4()
 
 MMI_CLIENT_ID = os.getenv("MMI_CLIENT_ID")
 MMI_CLIENT_SECRET = os.getenv("MMI_CLIENT_SECRET")
-mapmyindia = mapmyindia.MapMyIndia(MMI_CLIENT_ID, MMI_CLIENT_SECRET)
+mmi: mapmyindia.MapMyIndia
+mmi = mapmyindia.MapMyIndia(MMI_CLIENT_ID, MMI_CLIENT_SECRET)
 
 
 def get_matching_address_from_gmaps_autocomplete(
-    most_confident_transcription: str, country_code: str = "in", language: str = "en", pin: str = "", location: str=None, **kwargs
+    most_confident_transcription: str,
+    country_code: str = "in",
+    language: str = "en",
+    pin: str = "",
+    **kwargs: Any,
 ) -> str:
     """Get the matching address from autocomplete results
 
@@ -30,10 +36,6 @@ def get_matching_address_from_gmaps_autocomplete(
     :rtype: str
     """
     matching_address = ""
-    strict_bounds = False
-
-    if location:
-        strict_bounds = True
 
     if most_confident_transcription:
         try:
@@ -47,37 +49,31 @@ def get_matching_address_from_gmaps_autocomplete(
                 session_token=session_token,
                 components={"country": [country_code]},
                 language=language,
-                location=location,
-                strict_bounds=strict_bounds,
             )
-
             if response:
                 matching_address = response[0].get("description", "")
                 logger.debug(f"matching_address: {matching_address}")
 
                 if (
                     house_number_from_transcript
-                    and is_house_number_absent_from_response(matching_address)
+                    and is_house_number_absent_from_response(
+                        house_number_from_transcript, matching_address
+                    )
                 ):
                     matching_address = (
                         f"{house_number_from_transcript} {matching_address}"
                     )
 
-        except googlemaps.exceptions.ApiError as e:
+        except (googlemaps.exceptions.ApiError, googlemaps.exceptions.HTTPError) as e:
             logger.error(e)
     return matching_address
 
 
-def get_house_number(most_confident_transcription):
-    house_number_from_transcript = ""
+def get_house_number(most_confident_transcription: str) -> str:
+    house_number_from_transcript: str = ""
     numbers = get_all_numbers_from_a_string(most_confident_transcription)
 
-    if (
-        len(numbers) > 1
-    ):  # if there are multiple numbers take the first one as house number
-        house_number_from_transcript = numbers[0]
-
-    elif len(numbers) == 1:  # if there is only one number in the transcript
+    if numbers:  # if there is only one number in the transcript
         for idx, word in enumerate(most_confident_transcription.split()):
             if (
                 word == numbers[0] and idx < 3
@@ -88,34 +84,31 @@ def get_house_number(most_confident_transcription):
     return house_number_from_transcript
 
 
-def is_house_number_absent_from_response(matching_address):
+def is_house_number_absent_from_response(
+    house_number: str, matching_address: str
+) -> Any:
     numbers = get_all_numbers_from_a_string(matching_address)
-    if len(numbers) == 0:
+    if not numbers:
         return True
 
-    elif len(numbers) == 1:
-        for idx, word in enumerate(matching_address.split()):
+    if numbers:
+        for idx, word in enumerate(matching_address.replace(",", "").split()):
             if (
-                word == numbers[0] and idx < 3
+                word == numbers[0] and idx < 3 and word == house_number
             ):  # if the number is in the first 3 words of the transcript
                 return False
         return True  # a number is present in the response but it is not in the first 3 words of the response so house number must be absent
-    return False
 
 
-def get_all_numbers_from_a_string(string):
-    numbers = []
-    for word in string.split():
-        if word.isdigit():
-            numbers.append(word)
-    return numbers
+def get_all_numbers_from_a_string(string: str) -> List[str]:
+    return re.findall("\d+", string)
 
 
 def get_address_from_mapmyindia_geocode(
     most_confident_transcription: str,
     country_code: str = "ind",
-    pin: str = None,
-    **kwargs
+    pin: Optional[str] = None,
+    **kwargs: Any,
 ) -> str:
 
     matching_address = ""
@@ -127,7 +120,7 @@ def get_address_from_mapmyindia_geocode(
             house_number_from_transcript = get_house_number(
                 most_confident_transcription
             )
-            response = mapmyindia.geocode(
+            response: Optional[Dict[str, Any]] = mmi.geocode(
                 address=most_confident_transcription,
                 region=country_code,
                 pin=pin,
@@ -135,7 +128,7 @@ def get_address_from_mapmyindia_geocode(
 
             if response:
 
-                candidates = response.get("copResults", {})
+                candidates: Dict[str, Any] = response.get("copResults", {})
                 matching_address = candidates.get("formattedAddress", "")
                 confidence = candidates.get("confidenceScore", "")
                 geocode_level = candidates.get("geocodeLevel", "")
@@ -143,7 +136,9 @@ def get_address_from_mapmyindia_geocode(
 
                 if (
                     house_number_from_transcript
-                    and is_house_number_absent_from_response(matching_address)
+                    and is_house_number_absent_from_response(
+                        house_number_from_transcript, matching_address
+                    )
                 ):
 
                     matching_address = (

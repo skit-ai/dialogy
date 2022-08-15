@@ -246,16 +246,17 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
         )
 
 
-def get_best_transcript(transcripts: List) -> str:
+def get_best_transcript(transcripts: List[str]) -> str:
     """
     Select the best transcript from a list of transcripts.
     The best transcript is the first transcript gven by ASR (20220803)
 
     :param transcripts: List of transcripts
-    :type transcripts: List
+    :type transcripts: List[str]
     :return: A string containing the best transcript
     :rtype: str
     """
 
     if transcripts:
         return transcripts[0]
+    return ""

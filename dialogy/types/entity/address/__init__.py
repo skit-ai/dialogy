@@ -19,8 +19,8 @@ from dialogy.types.entity.deserialize import EntityDeserializer
 @EntityDeserializer.register(const.ADDRESS)
 @attr.s
 class AddressEntity(BaseEntity):
-    dim = attr.ib(default="address", kw_only=True)
-    entity_type = attr.ib(default="address", kw_only=True)
+    dim: str = attr.ib(default="address", kw_only=True)
+    entity_type: str = attr.ib(default="address", kw_only=True)
 
     @classmethod
     def from_maps(
