@@ -1,3 +1,6 @@
+import json
+
+import httpretty
 import pytest
 
 from dialogy import plugins
@@ -6,27 +9,15 @@ from dialogy.types import Intent
 from dialogy.workflow import Workflow
 from dialogy import plugins
 from dialogy.types import AddressEntity
-from dialogy.plugins.text.address_parser.maps import get_house_number
-from tests import  load_tests
+from tests import load_tests
 
 
-def parser_func(
-    most_confident_transcription: str,
-    country_code: str = "in",
-    language: str = "en",
-    pin: str = "",
-    location: str = None,
-    **kwargs,
-) -> str:
-    house_number_from_transcript = get_house_number(most_confident_transcription)
-
-    return f"{house_number_from_transcript} {most_confident_transcription.replace(house_number_from_transcript, '')} {pin}"
-
-
+@httpretty.activate
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_address_parser_plugin(payload) -> None:
 
     input_ = Input(**payload["input"])
+
     output = Output(
         intents=[
             Intent(
@@ -36,6 +27,7 @@ def test_address_parser_plugin(payload) -> None:
                 slots=x["slots"],
             )
             for x in payload["output"]["intents"]
+            if payload["output"]["intents"]
         ],
         entities=[AddressEntity.from_dict(x) for x in payload["output"]["entities"]],
     )
@@ -52,16 +44,28 @@ def test_address_parser_plugin(payload) -> None:
         entities=[AddressEntity.from_dict(x) for x in payload["expected"]["entities"]],
     )
 
+    provider = payload["maps_provider"]
+    maps_api_response = payload.get("maps_prediction", "")
+    req_status = payload.get("status", 200)
+
+    if provider == "google":
+        url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?"
+    elif provider == "mmi":
+        url = "https://atlas.mapmyindia.com/api/places/geocode?"
+
+    httpretty.register_uri(
+        httpretty.GET, url, body=json.dumps(maps_api_response), status=req_status
+    )
+
     address_plugin = plugins.AddressParserPlugin(
         dest="output.entities",
-        provider="google",
+        provider=provider,
         address_capturing_intents="inform_address",
         country_code="IND",
         language="en",
         pincode_capturing_intents="inform_pincode",
         pincode_slot_name="pincode",
     )
-    address_plugin.provider_fn = parser_func
 
     workflow = Workflow([address_plugin])
     workflow.input = input_
