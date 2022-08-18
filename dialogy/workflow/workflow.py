@@ -216,7 +216,13 @@ class Workflow:
             self.input = Input.from_dict({attribute: value}, reference=self.input)
         elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
             if not replace and isinstance(value, list):
-                previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities  # type: ignore
+                if attribute == const.INTENTS:
+                    previous_value = self.output.intents
+                elif attribute == const.ENTITIES:
+                    previous_value = self.output.entities
+                else:
+                    previous_value = self.output.runtimes
+                # previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities  # type: ignore
                 if sort_output_attributes:
                     value = sorted(
                         previous_value + value,
