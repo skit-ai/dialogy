@@ -282,8 +282,8 @@ class Input:
         if self.history:
             for level in self.history[::-1]:
                 for intent in level["intents"]:
-                    if intent["name"] in intent_names:
+                    if intent["name"] in intent_names:  # type: ignore
                         for slot in intent["slots"]:
-                            if slot["name"] in slot_names:
+                            if slot["name"] in slot_names:  # type: ignore
                                 return slot["values"]
         return None

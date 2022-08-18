@@ -61,9 +61,10 @@ class AddressParserPlugin(Plugin):
 
         first_intent, *rest = intents
 
+        # parallel API calls
         if (
-            first_intent.name in self.address_capturing_intents and pincode != ""
-        ):  # parallel API calls
+            first_intent.name in self.address_capturing_intents and pincode != ""  # type: ignore
+        ):
 
             matching_address = self.provider_fn(
                 input_.best_transcript,
@@ -71,7 +72,7 @@ class AddressParserPlugin(Plugin):
                 language=self.language,
                 pin=pincode,
             )
-        if first_intent.name in self.address_capturing_intents and not matching_address:
+        if first_intent.name in self.address_capturing_intents and not matching_address:  # type: ignore
             matching_address = self.provider_fn(
                 input_.best_transcript,
                 country_code=self.country_code,
