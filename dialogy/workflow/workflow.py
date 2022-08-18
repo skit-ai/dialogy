@@ -232,6 +232,12 @@ class Workflow:
                 else:
                     value = previous_value + value
 
+            if not replace and isinstance(value, dict):
+
+                if attribute == const.RUNTIMES:
+                    previous_value = self.output.runtimes
+                    value.update(previous_value)
+
             self.output = Output.from_dict({attribute: value}, reference=self.output)
 
         elif dest == const.OUTPUT:
