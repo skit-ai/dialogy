@@ -259,7 +259,7 @@ class Workflow:
             start = time.perf_counter()
             plugin(self)
             end = time.perf_counter()
-            self.set(f"{const.OUTPUT}.{const.TIMINGS}", {plugin.__class__: round(end - start, 4)})
+            self.set(f"{const.OUTPUT}.{const.RUNTIMES}", {plugin.__class__: round(end - start, 4)})
             # logs are available only when debug=False during class initialization
             if self.debug:
                 history["after"] = {

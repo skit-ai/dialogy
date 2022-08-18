@@ -151,14 +151,14 @@ XLMR_MODEL = "xlmroberta"
 XLMR_MODEL_TIER = "xlm-roberta-base"
 INTENT = "intent"
 ORIGINAL_INTENT = "original_intent"
-TIMINGS = "timings"
+RUNTIMES = "runtimes"
 INTENTS = f"{INTENT}s"
 LABELS = "labels"
 ENTITIES = "entities"
 SCORE = "score"
 LABELENCODER_FILE = "labelencoder.pkl"
 INVALID_TOKENS = ["<UNK>", "<PAD>", "<SOS>", "<EOS>"]
-OUTPUT_ATTRIBUTES = {INTENTS, ENTITIES, ORIGINAL_INTENT, TIMINGS}
+OUTPUT_ATTRIBUTES = {INTENTS, ENTITIES, ORIGINAL_INTENT, RUNTIMES}
 
 # MLP
 MLPMODEL_FILE = "mlpmodelpipeline.joblib"
