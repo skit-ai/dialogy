@@ -17,7 +17,7 @@ We can obtain intents from :ref:`XLMRMultiClass<XLMRMultiClass>` and :ref:`MLPMu
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 import attr
 
@@ -163,7 +163,7 @@ class Intent:
         self.parsers.append(plugin_name)
         return self
 
-    def fill_slot(self, entity: BaseEntity, fill_multiple: bool = False) -> Intent:
+    def fill_slot(self, entity: BaseEntity, fill_multiple: bool = False, expected_slots: Optional[Set[str]] = None) -> Intent:
         """
         Update :code:`slots[slot_type].values` with a single entity.
 
@@ -187,6 +187,8 @@ class Intent:
         logger.debug("Looping through slot_names for each entity.")
         logger.debug(f"intent slots: {self.slots}")
         for slot_name, slot in self.slots.items():
+            if expected_slots and slot_name not in expected_slots:
+                continue
             logger.debug(f"slot_name: {slot_name}")
             logger.debug(
                 f"slot type: {slot.types}",
@@ -198,9 +200,8 @@ class Intent:
                 if fill_multiple:
                     logger.debug(f"filling {entity} into {self.name}.")
                     self.slots[slot_name].add(entity)
-                    return self
 
-                if not self.slots[slot_name].values:
+                elif not self.slots[slot_name].values:
                     logger.debug(f"filling {entity} into {self.name}.")
                     self.slots[slot_name].add(entity)
                 else:

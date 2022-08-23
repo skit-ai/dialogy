@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.base.output package" href="dialogy.base.output.html" /><link rel="prev" title="Dialogy" href="../index.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.base.input package - dialogy 0.9.13 documentation</title>
+        <title>dialogy.base.input package - dialogy 0.9.17 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.13 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.17 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.13 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.17 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -188,7 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.output_mods.html">Rule Based Intent Transitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.error_recovery.html">Error Recovery</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -242,7 +242,7 @@ and <a class="reference internal" href="dialogy.base.output.html#output"><span c
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">input_x</span>
-<span class="gh">Out[3]: </span><span class="go">Input(utterances='hello world', reference_time=None, latent_entities=False, transcripts=['hello world'], clf_feature=[], lang='hi', locale='en_IN', timezone='Asia/Kolkata', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
+<span class="gh">Out[3]: </span><span class="go">Input(utterances='hello world', reference_time=None, latent_entities=False, transcripts=['hello world'], clf_feature=[], lang='hi', locale='en_IN', timezone='Asia/Kolkata', slot_tracker=None, current_state=None, expected_slots=None, previous_intent=None, history=None)</span>
 </pre></div>
 </div>
 <section id="issues-with-frozen-instance-update">
@@ -274,7 +274,7 @@ and <a class="reference internal" href="dialogy.base.output.html#output"><span c
 <span class="gp">In [6]: </span><span class="n">input_y</span> <span class="o">=</span> <span class="n">Input</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">"utterances"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">})</span>
 
 <span class="gp">In [7]: </span><span class="n">input_y</span>
-<span class="gh">Out[7]: </span><span class="go">Input(utterances='hello', reference_time=None, latent_entities=False, transcripts=['hello'], clf_feature=[], lang='en', locale='en_IN', timezone='UTC', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
+<span class="gh">Out[7]: </span><span class="go">Input(utterances='hello', reference_time=None, latent_entities=False, transcripts=['hello'], clf_feature=[], lang='en', locale='en_IN', timezone='UTC', slot_tracker=None, current_state=None, expected_slots=None, previous_intent=None, history=None)</span>
 </pre></div>
 </div>
 <p>but by doing this, we lost the <code class="code docutils literal notranslate"><span class="pre">lang</span></code> and <code class="code docutils literal notranslate"><span class="pre">timezone</span></code> attributes to system defaults.</p>
@@ -288,7 +288,7 @@ This way, we don’t have to write every existing property on a previous <a clas
 <span class="gp">In [9]: </span><span class="n">input_y</span> <span class="o">=</span> <span class="n">Input</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">"utterances"</span><span class="p">:</span> <span class="s2">"hello"</span><span class="p">},</span> <span class="n">reference</span><span class="o">=</span><span class="n">input_x</span><span class="p">)</span>
 
 <span class="gp">In [10]: </span><span class="n">input_y</span>
-<span class="gh">Out[10]: </span><span class="go">Input(utterances='hello', reference_time=None, latent_entities=False, transcripts=['hello'], clf_feature=[], lang='hi', locale='en_IN', timezone='Asia/Kolkata', slot_tracker=None, current_state=None, previous_intent=None, history=None)</span>
+<span class="gh">Out[10]: </span><span class="go">Input(utterances='hello', reference_time=None, latent_entities=False, transcripts=['hello'], clf_feature=[], lang='hi', locale='en_IN', timezone='Asia/Kolkata', slot_tracker=None, current_state=None, expected_slots=None, previous_intent=None, history=None)</span>
 </pre></div>
 </div>
 </section>
@@ -308,13 +308,14 @@ This way, we don’t have to write every existing property on a previous <a clas
 <span class="go"> 'timezone': 'Asia/Kolkata',</span>
 <span class="go"> 'slot_tracker': None,</span>
 <span class="go"> 'current_state': None,</span>
+<span class="go"> 'expected_slots': None,</span>
 <span class="go"> 'previous_intent': None,</span>
 <span class="go"> 'history': None}</span>
 </pre></div>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="dialogy.base.input.Input">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcripts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utterances</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent_entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clf_feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/input.html#Input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.input.Input" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transcripts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utterances</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent_entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clf_feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en_IN'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/base/input.html#Input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.base.input.Input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents the inputs of the SLU API.</p>
 <dl class="py attribute">
@@ -329,6 +330,11 @@ This way, we don’t have to write every existing property on a previous <a clas
 <dt class="sig sig-object py" id="dialogy.base.input.Input.current_state">
 <span class="sig-name descname"><span class="pre">current_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.current_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Points at the active state (or node) within the conversation graph.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.base.input.Input.expected_slots">
+<span class="sig-name descname"><span class="pre">expected_slots</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.base.input.Input.expected_slots" title="Permalink to this definition">¶</a></dt>
+<dd><p>In a given turn, the expected number of slots to fill.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.base.input.Input.from_dict">

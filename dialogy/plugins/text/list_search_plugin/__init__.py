@@ -90,11 +90,6 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         """
         Parameters for Fuzzy Dependency Parser defined below
         """
-
-        # ensuring stanza models are downloaded
-        stanza.download("en")
-        stanza.download("hi")
-
         self.fuzzy_dp_config = fuzzy_dp_config
         self.entity_dict: Dict[Any, Any] = {}
         self.entity_types: Dict[Any, Any] = {}

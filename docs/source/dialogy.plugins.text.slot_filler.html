@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.plugins.text.list_entity_plugin package" href="dialogy.plugins.text.list_entity_plugin.html" /><link rel="prev" title="dialogy.plugins.text.duckling_plugin package" href="dialogy.plugins.text.duckling_plugin.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.slot_filler package - dialogy 0.9.13 documentation</title>
+        <title>dialogy.plugins.text.slot_filler package - dialogy 0.9.17 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -125,7 +125,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dialogy 0.9.13 documentation</div></a>
+      <a href="../index.html"><div class="brand">dialogy 0.9.17 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -148,7 +148,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.13 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.17 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -188,7 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.output_mods.html">Rule Based Intent Transitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.error_recovery.html">Error Recovery</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -249,7 +249,7 @@ entities.</p>
 <dl class="field-list simple" id="rulebasedslotfillerplugin">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rules</strong> (<em>Rule</em>) – A mapping that defines relationship between an intent, its slots and the entities that fill them.</p></li>
+<li><p><strong>rules</strong> (<a class="reference internal" href="dialogy.plugins.text.error_recovery.html#dialogy.plugins.text.error_recovery.error_recovery.Rule" title="dialogy.plugins.text.error_recovery.error_recovery.Rule"><em>Rule</em></a>) – A mapping that defines relationship between an intent, its slots and the entities that fill them.</p></li>
 <li><p><strong>fill_multiple</strong> (<em>bool</em>) – More than one item be allowed to fill a single slot.</p></li>
 <li><p><strong>access</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – Signature for workflow access is <code class="code docutils literal notranslate"><span class="pre">access(workflow)</span> <span class="pre">-&gt;</span> <span class="pre">(Intent,</span> <span class="pre">List[BaseEntity])</span></code></p></li>
 <li><p><strong>mutate</strong> (<em>Optional</em><em>[</em><em>PluginFn</em><em>]</em>) – Not needed, pass <code class="code docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
@@ -259,7 +259,7 @@ entities.</p>
 <p>Irrespective of the entities that are found, only the listed type in the slot shall be present in <cite>values</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill">
-<span class="sig-name descname"><span class="pre">fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Intent</span></code></a>]</p>
@@ -268,7 +268,7 @@ entities.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility">
-<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/slot_filler/rule_slot_filler.html#RuleBasedSlotFillerPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility" title="Permalink to this definition">¶</a></dt>
 <dd><p>An abstract method that describes the plugin’s functionality.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
