@@ -78,13 +78,12 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 """
 from __future__ import annotations
 
-from functools import reduce
-from typing import Any, Dict, List, Optional, Union, Set
+from typing import Any, Dict, List, Optional
 
 import attr
 
 from dialogy.types import Utterance
-from dialogy.utils import is_unix_ts, normalize, get_best_transcript
+from dialogy.utils import is_unix_ts, normalize
 
 
 @attr.frozen
@@ -120,11 +119,6 @@ class Input:
     """
     A derived attribute. We cross product each utterance and return a list of strings.
     We use this to :ref:`normalize <normalize>` utterances.
-    """
-
-    best_transcript: str = attr.ib(default=None)
-    """
-    A derived attribute. Contains the best alternative selected out of the utterances.
     """
 
     clf_feature: Optional[List[str]] = attr.ib(  # type: ignore
@@ -218,11 +212,15 @@ class Input:
     Points at the active state (or node) within the conversation graph.
     """
 
-    expected_slots: Set[str] = attr.ib(factory=set, kw_only=True)
+    nls_label: Optional[str] = attr.ib(
+        default=None,
+        kw_only=True,
+        validator=attr.validators.optional(attr.validators.instance_of(str)),
+    )
     """
-    In a given turn, the expected number of slots to fill.
+    Points at the NLS Label of the active (current) node within the conversation graph.
     """
-
+    
     previous_intent: Optional[str] = attr.ib(
         default=None,
         kw_only=True,
@@ -236,13 +234,6 @@ class Input:
     def __attrs_post_init__(self) -> None:
         try:
             object.__setattr__(self, "transcripts", normalize(self.utterances))
-
-            object.__setattr__(
-                self, "best_transcript", get_best_transcript(self.transcripts)
-            )
-
-            object.__setattr__(self, "expected_slots", set(self.expected_slots) if self.expected_slots else None)
-
         except TypeError:
             ...
 
@@ -283,40 +274,3 @@ class Input:
         if reference:
             return attr.evolve(reference, **d)
         return attr.evolve(cls(utterances=d["utterances"]), **d)  # type: ignore
-
-    def find_entities_in_history(
-        self,
-        intent_names: Optional[List[str]] = None,
-        slot_names: Optional[List[str]] = None,
-    ) -> Union[List[Dict[str, Any]], None]:
-        if not self.history:
-            return None
-
-        _intent_names: List[str] = intent_names or []
-        _slot_names: List[str] = slot_names or []
-
-        # Flatten the history to a list of intents
-        intents: List[Dict[str, Any]] = reduce(
-            lambda intents, res: intents + res["intents"],
-            self.history[::-1],
-            [])
-
-        # Filter intents by name
-        required_intents = filter(
-            lambda intent: intent["name"] in _intent_names,
-            intents)
-
-        # Flatten the intents to a list of slots
-        slots: List[Dict[str, Any]] = reduce(
-            lambda slots, intent: slots + intent["slots"],
-            required_intents,
-            [])
-
-        # Filter slots by name
-        required_slots = filter(
-            lambda slot: slot["name"] in _slot_names,
-            slots)
-
-        return list(reduce(
-            lambda entities, slot: entities + slot["values"],
-            required_slots, []))
