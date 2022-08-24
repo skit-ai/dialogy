@@ -1,5 +1,8 @@
- Changelog
+Changelog
 
+## 0.9.19
+
+- [x]: feat: AddressParser plugin using google maps and map my india.
 
 ## 0.9.18
 
