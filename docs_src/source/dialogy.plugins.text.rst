@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   dialogy.plugins.text.address_parser
    dialogy.plugins.text.calibration
    dialogy.plugins.text.canonicalization
    dialogy.plugins.text.classification

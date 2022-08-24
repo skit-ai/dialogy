@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.plugins.text.slot_filler.rule_slot_filler - dialogy 0.9.19 documentation</title>
+        <title>dialogy.plugins.text.address_parser.mapmyindia - dialogy 0.9.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -218,100 +218,55 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for dialogy.plugins.text.slot_filler.rule_slot_filler</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""</span>
-<span class="sd">Slot Filling</span>
-<span class="sd">============</span>
+          <h1>Source code for dialogy.plugins.text.address_parser.mapmyindia</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="sd">While we describe :ref:`slots &lt;Slot&gt;` in the linked doc. The slot filling is part of an :ref:`intent's&lt;Intent&gt;`</span>
-<span class="sd">role. This plugin orchestrates the execution of slot filling via methods available on intents.</span>
-
-<span class="sd">#. We eagerly apply slot placeholders using the :ref:`apply&lt;ApplySlot&gt;` method. </span>
-<span class="sd">#. Once entities are found, we check if the slots can fill them using the :ref:`fill&lt;FillSlot&gt;` method.</span>
-<span class="sd">#. If no slots were filled, we remove the placeholders using :ref:`cleanup&lt;CleanupSlot&gt;` method.</span>
-<span class="sd">"""</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Set</span>
-
-<span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">Plugin</span>
-<span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">BaseEntity</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.intent</span> <span class="kn">import</span> <span class="n">Intent</span>
-<span class="kn">from</span> <span class="nn">dialogy.types.slots</span> <span class="kn">import</span> <span class="n">Rule</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 
 
-<div class="viewcode-block" id="RuleBasedSlotFillerPlugin"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.slot_filler.html#dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin">[docs]</a><span class="k">class</span> <span class="nc">RuleBasedSlotFillerPlugin</span><span class="p">(</span><span class="n">Plugin</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    A utility :ref:`plugin &lt;AbstractPlugin&gt;` for</span>
-<span class="sd">    `slot filling &lt;https://nlpprogress.com/english/intent_detection_slot_filling.html&gt;`._</span>
-<span class="sd">    An :ref:`Intent &lt;intent&gt;` may have a few slots that need to be filled.</span>
+<div class="viewcode-block" id="MapMyIndia"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.address_parser.html#dialogy.plugins.text.address_parser.mapmyindia.MapMyIndia">[docs]</a><span class="k">class</span> <span class="nc">MapMyIndia</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">client_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span> <span class="o">=</span> <span class="n">client_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_secret</span> <span class="o">=</span> <span class="n">client_secret</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_token</span><span class="p">()</span>
 
-<span class="sd">    This plugin can assist filling pertaining to certain intent:entity:slot-name association rules.</span>
+    <span class="k">def</span> <span class="nf">_get_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s2">"https://outpost.mapmyindia.com/api/security/oauth/token"</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"grant_type"</span><span class="p">:</span> <span class="s2">"client_credentials"</span><span class="p">,</span>
+                <span class="s2">"client_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span>
+                <span class="s2">"client_secret"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_secret</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-<span class="sd">    :ref:`Schema for rules&lt;ApplySlot&gt;`</span>
+        <span class="k">return</span> <span class="n">token</span><span class="p">[</span><span class="s2">"access_token"</span><span class="p">]</span>
 
-<span class="sd">    Let's run through a practical example. We will create a workflow and preset the output to have expected intent and</span>
-<span class="sd">    entities.</span>
+<div class="viewcode-block" id="MapMyIndia.geocode"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.address_parser.html#dialogy.plugins.text.address_parser.mapmyindia.MapMyIndia.geocode">[docs]</a>    <span class="k">def</span> <span class="nf">geocode</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ind"</span><span class="p">,</span> <span class="n">pin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># aiohttp</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">"https://atlas.mapmyindia.com/api/places/geocode?"</span>
 
-<span class="sd">    .. _RuleBasedSlotFillerPlugin:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"address"</span><span class="p">:</span> <span class="n">address</span><span class="p">,</span>
+            <span class="s2">"region"</span><span class="p">:</span> <span class="n">region</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">pin</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"bound"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">pin</span><span class="si">}</span><span class="s2">"</span>
 
-<span class="sd">    :param rules: A mapping that defines relationship between an intent, its slots and the entities that fill them.</span>
-<span class="sd">    :type rules: Rule</span>
-<span class="sd">    :param fill_multiple: More than one item be allowed to fill a single slot.</span>
-<span class="sd">    :type fill_multiple: bool</span>
-<span class="sd">    :param access: Signature for workflow access is :code:`access(workflow) -&gt; (Intent, List[BaseEntity])`</span>
-<span class="sd">    :type access: Optional[PluginFn]</span>
-<span class="sd">    :param mutate: Not needed, pass :code:`None`.</span>
-<span class="sd">    :type mutate: Optional[PluginFn]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">addresses</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">url</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="s2">"bearer "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="p">},</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-<span class="sd">    Irrespective of the entities that are found, only the listed type in the slot shall be present in `values`.</span>
-<span class="sd">    """</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MMI API: Address not found for input </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">addresses</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">rules</span><span class="p">:</span> <span class="n">Rule</span><span class="p">,</span>
-        <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">guards</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Guard</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">replace_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">fill_multiple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        constructor</span>
-<span class="sd">        """</span>
-        <span class="c1"># rules</span>
-        <span class="c1">#</span>
-        <span class="c1"># A `Dict` where each key is an intent name, and each value is another `Dict`,</span>
-        <span class="c1"># in which, each key is an entity and value contains the `slot_name` and `entity_type.`</span>
-        <span class="c1">#</span>
-        <span class="c1"># example:</span>
-        <span class="c1"># ```</span>
-        <span class="c1"># rules = {"intent": {"slot_name": "entity_type"}}</span>
-        <span class="c1"># ```</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="n">guards</span><span class="o">=</span><span class="n">guards</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">replace_output</span><span class="o">=</span><span class="n">replace_output</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span> <span class="n">Rule</span> <span class="o">=</span> <span class="n">rules</span> <span class="ow">or</span> <span class="p">{}</span>
-
-        <span class="c1"># fill_multiple</span>
-        <span class="c1"># A boolean value that commands the slot filler to add multiple values of the</span>
-        <span class="c1"># same entity type within a slot.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fill_multiple</span> <span class="o">=</span> <span class="n">fill_multiple</span>
-
-<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.fill"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.slot_filler.html#dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">],</span> <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseEntity</span><span class="p">],</span> <span class="n">expected_slots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">intents</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">intents</span>
-
-        <span class="n">intent</span><span class="p">,</span> <span class="o">*</span><span class="n">rest</span> <span class="o">=</span> <span class="n">intents</span>
-
-        <span class="n">intent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
-            <span class="n">intent</span><span class="o">.</span><span class="n">fill_slot</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">fill_multiple</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_multiple</span><span class="p">,</span> <span class="n">expected_slots</span><span class="o">=</span><span class="n">expected_slots</span><span class="p">)</span>
-
-        <span class="n">intent</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">intent</span><span class="p">,</span> <span class="o">*</span><span class="n">rest</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="RuleBasedSlotFillerPlugin.utility"><a class="viewcode-back" href="../../../../../source/dialogy.plugins.text.slot_filler.html#dialogy.plugins.text.slot_filler.rule_slot_filler.RuleBasedSlotFillerPlugin.utility">[docs]</a>    <span class="k">def</span> <span class="nf">utility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Intent</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">intents</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">entities</span><span class="p">,</span> <span class="n">input_</span><span class="o">.</span><span class="n">expected_slots</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">addresses</span></div></div>
 </pre></div>
         </article>
       </div>

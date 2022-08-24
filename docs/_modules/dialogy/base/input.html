@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.base.input - dialogy 0.9.17 documentation</title>
+        <title>dialogy.base.input - dialogy 0.9.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">dialogy 0.9.17 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">dialogy 0.9.19 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.17 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.19 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -299,12 +299,13 @@
 <span class="sd">"""</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
 <span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Utterance</span>
-<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">is_unix_ts</span><span class="p">,</span> <span class="n">normalize</span>
+<span class="kn">from</span> <span class="nn">dialogy.utils</span> <span class="kn">import</span> <span class="n">is_unix_ts</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">get_best_transcript</span>
 
 
 <div class="viewcode-block" id="Input"><a class="viewcode-back" href="../../../source/dialogy.base.input.html#dialogy.base.input.Input">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">frozen</span>
@@ -340,6 +341,11 @@
     <span class="sd">"""</span>
 <span class="sd">    A derived attribute. We cross product each utterance and return a list of strings.</span>
 <span class="sd">    We use this to :ref:`normalize &lt;normalize&gt;` utterances.</span>
+<span class="sd">    """</span>
+
+    <span class="n">best_transcript</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="sd">"""</span>
+<span class="sd">    A derived attribute. Contains the best alternative selected out of the utterances.</span>
 <span class="sd">    """</span>
 
     <span class="n">clf_feature</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
@@ -451,7 +457,13 @@
     <span class="k">def</span> <span class="nf">__attrs_post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"transcripts"</span><span class="p">,</span> <span class="n">normalize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">utterances</span><span class="p">))</span>
+
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s2">"best_transcript"</span><span class="p">,</span> <span class="n">get_best_transcript</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcripts</span><span class="p">)</span>
+            <span class="p">)</span>
+
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"expected_slots"</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_slots</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_slots</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="o">...</span>
 
@@ -491,7 +503,41 @@
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">reference</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="o">**</span><span class="n">d</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="bp">cls</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"utterances"</span><span class="p">]),</span> <span class="o">**</span><span class="n">d</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div></div>
+        <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="bp">cls</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"utterances"</span><span class="p">]),</span> <span class="o">**</span><span class="n">d</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
+
+<div class="viewcode-block" id="Input.find_entities_in_history"><a class="viewcode-back" href="../../../source/dialogy.base.input.html#dialogy.base.input.Input.find_entities_in_history">[docs]</a>    <span class="k">def</span> <span class="nf">find_entities_in_history</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">intent_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">slot_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Flatten the history to a list of intents</span>
+        <span class="n">intents</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">intents</span><span class="p">,</span> <span class="n">res</span><span class="p">:</span> <span class="n">intents</span> <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s2">"intents"</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">[])</span>
+
+        <span class="c1"># Filter intents by name</span>
+        <span class="n">required_intents</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">intent</span><span class="p">:</span> <span class="n">intent</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="ow">in</span> <span class="n">intent_names</span><span class="p">,</span>
+            <span class="n">intents</span><span class="p">)</span>
+
+        <span class="c1"># Flatten the intents to a list of slots</span>
+        <span class="n">slots</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">slots</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">slots</span> <span class="o">+</span> <span class="n">intent</span><span class="p">[</span><span class="s2">"slots"</span><span class="p">],</span>
+            <span class="n">required_intents</span><span class="p">,</span>
+            <span class="p">[])</span>
+
+        <span class="c1"># Filter slots by name</span>
+        <span class="n">required_slots</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">slot</span><span class="p">:</span> <span class="n">slot</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="ow">in</span> <span class="n">slot_names</span><span class="p">,</span>
+            <span class="n">slots</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">entities</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="n">entities</span> <span class="o">+</span> <span class="n">slot</span><span class="p">[</span><span class="s2">"values"</span><span class="p">],</span>
+            <span class="n">required_slots</span><span class="p">,</span> <span class="p">[])</span></div></div>
 </pre></div>
         </article>
       </div>
