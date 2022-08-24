@@ -11,9 +11,16 @@ import pytest
 
 from dialogy.base import Input, Plugin
 from dialogy.plugins import DucklingPlugin
-from dialogy.types import (BaseEntity, CreditCardNumberEntity, NumericalEntity,
-                           PeopleEntity, TimeEntity, TimeIntervalEntity,
-                           entity_synthesis)
+from dialogy.types import (
+    BaseEntity,
+    CreditCardNumberEntity,
+    NumericalEntity,
+    PeopleEntity,
+    TimeEntity,
+    TimeIntervalEntity,
+    entity_synthesis,
+)
+from dialogy.types.entity.pincode import PincodeEntity
 from dialogy.utils import dt2timestamp
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
@@ -770,3 +777,11 @@ def test_entity_type(payload) -> None:
     elif exception:
         with pytest.raises(EXCEPTIONS[exception]):
             workflow.run(Input(utterances=body))
+
+
+def test_pincode_entity() -> None:
+    entity = PincodeEntity.from_pattern(
+        transcript="pincode is 560 038", pincode_string="560 038", alternative_index=0
+    )
+    assert entity.dim == "pincode"
+    assert entity.value == "560038"

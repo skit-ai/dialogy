@@ -1,0 +1,2611 @@
+- description: "Test address with house number and pincode - Google"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: 104 304 skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - 104 304 skit ai
+    best_transcript: 104 304 skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 15
+        body: 104 304 skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value:
+          104 Skit.ai, Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+          Bengaluru, Karnataka 560038, India
+        entity_type: address
+    original_intent: {}
+  maps_provider: google
+  maps_prediction:
+    predictions:
+      - description:
+          Skit.ai, Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+          Bengaluru, Karnataka 560038, India
+        matched_substrings:
+          - length: 7
+            offset: 0
+          - length: 6
+            offset: 98
+        place_id: ChIJ83CQGeURrjsR7MGAjwSUnPc
+        reference: ChIJ83CQGeURrjsR7MGAjwSUnPc
+        structured_formatting:
+          main_text: Skit.ai
+          main_text_matched_substrings:
+            - length: 7
+              offset: 0
+          secondary_text:
+            Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+            Bengaluru, Karnataka 560038, India
+          secondary_text_matched_substrings:
+            - length: 6
+              offset: 89
+        terms:
+          - offset: 0
+            value: Skit.ai
+          - offset: 9
+            value: Chinmaya Mission Hospital Road
+          - offset: 41
+            value: Binnamangala
+          - offset: 55
+            value: Stage 1
+          - offset: 64
+            value: Indiranagar
+          - offset: 77
+            value: Bengaluru
+          - offset: 88
+            value: Karnataka
+          - offset: 98
+            value: "560038"
+          - offset: 106
+            value: India
+        types:
+          - point_of_interest
+          - establishment
+      - description:
+          Skit.ai, 100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar,
+          Bengaluru, Karnataka 560038, India
+        matched_substrings:
+          - length: 7
+            offset: 0
+          - length: 6
+            offset: 89
+        place_id: ChIJk_rnf_wXrjsRy73Y3n1cO_U
+        reference: ChIJk_rnf_wXrjsRy73Y3n1cO_U
+        structured_formatting:
+          main_text: Skit.ai
+          main_text_matched_substrings:
+            - length: 7
+              offset: 0
+          secondary_text:
+            100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar, Bengaluru,
+            Karnataka 560038, India
+          secondary_text_matched_substrings:
+            - length: 6
+              offset: 80
+        terms:
+          - offset: 0
+            value: Skit.ai
+          - offset: 9
+            value: 100 Feet Road
+          - offset: 24
+            value: HAL 2nd Stage
+          - offset: 39
+            value: Appareddipalya
+          - offset: 55
+            value: Indiranagar
+          - offset: 68
+            value: Bengaluru
+          - offset: 79
+            value: Karnataka
+          - offset: 89
+            value: "560038"
+          - offset: 97
+            value: India
+        types:
+          - point_of_interest
+          - establishment
+    status: OK
+
+- description: "Test address with pincode - Google"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 7
+        body: skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value:
+          Skit.ai, 100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar, Bengaluru,
+          Karnataka 560038, India
+        entity_type: address
+    original_intent: {}
+  maps_provider: google
+  maps_prediction:
+    predictions:
+      - description:
+          Skit.ai, 100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar,
+          Bengaluru, Karnataka 560038, India
+        matched_substrings:
+          - length: 7
+            offset: 0
+          - length: 6
+            offset: 89
+        place_id: ChIJk_rnf_wXrjsRy73Y3n1cO_U
+        reference: ChIJk_rnf_wXrjsRy73Y3n1cO_U
+        structured_formatting:
+          main_text: Skit.ai
+          main_text_matched_substrings:
+            - length: 7
+              offset: 0
+          secondary_text:
+            100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar, Bengaluru,
+            Karnataka 560038, India
+          secondary_text_matched_substrings:
+            - length: 6
+              offset: 80
+        terms:
+          - offset: 0
+            value: Skit.ai
+          - offset: 9
+            value: 100 Feet Road
+          - offset: 24
+            value: HAL 2nd Stage
+          - offset: 39
+            value: Appareddipalya
+          - offset: 55
+            value: Indiranagar
+          - offset: 68
+            value: Bengaluru
+          - offset: 79
+            value: Karnataka
+          - offset: 89
+            value: "560038"
+          - offset: 97
+            value: India
+        types:
+          - point_of_interest
+          - establishment
+      - description:
+          Skit.ai, Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+          Bengaluru, Karnataka 560038, India
+        matched_substrings:
+          - length: 7
+            offset: 0
+          - length: 6
+            offset: 98
+        place_id: ChIJ83CQGeURrjsR7MGAjwSUnPc
+        reference: ChIJ83CQGeURrjsR7MGAjwSUnPc
+        structured_formatting:
+          main_text: Skit.ai
+          main_text_matched_substrings:
+            - length: 7
+              offset: 0
+          secondary_text:
+            Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+            Bengaluru, Karnataka 560038, India
+          secondary_text_matched_substrings:
+            - length: 6
+              offset: 89
+        terms:
+          - offset: 0
+            value: Skit.ai
+          - offset: 9
+            value: Chinmaya Mission Hospital Road
+          - offset: 41
+            value: Binnamangala
+          - offset: 55
+            value: Stage 1
+          - offset: 64
+            value: Indiranagar
+          - offset: 77
+            value: Bengaluru
+          - offset: 88
+            value: Karnataka
+          - offset: 98
+            value: "560038"
+          - offset: 106
+            value: India
+        types:
+          - point_of_interest
+          - establishment
+    status: OK
+
+- description: "Test address where pincode is missing - Google"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots: []
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 7
+        body: skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value:
+          Skit.ai, 100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar, Bengaluru,
+          Karnataka, India
+        entity_type: address
+    original_intent: {}
+  maps_provider: google
+  maps_prediction:
+    predictions:
+      - description:
+          Skit.ai, 100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar,
+          Bengaluru, Karnataka, India
+        matched_substrings:
+          - length: 7
+            offset: 0
+        place_id: ChIJk_rnf_wXrjsRy73Y3n1cO_U
+        reference: ChIJk_rnf_wXrjsRy73Y3n1cO_U
+        structured_formatting:
+          main_text: Skit.ai
+          main_text_matched_substrings:
+            - length: 7
+              offset: 0
+          secondary_text:
+            100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar, Bengaluru,
+            Karnataka, India
+        terms:
+          - offset: 0
+            value: Skit.ai
+          - offset: 9
+            value: 100 Feet Road
+          - offset: 24
+            value: HAL 2nd Stage
+          - offset: 39
+            value: Appareddipalya
+          - offset: 55
+            value: Indiranagar
+          - offset: 68
+            value: Bengaluru
+          - offset: 79
+            value: Karnataka
+          - offset: 90
+            value: India
+        types:
+          - point_of_interest
+          - establishment
+      - description:
+          Skit.ai, Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+          Bengaluru, Karnataka, India
+        matched_substrings:
+          - length: 7
+            offset: 0
+        place_id: ChIJ83CQGeURrjsR7MGAjwSUnPc
+        reference: ChIJ83CQGeURrjsR7MGAjwSUnPc
+        structured_formatting:
+          main_text: Skit.ai
+          main_text_matched_substrings:
+            - length: 7
+              offset: 0
+          secondary_text:
+            Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+            Bengaluru, Karnataka, India
+        terms:
+          - offset: 0
+            value: Skit.ai
+          - offset: 9
+            value: Chinmaya Mission Hospital Road
+          - offset: 41
+            value: Binnamangala
+          - offset: 55
+            value: Stage 1
+          - offset: 64
+            value: Indiranagar
+          - offset: 77
+            value: Bengaluru
+          - offset: 88
+            value: Karnataka
+          - offset: 99
+            value: India
+        types:
+          - point_of_interest
+          - establishment
+    status: OK
+
+- description: "Test address with house number and pincode - MMI"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: 104 skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - 104 skit ai
+    best_transcript: 104 skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 11
+        body: 104 skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value:
+          104, 3rd Main Road, H Colony, Indiranagar, Bengaluru North, Bengaluru
+          Urban District, Bengaluru, Karnataka, 560038
+        entity_type: address
+    original_intent: {}
+  maps_provider: mmi
+  maps_prediction:
+    copResults:
+      houseNumber: "104"
+      houseName: ""
+      poi: ""
+      street: 3rd Main Road
+      subSubLocality: ""
+      subLocality: H Colony
+      locality: Indiranagar
+      village: ""
+      subDistrict: Bengaluru North
+      district: Bengaluru Urban District
+      city: Bengaluru
+      state: Karnataka
+      pincode: "560038"
+      formattedAddress:
+        104, 3rd Main Road, H Colony, Indiranagar, Bengaluru North, Bengaluru
+        Urban District, Bengaluru, Karnataka, 560038
+      eLoc: ROCH3L
+      geocodeLevel: houseNumber
+      confidenceScore: 0.4
+
+- description: "Test address with pincode - MMI"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 7
+        body: skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value:
+          Indiranagar, Bengaluru East, Bengaluru Urban District, Bengaluru, Karnataka,
+          560038
+        entity_type: address
+    original_intent: {}
+  maps_provider: mmi
+  maps_prediction:
+    copResults:
+      houseNumber: ""
+      houseName: ""
+      poi: ""
+      street: ""
+      subSubLocality: ""
+      subLocality: ""
+      locality: Indiranagar
+      village: ""
+      subDistrict: Bengaluru East
+      district: Bengaluru Urban District
+      city: Bengaluru
+      state: Karnataka
+      pincode: "560038"
+      formattedAddress:
+        Indiranagar, Bengaluru East, Bengaluru Urban District, Bengaluru,
+        Karnataka, 560038
+      eLoc: 8774HG
+      geocodeLevel: pincode
+      confidenceScore: 0.8
+
+- description: "Test address where pincode is missing - MMI"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: 104 skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots: []
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 11
+        body: 104 skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value: 104 Skit, Jagatpura, Sanganer, Jaipur District, Jaipur, Rajasthan
+        entity_type: address
+    original_intent: {}
+  maps_provider: mmi
+  maps_prediction:
+    copResults:
+      houseNumber: ""
+      houseName: ""
+      poi: ""
+      street: ""
+      subSubLocality: ""
+      subLocality: Skit
+      locality: Jagatpura
+      village: ""
+      subDistrict: Sanganer
+      district: Jaipur District
+      city: Jaipur
+      state: Rajasthan
+      pincode: "302017"
+      formattedAddress: Skit, Jagatpura, Sanganer, Jaipur District, Jaipur, Rajasthan
+      eLoc: HOL7D1
+      geocodeLevel: subLocality
+      confidenceScore: 0.2
+
+- description: "Test for Output.intents"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots: []
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents: []
+    entities: []
+    original_intent: {}
+  maps_provider: mmi
+
+- description: "Test blank API response"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots: []
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+
+  maps_provider: mmi
+  maps_prediction:
+
+- description: "Multiple numbers in address"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: 8 100 Feet Road
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - 8 100 Feet Road
+    best_transcript: 8 100 Feet Road
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 15
+        body: 8 100 Feet Road
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value:
+          8, 100 Feet Road, Indira Nagar II Stage, H Colony, Indiranagar, Bengaluru,
+          Karnataka 560038, India
+        entity_type: address
+    original_intent: {}
+  maps_provider: google
+  maps_prediction:
+    predictions:
+      - description:
+          8, 100 Feet Road, Indira Nagar II Stage, H Colony, Indiranagar, Bengaluru,
+          Karnataka 560038, India
+        matched_substrings:
+          - length: 16
+            offset: 0
+          - length: 6
+            offset: 85
+        place_id: EmI4LCAxMDAgRmVldCBSb2FkLCBJbmRpcmEgTmFnYXIgSUkgU3RhZ2UsIEggQ29sb255LCBJbmRpcmFuYWdhciwgQmVuZ2FsdXJ1LCBLYXJuYXRha2EgNTYwMDM4LCBJbmRpYSIwEi4KFAoSCXXdrfK6Fq47EaM2badmz-kcEAgqFAoSCUE7eHxcFK47EV5dtIpAKxdI
+        reference: EmI4LCAxMDAgRmVldCBSb2FkLCBJbmRpcmEgTmFnYXIgSUkgU3RhZ2UsIEggQ29sb255LCBJbmRpcmFuYWdhciwgQmVuZ2FsdXJ1LCBLYXJuYXRha2EgNTYwMDM4LCBJbmRpYSIwEi4KFAoSCXXdrfK6Fq47EaM2badmz-kcEAgqFAoSCUE7eHxcFK47EV5dtIpAKxdI
+        structured_formatting:
+          main_text: 8, 100 Feet Road
+          main_text_matched_substrings:
+            - length: 16
+              offset: 0
+          secondary_text:
+            Indira Nagar II Stage, H Colony, Indiranagar, Bengaluru, Karnataka
+            560038, India
+          secondary_text_matched_substrings:
+            - length: 6
+              offset: 67
+        terms:
+          - offset: 0
+            value: 8, 100 Feet Road
+          - offset: 18
+            value: Indira Nagar II Stage
+          - offset: 41
+            value: H Colony
+          - offset: 51
+            value: Indiranagar
+          - offset: 64
+            value: Bengaluru
+          - offset: 75
+            value: Karnataka
+          - offset: 85
+            value: "560038"
+          - offset: 93
+            value: India
+        types:
+          - street_address
+          - geocode
+    status: OK
+
+- description: "API Exception 1"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: 8 100 Feet Road
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - 8 100 Feet Road
+    best_transcript: 8 100 Feet Road
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+  maps_provider: google
+  maps_prediction: ERROR
+  status: 400
+
+- description: "API Exception 2"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: 8 100 Feet Road
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - 8 100 Feet Road
+    best_transcript: 8 100 Feet Road
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots:
+              - name: pincode
+                types:
+                  - pincode
+                values:
+                  - _meta: {}
+                    alternative_index: 1
+                    body: "560038"
+                    entity_type: pincode
+                    parsers:
+                      - ListEntityPlugin
+                    range:
+                      end: 6
+                      start: 0
+                    score: 0.2
+                    type: pincode
+                    value: "560038"
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+  maps_provider: mmi
+  maps_prediction: ERROR
+  status: 400
+
+- description: "MMI API Exception"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: asdsca
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - asdsca
+    best_transcript: asdsca
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+    history:
+      - intents:
+          - alternative_index:
+            name: inform_pincode
+            parsers:
+              - XLMRMultiClass
+              - StateToIntentPlugin
+              - AssignSlotValuePlugin
+            score: 0.99884
+            slots: []
+          - alternative_index:
+            name: address_change_proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.00047
+            slots: []
+          - alternative_index:
+            name: address_change
+            parsers:
+              - XLMRMultiClass
+            score: 0.00029
+            slots: []
+          - alternative_index:
+            name: proof_of_insurance
+            parsers:
+              - XLMRMultiClass
+            score: 0.0002
+            slots: []
+          - alternative_index:
+            name: _what_
+            parsers:
+              - XLMRMultiClass
+            score: 0.0001
+            slots: []
+          - alternative_index:
+            name: _confirm_
+            parsers:
+              - XLMRMultiClass
+            score: 5.0e-05
+            slots: []
+          - alternative_index:
+            name: _cancel_
+            parsers:
+              - XLMRMultiClass
+            score: 3.0e-05
+            slots: []
+          - alternative_index:
+            name: _repeat_
+            parsers:
+              - XLMRMultiClass
+            score: 2.0e-05
+            slots: []
+          - alternative_index:
+            name: _greeting_
+            parsers:
+              - XLMRMultiClass
+            score: 0
+            slots: []
+        original_intent: {}
+        version:
+          - 0.1.0
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+
+  maps_provider: mmi
+  maps_prediction:
+  status: 204

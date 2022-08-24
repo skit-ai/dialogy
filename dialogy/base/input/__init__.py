@@ -78,12 +78,12 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Union, Set
 
 import attr
 
 from dialogy.types import Utterance
-from dialogy.utils import is_unix_ts, normalize
+from dialogy.utils import is_unix_ts, normalize, get_best_transcript
 
 
 @attr.frozen
@@ -119,6 +119,11 @@ class Input:
     """
     A derived attribute. We cross product each utterance and return a list of strings.
     We use this to :ref:`normalize <normalize>` utterances.
+    """
+
+    best_transcript: str = attr.ib(default=None)
+    """
+    A derived attribute. Contains the best alternative selected out of the utterances.
     """
 
     clf_feature: Optional[List[str]] = attr.ib(  # type: ignore
@@ -230,7 +235,13 @@ class Input:
     def __attrs_post_init__(self) -> None:
         try:
             object.__setattr__(self, "transcripts", normalize(self.utterances))
+
+            object.__setattr__(
+                self, "best_transcript", get_best_transcript(self.transcripts)
+            )
+
             object.__setattr__(self, "expected_slots", set(self.expected_slots) if self.expected_slots else None)
+
         except TypeError:
             ...
 
@@ -271,3 +282,17 @@ class Input:
         if reference:
             return attr.evolve(reference, **d)
         return attr.evolve(cls(utterances=d["utterances"]), **d)  # type: ignore
+
+    def find_entities_in_history(
+        self,
+        intent_names: Optional[List[str]] = None,
+        slot_names: Optional[List[str]] = None,
+    ) -> Union[List[Dict[str, Any]], None]:
+        if self.history:
+            for level in self.history[::-1]:
+                for intent in level["intents"]:
+                    if intent["name"] in intent_names:  # type: ignore
+                        for slot in intent["slots"]:
+                            if slot["name"] in slot_names:  # type: ignore
+                                return slot["values"]
+        return None
