@@ -1,14 +1,19 @@
-from optparse import Option
 from typing import Any, Callable, Dict, List, Optional
-import copy
 
+import googlemaps
+
+from dialogy.plugins.text.address_parser import mapmyindia
 from dialogy.base.plugin import Plugin, Input, Output
-from dialogy.types import AddressEntity, PincodeEntity
+from dialogy.types import AddressEntity
 
 from dialogy.plugins.text.address_parser.maps import (
-    get_address_from_mapmyindia_geocode,
-    get_matching_address_from_gmaps_autocomplete,
+    get_gmaps_address,
+    get_mapmyindia_address,
 )
+
+
+class MissingCredentials(Exception):
+    pass
 
 
 class AddressParserPlugin(Plugin):
@@ -17,6 +22,9 @@ class AddressParserPlugin(Plugin):
         dest: Optional[str] = None,
         access: Optional[Plugin] = None,
         provider: str = "mmi",
+        gmaps_api_token: Optional[str] = None,
+        mmi_client_id: Optional[str] = None,
+        mmi_client_secret: Optional[str] = None,
         address_capturing_intents: Optional[List[str]] = None,
         pincode_capturing_intents: Optional[List[str]] = None,
         pincode_slot_name: Optional[List[str]] = None,
@@ -33,9 +41,27 @@ class AddressParserPlugin(Plugin):
         self.country_code = country_code
         self.language = language
 
+        if provider == "google":
+            if not gmaps_api_token:
+                raise MissingCredentials(
+                    "Cannot find Google Maps API credentials in env"
+                )
+            maps_client = googlemaps.Client(key=gmaps_api_token)
+
+        elif provider == "mmi":
+            if not (mmi_client_id and mmi_client_secret):
+                raise MissingCredentials(
+                    "Cannot find MapmyIndia API credentials in env"
+                )
+            maps_client = mapmyindia.MapMyIndia(
+                client_id=mmi_client_id, client_secret=mmi_client_secret
+            )
+
+        # invalid provider exception
+
         provider_functions: Dict[str, Callable[..., str]] = {
-            "google": get_matching_address_from_gmaps_autocomplete,
-            "mmi": get_address_from_mapmyindia_geocode,
+            "google": get_gmaps_address(maps_client),
+            "mmi": get_mapmyindia_address(maps_client),
         }
         self.provider_fn = provider_functions[provider]
 
