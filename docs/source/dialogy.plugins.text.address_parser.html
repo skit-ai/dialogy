@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.utils package" href="dialogy.utils.html" /><link rel="prev" title="dialogy.plugins.text.error_recovery package" href="dialogy.plugins.text.error_recovery.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
         <title>dialogy.plugins.text.address_parser package - dialogy 0.9.19 documentation</title>
@@ -178,7 +178,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.duration.html">Duration Entity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
@@ -189,6 +189,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.error_recovery.html">Error Recovery</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Address Parsing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -291,7 +292,7 @@
 </section>
 <section id="module-dialogy.plugins.text.address_parser">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.address_parser" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
+<span class="target" id="addressparser"></span><dl class="py class">
 <dt class="sig sig-object py" id="dialogy.plugins.text.address_parser.AddressParserPlugin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AddressParserPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">provider</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mmi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmaps_api_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmi_client_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmi_client_secret</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_capturing_intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pincode_capturing_intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pincode_slot_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/address_parser.html#AddressParserPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.address_parser.AddressParserPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
@@ -328,8 +329,26 @@
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="dialogy.utils.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">dialogy.utils package</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="dialogy.plugins.text.error_recovery.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">dialogy.plugins.text.error_recovery package</div>
+                
+              </div>
+            </a>
         </div>
 
         <div class="related-information">
