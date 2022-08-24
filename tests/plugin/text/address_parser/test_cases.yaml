@@ -856,6 +856,211 @@
           - establishment
     status: OK
 
+- description: "Test address where history is missing - Google"
+  input:
+    utterances:
+      - - confidence: 0.9299548
+          transcript: skit ai
+    reference_time:
+    latent_entities: false
+    transcripts:
+      - skit ai
+    best_transcript: skit ai
+    clf_feature: []
+    lang: en
+    locale: en_IN
+    timezone: UTC
+    slot_tracker:
+    current_state:
+    previous_intent:
+  output:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities: []
+    original_intent: {}
+  expected:
+    intents:
+      - name: inform_address
+        alternative_index:
+        score: 0.99845
+        parsers: []
+        slots: []
+      - name: address_change_proof_of_insurance
+        alternative_index:
+        score: 0.00055
+        parsers: []
+        slots: []
+      - name: address_change
+        alternative_index:
+        score: 0.00048
+        parsers: []
+        slots: []
+      - name: proof_of_insurance
+        alternative_index:
+        score: 0.00033
+        parsers: []
+        slots: []
+      - name: _cancel_
+        alternative_index:
+        score: 6.0e-05
+        parsers: []
+        slots: []
+      - name: _what_
+        alternative_index:
+        score: 5.0e-05
+        parsers: []
+        slots: []
+      - name: _repeat_
+        alternative_index:
+        score: 4.0e-05
+        parsers: []
+        slots: []
+      - name: _confirm_
+        alternative_index:
+        score: 2.0e-05
+        parsers: []
+        slots: []
+      - name: _greeting_
+        alternative_index:
+        score: 0
+        parsers: []
+        slots: []
+    entities:
+      - range:
+          start: 0
+          end: 7
+        body: skit ai
+        type: value
+        parsers:
+          - AddressParserPlugin
+        score:
+        alternative_index: 0
+        value:
+          Skit.ai, 100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar, Bengaluru,
+          Karnataka, India
+        entity_type: address
+    original_intent: {}
+  maps_provider: google
+  maps_prediction:
+    predictions:
+      - description:
+          Skit.ai, 100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar,
+          Bengaluru, Karnataka, India
+        matched_substrings:
+          - length: 7
+            offset: 0
+        place_id: ChIJk_rnf_wXrjsRy73Y3n1cO_U
+        reference: ChIJk_rnf_wXrjsRy73Y3n1cO_U
+        structured_formatting:
+          main_text: Skit.ai
+          main_text_matched_substrings:
+            - length: 7
+              offset: 0
+          secondary_text:
+            100 Feet Road, HAL 2nd Stage, Appareddipalya, Indiranagar, Bengaluru,
+            Karnataka, India
+        terms:
+          - offset: 0
+            value: Skit.ai
+          - offset: 9
+            value: 100 Feet Road
+          - offset: 24
+            value: HAL 2nd Stage
+          - offset: 39
+            value: Appareddipalya
+          - offset: 55
+            value: Indiranagar
+          - offset: 68
+            value: Bengaluru
+          - offset: 79
+            value: Karnataka
+          - offset: 90
+            value: India
+        types:
+          - point_of_interest
+          - establishment
+      - description:
+          Skit.ai, Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+          Bengaluru, Karnataka, India
+        matched_substrings:
+          - length: 7
+            offset: 0
+        place_id: ChIJ83CQGeURrjsR7MGAjwSUnPc
+        reference: ChIJ83CQGeURrjsR7MGAjwSUnPc
+        structured_formatting:
+          main_text: Skit.ai
+          main_text_matched_substrings:
+            - length: 7
+              offset: 0
+          secondary_text:
+            Chinmaya Mission Hospital Road, Binnamangala, Stage 1, Indiranagar,
+            Bengaluru, Karnataka, India
+        terms:
+          - offset: 0
+            value: Skit.ai
+          - offset: 9
+            value: Chinmaya Mission Hospital Road
+          - offset: 41
+            value: Binnamangala
+          - offset: 55
+            value: Stage 1
+          - offset: 64
+            value: Indiranagar
+          - offset: 77
+            value: Bengaluru
+          - offset: 88
+            value: Karnataka
+          - offset: 99
+            value: India
+        types:
+          - point_of_interest
+          - establishment
+    status: OK
+
 - description: "Test address with house number and pincode - MMI"
   input:
     utterances:
