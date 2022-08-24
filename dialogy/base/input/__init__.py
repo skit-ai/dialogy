@@ -292,28 +292,31 @@ class Input:
         if not self.history:
             return None
 
+        _intent_names: List[str] = intent_names or []
+        _slot_names: List[str] = slot_names or []
+
         # Flatten the history to a list of intents
-        intents = reduce(
+        intents: List[Dict[str, Any]] = reduce(
             lambda intents, res: intents + res["intents"],
             self.history[::-1],
             [])
 
         # Filter intents by name
         required_intents = filter(
-            lambda intent: intent["name"] in intent_names,
+            lambda intent: intent["name"] in _intent_names,
             intents)
 
         # Flatten the intents to a list of slots
-        slots = reduce(
+        slots: List[Dict[str, Any]] = reduce(
             lambda slots, intent: slots + intent["slots"],
             required_intents,
             [])
 
         # Filter slots by name
         required_slots = filter(
-            lambda slot: slot["name"] in slot_names,
+            lambda slot: slot["name"] in _slot_names,
             slots)
 
-        return reduce(
+        return list(reduce(
             lambda entities, slot: entities + slot["values"],
-            required_slots, [])
+            required_slots, []))
