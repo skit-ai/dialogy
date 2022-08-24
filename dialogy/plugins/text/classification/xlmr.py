@@ -340,7 +340,7 @@ class XLMRMultiClass(Plugin):
             writer=pickle.dump,
         )
 
-    def lookup_prompt(self, lang: str, nls_label: str, return_all: bool = False) -> List[str]:
+    def lookup_prompt(self, lang: str, nls_label: str, return_all: bool = False) -> str:
         """
         Same as get_prompt() method, but built for faster lookup to reduce latency during inference. 
         """
