@@ -78,6 +78,7 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 """
 from __future__ import annotations
 
+from functools import reduce
 from typing import Any, Dict, List, Optional, Union, Set
 
 import attr
@@ -288,11 +289,31 @@ class Input:
         intent_names: Optional[List[str]] = None,
         slot_names: Optional[List[str]] = None,
     ) -> Union[List[Dict[str, Any]], None]:
-        if self.history:
-            for level in self.history[::-1]:
-                for intent in level["intents"]:
-                    if intent["name"] in intent_names:  # type: ignore
-                        for slot in intent["slots"]:
-                            if slot["name"] in slot_names:  # type: ignore
-                                return slot["values"]
-        return None
+        if not self.history:
+            return None
+
+        # Flatten the history to a list of intents
+        intents = reduce(
+            lambda intents, res: intents + res["intents"],
+            self.history[::-1],
+            [])
+
+        # Filter intents by name
+        required_intents = filter(
+            lambda intent: intent["name"] in intent_names,
+            intents)
+
+        # Flatten the intents to a list of slots
+        slots = reduce(
+            lambda slots, intent: slots + intent["slots"],
+            required_intents,
+            [])
+
+        # Filter slots by name
+        required_slots = filter(
+            lambda slot: slot["name"] in slot_names,
+            slots)
+
+        return reduce(
+            lambda entities, slot: entities + slot["values"],
+            required_slots, [])
