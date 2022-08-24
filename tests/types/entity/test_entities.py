@@ -11,6 +11,15 @@ import pytest
 
 from dialogy.base import Input, Plugin
 from dialogy.plugins import DucklingPlugin
+from dialogy.types import (
+    BaseEntity,
+    CreditCardNumberEntity,
+    NumericalEntity,
+    PeopleEntity,
+    TimeEntity,
+    TimeIntervalEntity,
+    entity_synthesis,
+)
 from dialogy.types.entity.pincode import PincodeEntity
 from dialogy.utils import dt2timestamp
 from dialogy.workflow import Workflow
