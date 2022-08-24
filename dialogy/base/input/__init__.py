@@ -217,6 +217,15 @@ class Input:
     """
     Points at the active state (or node) within the conversation graph.
     """
+    
+    nls_label: Optional[str] = attr.ib(
+        default=None,
+        kw_only=True,
+        validator=attr.validators.optional(attr.validators.instance_of(str)),
+    )
+    """
+    Points at the NLS Label of the active (current) node within the conversation graph.
+    """
 
     expected_slots: Set[str] = attr.ib(factory=set, kw_only=True)
     """
