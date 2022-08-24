@@ -41,8 +41,6 @@ NUMBER = "number"
 AMOUNT_OF_MONEY = "amount-of-money"
 DURATION = "duration"
 CREDIT_CARD_NUMBER = "credit-card-number"
-ADDRESS = "address"
-PINCODE = "pincode"
 
 FUTURE = "future"
 PAST = "past"
@@ -144,6 +142,8 @@ ID = "id"
 IDX = "idx"
 DATA = "data"
 STATE = "state"
+NLS_LABEL = "nls_label"
+LANG = "lang"
 OUTPUT = "output"
 INPUT = "input"
 CLASSIFICATION_INPUT = "classification_input"
@@ -160,6 +160,7 @@ SCORE = "score"
 LABELENCODER_FILE = "labelencoder.pkl"
 INVALID_TOKENS = ["<UNK>", "<PAD>", "<SOS>", "<EOS>"]
 OUTPUT_ATTRIBUTES = {INTENTS, ENTITIES, ORIGINAL_INTENT}
+NULL_PROMPT_TOKEN = "<pad>"
 
 # MLP
 MLPMODEL_FILE = "mlpmodelpipeline.joblib"
