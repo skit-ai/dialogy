@@ -6,7 +6,7 @@ from dialogy import constants as const
 from dialogy.base import Input, Output
 from dialogy.plugins import CombineDateTimeOverSlots, DucklingPlugin
 from dialogy.workflow import Workflow
-from tests import EXCEPTIONS, load_tests
+from tests import load_tests
 
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))

@@ -194,7 +194,7 @@ class Workflow:
         self.input = None
         self.output = Output()
 
-    def set(self, path: str, value: Any, replace: bool = False) -> Workflow:
+    def set(self, path: str, value: Any, replace: bool = False, sort_output_attributes: bool = True) -> Workflow:
         """
         Set attribute path with value.
 
@@ -205,6 +205,8 @@ class Workflow:
         :type path: str
         :param value: A value to set.
         :type value: Any
+        :param sort_output_attributes: A boolean to sort output attributes.
+        :type value: bool
         :return: This instance
         :rtype: Workflow
         """
@@ -215,12 +217,14 @@ class Workflow:
         elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
             if not replace and isinstance(value, list):
                 previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities  # type: ignore
-
-                value = sorted(
-                    previous_value + value,
-                    key=lambda parse: parse.score or 0,
-                    reverse=True,
-                )
+                if sort_output_attributes:
+                    value = sorted(
+                        previous_value + value,
+                        key=lambda parse: parse.score or 0,
+                        reverse=True,
+                    )
+                else:
+                    value = previous_value + value
 
             self.output = Output.from_dict({attribute: value}, reference=self.output)
 

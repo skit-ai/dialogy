@@ -1,0 +1,795 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dialogy.utils package" href="dialogy.utils.html" /><link rel="prev" title="dialogy.plugins.text.combine_date_time package" href="dialogy.plugins.text.combine_date_time.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
+        <title>dialogy.plugins.text.error_recovery package - dialogy 0.9.17 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=0af69da206d614734f649b27d4cdc2dd6c31f41d" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">dialogy 0.9.17 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">dialogy 0.9.17 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.output.html">Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.workflow.html">Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.plugin.html">Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.intent.html">Intent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.base_entity.html">Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.slots.html">Slots</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.keyword.html">Pattern Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.amount_of_money.html">Currency Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.credit_card_number.html">Credit Card Number Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.numerical.html">Numeric Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.people.html">People Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time.html">Time Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.time_interval.html">Time Interval Entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.types.entity.duration.html">Duration Entity</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.merge_asr_output.html">ASR Featurizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.classification.html">Intent Classifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.duckling_plugin.html">Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.slot_filler.html">Slot Filler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_entity_plugin.html">Regex Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.list_search_plugin.html">Fuzzy Entity Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.base.entity_extractor.html">Entity Scoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Error Recovery</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dialogy.utils.html">Utils</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="dialogy-plugins-text-error-recovery-package">
+<h1>dialogy.plugins.text.error_recovery package<a class="headerlink" href="#dialogy-plugins-text-error-recovery-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-dialogy.plugins.text.error_recovery.error_recovery">
+<span id="dialogy-plugins-text-error-recovery-error-recovery-module"></span><h2>dialogy.plugins.text.error_recovery.error_recovery module<a class="headerlink" href="#module-dialogy.plugins.text.error_recovery.error_recovery" title="Permalink to this headline">¶</a></h2>
+<p id="errorrecovery">The goal of this module is to enable:</p>
+<ol class="arabic simple">
+<li><p>Richer transitions. Most of our transtions are expressed by maps, we don’t have a way to express transitions as a function over known variables.</p></li>
+<li><p>We have <code class="code docutils literal notranslate"><span class="pre">triggers</span></code> that map to the next <code class="code docutils literal notranslate"><span class="pre">state</span></code> in the conversation.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">triggers</span></code> are <code class="code docutils literal notranslate"><span class="pre">intents</span></code> in most cases.</p></li>
+<li><p>ML components produce confidence scores for a prediction. Only in cases of low confidence, should we opt for explicit confirmation.</p></li>
+<li><p>As per our current capabilities, we always have a prompt to confirm.</p></li>
+<li><p>Here the rule for transition is <code class="code docutils literal notranslate"><span class="pre">(intent,</span> <span class="pre">score)</span> <span class="pre">-&gt;</span> <span class="pre">state</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">{intent:</span> <span class="pre">state}</span></code>.</p></li>
+<li><p>Handling ambiguity at the interface. We don’t have an expression to implement “Did you mean X or Y” for resolving ambiguities. We have such prompts for certain deployment yet the effort is the same for enabling such for entities other than X, Y and repeats for every deployment.</p></li>
+<li><p>Conversation level defaults. In the above example, we can should be able to define conversation level defaults for certain entities.</p></li>
+<li><p>Personalization. We don’t have provisions for handling user information. We have seen cases where speaker’s information has to be passed around microservices and the API design is driven by urgency. Does this speaker like when the prompts are faster? slower? shorter? longer? While such information is not logged, we also don’t have a way to use it.</p></li>
+</ol>
+<p>These requirements are met by a mature, feature-rich, battle-tested high level language. A language that must expose little noise to its users and offer strong guaranatees of reproducibility, safety and consistency. Building such a language would span work over quarters with dedicated bandwidth of an experienced engineer. Hence we will drop a lot of responsibilities to draft a version that does much less but promises to extend itself to offer coverage of the aforementioned features.</p>
+<ul class="simple">
+<li><p>The language should be approachable for existing engineers in the solutions team.</p></li>
+<li><p>It should take a few hours (&lt; 3) to get productive.</p></li>
+<li><p>We will implement rich transitions and conversation level defaults.</p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BinaryCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#BinaryCondition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class encodes conditions between two operands.</p>
+<p>Currently supported operators are:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">eq</span></code> Equality</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ne</span></code> Non-equality</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">gte</span></code> Greater than</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ge</span></code> Greater than or equal to</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">lte</span></code> Less than</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">le</span></code> Less than or equal to</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">in</span></code> Inclusion</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">nin</span></code> Exclusion</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>_description_</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>_type_</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#BinaryCondition.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition" title="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryCondition</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.from_list">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#BinaryCondition.from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.from_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition" title="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryCondition</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.operations">
+<span class="sig-name descname"><span class="pre">operations</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'eq':</span> <span class="pre">&lt;function</span> <span class="pre">BinaryCondition.&lt;lambda&gt;&gt;,</span> <span class="pre">'gt':</span> <span class="pre">&lt;function</span> <span class="pre">BinaryCondition.&lt;lambda&gt;&gt;,</span> <span class="pre">'gte':</span> <span class="pre">&lt;function</span> <span class="pre">BinaryCondition.&lt;lambda&gt;&gt;,</span> <span class="pre">'in':</span> <span class="pre">&lt;function</span> <span class="pre">BinaryCondition.&lt;lambda&gt;&gt;,</span> <span class="pre">'lt':</span> <span class="pre">&lt;function</span> <span class="pre">BinaryCondition.&lt;lambda&gt;&gt;,</span> <span class="pre">'lte':</span> <span class="pre">&lt;function</span> <span class="pre">BinaryCondition.&lt;lambda&gt;&gt;,</span> <span class="pre">'ne':</span> <span class="pre">&lt;function</span> <span class="pre">BinaryCondition.&lt;lambda&gt;&gt;,</span> <span class="pre">'nin':</span> <span class="pre">&lt;function</span> <span class="pre">BinaryCondition.&lt;lambda&gt;&gt;}</span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.operations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.operator">
+<span class="sig-name descname"><span class="pre">operator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.operator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.variable">
+<span class="sig-name descname"><span class="pre">variable</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition.variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bindings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The scope of variables for error-recovery rules are defined by this class.
+Referencing SLU input and output variables for filtering and updates.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.bindings">
+<span class="sig-name descname"><span class="pre">bindings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.bindings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sub-commands and other variables should be stored here. API is WIP.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.current_state">
+<span class="sig-name descname"><span class="pre">current_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.current_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read only; used to filter intents/entities if a condition is met. <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">Read More</span></a></p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.entities">
+<span class="sig-name descname"><span class="pre">entities</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><span class="pre">dialogy.types.entity.base_entity.BaseEntity</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refer to <a class="reference internal" href="dialogy.types.entity.base_entity.html#baseentity"><span class="std std-ref">BaseEntity</span></a>
+Contains a list of entities of varying types.
+Iterable field, can also be modified by update queries.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.expected_slots">
+<span class="sig-name descname"><span class="pre">expected_slots</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.expected_slots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read only; used to filter intents/entities if a condition is met. <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">Read More</span></a></p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Environment.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seek a variable from the context set in the environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<em>Union</em><em>[</em><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><em>Intent</em></a><em>, </em><a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><em>BaseEntity</em></a><em>]</em>) – Either an intent or entity.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – A property within the item or environment.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value bound to the key.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.intents">
+<span class="sig-name descname"><span class="pre">intents</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><span class="pre">dialogy.types.intent.Intent</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.intents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refer to <a class="reference internal" href="dialogy.types.intent.html#intent"><span class="std std-ref">Intent</span></a></p>
+<p>Contains the list of intents predicted expected in sorted order of confidence score. 
+Iterable field, can also be modified by update queries.</p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.iterables">
+<span class="sig-name descname"><span class="pre">iterables</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'entity',</span> <span class="pre">'intent'}</span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.iterables" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.last_day_of_month">
+<span class="sig-name descname"><span class="pre">last_day_of_month</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Environment.last_day_of_month"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.last_day_of_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the last day of the month for the given TimeEntity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> (<a class="reference internal" href="dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><em>TimeEntity</em></a>) – A time entity.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The last day of the month</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.last_day_of_week">
+<span class="sig-name descname"><span class="pre">last_day_of_week</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Environment.last_day_of_week"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.last_day_of_week" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the last day of the week for the given TimeEntity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> (<a class="reference internal" href="dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity" title="dialogy.types.entity.time.TimeEntity"><em>TimeEntity</em></a>) – A time entity.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The last day of the week.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.predicted_intent">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">predicted_intent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.predicted_intent" title="Permalink to this definition">¶</a></dt>
+<dd><p>We are assuming intents would be sorted in descending order of confidence scores.
+Hence the first element is the predicted intent as it has the best score.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.previous_intent">
+<span class="sig-name descname"><span class="pre">previous_intent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.previous_intent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read only; used to filter intents/entities if a condition is met. <a class="reference internal" href="dialogy.base.input.html#input"><span class="std std-ref">Read More</span></a></p>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.resources">
+<span class="sig-name descname"><span class="pre">resources</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'entities',</span> <span class="pre">'intents'}</span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.resources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Environment.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind a value to a variable in the environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – A variable name defined in the environment.</p></li>
+<li><p><strong>value</strong> (<em>List</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><em>Intent</em></a><em>, </em><a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><em>BaseEntity</em></a><em>]</em><em>]</em>) – The value to bound to the variable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Environment.set_item">
+<span class="sig-name descname"><span class="pre">set_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Environment.set_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment.set_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind a value to either Intent or Entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<em>Union</em><em>[</em><a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent"><em>Intent</em></a><em>, </em><a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity"><em>BaseEntity</em></a><em>]</em>) – Either an intent or entity.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – A property within the item.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The value to bound to the property or a function identifier.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.ErrorRecoveryPlugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ErrorRecoveryPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#ErrorRecoveryPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.ErrorRecoveryPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dialogy.base.plugin.html#dialogy.base.plugin.Plugin" title="dialogy.base.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">dialogy.base.plugin.Plugin</span></code></a></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"></span>
+<span class="w">      </span><span class="nt">find</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">entities</span><span class="w"></span>
+<span class="w">      </span><span class="nt">where</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">entity.grain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">month</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">entity.entity_type</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">in</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"date"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"time"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"datetime"</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">      </span><span class="nt">update</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">entity.day</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">:last_day_of_month</span><span class="w"></span>
+</pre></div>
+</div>
+<p>We can use the above rule like so:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.plugins</span> <span class="kn">import</span> <span class="n">ErrorRecoveryPlugin</span><span class="p">,</span> <span class="n">DucklingPlugin</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.workflow</span> <span class="kn">import</span> <span class="n">Workflow</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.base</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">dialogy.types</span> <span class="kn">import</span> <span class="n">Intent</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [2]: </span><span class="n">error_recovery_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s1">'''</span>
+<span class="gp">   ...: </span><span class="s1">  rules: </span>
+<span class="gp">   ...: </span><span class="s1">    -</span>
+<span class="gp">   ...: </span><span class="s1">        find: entities</span>
+<span class="gp">   ...: </span><span class="s1">        where:</span>
+<span class="gp">   ...: </span><span class="s1">            - entity.grain: month</span>
+<span class="gp">   ...: </span><span class="s1">            - entity.entity_type:</span>
+<span class="gp">   ...: </span><span class="s1">                in: ["date", "time", "datetime"]</span>
+<span class="gp">   ...: </span><span class="s1">            - predicted_intent: "future_date"</span>
+<span class="gp">   ...: </span><span class="s1">        update:</span>
+<span class="gp">   ...: </span><span class="s1">            entity.day: :last_day_of_month</span>
+<span class="gp">   ...: </span><span class="s1">'''</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span> <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">duckling_plugin</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">workflow</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"output.intents"</span><span class="p">,</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"future_date"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)])</span>
+<span class="gp">   ...: </span><span class="n">_</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"this month"</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="c1"># The default value is 1st of the month</span>
+<span class="gp">   ...: </span><span class="n">out</span><span class="p">[</span><span class="s2">"entities"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[3]: </span><span class="go"></span>
+<span class="go">{'range': {'start': 0, 'end': 10},</span>
+<span class="go"> 'body': 'this month',</span>
+<span class="go"> 'type': 'value',</span>
+<span class="go"> 'parsers': ['DucklingPlugin'],</span>
+<span class="go"> 'score': 1.0,</span>
+<span class="go"> 'alternative_index': 0,</span>
+<span class="go"> 'value': '2022-07-01T00:00:00.000+00:00',</span>
+<span class="go"> 'entity_type': 'date',</span>
+<span class="go"> 'grain': 'month'}</span>
+
+<span class="gp">In [4]: </span><span class="n">error_recovery_plugin</span> <span class="o">=</span> <span class="n">ErrorRecoveryPlugin</span><span class="p">(</span><span class="n">rules</span><span class="o">=</span><span class="n">error_recovery_config</span><span class="p">[</span><span class="s2">"rules"</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span> <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">duckling_plugin</span><span class="p">,</span> <span class="n">error_recovery_plugin</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">workflow</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"output.intents"</span><span class="p">,</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"future_date"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)])</span>
+<span class="gp">   ...: </span><span class="n">_</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"this month"</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="c1"># But with error recovery, we get the last day of the month</span>
+<span class="gp">   ...: </span><span class="n">out</span><span class="p">[</span><span class="s2">"entities"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> 
+<span class="gp">   ...: </span>
+<span class="gh">Out[4]: </span><span class="go"></span>
+<span class="go">{'range': {'start': 0, 'end': 10},</span>
+<span class="go"> 'body': 'this month',</span>
+<span class="go"> 'type': 'value',</span>
+<span class="go"> 'parsers': ['DucklingPlugin'],</span>
+<span class="go"> 'score': 1.0,</span>
+<span class="go"> 'alternative_index': 0,</span>
+<span class="go"> 'value': '2022-07-31T00:00:00+00:00',</span>
+<span class="go"> 'entity_type': 'date',</span>
+<span class="go"> 'grain': 'month'}</span>
+
+<span class="gp">In [5]: </span><span class="n">error_recovery_config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="s1">'''</span>
+<span class="gp">   ...: </span><span class="s1">  rules: </span>
+<span class="gp">   ...: </span><span class="s1">    -</span>
+<span class="gp">   ...: </span><span class="s1">        find: entities</span>
+<span class="gp">   ...: </span><span class="s1">        where:</span>
+<span class="gp">   ...: </span><span class="s1">            - entity.grain: month</span>
+<span class="gp">   ...: </span><span class="s1">            - entity.entity_type:</span>
+<span class="gp">   ...: </span><span class="s1">                in: ["date", "time", "datetime"]</span>
+<span class="gp">   ...: </span><span class="s1">            - predicted_intent: "some-other-intent" # Hence the rule won't match</span>
+<span class="gp">   ...: </span><span class="s1">        update:</span>
+<span class="gp">   ...: </span><span class="s1">            entity.day: :last_day_of_month</span>
+<span class="gp">   ...: </span><span class="s1">'''</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [6]: </span><span class="n">error_recovery_plugin</span> <span class="o">=</span> <span class="n">ErrorRecoveryPlugin</span><span class="p">(</span><span class="n">rules</span><span class="o">=</span><span class="n">error_recovery_config</span><span class="p">[</span><span class="s2">"rules"</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">duckling_plugin</span> <span class="o">=</span> <span class="n">DucklingPlugin</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span> <span class="n">dest</span><span class="o">=</span><span class="s2">"output.entities"</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">([</span><span class="n">duckling_plugin</span><span class="p">,</span> <span class="n">error_recovery_plugin</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">workflow</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"output.intents"</span><span class="p">,</span> <span class="p">[</span><span class="n">Intent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"future_date"</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)])</span>
+<span class="gp">   ...: </span><span class="n">_</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_</span><span class="o">=</span><span class="n">Input</span><span class="p">(</span><span class="n">utterances</span><span class="o">=</span><span class="s2">"this month"</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="c1"># Only if the conditions are satisfactory.</span>
+<span class="gp">   ...: </span><span class="n">out</span><span class="p">[</span><span class="s2">"entities"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">{'range': {'start': 0, 'end': 10},</span>
+<span class="go"> 'body': 'this month',</span>
+<span class="go"> 'type': 'value',</span>
+<span class="go"> 'parsers': ['DucklingPlugin'],</span>
+<span class="go"> 'score': 1.0,</span>
+<span class="go"> 'alternative_index': 0,</span>
+<span class="go"> 'value': '2022-07-01T00:00:00.000+00:00',</span>
+<span class="go"> 'entity_type': 'date',</span>
+<span class="go"> 'grain': 'month'}</span>
+</pre></div>
+</div>
+<p>To migrate from the previous intent renaming plugin, here’s an example config:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">intent_swap</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">intent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_confirm_</span><span class="w"></span>
+<span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">in</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_HR</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ACCOUNT_RESUMPTION</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ACCOUNT_ACTIVATION</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ASSET_RESUMPTION</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_INPUT_CHECK</span><span class="w"></span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_RECONNECTION</span><span class="w"></span>
+<span class="nt">rename</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_issue_resolved_</span><span class="w"></span>
+</pre></div>
+</div>
+<p>You would express this as:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"></span>
+<span class="w">        </span><span class="nt">find</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">intents</span><span class="w"></span>
+<span class="w">        </span><span class="nt">where</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">intent.name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_confirm_</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">state</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">in</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_HR</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ACCOUNT_RESUMPTION</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ACCOUNT_ACTIVATION</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_ASSET_RESUMPTION</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_INPUT_CHECK</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIRM_VIEWING_POST_RECONNECTION</span><span class="w"></span>
+<span class="w">        </span><span class="nt">update</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">intent.name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_issue_resolved_</span><span class="w"></span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.ErrorRecoveryPlugin.utility">
+<span class="sig-name descname"><span class="pre">utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#ErrorRecoveryPlugin.utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.ErrorRecoveryPlugin.utility" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract method that describes the plugin’s functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<a class="reference internal" href="dialogy.base.input.html#dialogy.base.input.Input" title="dialogy.base.input.Input"><em>Input</em></a>) – The workflow’s input.</p></li>
+<li><p><strong>output</strong> (<a class="reference internal" href="dialogy.base.output.html#dialogy.base.output.Output" title="dialogy.base.output.Output"><em>Output</em></a>) – The workflow’s output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value returned by the plugin.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Rule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">find</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Rule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>We encode events within a conversation turn as a rule.</p>
+<p>A rule can be broken down to 2 operations:</p>
+<ol class="arabic simple">
+<li><p>Search: We apply filters to a resource (one of intents or entities).</p></li>
+<li><p>Action: We perform an action on the resource (one of update, remove).</p></li>
+</ol>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.find">
+<span class="sig-name descname"><span class="pre">find</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.find" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rule</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Rule.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule" title="dialogy.plugins.text.error_recovery.error_recovery.Rule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rule</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.from_list">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Rule.from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.from_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule" title="dialogy.plugins.text.error_recovery.error_recovery.Rule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rule</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.on_conditions">
+<span class="sig-name descname"><span class="pre">on_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Rule.on_conditions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.on_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick items within resources when all conditions match.</p>
+<p>We require this to update a set of items that match the conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>environment</strong> (<a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment" title="dialogy.plugins.text.error_recovery.error_recovery.Environment"><em>Environment</em></a>) – A data-structure that describes a set of bound variables.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A function that can be used to filter a resource.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable[[Union[<a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent">Intent</a>, <a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a>]], bool]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.on_inverse">
+<span class="sig-name descname"><span class="pre">on_inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Rule.on_inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.on_inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick items within resources when no conditions match.</p>
+<p>We require this to retain a set of items that don’t match the conditions.
+That is the remove operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>environment</strong> (<a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment" title="dialogy.plugins.text.error_recovery.error_recovery.Environment"><em>Environment</em></a>) – A data-structure that describes a set of bound variables.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A function that can be used to filter a resource.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable[[Union[<a class="reference internal" href="dialogy.types.intent.html#dialogy.types.intent.Intent" title="dialogy.types.intent.Intent">Intent</a>, <a class="reference internal" href="dialogy.types.entity.base_entity.html#dialogy.types.entity.base_entity.BaseEntity" title="dialogy.types.entity.base_entity.BaseEntity">BaseEntity</a>]], bool]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogy/plugins/text/error_recovery/error_recovery.html#Rule.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a rule and update the environment.</p>
+<p>We parse the rule and either update or remove items within intents or entities as per
+the clause described in the rule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>environment</strong> (<a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.Environment" title="dialogy.plugins.text.error_recovery.error_recovery.Environment"><em>Environment</em></a>) – A data-structure that describes a set of bound variables.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Remove or Update resources.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule" title="dialogy.plugins.text.error_recovery.error_recovery.Rule">Rule</a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.remove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.update">
+<span class="sig-name descname"><span class="pre">update</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dialogy.plugins.text.error_recovery.error_recovery.Rule.where">
+<span class="sig-name descname"><span class="pre">where</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition" title="dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition"><span class="pre">dialogy.plugins.text.error_recovery.error_recovery.BinaryCondition</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dialogy.plugins.text.error_recovery.error_recovery.Rule.where" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+</section>
+<section id="module-dialogy.plugins.text.error_recovery">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dialogy.plugins.text.error_recovery" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="dialogy.utils.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">dialogy.utils package</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="dialogy.plugins.text.combine_date_time.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">dialogy.plugins.text.combine_date_time package</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169;  |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/source/dialogy.plugins.text.error_recovery.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">dialogy.plugins.text.error_recovery package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.error_recovery.error_recovery">dialogy.plugins.text.error_recovery.error_recovery module</a></li>
+<li><a class="reference internal" href="#module-dialogy.plugins.text.error_recovery">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>

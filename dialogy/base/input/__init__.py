@@ -78,7 +78,7 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, Set
 
 import attr
 
@@ -217,6 +217,11 @@ class Input:
     Points at the active state (or node) within the conversation graph.
     """
 
+    expected_slots: Set[str] = attr.ib(factory=set, kw_only=True)
+    """
+    In a given turn, the expected number of slots to fill.
+    """
+
     previous_intent: Optional[str] = attr.ib(
         default=None,
         kw_only=True,
@@ -230,9 +235,13 @@ class Input:
     def __attrs_post_init__(self) -> None:
         try:
             object.__setattr__(self, "transcripts", normalize(self.utterances))
+
             object.__setattr__(
                 self, "best_transcript", get_best_transcript(self.transcripts)
             )
+
+            object.__setattr__(self, "expected_slots", set(self.expected_slots) if self.expected_slots else None)
+
         except TypeError:
             ...
 

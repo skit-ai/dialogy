@@ -1,4 +1,27 @@
-# Changelog
+ Changelog
+
+
+## 0.9.18
+
+- [x] fix: Stanza download instructions removed from `ListSearchPlugin`.
+
+
+## 0.9.17
+
+- [x] feat: A [DSL](https://github.com/skit-ai/dialogy/pull/155) for error-recovery and transitions.
+
+## 0.9.16
+
+- [x] update: multiple slots can be filled if multiple entities are supposed to fill each slot.
+
+## 0.9.15
+
+- [x] fix: Filling multiple slots with multiple entities was disabled.
+- [x] feat: We fill slots using `expected_slots` if present.
+
+## 0.9.14
+
+- [x] fix: slots returned in sorted order of scores.
 
 ## 0.9.13
 
@@ -8,7 +31,6 @@
 ## 0.9.11
 
 - [x] fix: https://github.com/skit-ai/dialogy/issues/148
-
 
 ## 0.9.10
 

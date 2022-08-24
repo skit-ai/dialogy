@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.11.23"/>
-        <title>dialogy.types.entity.time - dialogy 0.9.11 documentation</title>
+        <title>dialogy.types.entity.time - dialogy 0.9.17 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">dialogy 0.9.11 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">dialogy 0.9.17 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -147,7 +147,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">dialogy 0.9.11 documentation</span>
+  <span class="sidebar-brand-text">dialogy 0.9.17 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -187,6 +187,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.base.entity_extractor.html">Entity Scoring</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.lb_plugin.html">Lower Bound Duckling Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.combine_date_time.html">Combine DateTime Over Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/dialogy.plugins.text.error_recovery.html">Error Recovery</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Misc</span></p>
 <ul>
@@ -311,6 +312,132 @@
         <span class="n">const</span><span class="o">.</span><span class="n">LTE</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">,</span>
         <span class="n">const</span><span class="o">.</span><span class="n">GTE</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">,</span>
     <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">day</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the day of the month for the first datetime value.</span>
+
+<span class="sd">        :return: Day of the month</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">day</span>
+
+    <span class="nd">@day</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Set the day of the month for the first datetime value.</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">month</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the day of the month for the first datetime value.</span>
+
+<span class="sd">        :return: Day of the month</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">month</span>
+
+    <span class="nd">@month</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">month</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Set the month for the first datetime value.</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">month</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">year</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the day of the month for the first datetime value.</span>
+
+<span class="sd">        :return: Day of the month</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">year</span>
+
+    <span class="nd">@year</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Set the year for the first datetime value.</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hour</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the hour for the first datetime value.</span>
+
+<span class="sd">        :return: Hour</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">hour</span>
+    
+    <span class="nd">@hour</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">hour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Set the hour for the first datetime value.</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">minute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the minute for the first datetime value.</span>
+
+<span class="sd">        :return: Minute</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">minute</span>
+
+    <span class="nd">@minute</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">minute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Set the minute for the first datetime value.</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">second</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the second for the first datetime value.</span>
+
+<span class="sd">        :return: Second</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">second</span>
+
+    <span class="nd">@second</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">second</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Set the second for the first datetime value.</span>
+<span class="sd">        """</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">second</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">VALUE</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TimeEntity.get_value"><a class="viewcode-back" href="../../../../source/dialogy.types.entity.time.html#dialogy.types.entity.time.TimeEntity.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">"""</span>
