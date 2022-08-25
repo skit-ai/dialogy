@@ -7,13 +7,13 @@ This module provides a trainable XLMR classifier.
 import importlib
 import os
 import pickle
+import random
 from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing
 from tqdm import tqdm
-import random
 
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
@@ -48,7 +48,7 @@ class XLMRMultiClass(Plugin):
         nls_label_column: str = const.NLS_LABEL,
         args_map: Optional[Dict[str, Any]] = None,
         skip_labels: Optional[List[str]] = None,
-        prompts_map: dict = None,
+        prompts_map: Dict[Any,Any] = {const.LANG : []},
         use_prompt: bool = False,
         null_prompt_token: str = const.NULL_PROMPT_TOKEN,
         kwargs: Optional[Dict[str, Any]] = None,
@@ -78,7 +78,7 @@ class XLMRMultiClass(Plugin):
         self.use_prompt = use_prompt
         self.null_prompt_token = null_prompt_token
         self.prompts_map = prompts_map
-        
+
         self.labelencoder_file_path = os.path.join(
             self.model_dir, const.LABELENCODER_FILE
         )
@@ -162,9 +162,13 @@ class XLMRMultiClass(Plugin):
         return hasattr(self.labelencoder, "classes_")
 
     def inference(
-        self, texts: Optional[List[str]], state: Optional[str] = None, lang: Optional[str] = None, nls_label: Optional[str] = None
+        self,
+        texts: Optional[List[str]],
+        state: Optional[str] = None,
+        lang: Optional[str] = None,
+        nls_label: Optional[str] = None,
     ) -> List[Intent]:
-        
+
         """
         Predict the intent of a list of texts.
         If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.
@@ -177,7 +181,7 @@ class XLMRMultiClass(Plugin):
         :return: A list of intents corresponding to texts.
         :rtype: List[Intent]
         """
-        
+
         fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
 
         if not texts:
@@ -214,7 +218,7 @@ class XLMRMultiClass(Plugin):
                 "Seems like you forgot to "
                 f"save the {self.__class__.__name__} plugin."
             )
-        
+
         logger.debug(f"Classifier Input:\n{texts}")
 
         predictions, logits = self.model.predict(texts)
@@ -262,7 +266,7 @@ class XLMRMultiClass(Plugin):
 
         if self.use_state:
             expected_columns.append(self.state_column)
-        
+
         for column in expected_columns:
             if column not in training_data.columns:
                 logger.warning(f"Column {column} not found in training data")
@@ -300,7 +304,9 @@ class XLMRMultiClass(Plugin):
 
         # Append state to text
         if self.use_state:
-            training_data[const.TEXT] += "<s> " + training_data[self.state_column] + " </s>"
+            training_data[const.TEXT] += (
+                "<s> " + training_data[self.state_column] + " </s>"
+            )
 
         # Append prompt to text
         if self.use_prompt:
@@ -308,12 +314,13 @@ class XLMRMultiClass(Plugin):
             for i in tqdm(range(training_data.shape[0]), desc="progress bar:"):
                 _lang = training_data.iloc[i][self.lang_column]
                 _nls_label = training_data.iloc[i][self.nls_label_column]
-                _prompt =  self.lookup_prompt(_lang, _nls_label)
-                training_data.at[i, const.TEXT] = training_data.iloc[i][const.TEXT] \
-                        + "<s> " \
-                        + _prompt if _prompt else self.null_prompt_token \
-                        + " </s>"            
-        
+                _prompt = self.lookup_prompt(_lang, _nls_label)
+                training_data.at[i, const.TEXT] = (
+                    training_data.iloc[i][const.TEXT] + "<s> " + _prompt
+                    if _prompt
+                    else self.null_prompt_token + " </s>"
+                )
+
         training_data = training_data[[const.TEXT, const.LABELS]]
         self.init_model(len(encoder.classes_))
         logger.debug(
@@ -340,9 +347,9 @@ class XLMRMultiClass(Plugin):
             writer=pickle.dump,
         )
 
-    def lookup_prompt(self, lang: str, nls_label: str, return_all: bool = False) -> str:
+    def lookup_prompt(self, lang: Optional[str], nls_label: Optional[str]) -> str:
         """
-        Same as get_prompt() method, but built for faster lookup to reduce latency during inference. 
+        Same as get_prompt() method, but built for faster lookup to reduce latency during inference.
         """
         try:
             return self.prompts_map[lang][nls_label]
@@ -351,7 +358,7 @@ class XLMRMultiClass(Plugin):
                 logger.debug(e)
                 logger.debug(f"Prompt not found for Lang: {lang} \t State: {nls_label}")
             return self.null_prompt_token
-            
+
     def load(self) -> None:
         """
         Load the plugin artifacts.
@@ -361,6 +368,6 @@ class XLMRMultiClass(Plugin):
         )
 
     def utility(self, input: Input, _: Output) -> List[Intent]:
-        return ( 
-        self.inference(input.clf_feature, input.current_state, input.lang, input.nls_label)
+        return self.inference(
+            input.clf_feature, input.current_state, input.lang, input.nls_label
         )
