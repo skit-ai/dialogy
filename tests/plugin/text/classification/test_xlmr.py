@@ -132,6 +132,7 @@ def test_train_xlmr_mock(mocker, tmpdir):
         dest="output.intents",
         debug=False,
         use_state=True,
+        epochs=10
     )
 
     train_df = pd.DataFrame(
