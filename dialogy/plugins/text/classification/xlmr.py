@@ -36,6 +36,7 @@ class XLMRMultiClass(Plugin):
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
         threshold: float = 0.1,
+        epochs: Optional[int] = None,
         use_cuda: bool = False,
         score_round_off: int = 5,
         purpose: str = const.TRAIN,
@@ -90,6 +91,7 @@ class XLMRMultiClass(Plugin):
         )
 
         self.threshold = threshold
+        self.epochs = epochs
         self.skip_labels = set(skip_labels or set())
         self.purpose = purpose
         self.round = score_round_off
@@ -138,6 +140,8 @@ class XLMRMultiClass(Plugin):
             else {}
         )
         self.use_calibration = args.get(const.MODEL_CALIBRATION)
+        if self.epochs and self.purpose == const.TRAIN:
+            args[const.NUM_TRAIN_EPOCHS] = self.epochs
         try:
             self.model = self.classifier(
                 const.XLMR_MODEL,

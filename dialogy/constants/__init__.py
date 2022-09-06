@@ -163,6 +163,7 @@ LABELENCODER_FILE = "labelencoder.pkl"
 INVALID_TOKENS = ["<UNK>", "<PAD>", "<SOS>", "<EOS>"]
 OUTPUT_ATTRIBUTES = {INTENTS, ENTITIES, ORIGINAL_INTENT}
 NULL_PROMPT_TOKEN = "<pad>"
+NUM_TRAIN_EPOCHS = "num_train_epochs"
 
 # MLP
 MLPMODEL_FILE = "mlpmodelpipeline.joblib"
