@@ -14,6 +14,8 @@ Dialogy is a library for building and managing SLU applications.
 pip install dialogy
 ```
 
+
+
 Dialogy's CLI supports building and migration of projects. Migration is hard because a few modules need a forced update but a few others
 should be retained by the developer. The lack of this expression makes it hard to migrate smoothly. Building new projects should be fairly simple.
 
