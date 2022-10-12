@@ -6,7 +6,7 @@ from dialogy.types import Intent
 
 def test_invalid_reftime():
     with pytest.raises(ValueError):
-        Input(utterances="test", reference_time=18 ** 15)
+        Input(utterances="test", reference_time=18**15)
 
 
 def test_input_extension():

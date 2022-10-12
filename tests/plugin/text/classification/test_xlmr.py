@@ -318,6 +318,7 @@ def test_inference(payload, mocker, tmpdir):
     assert output[const.INTENTS][0]["name"] == intent
     assert output[const.INTENTS][0]["score"] > 0.9
 
+
 def test_train_xlmr_prompt_1(mocker, tmpdir):
     """
     Code to test xlmr workflow, with the following parameters:
@@ -326,7 +327,7 @@ def test_train_xlmr_prompt_1(mocker, tmpdir):
     train_using_all_prompts: False
     """
     # print("\nRunning test_train_xlmr_prompt_1")
-    
+
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
@@ -336,8 +337,12 @@ def test_train_xlmr_prompt_1(mocker, tmpdir):
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     prompts_map = {
-        'en': {'nls_label1': 'prompt1','nls_label2':'prompt2', 'nls_label3':'prompt3'},
-        'hi': {'nls_label1': 'prompt4','nls_label2':'prompt5'}
+        "en": {
+            "nls_label1": "prompt1",
+            "nls_label2": "prompt2",
+            "nls_label3": "prompt3",
+        },
+        "hi": {"nls_label1": "prompt4", "nls_label2": "prompt5"},
     }
 
     xlmr_clf_prompt = XLMRMultiClass(
@@ -351,10 +356,30 @@ def test_train_xlmr_prompt_1(mocker, tmpdir):
 
     train_df_prompt = pd.DataFrame(
         [
-            {"data": "yes", "labels": "_confirm_", "nls_label": "nls_label1", "lang": "lang1"},
-            {"data": "yea", "labels": "_confirm_", "nls_label": "nls_label2", "lang":"lang1"},
-            {"data": "no", "labels": "_cancel_", "nls_label": "nls_label3", "lang":"lang2"},
-            {"data": "nope", "labels": "_cancel_", "nls_label": "nls_label1", "lang":"lang2"},
+            {
+                "data": "yes",
+                "labels": "_confirm_",
+                "nls_label": "nls_label1",
+                "lang": "lang1",
+            },
+            {
+                "data": "yea",
+                "labels": "_confirm_",
+                "nls_label": "nls_label2",
+                "lang": "lang1",
+            },
+            {
+                "data": "no",
+                "labels": "_cancel_",
+                "nls_label": "nls_label3",
+                "lang": "lang2",
+            },
+            {
+                "data": "nope",
+                "labels": "_cancel_",
+                "nls_label": "nls_label1",
+                "lang": "lang2",
+            },
         ]
     )
 
@@ -370,6 +395,7 @@ def test_train_xlmr_prompt_1(mocker, tmpdir):
     )
 
     assert len(xlmr_clf_copy.labelencoder.classes_) == 2
+
 
 def test_train_xlmr_prompt_2(mocker, tmpdir):
     """
@@ -387,8 +413,12 @@ def test_train_xlmr_prompt_2(mocker, tmpdir):
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
     prompts_map = {
-        'en': {'nls_label1': 'prompt1','nls_label2':'prompt2', 'nls_label3':'prompt3'},
-        'hi': {'nls_label1': 'prompt4','nls_label2':'prompt5'}
+        "en": {
+            "nls_label1": "prompt1",
+            "nls_label2": "prompt2",
+            "nls_label3": "prompt3",
+        },
+        "hi": {"nls_label1": "prompt4", "nls_label2": "prompt5"},
     }
 
     xlmr_clf_prompt = XLMRMultiClass(
@@ -402,10 +432,34 @@ def test_train_xlmr_prompt_2(mocker, tmpdir):
 
     train_df_prompt = pd.DataFrame(
         [
-            {"data": "yes", "labels": "_confirm_", "state": "state1", "lang": "lang1","nls_label": "nls_label1"},
-            {"data": "yea", "labels": "_confirm_", "state": "state2", "lang":"lang1","nls_label": "nls_label2"},
-            {"data": "no", "labels": "_cancel_", "state": "state1", "lang":"lang2","nls_label": "nls_label3"},
-            {"data": "nope", "labels": "_cancel_", "state": "state3", "lang":"lang3","nls_label": "nls_label4"},
+            {
+                "data": "yes",
+                "labels": "_confirm_",
+                "state": "state1",
+                "lang": "lang1",
+                "nls_label": "nls_label1",
+            },
+            {
+                "data": "yea",
+                "labels": "_confirm_",
+                "state": "state2",
+                "lang": "lang1",
+                "nls_label": "nls_label2",
+            },
+            {
+                "data": "no",
+                "labels": "_cancel_",
+                "state": "state1",
+                "lang": "lang2",
+                "nls_label": "nls_label3",
+            },
+            {
+                "data": "nope",
+                "labels": "_cancel_",
+                "state": "state3",
+                "lang": "lang3",
+                "nls_label": "nls_label4",
+            },
         ]
     )
 
@@ -414,7 +468,14 @@ def test_train_xlmr_prompt_2(mocker, tmpdir):
     except ValueError:
         pass
 
-    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="lang1", state="state1", nls_label="nls_label1")) > 0
+    assert (
+        len(
+            xlmr_clf_prompt.inference(
+                texts=["yes"], lang="lang1", state="state1", nls_label="nls_label1"
+            )
+        )
+        > 0
+    )
 
     # This copy loads from the same directory that was trained previously.
     # So this instance would have read the labelencoder saved.
@@ -480,7 +541,7 @@ def test_invalid_operations_with_prompt(mocker, tmpdir):
 
     with pytest.raises(ValueError):
         xlmr_clf_prompt.save()
-        
+
 
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
 def test_inference_with_prompt_1(payload, mocker, tmpdir):
@@ -491,18 +552,46 @@ def test_inference_with_prompt_1(payload, mocker, tmpdir):
     directory = "/tmp"
     file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
-    
+
     prompts_map = {
-        'en': {'nls_label1': 'prompt1','nls_label2':'prompt2', 'nls_label3':'prompt3'},
-        'hi': {'nls_label1': 'prompt4','nls_label2':'prompt5'}
+        "en": {
+            "nls_label1": "prompt1",
+            "nls_label2": "prompt2",
+            "nls_label3": "prompt3",
+        },
+        "hi": {"nls_label1": "prompt4", "nls_label2": "prompt5"},
     }
 
     train_df_prompt = pd.DataFrame(
         [
-            {"data": "yes", "labels": "_confirm_", "state": "state1", "lang": "lang1","nls_label": "nls_label1"},
-            {"data": "yea", "labels": "_confirm_", "state": "state2", "lang":"lang1","nls_label": "nls_label2"},
-            {"data": "no", "labels": "_cancel_", "state": "state1", "lang":"lang2","nls_label": "nls_label3"},
-            {"data": "nope", "labels": "_cancel_", "state": "state3", "lang":"lang3","nls_label": "nls_label4"},
+            {
+                "data": "yes",
+                "labels": "_confirm_",
+                "state": "state1",
+                "lang": "lang1",
+                "nls_label": "nls_label1",
+            },
+            {
+                "data": "yea",
+                "labels": "_confirm_",
+                "state": "state2",
+                "lang": "lang1",
+                "nls_label": "nls_label2",
+            },
+            {
+                "data": "no",
+                "labels": "_cancel_",
+                "state": "state1",
+                "lang": "lang2",
+                "nls_label": "nls_label3",
+            },
+            {
+                "data": "nope",
+                "labels": "_cancel_",
+                "state": "state3",
+                "lang": "lang3",
+                "nls_label": "nls_label4",
+            },
         ]
     )
 
@@ -542,10 +631,40 @@ def test_inference_with_prompt_1(payload, mocker, tmpdir):
     with pytest.raises(ValueError):
         xlmr_clf_prompt.inference(texts=["text"], lang=None, nls_label="nls_label1")
 
-    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="lang1", nls_label="nls_label1")) > 0
+    assert (
+        len(
+            xlmr_clf_prompt.inference(
+                texts=["yes"], lang="lang1", nls_label="nls_label1"
+            )
+        )
+        > 0
+    )
 
-    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="unsupported_lang", nls_label="nls_label1")) > 0
+    assert (
+        len(
+            xlmr_clf_prompt.inference(
+                texts=["yes"], lang="unsupported_lang", nls_label="nls_label1"
+            )
+        )
+        > 0
+    )
 
-    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="lang1", nls_label="unsupported_nls_label")) > 0
+    assert (
+        len(
+            xlmr_clf_prompt.inference(
+                texts=["yes"], lang="lang1", nls_label="unsupported_nls_label"
+            )
+        )
+        > 0
+    )
 
-    assert len(xlmr_clf_prompt.inference(texts=["yes"], lang="unsupported_lang", nls_label="unsupported_nls_label")) > 0
+    assert (
+        len(
+            xlmr_clf_prompt.inference(
+                texts=["yes"],
+                lang="unsupported_lang",
+                nls_label="unsupported_nls_label",
+            )
+        )
+        > 0
+    )

@@ -5,9 +5,13 @@ import pytest
 import torch
 
 import dialogy.constants as const
-from dialogy.utils.temperature_scaling import (T_scaling, calc_bins,
-                                               fit_ts_parameter, get_metrics,
-                                               save_reliability_graph)
+from dialogy.utils.temperature_scaling import (
+    T_scaling,
+    calc_bins,
+    fit_ts_parameter,
+    get_metrics,
+    save_reliability_graph,
+)
 
 logits = np.array([[-1.34, 5.33, 10.1, 0.56], [-1.34, 0.33, -10.1, 0.86]])
 preds = np.exp(logits) / np.exp(logits).sum(axis=1, keepdims=True)

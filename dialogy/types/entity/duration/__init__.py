@@ -87,7 +87,7 @@ class DurationEntity(BaseEntity):
         reference_time: Optional[int] = None,
         timezone: Optional[str] = None,
         duration_cast_operator: Optional[str] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Union[DurationEntity, TimeEntity]:
         value = d[const.VALUE][const.NORMALIZED][const.VALUE]
         entity = cls(

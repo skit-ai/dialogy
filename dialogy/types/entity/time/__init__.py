@@ -165,7 +165,7 @@ class TimeEntity(BaseEntity):
         """
         dt = self.get_value()
         return dt.hour
-    
+
     @hour.setter
     def hour(self, value: int) -> None:
         """
@@ -375,7 +375,7 @@ class TimeEntity(BaseEntity):
         d: Dict[str, Any],
         alternative_index: int,
         constraints: Optional[Dict[str, Any]] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Optional[TimeEntity]:
         datetime_values = d[const.VALUE][const.VALUES]
         grain = datetime_values[0][const.GRAIN]

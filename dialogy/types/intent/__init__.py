@@ -163,7 +163,12 @@ class Intent:
         self.parsers.append(plugin_name)
         return self
 
-    def fill_slot(self, entity: BaseEntity, fill_multiple: bool = False, expected_slots: Optional[Set[str]] = None) -> Intent:
+    def fill_slot(
+        self,
+        entity: BaseEntity,
+        fill_multiple: bool = False,
+        expected_slots: Optional[Set[str]] = None,
+    ) -> Intent:
         """
         Update :code:`slots[slot_type].values` with a single entity.
 

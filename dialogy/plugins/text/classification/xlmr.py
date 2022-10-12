@@ -48,7 +48,7 @@ class XLMRMultiClass(Plugin):
         nls_label_column: str = const.NLS_LABEL,
         args_map: Optional[Dict[str, Any]] = None,
         skip_labels: Optional[List[str]] = None,
-        prompts_map: Dict[Any,Any] = {const.LANG : []},
+        prompts_map: Dict[Any, Any] = {const.LANG: []},
         use_prompt: bool = False,
         null_prompt_token: str = const.NULL_PROMPT_TOKEN,
         kwargs: Optional[Dict[str, Any]] = None,

@@ -75,7 +75,12 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
-    def fill(self, intents: List[Intent], entities: List[BaseEntity], expected_slots: Union[Set[str], None] = None) -> List[Intent]:
+    def fill(
+        self,
+        intents: List[Intent],
+        entities: List[BaseEntity],
+        expected_slots: Union[Set[str], None] = None,
+    ) -> List[Intent]:
         if not intents:
             return intents
 
@@ -84,7 +89,9 @@ class RuleBasedSlotFillerPlugin(Plugin):
         intent.apply(self.rules)
 
         for entity in entities:
-            intent.fill_slot(entity, fill_multiple=self.fill_multiple, expected_slots=expected_slots)
+            intent.fill_slot(
+                entity, fill_multiple=self.fill_multiple, expected_slots=expected_slots
+            )
 
         intent.cleanup()
         return [intent, *rest]

@@ -326,6 +326,7 @@ def test_slot_competition_fill_one() -> None:
 
     assert "entity_1_slot" not in output[const.INTENTS][0]["slots"]
 
+
 def test_slot_filling_order() -> None:
     """
     Here, we will see that entities of same type filled in a slot are sorted by their score in descending order.
@@ -374,12 +375,15 @@ def test_slot_filling_order() -> None:
 
     workflow.set("output.intents", [intent]).set(
         "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
-    ) # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
+    )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
 
     _, output = workflow.run(Input(utterances=body))
 
     slot_values = output["intents"][0]["slots"][0]["values"]
-    assert all(slot_values[i]["score"] >= slot_values[i+1]["score"] for i in range(len(slot_values) - 1))
+    assert all(
+        slot_values[i]["score"] >= slot_values[i + 1]["score"]
+        for i in range(len(slot_values) - 1)
+    )
 
 
 def test_slot_filling_with_expected_slots() -> None:
@@ -431,7 +435,7 @@ def test_slot_filling_with_expected_slots() -> None:
 
     workflow.set("output.intents", [intent]).set(
         "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
-    ) # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
+    )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
 
     _, output = workflow.run(Input(utterances=body, expected_slots=["entity_1_slot"]))
 
