@@ -217,7 +217,7 @@ class Input:
     """
     Points at the active state (or node) within the conversation graph.
     """
-    
+
     nls_label: Optional[str] = attr.ib(
         default=None,
         kw_only=True,
@@ -250,7 +250,11 @@ class Input:
                 self, "best_transcript", get_best_transcript(self.transcripts)
             )
 
-            object.__setattr__(self, "expected_slots", set(self.expected_slots) if self.expected_slots else None)
+            object.__setattr__(
+                self,
+                "expected_slots",
+                set(self.expected_slots) if self.expected_slots else None,
+            )
 
         except TypeError:
             ...
@@ -306,26 +310,22 @@ class Input:
 
         # Flatten the history to a list of intents
         intents: List[Dict[str, Any]] = reduce(
-            lambda intents, res: intents + res["intents"],
-            self.history[::-1],
-            [])
+            lambda intents, res: intents + res["intents"], self.history[::-1], []
+        )
 
         # Filter intents by name
         required_intents = filter(
-            lambda intent: intent["name"] in _intent_names,
-            intents)
+            lambda intent: intent["name"] in _intent_names, intents
+        )
 
         # Flatten the intents to a list of slots
         slots: List[Dict[str, Any]] = reduce(
-            lambda slots, intent: slots + intent["slots"],
-            required_intents,
-            [])
+            lambda slots, intent: slots + intent["slots"], required_intents, []
+        )
 
         # Filter slots by name
-        required_slots = filter(
-            lambda slot: slot["name"] in _slot_names,
-            slots)
+        required_slots = filter(lambda slot: slot["name"] in _slot_names, slots)
 
-        return list(reduce(
-            lambda entities, slot: entities + slot["values"],
-            required_slots, []))
+        return list(
+            reduce(lambda entities, slot: entities + slot["values"], required_slots, [])
+        )

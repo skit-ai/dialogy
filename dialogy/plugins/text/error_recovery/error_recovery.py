@@ -39,6 +39,7 @@ class Environment:
     The scope of variables for error-recovery rules are defined by this class.
     Referencing SLU input and output variables for filtering and updates.
     """
+
     intents: List[Intent] = attr.ib(kw_only=True)
     """
     Refer to :ref:`Intent<Intent>`
@@ -159,6 +160,7 @@ class Environment:
             value = value(item) if callable(value) else value
             setattr(item, attribute, value)
 
+
 @attr.s
 class BinaryCondition:
     """
@@ -178,42 +180,44 @@ class BinaryCondition:
     :return: _description_
     :rtype: _type_
     """
+
     variable: str = attr.ib(kw_only=True)
     value: Union[str, Set[str]] = attr.ib(kw_only=True)
     operator: Callable[[Any, Any], bool] = attr.ib(kw_only=True)
     operations = {
-        'eq': lambda a, b: a == b,
-        'ne': lambda a, b: a != b,
-        'in': lambda a, b: a in b,
-        'nin': lambda a, b: a not in b,
-        'gt': lambda a, b: a > b,
-        'gte': lambda a, b: a >= b,
-        'lt': lambda a, b: a < b,
-        'lte': lambda a, b: a <= b,
+        "eq": lambda a, b: a == b,
+        "ne": lambda a, b: a != b,
+        "in": lambda a, b: a in b,
+        "nin": lambda a, b: a not in b,
+        "gt": lambda a, b: a > b,
+        "gte": lambda a, b: a >= b,
+        "lt": lambda a, b: a < b,
+        "lte": lambda a, b: a <= b,
     }
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> 'BinaryCondition':
+    def from_dict(cls, d: Dict[str, Any]) -> "BinaryCondition":
         default_op_name = "eq"
 
         var_name = list(d.keys()).pop()
-        op_name = (list(d[var_name].keys()).pop()
+        op_name = (
+            list(d[var_name].keys()).pop()
             if isinstance(d[var_name], dict)
-            else default_op_name)
+            else default_op_name
+        )
 
         value = d[var_name][op_name] if isinstance(d[var_name], dict) else d[var_name]
         if isinstance(value, list):
             value = set(value)
 
         return cls(
-            variable=var_name,
-            operator=BinaryCondition.operations[op_name],
-            value=value
+            variable=var_name, operator=BinaryCondition.operations[op_name], value=value
         )
 
     @classmethod
-    def from_list(cls, d: List[Dict[str, Any]]) -> List['BinaryCondition']:
+    def from_list(cls, d: List[Dict[str, Any]]) -> List["BinaryCondition"]:
         return [cls.from_dict(c) for c in d]
+
 
 @attr.s
 class Rule:
@@ -225,12 +229,15 @@ class Rule:
     1. Search: We apply filters to a resource (one of intents or entities).
     2. Action: We perform an action on the resource (one of update, remove).
     """
+
     find: str = attr.ib(kw_only=True)
-    where: List[BinaryCondition] = attr.ib(converter=BinaryCondition.from_list, kw_only=True) # type: ignore
+    where: List[BinaryCondition] = attr.ib(converter=BinaryCondition.from_list, kw_only=True)  # type: ignore
     remove: TRemove = attr.ib(kw_only=True)
     update: TUpdate = attr.ib(kw_only=True)
 
-    def on_conditions(self, environment: Environment) -> Callable[[Union[Intent, BaseEntity]], bool]:
+    def on_conditions(
+        self, environment: Environment
+    ) -> Callable[[Union[Intent, BaseEntity]], bool]:
         """
         Pick items within resources when all conditions match.
 
@@ -242,17 +249,20 @@ class Rule:
         :rtype: Callable[[Union[Intent, BaseEntity]], bool]
         """
         conditions = self.where
+
         def foreach(item: Union[Intent, BaseEntity]) -> bool:
             return all(
                 condition.operator(
-                    environment.get(item, condition.variable),
-                    condition.value
+                    environment.get(item, condition.variable), condition.value
                 )
                 for condition in conditions
             )
+
         return foreach
 
-    def on_inverse(self, environment: Environment) -> Callable[[Union[Intent, BaseEntity]], bool]:
+    def on_inverse(
+        self, environment: Environment
+    ) -> Callable[[Union[Intent, BaseEntity]], bool]:
         """
         Pick items within resources when no conditions match.
 
@@ -265,21 +275,22 @@ class Rule:
         :rtype: Callable[[Union[Intent, BaseEntity]], bool]
         """
         conditions = self.where
+
         def foreach(item: Union[Intent, BaseEntity]) -> bool:
             return not all(
                 condition.operator(
-                    environment.get(item, condition.variable),
-                    condition.value
+                    environment.get(item, condition.variable), condition.value
                 )
                 for condition in conditions
             )
+
         return foreach
 
     def _find(
         self,
         resource: str,
         clause: Callable[[Union[Intent, BaseEntity]], bool],
-        environment: Environment
+        environment: Environment,
     ) -> Iterable[Union[Intent, BaseEntity]]:
         """
         Find items within a resource that match a condition.
@@ -293,12 +304,12 @@ class Rule:
         :return: An iterable of resources filtered by the clause.
         :rtype: Iterable[Union[Intent, BaseEntity]]
         """
-        resources = (environment.intents
-            if resource == "intents"
-            else environment.entities)
-        return filter(clause, resources) # type: ignore
+        resources = (
+            environment.intents if resource == "intents" else environment.entities
+        )
+        return filter(clause, resources)  # type: ignore
 
-    def _remove(self, environment: Environment) -> 'Rule':
+    def _remove(self, environment: Environment) -> "Rule":
         """
         Remove items within a resource that match a condition.
 
@@ -307,14 +318,18 @@ class Rule:
         :rtype: Rule
         """
         if not self.remove:
-            return self # pragma: no cover
+            return self  # pragma: no cover
         resource_name = self.remove
-        resources = list(self._find(resource_name, self.on_inverse(environment), environment))
+        resources = list(
+            self._find(resource_name, self.on_inverse(environment), environment)
+        )
         if resource_name in Environment.resources and resources:
             environment.set(self.remove, resources)
         return self
 
-    def _transform(self, environment: Environment) -> Callable[[Union[Intent, BaseEntity]], Union[Intent, BaseEntity]]:
+    def _transform(
+        self, environment: Environment
+    ) -> Callable[[Union[Intent, BaseEntity]], Union[Intent, BaseEntity]]:
         """
         Transform items within a resource as per update rules.
 
@@ -323,15 +338,17 @@ class Rule:
         :return: A function that can be used to transform a resource.
         :rtype: Callable[[Union[Intent, BaseEntity]], Union[Intent, BaseEntity]]
         """
+
         def foreach(item: Union[Intent, BaseEntity]) -> Union[Intent, BaseEntity]:
             if not self.update:
-                return item # pragma: no cover
+                return item  # pragma: no cover
             for key, value in self.update.items():
                 environment.set_item(item, key, value)
             return item
+
         return foreach
 
-    def _update(self, environment: Environment) -> 'Rule':
+    def _update(self, environment: Environment) -> "Rule":
         """
         Update items within a resource as per update rules.
 
@@ -340,13 +357,15 @@ class Rule:
         :rtype: Rule
         """
         resource_name = self.find
-        resources = self._find(resource_name, self.on_conditions(environment), environment)
+        resources = self._find(
+            resource_name, self.on_conditions(environment), environment
+        )
         resources = list(map(self._transform(environment), resources))
         if resource_name in Environment.resources and resources:
             environment.set(self.find, resources)
         return self
 
-    def parse(self, environment: Environment) -> 'Rule':
+    def parse(self, environment: Environment) -> "Rule":
         """
         Parse a rule and update the environment.
 
@@ -362,10 +381,10 @@ class Rule:
             return self._remove(environment)
         if self.update:
             return self._update(environment)
-        return self # pragma: no cover
+        return self  # pragma: no cover
 
     @classmethod
-    def from_dict(cls, rule: Dict[str, Any]) -> 'Rule':
+    def from_dict(cls, rule: Dict[str, Any]) -> "Rule":
         return cls(
             find=str(rule.get("find")),
             where=rule.get("where"),
@@ -374,9 +393,7 @@ class Rule:
         )
 
     @classmethod
-    def from_list(
-        cls,
-        rules: List[Dict[str, Any]]) -> List['Rule']:
+    def from_list(cls, rules: List[Dict[str, Any]]) -> List["Rule"]:
         return [cls.from_dict(rule) for rule in rules]
 
 
@@ -406,7 +423,7 @@ class ErrorRecoveryPlugin(Plugin):
            ...: from dialogy.types import Intent
 
         In [2]: error_recovery_config = yaml.safe_load('''
-           ...:   rules: 
+           ...:   rules:
            ...:     -
            ...:         find: entities
            ...:         where:
@@ -431,10 +448,10 @@ class ErrorRecoveryPlugin(Plugin):
            ...: workflow.set("output.intents", [Intent(name="future_date", score=0.99)])
            ...: _, out = workflow.run(input_=Input(utterances="this month"))
            ...: # But with error recovery, we get the last day of the month
-           ...: out["entities"][0] 
+           ...: out["entities"][0]
 
         In [5]: error_recovery_config = yaml.safe_load('''
-           ...:   rules: 
+           ...:   rules:
            ...:     -
            ...:         find: entities
            ...:         where:
@@ -459,7 +476,7 @@ class ErrorRecoveryPlugin(Plugin):
     .. code-block:: yaml
 
         intent_swap:
-        - 
+        -
             depends_on:
                 intent: _confirm_
                 state:
@@ -492,6 +509,7 @@ class ErrorRecoveryPlugin(Plugin):
                 update:
                     intent.name: _issue_resolved_
     """
+
     def __init__(
         self,
         rules: List[Dict[str, Any]],
