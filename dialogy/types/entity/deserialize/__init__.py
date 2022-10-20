@@ -72,9 +72,14 @@ class EntityDeserializer:
                 reference_time=reference_time,
             )
         except KeyError as e:
-            raise ValueError(
-                f"Failed to deserialize {EntityClass} "
-                f"from duckling response: {duckling_entity_dict}. Exception: {e}"
-            ) from e
+            if entity_class_name == "amount-of-money" and (
+                duckling_entity_dict.get("value", {}).get("type") == "interval"
+            ):
+                entity = None
+            else:
+                raise ValueError(
+                    f"Failed to deserialize {EntityClass} "
+                    f"from duckling response: {duckling_entity_dict}. Exception: {e}"
+                ) from e
 
         return entity
