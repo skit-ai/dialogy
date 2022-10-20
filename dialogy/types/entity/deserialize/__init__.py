@@ -75,6 +75,8 @@ class EntityDeserializer:
             if entity_class_name == "amount-of-money" and (
                 duckling_entity_dict.get("value", {}).get("type") == "interval"
             ):
+                # interval of "amount": fail silently
+                # TODO: create CurrencyIntervalEntity class to handle this if required
                 entity = None
             else:
                 raise ValueError(
