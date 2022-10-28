@@ -203,7 +203,7 @@ class TimeIntervalEntity(TimeEntity):
             elif to_:
                 datetime_val[const.FROM][const.VALUE] = (
                     datetime.fromisoformat(
-                        datetime_val.get(const.FROM, {}).get(const.VALUE)
+                        datetime_val.get(const.TO, {}).get(const.VALUE)
                     )
                     .replace(
                         hour=constraint[const.GTE][const.HOUR],
