@@ -201,7 +201,8 @@ class TimeIntervalEntity(TimeEntity):
                     }
                 )
             elif to_:
-                datetime_val[const.FROM][const.VALUE] = (
+                from_or_to = const.FROM if from_datetime_val else const.TO
+                datetime_val[from_or_to][const.VALUE] = (
                     datetime.fromisoformat(
                         datetime_val.get(const.TO, {}).get(const.VALUE)
                     )
