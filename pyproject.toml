@@ -31,6 +31,7 @@ types-requests = "^2.27.11"
 types-setuptools = "^57.4.10"
 black = "^22.8.0"
 googlemaps = "^4.6.0"
+torch = "1.12.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
