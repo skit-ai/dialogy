@@ -243,6 +243,7 @@ class Plugin(ABC):
         self.debug = debug
         self.guards = guards
         self.dest = dest
+        self.buffer = []
         self.replace_output = replace_output
         self.input_column = input_column
         self.output_column = output_column or input_column
@@ -290,8 +291,24 @@ class Plugin(ABC):
             return
 
         value = self.utility(workflow.input, workflow.output)
-        if value is not None and isinstance(self.dest, str):
-            workflow.set(self.dest, value, self.replace_output)
+
+        if value is None:
+            return
+
+        if isinstance(value, list) and self.buffer:
+            value = value + self.buffer
+            self.commit([])
+
+        workflow.set(self.dest, value)
+
+    def commit(self, value):
+        """
+        Set the value of the plugin's buffer.
+
+        :param value: The value to be set.
+        :type value: Any
+        """
+        self.buffer = value
 
     def prevent(self, input_: Input, output: Output) -> bool:
         """
