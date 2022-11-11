@@ -193,10 +193,11 @@ class CombineDateTimeOverSlots(Plugin):
             lambda entity: entity.entity_type
             in CombineDateTimeOverSlots.SUPPORTED_ENTITIES,
         )
+        self.commit(other_entities)
         combined_time_entities = [
             self.join(entity, previously_filled_time_entity) for entity in time_entities
         ]
-        return combined_time_entities + other_entities
+        return combined_time_entities
 
     def utility(self, input: Input, output: Output) -> List[BaseEntity]:
         """
