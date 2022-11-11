@@ -216,26 +216,16 @@ class Workflow:
         :return: This instance
         :rtype: Workflow
         """
-        dest, attribute = path.split(".")
+        obj, attribute = path.split(".")
 
-        if dest == const.INPUT:
+        if obj == const.INPUT:
             self.input = Input.from_dict({attribute: value}, reference=self.input)
-        elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
-            if not replace and isinstance(value, list):
-                previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities  # type: ignore
-                if sort_output_attributes:
-                    value = sorted(
-                        previous_value + value,
-                        key=lambda parse: parse.score or 0,
-                        reverse=True,
-                    )
-                else:
-                    value = previous_value + value
-
+        elif (obj in const.OUTPUT
+                and attribute in (const.INTENTS, const.ENTITIES, const.ORIGINAL_INTENT)
+                and isinstance(value, (list, dict))):
             self.output = Output.from_dict({attribute: value}, reference=self.output)
-
-        elif dest == const.OUTPUT:
-            raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
+        elif obj == const.OUTPUT:
+            raise ValueError(f"{value=} should be a List[Intent], List[BaseEntity] or a Dict[str, float].")
         else:
             raise ValueError(f"{path} is not a valid path.")
         return self
