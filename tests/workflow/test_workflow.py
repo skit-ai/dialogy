@@ -4,8 +4,8 @@ import pytest
 
 import dialogy.constants as const
 from dialogy.base import Input, Output, Plugin
-from dialogy.plugins import MergeASROutputPlugin
-from dialogy.types import Intent
+from dialogy.plugins import MergeASROutputPlugin, ListEntityPlugin
+from dialogy.types import Intent, KeywordEntity
 from dialogy.workflow import Workflow
 
 
@@ -124,3 +124,37 @@ def test_flush_on_exception():
     finally:
         assert workflow.output == Output()
         assert workflow.input == None
+
+def test_commit_entity():
+    plugin = ListEntityPlugin(
+        style=const.REGEX,
+        candidates={
+            "fruit": {
+                "apple": ["apple"],
+                "orange": ["orange"],
+            },
+        },
+        dest="output.entities",)
+
+    entity_dict = {
+        const.RANGE: {
+            const.START: 0,
+            const.END: 4,
+        },
+        const.BODY: "apple",
+        const.DIM: "fruit",
+        const.SCORE: 0,
+        const.ALTERNATIVE_INDEX: 0,
+        const.LATENT: False,
+        const.TYPE: "value",
+        const.ENTITY_TYPE: "edible",
+        const.VALUE: "apple",
+        const.VALUES: [{const.VALUE: "apple"}],
+    }
+
+    workflow = Workflow(plugins=[plugin])
+    workflow.set("output.entities", [KeywordEntity.from_dict(entity_dict)])
+    _, o = workflow.run(Input(utterances=["orange"]))
+    entity_values = {entity["value"] for entity in o["entities"]}
+    assert len(o["entities"]) == 2
+    assert entity_values == {"apple", "orange"}
