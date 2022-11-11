@@ -4,7 +4,7 @@ import pytest
 
 import dialogy.constants as const
 from dialogy.base import Input, Output, Plugin
-from dialogy.plugins import MergeASROutputPlugin, ListEntityPlugin
+from dialogy.plugins import ListEntityPlugin, MergeASROutputPlugin
 from dialogy.types import Intent, KeywordEntity
 from dialogy.workflow import Workflow
 
@@ -125,6 +125,7 @@ def test_flush_on_exception():
         assert workflow.output == Output()
         assert workflow.input == None
 
+
 def test_commit_entity():
     plugin = ListEntityPlugin(
         style=const.REGEX,
@@ -134,7 +135,8 @@ def test_commit_entity():
                 "orange": ["orange"],
             },
         },
-        dest="output.entities",)
+        dest="output.entities",
+    )
 
     entity_dict = {
         const.RANGE: {

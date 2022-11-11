@@ -1,20 +1,18 @@
 import collections
 import json
-import requests
 from datetime import timedelta
 
+import googlemaps
 import httpretty
 import pytest
-import googlemaps
+import requests
 
 from dialogy import plugins
 from dialogy.base import Input, Output
 from dialogy.plugins.text.address_parser import MissingCredentials
 from dialogy.plugins.text.address_parser.mapmyindia import MapMyIndia
-from dialogy.types import Intent
+from dialogy.types import AddressEntity, Intent
 from dialogy.workflow import Workflow
-from dialogy import plugins
-from dialogy.types import AddressEntity
 from tests import load_tests
 
 _USER_AGENT = "GoogleGeoApiClientPython/%s" % googlemaps.__version__

@@ -15,8 +15,8 @@ from dialogy.utils.logger import logger
 from dialogy.utils.misc import traverse_dict, validate_type
 from dialogy.utils.naive_lang_detect import lang_detect_from_text
 from dialogy.utils.normalize_utterance import (
+    get_best_transcript,
     is_utterance,
     normalize,
-    get_best_transcript,
 )
 from dialogy.utils.temperature_scaling import fit_ts_parameter, save_reliability_graph

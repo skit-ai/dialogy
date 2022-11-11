@@ -21,13 +21,12 @@ These requirements are met by a mature, feature-rich, battle-tested high level l
 """
 import calendar
 from datetime import timedelta
-from typing import Any, Dict, List, Set, Union, Callable, Iterable, Optional
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Union
 
 import attr
 
-from dialogy.base import Input, Output, Plugin, Guard
+from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import BaseEntity, Intent, TimeEntity
-
 
 TRemove = Optional[str]
 TUpdate = Optional[Dict[str, Any]]

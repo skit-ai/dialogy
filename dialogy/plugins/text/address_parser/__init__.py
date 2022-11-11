@@ -5,14 +5,13 @@ from typing import Any, Callable, Dict, List, Optional
 
 import googlemaps
 
+from dialogy.base.plugin import Input, Output, Plugin
 from dialogy.plugins.text.address_parser import mapmyindia
-from dialogy.base.plugin import Plugin, Input, Output
-from dialogy.types import AddressEntity
-
 from dialogy.plugins.text.address_parser.maps import (
     get_gmaps_address,
     get_mapmyindia_address,
 )
+from dialogy.types import AddressEntity
 
 
 class MissingCredentials(Exception):

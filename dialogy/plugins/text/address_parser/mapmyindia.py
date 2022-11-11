@@ -1,6 +1,6 @@
-from typing import Dict, Union, Optional
-import requests
+from typing import Dict, Optional, Union
 
+import requests
 from loguru import logger
 
 

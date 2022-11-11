@@ -3,14 +3,14 @@ from datetime import datetime
 import pytest
 
 from dialogy.base import Input, Output
-from dialogy.workflow import Workflow
-from dialogy.types import Intent
-from dialogy.types.entity.deserialize import EntityDeserializer
 from dialogy.plugins.text.error_recovery.error_recovery import (
-    Rule,
     Environment,
     ErrorRecoveryPlugin,
+    Rule,
 )
+from dialogy.types import Intent
+from dialogy.types.entity.deserialize import EntityDeserializer
+from dialogy.workflow import Workflow
 from tests import load_tests
 
 

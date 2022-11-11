@@ -220,12 +220,16 @@ class Workflow:
 
         if obj == const.INPUT:
             self.input = Input.from_dict({attribute: value}, reference=self.input)
-        elif (obj in const.OUTPUT
-                and attribute in (const.INTENTS, const.ENTITIES, const.ORIGINAL_INTENT)
-                and isinstance(value, (list, dict))):
+        elif (
+            obj in const.OUTPUT
+            and attribute in (const.INTENTS, const.ENTITIES, const.ORIGINAL_INTENT)
+            and isinstance(value, (list, dict))
+        ):
             self.output = Output.from_dict({attribute: value}, reference=self.output)
         elif obj == const.OUTPUT:
-            raise ValueError(f"{value=} should be a List[Intent], List[BaseEntity] or a Dict[str, float].")
+            raise ValueError(
+                f"{value=} should be a List[Intent], List[BaseEntity] or a Dict[str, float]."
+            )
         else:
             raise ValueError(f"{path} is not a valid path.")
         return self

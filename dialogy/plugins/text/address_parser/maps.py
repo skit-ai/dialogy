@@ -1,6 +1,6 @@
 import re
 import uuid
-from typing import Callable, List, Dict, Any, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import googlemaps
 from loguru import logger

@@ -79,12 +79,12 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 from __future__ import annotations
 
 from functools import reduce
-from typing import Any, Dict, List, Optional, Union, Set
+from typing import Any, Dict, List, Optional, Set, Union
 
 import attr
 
 from dialogy.types import Utterance
-from dialogy.utils import is_unix_ts, normalize, get_best_transcript
+from dialogy.utils import get_best_transcript, is_unix_ts, normalize
 
 
 @attr.frozen
