@@ -279,8 +279,9 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         aggregated_entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(aggregated_entities)
 
-    def utility(self, input: Input, _: Output) -> Any:
-        transcripts = input.transcripts
+    def utility(self, input_: Input, output: Output) -> Any:
+        transcripts = input_.transcripts
+        self.commit(output.entities)
         return self.get_entities(transcripts)  # pylint: disable=no-value-for-parameter
 
     def ner_search(self, transcript: str) -> MatchType:

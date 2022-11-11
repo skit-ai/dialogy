@@ -988,6 +988,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.reference_time = input.reference_time
         self.locale = input.locale or self.locale
         use_latent = input.latent_entities
+        self.commit(output.entities)
 
         return self.parse(
             transcripts,
