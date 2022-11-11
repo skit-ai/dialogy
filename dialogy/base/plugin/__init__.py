@@ -243,7 +243,7 @@ class Plugin(ABC):
         self.debug = debug
         self.guards = guards
         self.dest = dest
-        self.buffer = []
+        self.buffer: List[Any] = []
         self.replace_output = replace_output
         self.input_column = input_column
         self.output_column = output_column or input_column
@@ -299,9 +299,10 @@ class Plugin(ABC):
             value = value + self.buffer
             self.commit([])
 
-        workflow.set(self.dest, value)
+        if self.dest:
+            workflow.set(self.dest, value)
 
-    def commit(self, value):
+    def commit(self, value: List[Any]) -> None:
         """
         Set the value of the plugin's buffer.
 
