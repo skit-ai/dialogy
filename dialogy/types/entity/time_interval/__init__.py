@@ -48,11 +48,8 @@ Workflow Integration
 """
 from __future__ import annotations
 
-import operator
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional
-
-import attr
+from typing import Any, Dict, List, Optional
 
 from dialogy import constants as const
 from dialogy.types.entity.deserialize import EntityDeserializer
@@ -60,7 +57,6 @@ from dialogy.types.entity.time import TimeEntity
 
 
 @EntityDeserializer.register(const.TIME_INTERVAL)
-@attr.s
 class TimeIntervalEntity(TimeEntity):
     """
     Entities that can be parsed to obtain date, time or datetime interval.
@@ -76,26 +72,26 @@ class TimeIntervalEntity(TimeEntity):
     origin = "interval"
     dim = "time"
     value_keys = {const.FROM, const.TO, const.TYPE}
-    type: str = attr.ib(default="value", order=False)
-    from_value: Optional[datetime] = attr.ib(default=None, order=False)
-    to_value: Optional[datetime] = attr.ib(default=None, order=False)
-    values: List[Dict[str, Any]] = attr.ib(default=None, kw_only=True)
-    value: Dict[str, Any] = attr.ib(default=None, kw_only=True)
+    type: str = "value"
+    from_value: datetime = None
+    to_value: datetime = None
+    values: List[Dict[str, Any]] = None
+    value: Dict[str, Any] = None
 
-    @values.validator  # type: ignore
-    def _check_values(
-        self, attribute: attr.Attribute, values: List[Dict[str, Any]]  # type: ignore
-    ) -> None:
-        if not values:
-            return
-        for value in values:
-            obj_keys = set(value.keys())
-            if not obj_keys.issubset(self.value_keys):
-                raise TypeError(
-                    f"Expected {obj_keys} to be a subset of {self.value_keys} for {attribute.name}"
-                )
+    # @values.validator  # type: ignore
+    # def _check_values(
+    #     self, attribute: attr.Attribute, values: List[Dict[str, Any]]  # type: ignore
+    # ) -> None:
+    #     if not values:
+    #         return
+    #     for value in values:
+    #         obj_keys = set(value.keys())
+    #         if not obj_keys.issubset(self.value_keys):
+    #             raise TypeError(
+    #                 f"Expected {obj_keys} to be a subset of {self.value_keys} for {attribute.name}"
+    #             )
 
-    def __attrs_post_init__(self) -> None:
+    def __post_init__(self) -> None:
         if self.values and not self.value:
             self.from_value = self.values[0].get(const.FROM, {}).get(const.VALUE)
             self.to_value = self.values[0].get(const.TO, {}).get(const.VALUE)

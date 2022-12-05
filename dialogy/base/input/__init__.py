@@ -79,28 +79,27 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 from __future__ import annotations
 
 from functools import reduce
-from typing import Any, Dict, List, Optional, Union, Set
+from typing import Any, Dict, List, Optional, Union
 
-import attr
+from pydantic import BaseModel
 
 from dialogy.types import Utterance
-from dialogy.utils import is_unix_ts, normalize, get_best_transcript
+from dialogy.utils import normalize, get_best_transcript
 
 
-@attr.frozen
-class Input:
+class Input(BaseModel):
     """
     Represents the inputs of the SLU API.
     """
 
-    utterances: List[Utterance] = attr.ib(kw_only=True)
+    utterances: List[Utterance]
     """
     ASRs produce utterances. 
     Each utterance contains N-hypothesis. 
     Each hypothesis is a :code:`dict` with keys :code:`"transcript"` and :code:`"confidence"`.
     """
 
-    reference_time: Optional[int] = attr.ib(default=None, kw_only=True)
+    reference_time: int = None
     """
     The time that should be used for parsing relative time values.
     This is a Unix timestamp in seconds.
@@ -108,7 +107,7 @@ class Input:
     a date in ISO 8601 format to unix ms timestamp.
     """
 
-    latent_entities: bool = attr.ib(default=False, kw_only=True, converter=bool)
+    latent_entities: bool = False
     """
     A switch to turn on/off production of latent entities via Duckling API
     If you need to parse "4" as 4 am or 4 pm. Note the absence of "am" or "pm" in the utterance.
@@ -116,72 +115,53 @@ class Input:
     It may be helpful to keep it :code:`False` unless clearly required. 
     """
 
-    transcripts: List[str] = attr.ib(default=None)
+    transcripts: List[str] = None
     """
     A derived attribute. We cross product each utterance and return a list of strings.
     We use this to :ref:`normalize <normalize>` utterances.
     """
 
-    best_transcript: str = attr.ib(default=None)
+    best_transcript: str = None
     """
     A derived attribute. Contains the best alternative selected out of the utterances.
     """
 
-    clf_feature: Optional[List[str]] = attr.ib(  # type: ignore
-        kw_only=True,
-        factory=list,
-        validator=attr.validators.optional(attr.validators.instance_of(list)),
-    )
+    clf_feature: List[str] = []
     """
     Placeholder for the features of an intent classifier.
     
     .. code-block:: python
-
         ["<s> I want to book a flight </s> <s> I want to book flights </s> <s> I want to book a flight to Paris </s>"]
     """
 
-    lang: str = attr.ib(
-        default="en", kw_only=True, validator=attr.validators.instance_of(str)
-    )
+    lang: str = "en"
     """
     Expected language of the input. This is needed for language dependent plugins.
     These are present in https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
     for "English" the code is "en". 
     """
 
-    locale: str = attr.ib(
-        default="en_IN",
-        kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)),  # type: ignore
-    )
+    locale: str = "en_IN"
     """
     The locale identifier consists of at least a language code and a country/region code.
     We keep "en_IN" as our default. This is used by Duckling for parsing patterns as per the 
     locale. If locale is missing i.e. None, we may fallback to :code:`lang` instead.
     """
 
-    timezone: str = attr.ib(
-        default="UTC",
-        kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)),  # type: ignore
-    )
+    timezone: str = "UTC"
     """
     Timezones from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
     Used by duckling or any other date/time parsing plugins.
     """
 
-    slot_tracker: Optional[List[Dict[str, Any]]] = attr.ib(
-        default=None,
-        kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(list)),
-    )
+    slot_tracker: List[Dict[str, Any]] = []
     """
     This data structure tracks the slots that were filled in previous turns.
     This may come handy if we want to filter or reduce entities depending on our history.
     We use this in our :ref:`CombineDateTimeOverSlots <CombineDateTimeOverSlots>` plugin.
 
     .. code-block:: python
-
+    
         [{
             "name": "_callback_",               # the intent name
             "slots": [{
@@ -209,40 +189,28 @@ class Input:
         }]
     """
 
-    current_state: Optional[str] = attr.ib(
-        default=None,
-        kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)),
-    )
+    current_state: str = None
     """
     Points at the active state (or node) within the conversation graph.
     """
 
-    nls_label: Optional[str] = attr.ib(
-        default=None,
-        kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)),
-    )
+    nls_label: str = None
     """
     Points at the NLS Label of the active (current) node within the conversation graph.
     """
 
-    expected_slots: Set[str] = attr.ib(factory=set, kw_only=True)
+    expected_slots: List[str] = []
     """
     In a given turn, the expected number of slots to fill.
     """
 
-    previous_intent: Optional[str] = attr.ib(
-        default=None,
-        kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(str)),
-    )
+    previous_intent: str = None
     """
     The name of the intent that was predicted by the classifier in (exactly) the previous turn.
     """
-    history: Optional[List[Dict[str, Any]]] = attr.ib(default=None, kw_only=True)
+    history: List[Dict[str, Any]] = None
 
-    def __attrs_post_init__(self) -> None:
+    def __post_init__(self) -> None:
         try:
             object.__setattr__(self, "transcripts", normalize(self.utterances))
 
@@ -259,43 +227,34 @@ class Input:
         except TypeError:
             ...
 
-    @reference_time.validator  # type: ignore
-    def _check_reference_time(
-        self, attribute: attr.Attribute, reference_time: Optional[int]  # type: ignore
-    ) -> None:
-        if reference_time is None:
-            return
-        if not isinstance(reference_time, int):
-            raise TypeError(f"{attribute.name} must be an integer.")
-        if not is_unix_ts(reference_time):
-            raise ValueError(
-                f"{attribute.name} must be a unix timestamp but got {reference_time}."
-            )
+    # @reference_time.validator  # type: ignore
+    # def _check_reference_time(
+    #     self, attribute: attr.Attribute, reference_time: Optional[int]  # type: ignore
+    # ) -> None:
+    #     if reference_time is None:
+    #         return
+    #     if not isinstance(reference_time, int):
+    #         raise TypeError(f"{attribute.name} must be an integer.")
+    #     if not is_unix_ts(reference_time):
+    #         raise ValueError(
+    #             f"{attribute.name} must be a unix timestamp but got {reference_time}."
+    #         )
 
-    def json(self) -> Dict[str, Any]:
-        """
-        Serialize `Input`_ to a JSON-like dict.
+    # @classmethod
+    # def from_dict(cls, d: Dict[str, Any], reference: Optional[Input] = None) -> Input:
+    #     """
+    #     Create a new `Input`_ instance from a dictionary.
 
-        :return: A dictionary that represents an `Input`_ instance.
-        :rtype: Dict[str, Any]
-        """
-        return attr.asdict(self)
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any], reference: Optional[Input] = None) -> Input:
-        """
-        Create a new `Input`_ instance from a dictionary.
-
-        :param d: A dictionary such that keys are a subset of `Input`_ attributes.
-        :type d: Dict[str, Any]
-        :param reference: An existing `Input`_ instance., defaults to None
-        :type reference: Optional[Input], optional
-        :return: A new `Input`_ instance.
-        :rtype: Input
-        """
-        if reference:
-            return attr.evolve(reference, **d)
-        return attr.evolve(cls(utterances=d["utterances"]), **d)  # type: ignore
+    #     :param d: A dictionary such that keys are a subset of `Input`_ attributes.
+    #     :type d: Dict[str, Any]
+    #     :param reference: An existing `Input`_ instance., defaults to None
+    #     :type reference: Optional[Input], optional
+    #     :return: A new `Input`_ instance.
+    #     :rtype: Input
+    #     """
+    #     if reference:
+    #         return attr.evolve(reference, **d)
+    #     return attr.evolve(cls(utterances=d["utterances"]), **d)  # type: ignore
 
     def find_entities_in_history(
         self,

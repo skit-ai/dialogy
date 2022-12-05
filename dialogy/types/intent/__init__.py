@@ -19,27 +19,26 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Set
 
-import attr
+from pydantic import BaseModel
 
 from dialogy.types import BaseEntity
 from dialogy.types.slots import Rule, Slot
 from dialogy.utils.logger import logger
 
 
-@attr.s
-class Intent:
+class Intent(BaseModel):
     """
     An instance of this class contains the name of the action associated with a body of text.
     """
 
     # The name of the intent to be used.
-    name: str = attr.ib(kw_only=True, order=False)
+    name: str
     """
     The description of an intent separated by '_'
     """
 
     # The confidence of this intent being present in the utterance.
-    score: float = attr.ib(kw_only=True, default=0.0, order=True)
+    score: float = 0.0
     """
     A positive real number that represents confidence of this intent
     being the meaning of an utterance. Higher is better.
@@ -49,25 +48,22 @@ class Intent:
 
     # In case of an ASR, `alternative_index` points at one of the nth
     # alternatives that help in predictions.
-    alternative_index: Optional[int] = attr.ib(kw_only=True, default=None, order=False)
+    alternative_index: int = None
     """
     Tells us the index of transcript that yeilds this intent. Since our featurizer
     concatenates all transcripts, we currently don't have a use for it.
-
     If we were to predict the intent for each transcript separately and vote, in those
     cases it would be helpful to log this property.
     """
 
     # Trail of functions that modify the attributes of an instance.
-    parsers: List[str] = attr.ib(kw_only=True, factory=list, order=False, repr=False)
+    parsers: List[str] = []
     """
     Contains a list of plugins that have created, updated this Intent.
     """
 
     # Container for holding `List[BaseEntity]`.
-    slots: Dict[str, Slot] = attr.ib(
-        kw_only=True, factory=dict, order=False, repr=False
-    )
+    slots: Dict[str, Slot] = {}
     """
     Placeholders for :ref:`entities <BaseEntity>` that are relevant to this intent. 
     More details are available in the doc for :ref:`slots <Slot>`.
@@ -76,7 +72,7 @@ class Intent:
     def apply(self, rules: Rule) -> Intent:
         """
         Create slots using rules.
-
+        
         .. _ApplySlot:
 
         An intent can hold different entities within associated slot-types.
@@ -222,29 +218,10 @@ class Intent:
     def cleanup(self) -> None:
         """
         Remove slots that were not filled.
-
+        
         .. _CleanupSlot:
         """
         slot_names = list(self.slots.keys())
         for slot_name in slot_names:
             if not self.slots[slot_name].values:
                 del self.slots[slot_name]
-
-    def json(self) -> Dict[str, Any]:
-        """
-        Convert the object to a dictionary.
-
-        .. ipython:: python
-
-            from dialogy.types.intent import Intent
-
-            intent = Intent(name="special", score=0.8)
-            intent.json()
-        """
-        return {
-            "name": self.name,
-            "alternative_index": self.alternative_index,
-            "score": self.score,
-            "parsers": self.parsers,
-            "slots": [slot.json() for slot in self.slots.values()],
-        }

@@ -5,13 +5,12 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-import attr
+from pydantic import BaseModel
 
 from dialogy.types import BaseEntity
 
 
-@attr.s
-class Slot:
+class Slot(BaseModel):
     """
     Slot Type
 
@@ -23,9 +22,9 @@ class Slot:
     - `values` list of entities extracted
     """
 
-    name: str = attr.ib(kw_only=True, order=True)
-    types: List[str] = attr.ib(kw_only=True, factory=list, order=False)
-    values: List[BaseEntity] = attr.ib(kw_only=True, factory=list, order=False)
+    name: str
+    types: List[str] = []
+    values: List[BaseEntity] = []
 
     def add(self, entity: BaseEntity) -> Slot:
         """
@@ -41,23 +40,23 @@ class Slot:
         self.values = []
         return self
 
-    def json(self) -> Dict[str, Any]:
-        """
-        Convert the object to a dictionary.
+    # def json(self) -> Dict[str, Any]:
+    #     """
+    #     Convert the object to a dictionary.
 
-        Returns:
-            Dict[str, Any]
-        """
-        self.values = sorted(
-            self.values,
-            key=lambda parse: parse.score or 0,
-            reverse=True,
-        )
-        return {
-            "name": self.name,
-            "types": self.types,
-            "values": [entity.json() for entity in self.values],
-        }
+    #     Returns:
+    #         Dict[str, Any]
+    #     """
+    #     self.values = sorted(
+    #         self.values,
+    #         key=lambda parse: parse.score or 0,
+    #         reverse=True,
+    #     )
+    #     return {
+    #         "name": self.name,
+    #         "types": self.types,
+    #         "values": [entity.json() for entity in self.values],
+    #     }
 
 
 Rule = Dict[str, Dict[str, Any]]

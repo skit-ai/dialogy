@@ -7,9 +7,7 @@ Import classes:
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
-
-import attr
+from typing import Any
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
@@ -17,10 +15,9 @@ from dialogy.types.entity.deserialize import EntityDeserializer
 
 
 @EntityDeserializer.register(const.ADDRESS)
-@attr.s
 class AddressEntity(BaseEntity):
-    dim: str = attr.ib(default="address", kw_only=True)
-    entity_type: str = attr.ib(default="address", kw_only=True)
+    dim: str = "address"
+    entity_type: str = "address"
 
     @classmethod
     def from_maps(
