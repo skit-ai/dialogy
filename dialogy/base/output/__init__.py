@@ -48,6 +48,7 @@ from typing import Any, Dict, List, Union, Optional
 
 from pydantic import BaseModel, validator
 
+from dialogy import constants as const
 from dialogy.types import BaseEntity, Intent
 
 JSON_LIST_TYPE = List[Dict[str, Any]]
@@ -83,47 +84,40 @@ class Output(BaseModel):
 
         return v
 
-    # @entities.validator  # type: ignore
-    # def _are_entities_valid(
-    #     self, _: attr.Attribute, entities: List[BaseEntity]  # type: ignore
-    # ) -> None:
-    #     if not isinstance(entities, list):
-    #         raise TypeError(f"entities must be a list, not {type(entities)}")
+    @validator('entities')
+    def are_entities_valid(cls, v):
+        if not isinstance(v, list):
+            raise TypeError(f"entities must be a list, not {type(v)}")
 
-    #     if not entities:
-    #         return
+        if any(not isinstance(entity, BaseEntity) for entity in v):
+            raise TypeError(f"intents must be a List[BaseEntity] but {v} was provided.")
 
-    #     if any(not isinstance(entity, BaseEntity) for entity in entities):
-    #         raise TypeError(
-    #             f"intents must be a List[BaseEntity] but {entities} was provided."
-    #         )
+        return v
 
-    # @original_intent.validator  # type: ignore
-    # def _is_original_intent_valid(
-    #     self, _: attr.Attribute, original_intent: Dict[str, Union[str, float]]  # type: ignore
-    # ) -> None:
-    #     if not original_intent:
-    #         return
-    #     if not isinstance(original_intent, dict):
-    #         raise TypeError(
-    #             f"original_intent must be a dict, not {type(original_intent)}"
-    #         )
-    #     if const.NAME not in original_intent:
-    #         raise TypeError(
-    #             f"original_intent must contain {const.NAME} but {original_intent} was provided."
-    #         )
-    #     if not isinstance(original_intent[const.NAME], str):
-    #         raise TypeError(
-    #             f"original_intent[{const.NAME}] must be a str, not {type(original_intent[const.NAME])}"
-    #         )
-    #     if const.SCORE not in original_intent:
-    #         raise TypeError(
-    #             f"original_intent must contain {const.SCORE} but {original_intent} was provided."
-    #         )
-    #     if not isinstance(original_intent[const.SCORE], float):
-    #         raise TypeError(
-    #             f"original_intent[{const.SCORE}] must be a float, not {type(original_intent[const.SCORE])}"
-    #         )
+    @validator('original_intent')
+    def is_original_intent_valid(cls, v):
+        if not isinstance(v, dict):
+            raise TypeError(
+                f"original_intent must be a dict, not {type(v)}"
+            )
+        if const.NAME not in v:
+            raise TypeError(
+                f"original_intent must contain {const.NAME} but {v} was provided."
+            )
+        if not isinstance(v[const.NAME], str):
+            raise TypeError(
+                f"original_intent[{const.NAME}] must be a str, not {type(v[const.NAME])}"
+            )
+        if const.SCORE not in v:
+            raise TypeError(
+                f"original_intent must contain {const.SCORE} but {v} was provided."
+            )
+        if not isinstance(v[const.SCORE], float):
+            raise TypeError(
+                f"original_intent[{const.SCORE}] must be a float, not {type(v[const.SCORE])}"
+            )
+        
+        return v
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any], reference: Optional[Output] = None) -> Output:
