@@ -50,7 +50,8 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-from pydantic import validator
+
+from pydantic import validator, Field
 
 from dialogy import constants as const
 from dialogy.types.entity.deserialize import EntityDeserializer
@@ -76,8 +77,8 @@ class TimeIntervalEntity(TimeEntity):
     type: str = "value"
     from_value: datetime = None
     to_value: datetime = None
-    values: List[Dict[str, Any]] = None
-    value: Dict[str, Any] = None
+    values: List[Dict[str, Any]] = Field(default_factory=list)
+    value: Dict[str, Any] = Field(default_factory=dict)
 
     def __init__(self, **data):
         if data["values"] and not data["value"]:
@@ -97,12 +98,12 @@ class TimeIntervalEntity(TimeEntity):
         super().__init__(**data)
 
     @validator('values')
-    def check_values(cls, v, data):
+    def check_values(cls, v, values):
         for value in v:
             obj_keys = set(value.keys())
-            if not obj_keys.issubset(data["value_keys"]):
+            if not obj_keys.issubset(values["value_keys"]):
                 raise TypeError(
-                    f"Expected {obj_keys} to be a subset of {data['value_keys']} for values"
+                    f"Expected {obj_keys} to be a subset of {values['value_keys']} for values"
                 )
 
     def collect_datetime_values(self) -> List[datetime]:

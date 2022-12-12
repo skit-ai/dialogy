@@ -50,6 +50,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
+from pydantic import Field
+
 from dialogy import constants as const
 from dialogy.types import BaseEntity
 from dialogy.types.entity.deserialize import EntityDeserializer
@@ -59,7 +61,7 @@ from dialogy.types.entity.deserialize import EntityDeserializer
 class CreditCardNumberEntity(BaseEntity):
     issuer: str
     value: str = None
-    values: List[Dict[str, Any]] = []
+    values: List[Dict[str, Any]] = Field(default_factory=list)
     entity_type: str = const.CREDIT_CARD_NUMBER
 
     @classmethod

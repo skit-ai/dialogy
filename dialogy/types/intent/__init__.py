@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Set
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from dialogy.types import BaseEntity
 from dialogy.types.slots import Rule, Slot
@@ -58,13 +58,13 @@ class Intent(BaseModel):
     """
 
     # Trail of functions that modify the attributes of an instance.
-    parsers: List[str] = []
+    parsers: List[str] = Field(default_factory=list)
     """
     Contains a list of plugins that have created, updated this Intent.
     """
 
     # Container for holding `List[BaseEntity]`.
-    slots: Dict[str, Slot] = {}
+    slots: Dict[str, Slot] = Field(default_factory=dict)
     """
     Placeholders for :ref:`entities <BaseEntity>` that are relevant to this intent. 
     More details are available in the doc for :ref:`slots <Slot>`.

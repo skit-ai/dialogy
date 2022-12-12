@@ -46,7 +46,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Union, Optional
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Field, validator
 
 from dialogy import constants as const
 from dialogy.types import BaseEntity, Intent
@@ -60,24 +60,27 @@ class Output(BaseModel):
     Represents output of the SLU API.
     """
 
-    intents: List[Intent] = []
+    intents: List[Intent] = Field(default_factory=list)
     """
     A list of intents. Produced by :ref:`XLMRMultiClass <XLMRMultiClass>`
     or :ref:`MLPMultiClass <MLPMultiClass>`.
     """
 
-    entities: List[BaseEntity] = []
+    entities: List[BaseEntity] = Field(default_factory=list)
     """
     A list of entities. Produced by :ref:`DucklingPlugin <DucklingPlugin>`, 
     :ref:`ListEntityPlugin <ListEntityPlugin>` or :ref:`ListSearchPlugin <ListSearchPlugin>`.
     """
 
-    original_intent: ORIGINAL_INTENT_TYPE = {}
+    original_intent: ORIGINAL_INTENT_TYPE = Field(default_factory=dict)
 
     @validator('intents')
     def are_intents_valid(cls, v):
         if not isinstance(v, list):
             raise TypeError(f"`intents` must be a list, not {type(v)}")
+
+        if not v:
+            return []
 
         if any(not isinstance(intent, Intent) for intent in v):
             raise TypeError(f"`intents` must be a List[Intent] but {v} was provided.")
@@ -88,6 +91,9 @@ class Output(BaseModel):
     def are_entities_valid(cls, v):
         if not isinstance(v, list):
             raise TypeError(f"entities must be a list, not {type(v)}")
+
+        if not v:
+            return []
 
         if any(not isinstance(entity, BaseEntity) for entity in v):
             raise TypeError(f"intents must be a List[BaseEntity] but {v} was provided.")
@@ -100,6 +106,10 @@ class Output(BaseModel):
             raise TypeError(
                 f"original_intent must be a dict, not {type(v)}"
             )
+
+        if not v:
+            return {}
+
         if const.NAME not in v:
             raise TypeError(
                 f"original_intent must contain {const.NAME} but {v} was provided."
@@ -112,10 +122,12 @@ class Output(BaseModel):
             raise TypeError(
                 f"original_intent must contain {const.SCORE} but {v} was provided."
             )
-        if not isinstance(v[const.SCORE], float):
-            raise TypeError(
-                f"original_intent[{const.SCORE}] must be a float, not {type(v[const.SCORE])}"
-            )
+
+        v[const.SCORE] = float(v[const.SCORE])
+        # if not isinstance(v[const.SCORE], float):
+        #     raise TypeError(
+        #         f"original_intent[{const.SCORE}] must be a float, not {type(v[const.SCORE])}"
+        #     )
         
         return v
 

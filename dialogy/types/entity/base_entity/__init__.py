@@ -82,7 +82,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from dialogy import constants as const
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # = BaseEntity =
@@ -107,7 +107,7 @@ class BaseEntity(BaseModel):
     # **dim**
     #
     # is influenced from Duckling's convention of categorization.
-    dim: str = None
+    dim: Optional[str] = None
 
     # **type**
     #
@@ -117,19 +117,19 @@ class BaseEntity(BaseModel):
     # **parsers**
     #
     # gives the trail of all the functions that have changed this entity in the sequence of application.
-    parsers: List[str] = []
+    parsers: List[str] = Field(default_factory=list)
 
     # **score**
     #
     # is the confidence that the range is the entity.
-    score: float = None
+    score: Optional[float] = None
 
     # **alternative_index**
     #
     # is the index of transcript within the ASR output: `List[Utterances]`
     # from which this entity was picked up. This may be None.
-    alternative_index: int = None
-    alternative_indices: List[int] = None
+    alternative_index: Optional[int] = None
+    alternative_indices: Optional[List[int]] = None
 
     # **latent**
     #
@@ -139,7 +139,7 @@ class BaseEntity(BaseModel):
     # **values**
     #
     # The parsed value of an entity resides within this attribute.
-    values: List[Dict[str, Any]] = []
+    values: List[Dict[str, Any]] = Field(default_factory=list)
 
     # **values**
     #
@@ -147,12 +147,12 @@ class BaseEntity(BaseModel):
     value: Any = None
 
     # **entity_type**
-    entity_type: str = None
+    entity_type: Optional[str] = None
 
     def __init__(self, **data):
-        if data["values"] and not data["value"]:
+        if "values" in data and data["values"] and ("value" not in data or not data["value"]):
             data["value"] = data["values"][0][const.VALUE]
-        elif data["value"] and not data["values"]:
+        elif "value" in data["value"] and ("values" not in data or not data["values"]):
             data["values"] = [{const.VALUE: data["value"]}]
 
         super().__init__(**data)

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from dialogy.types import BaseEntity
 
@@ -23,8 +23,8 @@ class Slot(BaseModel):
     """
 
     name: str
-    types: List[str] = []
-    values: List[BaseEntity] = []
+    types: List[str] = Field(default_factory=list)
+    values: List[BaseEntity] = Field(default_factory=list)
 
     def add(self, entity: BaseEntity) -> Slot:
         """

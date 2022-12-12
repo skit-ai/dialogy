@@ -47,8 +47,11 @@ Workflow Integration
 from __future__ import annotations
 
 import operator
+
 from datetime import timedelta
 from typing import Any, Dict, Optional, Union
+
+from pydantic import Field
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
@@ -72,8 +75,8 @@ class DurationEntity(BaseEntity):
     """
 
     unit: str
-    normalized: Dict[str, Any] = {}
-    _meta: Dict[str, str] = {}
+    normalized: Dict[str, Any] = Field(default_factory=dict)
+    _meta: Dict[str, str] = Field(default_factory=dict)
     entity_type: str = const.DURATION
 
     @classmethod

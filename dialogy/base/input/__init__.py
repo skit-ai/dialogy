@@ -79,9 +79,9 @@ If there is a need to represent an :ref:`Input<Input>` as a `dict` we can do the
 from __future__ import annotations
 
 from functools import reduce
-from typing import Any, Dict, List, Optional, Union, Set
+from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Field, validator
 
 from dialogy.types import Utterance
 from dialogy.utils import normalize, get_best_transcript, is_unix_ts
@@ -99,7 +99,7 @@ class Input(BaseModel):
     Each hypothesis is a :code:`dict` with keys :code:`"transcript"` and :code:`"confidence"`.
     """
 
-    reference_time: int = None
+    reference_time: Optional[int] = None
     """
     The time that should be used for parsing relative time values.
     This is a Unix timestamp in seconds.
@@ -126,7 +126,7 @@ class Input(BaseModel):
     A derived attribute. Contains the best alternative selected out of the utterances.
     """
 
-    clf_feature: List[str] = []
+    clf_feature: Optional[List[str]] = Field(default_factory=list)
     """
     Placeholder for the features of an intent classifier.
     
@@ -154,7 +154,7 @@ class Input(BaseModel):
     Used by duckling or any other date/time parsing plugins.
     """
 
-    slot_tracker: List[Dict[str, Any]] = []
+    slot_tracker: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
     """
     This data structure tracks the slots that were filled in previous turns.
     This may come handy if we want to filter or reduce entities depending on our history.
@@ -189,26 +189,26 @@ class Input(BaseModel):
         }]
     """
 
-    current_state: str = None
+    current_state: Optional[str] = None
     """
     Points at the active state (or node) within the conversation graph.
     """
 
-    nls_label: str = None
+    nls_label: Optional[str] = None
     """
     Points at the NLS Label of the active (current) node within the conversation graph.
     """
 
-    expected_slots: Set[str] = []
+    expected_slots: List[str] = Field(default_factory=list)
     """
     In a given turn, the expected number of slots to fill.
     """
 
-    previous_intent: str = None
+    previous_intent: Optional[str] = None
     """
     The name of the intent that was predicted by the classifier in (exactly) the previous turn.
     """
-    history: List[Dict[str, Any]] = None
+    history: Optional[List[Dict[str, Any]]] = None
 
     def __init__(self, **data):
         data["transcripts"] = normalize(data["utterances"])

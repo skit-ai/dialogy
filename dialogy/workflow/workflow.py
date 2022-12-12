@@ -166,6 +166,7 @@ class Workflow:
         """
         Post init hook.
         """
+        self.lock = Lock()
         for plugin in self.plugins:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug

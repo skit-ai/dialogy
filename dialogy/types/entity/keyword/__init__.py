@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from typing import Dict
 
+from pydantic import Field
+
 from dialogy.types.entity.base_entity import BaseEntity
 
 
@@ -20,4 +22,4 @@ class KeywordEntity(BaseEntity):
     is enough for detection.
     """
 
-    _meta: Dict[str, str] = {}
+    _meta: Dict[str, str] = Field(default_factory=dict)
