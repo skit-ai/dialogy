@@ -154,7 +154,7 @@ class Input(BaseModel):
     Used by duckling or any other date/time parsing plugins.
     """
 
-    slot_tracker: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
+    slot_tracker: Optional[List[Dict[str, Any]]] = None
     """
     This data structure tracks the slots that were filled in previous turns.
     This may come handy if we want to filter or reduce entities depending on our history.

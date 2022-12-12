@@ -48,7 +48,7 @@ class Intent(BaseModel):
 
     # In case of an ASR, `alternative_index` points at one of the nth
     # alternatives that help in predictions.
-    alternative_index: int = None
+    alternative_index: Optional[int] = None
     """
     Tells us the index of transcript that yeilds this intent. Since our featurizer
     concatenates all transcripts, we currently don't have a use for it.

@@ -75,10 +75,10 @@ class TimeIntervalEntity(TimeEntity):
     dim = "time"
     value_keys = {const.FROM, const.TO, const.TYPE}
     type: str = "value"
-    from_value: datetime = None
-    to_value: datetime = None
-    values: List[Dict[str, Any]] = Field(default_factory=list)
-    value: Dict[str, Any] = Field(default_factory=dict)
+    from_value: Optional[datetime] = None
+    to_value: Optional[datetime] = None
+    values: List[Dict[str, Any]] = None
+    value: Dict[str, Any] = None
 
     def __init__(self, **data):
         if data["values"] and not data["value"]:

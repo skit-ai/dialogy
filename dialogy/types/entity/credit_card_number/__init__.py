@@ -59,10 +59,10 @@ from dialogy.types.entity.deserialize import EntityDeserializer
 
 @EntityDeserializer.register(const.CREDIT_CARD_NUMBER)
 class CreditCardNumberEntity(BaseEntity):
+    entity_type: str = const.CREDIT_CARD_NUMBER
     issuer: str
     value: str = None
-    values: List[Dict[str, Any]] = Field(default_factory=list)
-    entity_type: str = const.CREDIT_CARD_NUMBER
+    values: List[Dict[str, Any]]
 
     @classmethod
     def from_duckling(

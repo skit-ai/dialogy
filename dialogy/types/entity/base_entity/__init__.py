@@ -152,7 +152,7 @@ class BaseEntity(BaseModel):
     def __init__(self, **data):
         if "values" in data and data["values"] and ("value" not in data or not data["value"]):
             data["value"] = data["values"][0][const.VALUE]
-        elif "value" in data["value"] and ("values" not in data or not data["values"]):
+        elif "value" in data["value"] and data["value"] and ("values" not in data or not data["values"]):
             data["values"] = [{const.VALUE: data["value"]}]
 
         super().__init__(**data)
