@@ -54,7 +54,6 @@ import operator
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional
 
-import attr
 import pydash as py_
 
 from dialogy import constants as const
@@ -70,7 +69,6 @@ def dt_from_isoformat(iso_datetime: str) -> datetime:
 
 
 @EntityDeserializer.register(const.TIME)
-@attr.s
 class TimeEntity(BaseEntity):
     """
     Entities that can be parsed to obtain date, time or datetime values.
@@ -84,9 +82,10 @@ class TimeEntity(BaseEntity):
     - `grain` tells us the smallest unit of time in the utterance
     """
 
-    origin: str = attr.ib(default=const.VALUE)
-    dim: str = attr.ib(default=const.TIME)
-    grain: str = attr.ib(default=None, validator=attr.validators.instance_of(str))
+    origin: str = const.VALUE
+    dim: str = const.TIME
+    grain: str = None
+    
     __TIMERANGE_OPERATION_ALIAS: Dict[str, Callable[[Any, Any], bool]] = {
         const.LTE: operator.le,
         const.GTE: operator.ge,
