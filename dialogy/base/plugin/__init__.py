@@ -198,15 +198,12 @@ If your plugin belongs to [1], then you need to set :code:`replace_output=True` 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Callable, List, Optional
+from typing import Any, Callable, List, Optional
 
 import dialogy.constants as const
 from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.utils.logger import logger
-
-if TYPE_CHECKING:  # pragma: no cover
-    from dialogy.workflow import Workflow
 
 
 Guard = Callable[[Input, Output], bool]
@@ -261,7 +258,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    def __call__(self, workflow: Workflow) -> None:
+    def __call__(self, input, output):
         """
         Set workflow with output.
 
@@ -274,24 +271,74 @@ class Plugin(ABC):
         - The workflow takes care of keeping its :ref:`input<Input>` and :ref:`output<Output>` immutable.
 
         .. _PluginBookkeeping:
-
+        
         :param workflow: An instance of :ref:`Workflow <WorkflowClass>`.
         :type workflow: Workflow
         """
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
 
-        if workflow.input is None:
-            return
+        if input is None:
+            return input, output
 
-        if workflow.output is None:
-            return
+        if output is None:
+            return input, output
 
-        if self.prevent(workflow.input, workflow.output):
-            return
+        if self.prevent(input, output):
+            return input, output
 
-        value = self.utility(workflow.input, workflow.output)
+        # compute
+        value = self.utility(input, output)
+
+        # update
         if value is not None and isinstance(self.dest, str):
-            workflow.set(self.dest, value, self.replace_output)
+            input, output = self.set(value, input, output)
+        
+        return input, output
+
+    def set(
+        self,
+        value: Any,
+        input, output,
+        sort_output_attributes: bool = True,
+    ):
+        """
+        Set attribute path with value.
+        This method (re)-sets the input or output object without losing information
+        from previous instances.
+        :param path: A '.' separated attribute path.
+        :type path: str
+        :param value: A value to set.
+        :type value: Any
+        :param sort_output_attributes: A boolean to sort output attributes.
+        :type value: bool
+        :return: This instance
+        :rtype: Workflow
+        """
+        dest, attribute = self.dest.split(".")
+
+        if dest == const.INPUT:
+            input = input.copy(update={attribute: value}, deep=True)
+            
+        elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
+            if not self.replace_output and isinstance(value, list):
+                previous_value = output.intents if attribute == const.INTENTS else output.entities  # type: ignore
+                if sort_output_attributes:
+                    value = sorted(
+                        previous_value + value,
+                        key=lambda parse: parse.score or 0,
+                        reverse=True,
+                    )
+                else:
+                    value = previous_value + value
+
+            output = output.copy(update={attribute: value}, deep=True)
+
+        elif dest == const.OUTPUT:
+            raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
+        else:
+            raise ValueError(f"{self.dest} is not a valid path.")
+            
+        return input, output
 
     def prevent(self, input_: Input, output: Output) -> bool:
         """

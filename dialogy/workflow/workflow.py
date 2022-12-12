@@ -113,13 +113,15 @@ How does it do it?
 """
 from __future__ import annotations
 
-import copy
 import time
-from threading import Lock
-from typing import Any, Dict, List, Optional, Tuple
+
+from typing import List
 
 import attr
 import pandas as pd
+
+from threading import Lock
+from pprint import pformat
 
 from dialogy import constants as const
 from dialogy.base.input import Input
@@ -145,103 +147,38 @@ class Workflow:
     List of :ref:`plugins <AbstractPlugin>`.
     """
 
-    input: Optional[Input] = attr.ib(
-        default=None,
-        kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(Input)),
-    )
-    """
-    Represents the SLU API request object. A few nested properties and intermediates are flattened out
-    for readability.
-    """
-
-    output: Optional[Output] = attr.ib(
-        default=None,
-        kw_only=True,
-        validator=attr.validators.optional(attr.validators.instance_of(Output)),
-    )
-    """
-    Represents the SLU API response object.
-    """
-
     debug = attr.ib(
         type=bool, default=False, validator=attr.validators.instance_of(bool)
     )
     """
     Switch on/off the debug logs for the workflow.
     """
+
     lock: Lock
     """
-    A :ref:`workflow <WorkflowClass>` isn't thread-safe by itself. We need locks
-    to prevent race conditions.
+    A :ref:`plugin <PluginClass>` may not be thread-safe. Synchronization lock will
+    prevent race conditions.
     """
+
     NON_SERIALIZABLE_FIELDS = [const.PLUGINS, const.DEBUG, const.LOCK]
 
     def __attrs_post_init__(self) -> None:
         """
         Post init hook.
         """
-        self.__reset()
-        self.lock = Lock()
         for plugin in self.plugins:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug
 
-    def __reset(self) -> None:
+    def run(self, input: Input):
         """
-        Use this method to keep workflow-io in the same format as expected.
-        """
-        self.input = None
-        self.output = Output()
+        .. _workflow_run:
 
-    def set(
-        self,
-        path: str,
-        value: Any,
-        replace: bool = False,
-        sort_output_attributes: bool = True,
-    ) -> Workflow:
-        """
-        Set attribute path with value.
+        Get final results from the workflow.
 
-        This method (re)-sets the input or output object without losing information
-        from previous instances.
+        The current workflow exhibits the following simple procedure:
+        pre-processing -> inference -> post-processing.
 
-        :param path: A '.' separated attribute path.
-        :type path: str
-        :param value: A value to set.
-        :type value: Any
-        :param sort_output_attributes: A boolean to sort output attributes.
-        :type value: bool
-        :return: This instance
-        :rtype: Workflow
-        """
-        dest, attribute = path.split(".")
-
-        if dest == const.INPUT:
-            self.input = Input.from_dict({attribute: value}, reference=self.input)
-        elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
-            if not replace and isinstance(value, list):
-                previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities  # type: ignore
-                if sort_output_attributes:
-                    value = sorted(
-                        previous_value + value,
-                        key=lambda parse: parse.score or 0,
-                        reverse=True,
-                    )
-                else:
-                    value = previous_value + value
-
-            self.output = Output.from_dict({attribute: value}, reference=self.output)
-
-        elif dest == const.OUTPUT:
-            raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
-        else:
-            raise ValueError(f"{path} is not a valid path.")
-        return self
-
-    def execute(self) -> Workflow:
-        """
         Update input, output attributes.
 
         We iterate through pre/post processing functions and update the input and
@@ -249,6 +186,8 @@ class Workflow:
         would modify the input, and post-processing functions would modify the output.
         """
         history = {}
+        output = Output()
+
         for plugin in self.plugins:
             if not callable(plugin):
                 raise TypeError(f"{plugin=} is not a callable")
@@ -258,62 +197,28 @@ class Workflow:
                 history = {
                     "plugin": plugin,
                     "before": {
-                        "input": self.input,
-                        "output": self.output,
+                        "input": input.dict(),
+                        "output": output.dict(),
                     },
                 }
+
             start = time.perf_counter()
-            plugin(self)
+            with self.lock:
+                input, output = plugin(input, output)
             end = time.perf_counter()
+
             # logs are available only when debug=False during class initialization
             if self.debug:
                 history["after"] = {
-                    "input": self.input,
-                    "output": self.output,
+                    "input": input.dict(),
+                    "output": output.dict(),
                 }
                 history["perf"] = round(end - start, 4)
+
             if history:
-                logger.debug(history)
-        return self
+                logger.debug(pformat(history))
 
-    def run(self, input_: Input) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """
-        .. _workflow_run:
-
-        Get final results from the workflow.
-
-        The current workflow exhibits the following simple procedure:
-        pre-processing -> inference -> post-processing.
-        """
-        with self.lock:
-            self.input = input_
-            try:
-                return self.execute().flush()
-            finally:
-                self.__reset()
-
-    def flush(self) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """
-        Reset :code:`workflow.input` and :code:`workflow.output`.
-        """
-        if self.input is None or self.output is None:
-            return {}, {}
-        input_ = copy.deepcopy(self.input.json())
-        output = copy.deepcopy(self.output.json())
-        self.__reset()
-        return input_, output
-
-    def json(self) -> Dict[str, Any]:
-        """
-        Represent the workflow as a python dict.
-
-        :rtype: Dict[str, Any]
-        """
-        return attr.asdict(
-            self,
-            filter=lambda attribute, _: attribute.name
-            not in self.NON_SERIALIZABLE_FIELDS,
-        )
+        return input, output
 
     def train(self, training_data: pd.DataFrame) -> Workflow:
         """
@@ -332,6 +237,3 @@ class Workflow:
             if transformed_data is not None:
                 training_data = transformed_data
         return self
-
-
-47
