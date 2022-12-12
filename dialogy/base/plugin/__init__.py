@@ -317,26 +317,23 @@ class Plugin(ABC):
         dest, attribute = self.dest.split(".")
 
         if dest == const.INPUT:
-            input = input.copy(update={attribute: value}, deep=True)
-            
-        elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
-            if not self.replace_output and isinstance(value, list):
-                previous_value = output.intents if attribute == const.INTENTS else output.entities  # type: ignore
-                if sort_output_attributes:
-                    value = sorted(
-                        previous_value + value,
-                        key=lambda parse: parse.score or 0,
-                        reverse=True,
-                    )
-                else:
-                    value = previous_value + value
-
-            output = output.copy(update={attribute: value}, deep=True)
-
+            setattr(input, attribute, value)
         elif dest == const.OUTPUT:
-            raise ValueError(f"{value=} should be a List[Intent] or List[BaseEntity].")
+            if attribute not in const.OUTPUT_ATTRIBUTES:
+                raise ValueError(f"output attribute: {attribute} should be one of {const.OUTPUT_ATTRIBUTES}.")
+
+            if not isinstance(value, (list, dict)):
+                raise ValueError(f"value: {value} should be a List or Dict.")
+            
+            if not self.replace_output and isinstance(value, list) and attribute != const.ORIGINAL_INTENT:
+                previous_value = getattr(output, attribute)
+                value = previous_value + value
+                if sort_output_attributes:
+                    value = sorted(value, key=lambda parse: parse.score or 0, reverse=True,)
+                    
+            setattr(output, attribute, value)
         else:
-            raise ValueError(f"{self.dest} is not a valid path.")
+            raise ValueError(f"dest: {self.dest} is not valid.")
             
         return input, output
 
