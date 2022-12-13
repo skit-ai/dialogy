@@ -226,3 +226,22 @@ class Intent(BaseModel):
         for slot_name in slot_names:
             if not self.slots[slot_name].values:
                 del self.slots[slot_name]
+
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+        """
+        Convert the object to a dictionary.
+
+        .. ipython:: python
+
+            from dialogy.types.intent import Intent
+
+            intent = Intent(name="special", score=0.8)
+            intent.json()
+        """
+        return {
+            "name": self.name,
+            "alternative_index": self.alternative_index,
+            "score": self.score,
+            "parsers": self.parsers,
+            "slots": [slot.dict() for slot in self.slots.values()],
+        }
