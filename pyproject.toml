@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dialogy"
-version = "0.9.22"
+version = "0.10.0"
 description = "Dialogy is a library for building and managing SLU applications."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 license = "MIT"
