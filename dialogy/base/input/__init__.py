@@ -213,7 +213,7 @@ class Input(BaseModel):
     def __init__(self, **data):
         data["transcripts"] = normalize(data["utterances"])
         data["best_transcript"] = get_best_transcript(data["transcripts"])
-        data["expected_slots"] = list(set(data["expected_slots"]))
+        data["expected_slots"] = list(set(data.get("expected_slots", [])))
         
         super().__init__(**data)
 
