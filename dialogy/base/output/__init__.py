@@ -77,6 +77,8 @@ class Output:
         default=attr.Factory(dict), kw_only=True
     )
 
+    duration: float = 0.0
+
     @intents.validator  # type: ignore
     def _are_intents_valid(
         self, _: attr.Attribute, intents: List[Intent]  # type: ignore
@@ -147,6 +149,7 @@ class Output:
             const.INTENTS: [intent.json() for intent in self.intents],
             const.ENTITIES: [entity.json() for entity in self.entities],
             const.ORIGINAL_INTENT: self.original_intent,
+            "duration": self.duration
         }
 
     @classmethod

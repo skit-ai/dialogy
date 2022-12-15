@@ -249,6 +249,7 @@ class Workflow:
         would modify the input, and post-processing functions would modify the output.
         """
         history = {}
+        pipeline_start = time.perf_counter()
         for plugin in self.plugins:
             if not callable(plugin):
                 raise TypeError(f"{plugin=} is not a callable")
@@ -274,6 +275,8 @@ class Workflow:
                 history["perf"] = round(end - start, 4)
             if history:
                 logger.debug(history)
+        pipeline_end = time.perf_counter()
+        self.output.duration = round(pipeline_end - pipeline_start)
         return self
 
     def run(self, input_: Input) -> Tuple[Dict[str, Any], Dict[str, Any]]:
