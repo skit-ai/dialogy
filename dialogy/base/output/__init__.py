@@ -76,6 +76,8 @@ class Output(BaseModel):
 
     original_intent: ORIGINAL_INTENT_TYPE = Field(default_factory=dict)
 
+    duration: float = Field(default=0.0)
+
     def __init__(self, **data: Any):
         if "entities" in data:
             entities = [EntityDeserializer.deserialize_json(**ent) for ent in data["entities"]]
