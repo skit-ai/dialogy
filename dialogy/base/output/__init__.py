@@ -50,34 +50,11 @@ from pydantic import BaseModel, Field, validator
 
 from dialogy import constants as const
 from dialogy.types import BaseEntity, Intent
-from dialogy.types import (
-    AddressEntity,
-    CurrencyEntity,
-    CreditCardNumberEntity,
-    DurationEntity,
-    KeywordEntity,
-    NumericalEntity,
-    PeopleEntity,
-    PincodeEntity,
-    TimeEntity
-)
+from dialogy.types.entity.deserialize import EntityDeserializer
+
 
 JSON_LIST_TYPE = List[Dict[str, Any]]
 ORIGINAL_INTENT_TYPE = Dict[str, Union[str, float]]
-
-ENTITY_TYPES = {
-    "address": AddressEntity,
-    "amount-of-money": CurrencyEntity,
-    "credit-card-number": CreditCardNumberEntity,
-    "duration": DurationEntity,
-    "language": KeywordEntity,
-    "number": NumericalEntity,
-    "people": PeopleEntity,
-    "pincode": PincodeEntity,
-    "date": TimeEntity,
-    "time": TimeEntity,
-    "datetime": TimeEntity,
-}
 
 
 class Output(BaseModel):
@@ -101,9 +78,7 @@ class Output(BaseModel):
 
     def __init__(self, **data: Any):
         if "entities" in data:
-            entities = []
-            for ent in data["entities"]:
-                entities.append(ENTITY_TYPES.get(ent["entity_type"], KeywordEntity)(**ent))
+            entities = [EntityDeserializer.deserialize_json(**ent) for ent in data["entities"]]
             data["entities"] = entities
 
         super().__init__(**data)

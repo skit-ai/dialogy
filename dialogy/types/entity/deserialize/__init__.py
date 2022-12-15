@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, Optional
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
+from dialogy.types.entity.keyword import KeywordEntity
 
 
 class EntityDeserializer:
@@ -33,6 +34,8 @@ class EntityDeserializer:
 
     @staticmethod
     def get_keys_in_value_as_str(duckling_entity_dict: Dict[str, Any]) -> str:
+        if not isinstance(duckling_entity_dict[const.VALUE], dict):
+            return ""
         return " ".join(sorted(duckling_entity_dict[const.VALUE].keys()))
 
     @staticmethod
@@ -75,6 +78,21 @@ class EntityDeserializer:
             raise ValueError(
                 f"Failed to deserialize {EntityClass} "
                 f"from duckling response: {duckling_entity_dict}. Exception: {e}"
+            ) from e
+
+        return entity
+
+    @classmethod
+    def deserialize_json(cls, **data) -> Optional[BaseEntity]:
+        entity_class_name = cls.get_entity_class_str(data)
+        EntityClass: BaseEntity = cls.entitiy_classes.get(entity_class_name, KeywordEntity)
+
+        try:
+            entity = EntityClass(**data)
+        except KeyError as e:
+            raise ValueError(
+                f"Failed to deserialize {EntityClass} "
+                f"from json response: {data}. Exception: {e}"
             ) from e
 
         return entity
