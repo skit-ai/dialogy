@@ -276,7 +276,7 @@ class Workflow:
             if history:
                 logger.debug(history)
         pipeline_end = time.perf_counter()
-        self.output.duration = round(pipeline_end - pipeline_start)
+        self.output = Output.from_dict({"duration": round(pipeline_end - pipeline_start)}, reference=self.output)
         return self
 
     def run(self, input_: Input) -> Tuple[Dict[str, Any], Dict[str, Any]]:
