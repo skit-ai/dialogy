@@ -77,7 +77,7 @@ class Output:
         default=attr.Factory(dict), kw_only=True
     )
 
-    duration: float = 0.0
+    duration = attr.ib(default=attr.Factory(dict), kw_only=True)
 
     @intents.validator  # type: ignore
     def _are_intents_valid(
@@ -149,7 +149,7 @@ class Output:
             const.INTENTS: [intent.json() for intent in self.intents],
             const.ENTITIES: [entity.json() for entity in self.entities],
             const.ORIGINAL_INTENT: self.original_intent,
-            "duration": self.duration
+            const.DURATION: self.duration,
         }
 
     @classmethod

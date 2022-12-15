@@ -194,19 +194,11 @@ class Workflow:
         self.input = None
         self.output = Output()
 
-    def set(
-        self,
-        path: str,
-        value: Any,
-        replace: bool = False,
-        sort_output_attributes: bool = True,
-    ) -> Workflow:
+    def set(self, path: str, value: Any, replace: bool = False, sort_output_attributes: bool = True) -> Workflow:
         """
         Set attribute path with value.
-
         This method (re)-sets the input or output object without losing information
         from previous instances.
-
         :param path: A '.' separated attribute path.
         :type path: str
         :param value: A value to set.
@@ -217,12 +209,16 @@ class Workflow:
         :rtype: Workflow
         """
         dest, attribute = path.split(".")
-
         if dest == const.INPUT:
             self.input = Input.from_dict({attribute: value}, reference=self.input)
         elif attribute in const.OUTPUT_ATTRIBUTES and isinstance(value, (list, dict)):
             if not replace and isinstance(value, list):
-                previous_value = self.output.intents if attribute == const.INTENTS else self.output.entities  # type: ignore
+                if attribute == const.INTENTS:
+                    previous_value = self.output.intents
+                elif attribute == const.ENTITIES:
+                    previous_value = self.output.entities
+                else:
+                    previous_value = self.output.duration
                 if sort_output_attributes:
                     value = sorted(
                         previous_value + value,
@@ -231,6 +227,12 @@ class Workflow:
                     )
                 else:
                     value = previous_value + value
+
+            if not replace and isinstance(value, dict):
+
+                if attribute == const.DURATION:
+                    previous_value = self.output.duration
+                    value.update(previous_value)
 
             self.output = Output.from_dict({attribute: value}, reference=self.output)
 
@@ -276,7 +278,7 @@ class Workflow:
             if history:
                 logger.debug(history)
         pipeline_end = time.perf_counter()
-        self.output = Output.from_dict({"duration": round(pipeline_end - pipeline_start)}, reference=self.output)
+        self.set(f"{const.OUTPUT}.{const.DURATION}", {"pipeline": round(pipeline_end - pipeline_start)})
         return self
 
     def run(self, input_: Input) -> Tuple[Dict[str, Any], Dict[str, Any]]:
