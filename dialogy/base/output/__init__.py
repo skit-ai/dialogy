@@ -50,9 +50,34 @@ from pydantic import BaseModel, Field, validator
 
 from dialogy import constants as const
 from dialogy.types import BaseEntity, Intent
+from dialogy.types import (
+    AddressEntity,
+    CurrencyEntity,
+    CreditCardNumberEntity,
+    DurationEntity,
+    KeywordEntity,
+    NumericalEntity,
+    PeopleEntity,
+    PincodeEntity,
+    TimeEntity
+)
 
 JSON_LIST_TYPE = List[Dict[str, Any]]
 ORIGINAL_INTENT_TYPE = Dict[str, Union[str, float]]
+
+ENTITY_TYPES = {
+    "address": AddressEntity,
+    "amount-of-money": CurrencyEntity,
+    "credit-card-number": CreditCardNumberEntity,
+    "duration": DurationEntity,
+    "language": KeywordEntity,
+    "number": NumericalEntity,
+    "people": PeopleEntity,
+    "pincode": PincodeEntity,
+    "date": TimeEntity,
+    "time": TimeEntity,
+    "datetime": TimeEntity,
+}
 
 
 class Output(BaseModel):
@@ -74,6 +99,15 @@ class Output(BaseModel):
 
     original_intent: ORIGINAL_INTENT_TYPE = Field(default_factory=dict)
 
+    def __init__(self, **data: Any):
+        if "entities" in data:
+            entities = []
+            for ent in data["entities"]:
+                entities.append(ENTITY_TYPES.get(ent["entity_type"], KeywordEntity)(**ent))
+            data["entities"] = entities
+
+        super().__init__(**data)
+
     @validator('intents')
     def are_intents_valid(cls, v):
         if not isinstance(v, list):
@@ -90,13 +124,13 @@ class Output(BaseModel):
     @validator('entities')
     def are_entities_valid(cls, v):
         if not isinstance(v, list):
-            raise TypeError(f"entities must be a list, not {type(v)}")
+            raise TypeError(f"`entities` must be a list, not {type(v)}")
 
         if not v:
             return []
 
         if any(not isinstance(entity, BaseEntity) for entity in v):
-            raise TypeError(f"intents must be a List[BaseEntity] but {v} was provided.")
+            raise TypeError(f"`entities` must be a List[BaseEntity] but {v} was provided.")
 
         return v
 
