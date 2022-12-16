@@ -171,7 +171,7 @@ class Workflow:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug
 
-    def run(self, input: Input):
+    def run(self, input: Input, output: Output = None):
         """
         .. _workflow_run:
 
@@ -187,7 +187,8 @@ class Workflow:
         would modify the input, and post-processing functions would modify the output.
         """
         history = {}
-        output = Output()
+        if not output:
+            output = Output()
 
         pipeline_start = time.perf_counter()
         for plugin in self.plugins:
