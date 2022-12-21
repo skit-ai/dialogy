@@ -48,11 +48,12 @@ class Slot:
         Returns:
             Dict[str, Any]
         """
-        self.values = sorted(
-            self.values,
-            key=lambda parse: parse.score or 0,
-            reverse=True,
-        )
+        # removed because of issue we were facing (sorting based on score)
+        # self.values = sorted(
+        #     self.values,
+        #     key=lambda parse: parse.score or 0,
+        #     reverse=True,
+        # )
         return {
             "name": self.name,
             "types": self.types,

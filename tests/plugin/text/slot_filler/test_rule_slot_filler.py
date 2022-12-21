@@ -329,7 +329,7 @@ def test_slot_competition_fill_one() -> None:
 
 def test_slot_filling_order() -> None:
     """
-    Here, we will see that entities of same type filled in a slot are sorted by their score in descending order.
+    Here, we will see that entities of same type filled in a slot are sorted by their alternative_index in descending order.
     """
     intent_name = "intent_1"
 
@@ -351,6 +351,7 @@ def test_slot_filling_order() -> None:
         body=body,
         dim="default",
         score=0.2,
+        alternative_index = 0,
         entity_type="entity_1",
         values=[{"value": "value_1"}],
     )
@@ -360,6 +361,7 @@ def test_slot_filling_order() -> None:
         body=body,
         dim="default",
         score=0.9,
+        alternative_index = 1,
         entity_type="entity_1",
         values=[{"value": "value_2"}],
     )
@@ -369,6 +371,7 @@ def test_slot_filling_order() -> None:
         body=body,
         dim="default",
         score=0.5,
+        alternative_index = 2,
         entity_type="entity_1",
         values=[{"value": "value_3"}],
     )
@@ -378,10 +381,9 @@ def test_slot_filling_order() -> None:
     )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
 
     _, output = workflow.run(Input(utterances=body))
-
     slot_values = output["intents"][0]["slots"][0]["values"]
     assert all(
-        slot_values[i]["score"] >= slot_values[i + 1]["score"]
+        slot_values[i]["alternative_index"] <= slot_values[i + 1]["alternative_index"]
         for i in range(len(slot_values) - 1)
     )
 
