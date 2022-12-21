@@ -73,7 +73,7 @@ class Intent(BaseModel):
     def apply(self, rules: Rule) -> Intent:
         """
         Create slots using rules.
-        
+
         .. _ApplySlot:
 
         An intent can hold different entities within associated slot-types.
@@ -219,7 +219,7 @@ class Intent(BaseModel):
     def cleanup(self) -> None:
         """
         Remove slots that were not filled.
-        
+
         .. _CleanupSlot:
         """
         slot_names = list(self.slots.keys())

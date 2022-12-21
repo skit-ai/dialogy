@@ -214,10 +214,10 @@ class Input(BaseModel):
         data["transcripts"] = normalize(data["utterances"])
         data["best_transcript"] = get_best_transcript(data["transcripts"])
         data["expected_slots"] = list(set(data.get("expected_slots", [])))
-        
+
         super().__init__(**data)
 
-    @validator('reference_time')
+    @validator("reference_time")
     def check_reference_time(cls, v):
         if not isinstance(v, int):
             raise TypeError(f"`reference_time` must be an integer.")

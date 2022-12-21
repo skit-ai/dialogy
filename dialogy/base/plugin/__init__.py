@@ -271,7 +271,7 @@ class Plugin(ABC):
         - The workflow takes care of keeping its :ref:`input<Input>` and :ref:`output<Output>` immutable.
 
         .. _PluginBookkeeping:
-        
+
         :param workflow: An instance of :ref:`Workflow <WorkflowClass>`.
         :type workflow: Workflow
         """
@@ -292,13 +292,14 @@ class Plugin(ABC):
         # update
         if value is not None and isinstance(self.dest, str):
             input, output = self.set(value, input, output)
-        
+
         return input, output
 
     def set(
         self,
         value: Any,
-        input, output,
+        input,
+        output,
         sort_output_attributes: bool = True,
     ):
         """
@@ -320,21 +321,31 @@ class Plugin(ABC):
             setattr(input, attribute, value)
         elif dest == const.OUTPUT:
             if attribute not in const.OUTPUT_ATTRIBUTES:
-                raise ValueError(f"output attribute: {attribute} should be one of {const.OUTPUT_ATTRIBUTES}.")
+                raise ValueError(
+                    f"output attribute: {attribute} should be one of {const.OUTPUT_ATTRIBUTES}."
+                )
 
             if not isinstance(value, (list, dict)):
                 raise ValueError(f"value: {value} should be a List or Dict.")
-            
-            if not self.replace_output and isinstance(value, list) and attribute != const.ORIGINAL_INTENT:
+
+            if (
+                not self.replace_output
+                and isinstance(value, list)
+                and attribute != const.ORIGINAL_INTENT
+            ):
                 previous_value = getattr(output, attribute)
                 value = previous_value + value
                 if sort_output_attributes:
-                    value = sorted(value, key=lambda parse: parse.score or 0, reverse=True,)
-                    
+                    value = sorted(
+                        value,
+                        key=lambda parse: parse.score or 0,
+                        reverse=True,
+                    )
+
             setattr(output, attribute, value)
         else:
             raise ValueError(f"dest: {self.dest} is not valid.")
-            
+
         return input, output
 
     def prevent(self, input_: Input, output: Output) -> bool:

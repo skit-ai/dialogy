@@ -150,9 +150,17 @@ class BaseEntity(BaseModel):
     entity_type: Optional[str] = None
 
     def __init__(self, **data):
-        if "values" in data and data["values"] and ("value" not in data or not data["value"]):
+        if (
+            "values" in data
+            and data["values"]
+            and ("value" not in data or not data["value"])
+        ):
             data["value"] = data["values"][0][const.VALUE]
-        elif "value" in data and data["value"] and ("values" not in data or not data["values"]):
+        elif (
+            "value" in data
+            and data["value"]
+            and ("values" not in data or not data["values"])
+        ):
             data["values"] = [{const.VALUE: data["value"]}]
 
         super().__init__(**data)
@@ -193,7 +201,6 @@ class BaseEntity(BaseModel):
         except IndexError as index_error:
             raise IndexError(error_message) from index_error
 
-
     @classmethod
     def from_dict(
         cls, dict_: Dict[str, Any], reference: Optional[BaseEntity] = None
@@ -219,7 +226,7 @@ def entity_synthesis(entity: BaseEntity, property_: str, value: Any) -> BaseEnti
 
     .. warning:: This is an unsafe method. Use with caution as it doesn't check the type of
         the new value being type safe.
-        
+
     :param entity: A BaseEntity instance.
     :type entity: BaseEntity
     :param property_: An attribute of BaseEntity that should be changed.

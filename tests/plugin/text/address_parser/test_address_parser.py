@@ -146,12 +146,12 @@ def test_address_parser_plugin(payload, monkeypatch) -> None:
     )
 
     workflow = Workflow([address_plugin])
-    workflow.input = input_
-    workflow.output = output
+    # workflow.input = input_
+    # workflow.output = output
 
-    address_plugin(workflow)
+    _, predicted_output = workflow.run(input_, output)
 
-    assert expected == workflow.output
+    assert expected == predicted_output
 
 
 def test_missing_creds_gmaps() -> None:

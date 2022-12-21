@@ -97,7 +97,7 @@ class TimeIntervalEntity(TimeEntity):
 
         super().__init__(**data)
 
-    @validator('values')
+    @validator("values")
     def check_values(cls, v, values):
         for value in v:
             obj_keys = set(value.keys())

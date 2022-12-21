@@ -80,12 +80,14 @@ class Output(BaseModel):
 
     def __init__(self, **data: Any):
         if "entities" in data:
-            entities = [EntityDeserializer.deserialize_json(**ent) for ent in data["entities"]]
+            entities = [
+                EntityDeserializer.deserialize_json(**ent) for ent in data["entities"]
+            ]
             data["entities"] = entities
 
         super().__init__(**data)
 
-    @validator('intents')
+    @validator("intents")
     def are_intents_valid(cls, v):
         if not isinstance(v, list):
             raise TypeError(f"`intents` must be a list, not {type(v)}")
@@ -98,7 +100,7 @@ class Output(BaseModel):
 
         return v
 
-    @validator('entities')
+    @validator("entities")
     def are_entities_valid(cls, v):
         if not isinstance(v, list):
             raise TypeError(f"`entities` must be a list, not {type(v)}")
@@ -107,16 +109,16 @@ class Output(BaseModel):
             return []
 
         if any(not isinstance(entity, BaseEntity) for entity in v):
-            raise TypeError(f"`entities` must be a List[BaseEntity] but {v} was provided.")
+            raise TypeError(
+                f"`entities` must be a List[BaseEntity] but {v} was provided."
+            )
 
         return v
 
-    @validator('original_intent')
+    @validator("original_intent")
     def is_original_intent_valid(cls, v):
         if not isinstance(v, dict):
-            raise TypeError(
-                f"original_intent must be a dict, not {type(v)}"
-            )
+            raise TypeError(f"original_intent must be a dict, not {type(v)}")
 
         if not v:
             return {}
@@ -139,14 +141,14 @@ class Output(BaseModel):
         #     raise TypeError(
         #         f"original_intent[{const.SCORE}] must be a float, not {type(v[const.SCORE])}"
         #     )
-        
+
         return v
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any], reference: Optional[Output] = None) -> Output:
         """
         Create a new `Output`_ instance from a dictionary.
-        
+
         :param d: A dictionary such that keys are a subset of `Output`_ attributes.
         :type d: Dict[str, Any]
         :param reference: An existing `Output`_ instance., defaults to None

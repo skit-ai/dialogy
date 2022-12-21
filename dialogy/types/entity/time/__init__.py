@@ -85,7 +85,7 @@ class TimeEntity(BaseEntity):
     origin: str = const.VALUE
     dim: str = const.TIME
     grain: str = None
-    
+
     __TIMERANGE_OPERATION_ALIAS: Dict[str, Callable[[Any, Any], bool]] = {
         const.LTE: operator.le,
         const.GTE: operator.ge,

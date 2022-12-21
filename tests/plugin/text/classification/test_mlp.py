@@ -340,5 +340,5 @@ def test_inference(payload, tmpdir):
     _, output = workflow.run(
         Input(utterances=[[{"transcript": transcript} for transcript in transcripts]])
     )
-    assert output[const.INTENTS][0]["name"] == intent
-    assert output[const.INTENTS][0]["score"] > 0.5
+    assert output.intents[0].name == intent
+    assert output.intents[0].score > 0.5

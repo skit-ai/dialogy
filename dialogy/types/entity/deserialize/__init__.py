@@ -85,7 +85,9 @@ class EntityDeserializer:
     @classmethod
     def deserialize_json(cls, **data) -> Optional[BaseEntity]:
         entity_class_name = cls.get_entity_class_str(data)
-        EntityClass: BaseEntity = cls.entitiy_classes.get(entity_class_name, KeywordEntity)
+        EntityClass: BaseEntity = cls.entitiy_classes.get(
+            entity_class_name, KeywordEntity
+        )
 
         try:
             entity = EntityClass(**data)

@@ -60,7 +60,7 @@ def test_entity_extractor_for_thresholding(payload) -> None:
 
     entities = make_entity_object(payload["mock_entities"])
     entities = [
-        entity.json()
+        entity.dict()
         for entity in entity_extractor.entity_consensus(entities, input_size)
     ]
 

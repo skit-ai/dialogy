@@ -58,10 +58,10 @@ def test_arbitrary_plugin() -> None:
     # This runs all the `preprocessors` and `postprocessors` provided previously.
     # we can expect our `arbitrary_plugin` will also be used.
     _, output = workflow.run(input_)
-    first_intent, *rest = output["intents"]
+    first_intent, *rest = output.intents
 
     # This test would pass only if our plugin works correctly!
-    assert first_intent["name"] == "_greeting_"
+    assert first_intent.name == "_greeting_"
     assert rest == []
 
 
@@ -109,11 +109,14 @@ def test_plugin_guards() -> None:
         dest="output.intents",
         guards=[lambda i, _: i.current_state == "COF"],
     )
-    workflow = (
-        Workflow().set("input.utterances", ["hello"]).set("input.current_state", "COF")
-    )
-    assert arbitrary_plugin.prevent(workflow.input, workflow.output) is True
-    assert arbitrary_plugin(workflow) is None
+    input = Input(utterances=[[{"transcript": "hello"}]], current_state="COF")
+    output = Output()
+    assert arbitrary_plugin.prevent(input, output) is True
+
+    returned_input, returned_output = arbitrary_plugin(input, output)
+    # Output should still be empty
+    assert returned_output == output
+    assert returned_input == input
 
 
 def test_plugin_no_set_on_invalid_input():
@@ -121,8 +124,12 @@ def test_plugin_no_set_on_invalid_input():
         dest="output.intents",
         guards=[lambda i, _: i.current_state == "COF"],
     )
-    workflow = Workflow()
-    assert arbitrary_plugin(workflow) is None
+    input = None
+    output = Output()
+    returned_input, returned_output = arbitrary_plugin(input, output)
+    # Output should still be empty
+    assert returned_output == output
+    assert returned_input == input
 
 
 def test_plugin_no_set_on_invalid_output():
@@ -130,7 +137,9 @@ def test_plugin_no_set_on_invalid_output():
         dest="output.intents",
         guards=[lambda i, _: i.current_state == "COF"],
     )
-    workflow = Workflow()
-    workflow.input = Input(utterances="hello")
-    workflow.output = None
-    assert arbitrary_plugin(workflow) is None
+    input = Input(utterances=[[{"transcript": "hello"}]], current_state="COF")
+    output = Output()
+    returned_input, returned_output = arbitrary_plugin(input, output)
+    # Output should still be empty
+    assert returned_output == output
+    assert returned_input == input
