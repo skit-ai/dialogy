@@ -6,7 +6,11 @@ from dialogy.base import Input, Output
 from dialogy.workflow import Workflow
 from dialogy.types import Intent
 from dialogy.types.entity.deserialize import EntityDeserializer
-from dialogy.plugins.text.error_recovery.error_recovery import Rule, Environment, ErrorRecoveryPlugin
+from dialogy.plugins.text.error_recovery.error_recovery import (
+    Rule,
+    Environment,
+    ErrorRecoveryPlugin,
+)
 from tests import load_tests
 
 
@@ -28,8 +32,7 @@ def test_error_recovery(payload):
 
     if expected_intent:
         expected_intent = Intent(
-            name=expected_intent["name"],
-            score=expected_intent["score"]
+            name=expected_intent["name"], score=expected_intent["score"]
         )
 
     let_bindings = payload.get("let")
@@ -38,7 +41,7 @@ def test_error_recovery(payload):
         entities=entities,
         previous_intent=payload.get("previous_intent"),
         current_state=payload.get("current_state"),
-        expected_slots=payload.get("expected_slots", set())
+        expected_slots=payload.get("expected_slots", set()),
     )
     rules = Rule.from_list(rules)
     env = Environment(
@@ -60,42 +63,46 @@ def test_error_recovery(payload):
 
 
 def test_error_recovery_plugin():
-    rules = [{
-        "find": "entities",
-        "where": [
-            {"entity.grain": "week"}, 
-            {
-                "entity.entity_type": {
-                    "in": ["date", "time", "datetime"]
-                }
-            },
-            {"predicted_intent": "future_date"}
-        ],
-        "update": {
-            "entity.day": ":last_day_of_week"
+    rules = [
+        {
+            "find": "entities",
+            "where": [
+                {"entity.grain": "week"},
+                {"entity.entity_type": {"in": ["date", "time", "datetime"]}},
+                {"predicted_intent": "future_date"},
+            ],
+            "update": {"entity.day": ":last_day_of_week"},
         }
-    }]
-    workflow = Workflow([ErrorRecoveryPlugin(
-        rules=rules
-    )])
+    ]
+    workflow = Workflow([ErrorRecoveryPlugin(rules=rules)])
 
-    entities = [{'body': 'this week',
-   'start': 0,
-   'value': {'values': [{'value': '2022-07-18T00:00:00.000+00:00',
-      'grain': 'week',
-      'type': 'value'}],
-    'value': '2022-07-18T00:00:00.000+00:00',
-    'grain': 'week',
-    'type': 'value'},
-   'end': 9,
-   'dim': 'time',
-   'latent': False}]
+    entities = [
+        {
+            "body": "this week",
+            "start": 0,
+            "value": {
+                "values": [
+                    {
+                        "value": "2022-07-18T00:00:00.000+00:00",
+                        "grain": "week",
+                        "type": "value",
+                    }
+                ],
+                "value": "2022-07-18T00:00:00.000+00:00",
+                "grain": "week",
+                "type": "value",
+            },
+            "end": 9,
+            "dim": "time",
+            "latent": False,
+        }
+    ]
 
     workflow.set("output.intents", [Intent(name="future_date", score=0.99)])
-    workflow.set("output.entities", [
-        EntityDeserializer.deserialize_duckling(entity, 0)
-        for entity in entities
-    ])
+    workflow.set(
+        "output.entities",
+        [EntityDeserializer.deserialize_duckling(entity, 0) for entity in entities],
+    )
 
     _, output = workflow.run(input_=Input(utterances="this week"))
     assert output["entities"][0]["value"] == "2022-07-24T00:00:00+00:00"

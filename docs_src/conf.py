@@ -50,7 +50,7 @@ extensions = [
     "IPython.sphinxext.ipython_console_highlighting",
     "IPython.sphinxext.ipython_directive",
     "sphinx_copybutton",
-    "sphinxcontrib.mermaid"
+    "sphinxcontrib.mermaid",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -73,7 +73,7 @@ html_theme = "furo"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 html_css_files = [
-    'css/custom.css',
+    "css/custom.css",
 ]
 
 html_sidebars = {"docs": ["source/dialogy.plugin.html"]}

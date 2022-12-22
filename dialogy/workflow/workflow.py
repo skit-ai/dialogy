@@ -194,7 +194,13 @@ class Workflow:
         self.input = None
         self.output = Output()
 
-    def set(self, path: str, value: Any, replace: bool = False, sort_output_attributes: bool = True) -> Workflow:
+    def set(
+        self,
+        path: str,
+        value: Any,
+        replace: bool = False,
+        sort_output_attributes: bool = True,
+    ) -> Workflow:
         """
         Set attribute path with value.
 

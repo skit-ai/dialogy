@@ -194,6 +194,7 @@ Index
    Lower Bound Duckling Entities <./source/dialogy.plugins.text.lb_plugin>
    Combine DateTime Over Slots <./source/dialogy.plugins.text.combine_date_time>
    Error Recovery <./source/dialogy.plugins.text.error_recovery>
+   Address Parsing <./source/dialogy.plugins.text.address_parser>
 
 .. toctree::
    :maxdepth: 1

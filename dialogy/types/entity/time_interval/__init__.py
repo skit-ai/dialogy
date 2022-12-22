@@ -201,13 +201,15 @@ class TimeIntervalEntity(TimeEntity):
                     }
                 )
             elif to_:
-                datetime_val[const.FROM][const.VALUE] = (
+                from_or_to = const.FROM if from_datetime_val else const.TO
+                gte_or_lte = const.GTE if from_datetime_val else const.LTE
+                datetime_val[from_or_to][const.VALUE] = (
                     datetime.fromisoformat(
-                        datetime_val.get(const.FROM, {}).get(const.VALUE)
+                        datetime_val.get(from_or_to, {}).get(const.VALUE)
                     )
                     .replace(
-                        hour=constraint[const.GTE][const.HOUR],
-                        minute=constraint[const.GTE][const.MINUTE],
+                        hour=constraint[gte_or_lte][const.HOUR],
+                        minute=constraint[gte_or_lte][const.MINUTE],
                         second=0,
                         microsecond=0,
                     )

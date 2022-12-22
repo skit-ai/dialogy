@@ -244,3 +244,19 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
             f"The input {maybe_utterance} does not belong to any of the expected types:"
             " List[List[Dict[str, Any]]], List[Dict[str, Any]], List[str] or str."
         )
+
+
+def get_best_transcript(transcripts: List[str]) -> str:
+    """
+    Select the best transcript from a list of transcripts.
+    The best transcript is the first transcript gven by ASR (20220803)
+
+    :param transcripts: List of transcripts
+    :type transcripts: List[str]
+    :return: A string containing the best transcript
+    :rtype: str
+    """
+
+    if transcripts:
+        return transcripts[0]
+    return ""

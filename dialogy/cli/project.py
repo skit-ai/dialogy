@@ -2,7 +2,7 @@ import argparse
 import os
 import shutil
 
-from copier import copy
+from copier import run_auto
 
 import dialogy.constants as const
 
@@ -34,23 +34,14 @@ def manage_project(
     :rtype: NoneType
     """
     # to handle copier vcs associated git template building.
-    if use_master:
-        copy(
-            template,
-            destination_path,
-            vcs_ref="HEAD",
-            pretend=pretend,
-            only_diff=is_update,
-            force=is_update,
-        )
-    else:
-        copy(
-            f"gh:{namespace}/{template}.git",
-            destination_path,
-            only_diff=is_update,
-            pretend=pretend,
-            force=is_update,
-        )
+    source = template if use_master else f"gh:{namespace}/{template}.git"
+    run_auto(
+        src_path=None if is_update else source,
+        dst_path=destination_path,
+        vcs_ref="HEAD",
+        pretend=pretend,
+        overwrite=is_update,
+    )
 
     return None
 

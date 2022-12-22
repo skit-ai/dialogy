@@ -1,5 +1,12 @@
- Changelog
+Changelog
 
+## 0.9.20
+
+- [x]: feat: xlmr.py, adding support for feature engineering with prompts.
+
+## 0.9.19
+
+- [x]: feat: AddressParser plugin using google maps and map my india.
 
 ## 0.9.18
 
