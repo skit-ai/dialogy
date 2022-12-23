@@ -329,7 +329,7 @@ def test_slot_competition_fill_one() -> None:
 
 def test_slot_filling_order() -> None:
     """
-    Here, we will see that entities of same type filled in a slot are sorted by their alternative_index in descending order.
+    Here, we will see that entities of same type filled in a slot are sorted by their score in descending order.
     """
     intent_name = "intent_1"
 
@@ -351,9 +351,9 @@ def test_slot_filling_order() -> None:
         body=body,
         dim="default",
         score=0.2,
-        alternative_index = 0,
         entity_type="entity_1",
         values=[{"value": "value_1"}],
+        alternative_index=2
     )
 
     entity_2 = BaseEntity(
@@ -361,9 +361,9 @@ def test_slot_filling_order() -> None:
         body=body,
         dim="default",
         score=0.9,
-        alternative_index = 1,
         entity_type="entity_1",
         values=[{"value": "value_2"}],
+        alternative_index=1
     )
 
     entity_3 = BaseEntity(
@@ -371,9 +371,9 @@ def test_slot_filling_order() -> None:
         body=body,
         dim="default",
         score=0.5,
-        alternative_index = 2,
         entity_type="entity_1",
         values=[{"value": "value_3"}],
+        alternative_index=0
     )
 
     workflow.set("output.intents", [intent]).set(
@@ -381,9 +381,73 @@ def test_slot_filling_order() -> None:
     )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
 
     _, output = workflow.run(Input(utterances=body))
+
     slot_values = output["intents"][0]["slots"][0]["values"]
     assert all(
-        slot_values[i]["alternative_index"] <= slot_values[i + 1]["alternative_index"]
+        slot_values[i]["score"] >= slot_values[i + 1]["score"]
+        for i in range(len(slot_values) - 1)
+    )
+
+
+def test_slot_filling_order_by_alternative_index() -> None:
+    """
+    Here, we will see that entities of same type filled in a slot are sorted by their alternative_index in ascending order.
+    """
+    intent_name = "intent_1"
+
+    # Setting up the slot-filler, both instantiation and plugin is created. (notice two calls).
+    slot_filler = RuleBasedSlotFillerPlugin(
+        rules=rules, dest="output.intents", fill_multiple=True, sort_by_score=False, sort_by_alternative_index=True
+    )
+
+    # Create a mock `workflow`
+    workflow = Workflow([slot_filler])
+
+    # ... a mock `Intent`
+    intent = Intent(name=intent_name, score=0.8)
+
+    # Here we have three entities which have different scores.
+    body = "12th december"
+    entity_1 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        score=0.2,
+        entity_type="entity_1",
+        values=[{"value": "value_1"}],
+        alternative_index=2
+    )
+
+    entity_2 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        score=0.9,
+        entity_type="entity_1",
+        values=[{"value": "value_2"}],
+        alternative_index=0
+    )
+
+    entity_3 = BaseEntity(
+        range={"from": 0, "to": len(body)},
+        body=body,
+        dim="default",
+        score=0.5,
+        entity_type="entity_1",
+        values=[{"value": "value_3"}],
+        alternative_index=1
+    )
+
+    workflow.set("output.intents", [intent]).set(
+        "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
+    )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
+
+    _, output = workflow.run(Input(utterances=body))
+
+    slot_values = output["intents"][0]["slots"][0]["values"]
+    assert all(
+        slot_values[i]["alternative_index"] <= slot_values[i +
+                                                           1]["alternative_index"]
         for i in range(len(slot_values) - 1)
     )
 
@@ -439,6 +503,8 @@ def test_slot_filling_with_expected_slots() -> None:
         "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
     )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
 
-    _, output = workflow.run(Input(utterances=body, expected_slots=["entity_1_slot"]))
+    _, output = workflow.run(
+        Input(utterances=body, expected_slots=["entity_1_slot"]))
 
-    assert [s["name"] for s in output["intents"][0]["slots"]] == ["entity_1_slot"]
+    assert [s["name"]
+            for s in output["intents"][0]["slots"]] == ["entity_1_slot"]
