@@ -83,8 +83,8 @@ class RuleBasedSlotFillerPlugin(Plugin):
         self.sort_by_score = sort_by_score
 
         # sort_by_alternative_index
-        # Flag which enables to sort the slots in ascending order of sort_by_alternative_index, by default set to True,
-        # if required, can be set to False
+        # Flag which enables to sort the slots in ascending order of sort_by_alternative_index, by default set to False,
+        # if required, can be set to True
         self.sort_by_alternative_index = sort_by_alternative_index
 
     def fill(
