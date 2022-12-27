@@ -42,24 +42,26 @@ def test_slot_filling() -> None:
     intent = Intent(name=intent_name, score=0.8)
 
     # and a mock `Entity`.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_1",
         values=[{"value": "value"}],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.set("output.intents", [intent]).set("output.entities", [entity])
+    output = Output(intents=[intent], entities=[entity])
+    # workflow.set("output.intents", [intent]).set("output.entities", [entity])
 
-    _, output = workflow.run(Input(utterances=body))
+    _, output = workflow.run(Input(utterances=body), output)
+    output = output.dict()
     intent, *_ = output[const.INTENTS]
 
     # `workflow.output[0]` is the `Intent` we created.
     # so we are checking if the `entity_1_slot` is filled by our mock entity.
-    assert intent["slots"][0]["values"][0] == entity.json()
+    assert intent["slots"][0]["values"][0] == entity.dict()
 
 
 def test_slot_no_fill() -> None:
@@ -79,19 +81,21 @@ def test_slot_no_fill() -> None:
     intent = Intent(name=intent_name, score=0.8)
 
     # and a mock `Entity`.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_2",
         values=[{"value": "value"}],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.set("output.intents", [intent]).set("output.entities", [entity])
+    output = Output(intents=[intent], entities=[entity])
+    # workflow.set("output.intents", [intent]).set("output.entities", [entity])
 
-    _, output = workflow.run(Input(utterances=body))
+    _, output = workflow.run(Input(utterances=body), output)
+    output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
     # we can see that the `entity_2_slot` is not filled by our mock entity.
@@ -116,18 +120,20 @@ def test_slot_invalid_intents() -> None:
     workflow = Workflow([slot_filler])
 
     # and a mock `Entity`.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_1",
         values=[{"value": "value"}],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.set("output.intents", []).set("output.entities", [entity])
-    _, output = workflow.run(Input(utterances=body))
+    output = Output(intents=[], entities=[entity])
+    # workflow.set("output.intents", []).set("output.entities", [entity])
+    _, output = workflow.run(Input(utterances=body), output)
+    output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
     # we can see that the `entity_2_slot` is not filled by our mock entity.
@@ -155,10 +161,10 @@ def test_slot_dual_fill() -> None:
     intent = Intent(name=intent_name, score=0.8)
 
     # and mock `Entity`-ies.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity_1 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_1",
         values=[{"value": "value"}],
@@ -166,22 +172,24 @@ def test_slot_dual_fill() -> None:
 
     entity_2 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_2",
         values=[{"value": "value"}],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.set("output.intents", [intent]).set(
-        "output.entities", [entity_1, entity_2]
-    )
-    _, output = workflow.run(Input(utterances=body))
+    # workflow.set("output.intents", [intent]).set(
+    #     "output.entities", [entity_1, entity_2]
+    # )
+    output = Output(intents=[intent], entities=[entity_1, entity_2])
+    _, output = workflow.run(Input(utterances=body), output)
+    output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"][0]["values"] == [entity_1.json()]
-    assert output[const.INTENTS][0]["slots"][1]["values"] == [entity_2.json()]
+    assert output[const.INTENTS][0]["slots"][0]["values"] == [entity_1.dict()]
+    assert output[const.INTENTS][0]["slots"][1]["values"] == [entity_2.dict()]
 
 
 def test_slot_filling_multiple() -> None:
@@ -203,10 +211,10 @@ def test_slot_filling_multiple() -> None:
     intent = Intent(name=intent_name, score=0.8)
 
     # and mock `Entity`-ies.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity_1 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_1",
         values=[{"value": "value"}],
@@ -214,22 +222,24 @@ def test_slot_filling_multiple() -> None:
 
     entity_2 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_2",
         values=[{"value": "value"}],
     )
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
-    workflow.set("output.intents", [intent]).set(
-        "output.entities", [entity_1, entity_2]
-    )
-    _, output = workflow.run(Input(utterances=body))
+    # workflow.set("output.intents", [intent]).set(
+    #     "output.entities", [entity_1, entity_2]
+    # )
+    output = Output(intents=[intent], entities=[entity_1, entity_2])
+    _, output = workflow.run(Input(utterances=body), output)
+    output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"][0]["values"] == [entity_1.json()]
-    assert output[const.INTENTS][0]["slots"][1]["values"] == [entity_2.json()]
+    assert output[const.INTENTS][0]["slots"][0]["values"] == [entity_1.dict()]
+    assert output[const.INTENTS][0]["slots"][1]["values"] == [entity_2.dict()]
 
 
 def test_slot_competition_fill_multiple() -> None:
@@ -250,10 +260,10 @@ def test_slot_competition_fill_multiple() -> None:
     intent = Intent(name=intent_name, score=0.8)
 
     # Here we have two entities which compete for the same slot but have different values.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity_1 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_1",
         values=[{"value": "value_1"}],
@@ -261,23 +271,25 @@ def test_slot_competition_fill_multiple() -> None:
 
     entity_2 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_1",
         values=[{"value": "value_2"}],
     )
 
-    workflow.set("output.intents", [intent]).set(
-        "output.entities", [entity_1, entity_2]
-    )
-    _, output = workflow.run(Input(utterances=body))
+    # workflow.set("output.intents", [intent]).set(
+    #     "output.entities", [entity_1, entity_2]
+    # )
+    output = Output(intents=[intent], entities=[entity_1, entity_2])
+    _, output = workflow.run(Input(utterances=body), output)
+    output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
 
     assert output[const.INTENTS][0]["slots"][0]["values"] == [
-        entity_1.json(),
-        entity_2.json(),
+        entity_1.dict(),
+        entity_2.dict(),
     ]
 
 
@@ -299,10 +311,10 @@ def test_slot_competition_fill_one() -> None:
     intent = Intent(name=intent_name, score=0.8)
 
     # Here we have two entities which compete for the same slot but have different values.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity_1 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_1",
         values=[{"value": "value_1"}],
@@ -310,16 +322,18 @@ def test_slot_competition_fill_one() -> None:
 
     entity_2 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         entity_type="entity_1",
         values=[{"value": "value_2"}],
     )
 
-    workflow.set("output.intents", [intent]).set(
-        "output.entities", [entity_1, entity_2]
-    )
-    _, output = workflow.run(Input(utterances=body))
+    # workflow.set("output.intents", [intent]).set(
+    #     "output.entities", [entity_1, entity_2]
+    # )
+    output = Output(intents=[intent], entities=[entity_1, entity_2])
+    _, output = workflow.run(Input(utterances=body), output)
+    output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
@@ -345,10 +359,10 @@ def test_slot_filling_order() -> None:
     intent = Intent(name=intent_name, score=0.8)
 
     # Here we have three entities which have different scores.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity_1 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         score=0.2,
         entity_type="entity_1",
@@ -357,7 +371,7 @@ def test_slot_filling_order() -> None:
 
     entity_2 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         score=0.9,
         entity_type="entity_1",
@@ -366,18 +380,19 @@ def test_slot_filling_order() -> None:
 
     entity_3 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         score=0.5,
         entity_type="entity_1",
         values=[{"value": "value_3"}],
     )
 
-    workflow.set("output.intents", [intent]).set(
-        "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
-    )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
-
-    _, output = workflow.run(Input(utterances=body))
+    # workflow.set("output.intents", [intent]).set(
+    #     "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
+    # )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
+    output = Output(intents=[intent], entities=[entity_1, entity_2, entity_3])
+    _, output = workflow.run(Input(utterances=body), output)
+    output = output.dict()
 
     slot_values = output["intents"][0]["slots"][0]["values"]
     assert all(
@@ -405,10 +420,10 @@ def test_slot_filling_with_expected_slots() -> None:
     intent = Intent(name=intent_name, score=0.8)
 
     # Here we have three entities which have different scores.
-    body = "12th december"
+    body = [[{"transcript": "12th december"}]]
     entity_1 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         score=0.2,
         entity_type="entity_1",
@@ -417,7 +432,7 @@ def test_slot_filling_with_expected_slots() -> None:
 
     entity_2 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         score=0.9,
         entity_type="entity_2",
@@ -426,17 +441,18 @@ def test_slot_filling_with_expected_slots() -> None:
 
     entity_3 = BaseEntity(
         range={"from": 0, "to": len(body)},
-        body=body,
+        body=body[0][0]["transcript"],
         dim="default",
         score=0.5,
         entity_type="entity_1",
         values=[{"value": "value_3"}],
     )
 
-    workflow.set("output.intents", [intent]).set(
-        "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
-    )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
-
-    _, output = workflow.run(Input(utterances=body, expected_slots=["entity_1_slot"]))
+    # workflow.set("output.intents", [intent]).set(
+    #     "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
+    # )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
+    output = Output(intents=[intent], entities=[entity_1, entity_2, entity_3])
+    _, output = workflow.run(Input(utterances=body, expected_slots=["entity_1_slot"]), output)
+    output = output.dict()
 
     assert [s["name"] for s in output["intents"][0]["slots"]] == ["entity_1_slot"]

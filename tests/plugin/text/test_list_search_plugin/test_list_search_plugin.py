@@ -82,7 +82,7 @@ def test_get_list_entities(payload, mocker):
     expected = payload.get("expected")
     config = payload.get("config")
     nlp_words = payload.get("nlp_words")
-    transcripts = [expectation["text"] for expectation in input_]
+    transcripts = [[{"transcript": expectation["text"]} for expectation in input_]]
 
     mocker.patch("stanza.download", return_value=1)
     mocker.patch("stanza.Pipeline", return_value={})
@@ -94,6 +94,7 @@ def test_get_list_entities(payload, mocker):
 
     workflow = Workflow([list_entity_plugin])
     _, output = workflow.run(Input(utterances=transcripts, lang=lang_))
+    output = output.dict()
     entities = output["entities"]
 
     if not entities and expected:

@@ -121,7 +121,7 @@ def test_duckling_connection_error() -> None:
 
     workflow = Workflow([duckling_plugin])
     with pytest.raises(requests.exceptions.ConnectionError):
-        workflow.run(Input(utterances="test", locale=locale))
+        workflow.run(Input(utterances=[[{"transcript": "test"}]], locale=locale))
 
 
 def test_max_workers_greater_than_zero() -> None:
@@ -160,7 +160,10 @@ def test_plugin_working_cases(payload) -> None:
     """
     An end-to-end example showing how to use `DucklingPlugin` with a `Workflow`.
     """
-    body = payload["input"]
+    inputs = payload["input"]
+    if not isinstance(inputs, list):
+        inputs = [inputs]
+    body = [[{"transcript": x} for x in inputs]]
     output = payload.get("output", {})
     mock_entity_json = payload["mock_entity_json"]
     expected = payload.get("expected")
@@ -183,9 +186,9 @@ def test_plugin_working_cases(payload) -> None:
     if isinstance(reference_time, str):
         reference_time = make_unix_ts("Asia/Kolkata")(reference_time)
 
-    if "intents" in output:
-        intents = [Intent(name=output["intents"][0]["name"], score=1.0)]
-        workflow.set("output.intents", intents)
+    # if "intents" in output:
+    #     intents = [Intent(name=output["intents"][0]["name"], score=1.0)]
+    #     workflow.set("output.intents", intents)
 
     if expected is not None:
         input_ = Input(
@@ -194,7 +197,9 @@ def test_plugin_working_cases(payload) -> None:
             reference_time=reference_time,
             latent_entities=use_latent,
         )
-        _, output = workflow.run(input_)
+        output = Output(**output)
+        _, output = workflow.run(input_, output)
+        output = output.dict()
 
         if not output["entities"]:
             assert output["entities"] == []

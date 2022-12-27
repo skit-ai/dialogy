@@ -51,7 +51,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import validator, Field
+from pydantic import root_validator, Field
 
 from dialogy import constants as const
 from dialogy.types.entity.deserialize import EntityDeserializer
@@ -81,11 +81,11 @@ class TimeIntervalEntity(TimeEntity):
     value: Dict[str, Any] = None
 
     def __init__(self, **data):
-        if data["values"] and not data["value"]:
+        if ("values" in data and data["values"]) and ("value" not in data or not data["value"]):
             data["from_value"] = data["values"][0].get(const.FROM, {}).get(const.VALUE)
             data["to_value"] = data["values"][0].get(const.TO, {}).get(const.VALUE)
             data["value"] = {const.FROM: data["from_value"], const.TO: data["to_value"]}
-        elif data["value"] and not data["values"]:
+        elif ("value" in data and data["value"]) and ("values" not in data or not data["values"]):
             data["from_value"] = data["value"].get(const.FROM, {})
             data["to_value"] = data["value"].get(const.TO, {})
             data["values"] = [
@@ -97,14 +97,18 @@ class TimeIntervalEntity(TimeEntity):
 
         super().__init__(**data)
 
-    @validator("values")
-    def check_values(cls, v, values):
-        for value in v:
+    @root_validator
+    def check_root(cls, values):
+        if not values["values"]:
+            return values
+            
+        for value in values["values"]:
             obj_keys = set(value.keys())
             if not obj_keys.issubset(values["value_keys"]):
                 raise TypeError(
                     f"Expected {obj_keys} to be a subset of {values['value_keys']} for values"
                 )
+        return values
 
     def collect_datetime_values(self) -> List[datetime]:
         """

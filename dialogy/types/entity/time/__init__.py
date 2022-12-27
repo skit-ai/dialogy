@@ -91,6 +91,23 @@ class TimeEntity(BaseEntity):
         const.GTE: operator.ge,
     }
 
+    def __setattr__(self, key, val):
+        method = self.__config__.property_set_methods.get(key)
+        if method is None:
+            super().__setattr__(key, val)
+        else:
+            getattr(self, method)(val)
+
+    class Config:
+        property_set_methods = {
+            "day": "set_day",
+            "month": "set_month",
+            "year": "set_year",
+            "hour": "set_hour",
+            "minute": "set_minute",
+            "second": "set_second",
+        }
+
     @property
     def day(self) -> int:
         """
@@ -102,8 +119,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.day
 
-    @day.setter
-    def day(self, value: int) -> None:
+    # @day.setter
+    def set_day(self, value: int) -> None:
         """
         Set the day of the month for the first datetime value.
         """
@@ -123,8 +140,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.month
 
-    @month.setter
-    def month(self, value: int) -> None:
+    # @month.setter
+    def set_month(self, value: int) -> None:
         """
         Set the month for the first datetime value.
         """
@@ -144,8 +161,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.year
 
-    @year.setter
-    def year(self, value: int) -> None:
+    # @year.setter
+    def set_year(self, value: int) -> None:
         """
         Set the year for the first datetime value.
         """
@@ -165,8 +182,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.hour
 
-    @hour.setter
-    def hour(self, value: int) -> None:
+    # @hour.setter
+    def set_hour(self, value: int) -> None:
         """
         Set the hour for the first datetime value.
         """
@@ -186,8 +203,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.minute
 
-    @minute.setter
-    def minute(self, value: int) -> None:
+    # @minute.setter
+    def set_minute(self, value: int) -> None:
         """
         Set the minute for the first datetime value.
         """
@@ -207,8 +224,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.second
 
-    @second.setter
-    def second(self, value: int) -> None:
+    # @second.setter
+    def set_second(self, value: int) -> None:
         """
         Set the second for the first datetime value.
         """

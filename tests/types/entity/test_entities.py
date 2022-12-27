@@ -9,6 +9,8 @@ from unicodedata import numeric
 import httpretty
 import pytest
 
+from pydantic import ValidationError
+
 from dialogy.base import Input, Plugin
 from dialogy.plugins import DucklingPlugin
 from dialogy.types import (
@@ -378,7 +380,7 @@ def test_interval_entity_set_value_values_missing() -> None:
     assert entity.get_value() == datetime.fromisoformat("2022-02-11T02:00:00.000+05:30")
 
 
-def test_entity_jsonify() -> None:
+def test_entity_dict() -> None:
     body = "12th december"
     value = "value"
     values = [{"value": value}]
@@ -389,12 +391,12 @@ def test_entity_jsonify() -> None:
         entity_type="basic",
         values=values,
     )
-    entity_json = entity.json()
-    assert "dim" not in entity_json
+    entity_json = entity.dict()
+    assert "dim" in entity_json
     assert entity_json.get("value") == value
 
 
-def test_entity_jsonify_unrestricted() -> None:
+def test_entity_dict_include() -> None:
     body = "12th december"
     value = "value"
     values = [{"value": value}]
@@ -405,13 +407,13 @@ def test_entity_jsonify_unrestricted() -> None:
         entity_type="basic",
         values=values,
     )
-    entity_json = entity.json(add=["dim", "values"])
+    entity_json = entity.dict(include={"dim", "body", "values"})
     assert entity_json.get("dim") == "default"
     assert entity_json.get("body") == body
     assert entity_json.get("values") == values
 
 
-def test_entity_jsonify_skip() -> None:
+def test_entity_dict_exclude() -> None:
     body = "12th december"
     value = "value"
     values = [{"value": value}]
@@ -422,7 +424,7 @@ def test_entity_jsonify_skip() -> None:
         entity_type="basic",
         values=values,
     )
-    entity_json = entity.json(skip=["values"])
+    entity_json = entity.dict(exclude={"values"})
     assert "values" not in entity_json
 
 
@@ -545,17 +547,17 @@ def test_time_interval_entity_value_without_range() -> None:
 
 
 def test_plastic_currency_set_invalid_value():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         CreditCardNumberEntity(range={"from": 0, "to": 1}, body="", value=None)
 
 
 def test_plastic_currency_set_no_number():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         CreditCardNumberEntity(range={"from": 0, "to": 1}, body="", issuer="visa")
 
 
 def test_plastic_currency_set_no_issuer():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         CreditCardNumberEntity(
             range={"from": 0, "to": 1}, body="", value="1234-5678-9012-3456"
         )
@@ -750,7 +752,7 @@ def test_entity_type(payload) -> None:
     """
     Evaluate a set of cases from a file.
     """
-    body = payload["input"]
+    body = [[{"transcript": payload["input"]}]]
     mock_entity_json = payload["mock_entity_json"]
     expected = payload.get("expected")
     exception = payload.get("exception")
@@ -771,6 +773,7 @@ def test_entity_type(payload) -> None:
 
     if expected:
         _, output = workflow.run(Input(utterances=body))
+        output = output.dict()
         entities = output["entities"]
         for i, entity in enumerate(entities):
             assert entity["entity_type"] == expected[i]["entity_type"]

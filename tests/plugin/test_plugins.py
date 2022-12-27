@@ -4,7 +4,8 @@ This is a tutorial on creating and using Plugins with Workflows.
 import re
 from typing import Any, List, Optional
 
-from dialogy import workflow
+import pytest
+
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
 from dialogy.workflow import Workflow
@@ -143,3 +144,44 @@ def test_plugin_no_set_on_invalid_output():
     # Output should still be empty
     assert returned_output == output
     assert returned_input == input
+
+
+def test_plugin_set_path():
+    plugin = ArbitraryPlugin(dest="output.original_intent")
+    input = Input(utterances=[[{"transcript": "hello"}]])
+    output = Output()
+    input, output = plugin.set({"name": "test", "score": 0.5}, input, output)
+    assert output.original_intent == {"name": "test", "score": 0.5}
+
+
+def test_plugin_invalid_set_path():
+    """
+    We can't set invalid values in plugin.
+    """
+    plugin = ArbitraryPlugin(dest="invalid.path")
+    input = Input(utterances=[[{"transcript": "hello"}]])
+    output = Output()
+    with pytest.raises(ValueError):
+        plugin.set([], input, output)
+
+
+def test_plugin_invalid_set_attribute():
+    """
+    We can't set invalid values in plugin.
+    """
+    plugin = ArbitraryPlugin(dest="output.invalid")
+    input = Input(utterances=[[{"transcript": "hello"}]])
+    output = Output()
+    with pytest.raises(ValueError):
+        plugin.set([], input, output)
+
+
+def test_plugin_invalid_set_value():
+    """
+    We can't set invalid values in plugin.
+    """
+    plugin = ArbitraryPlugin(dest="output.intents")
+    input = Input(utterances=[[{"transcript": "hello"}]])
+    output = Output()
+    with pytest.raises(ValueError):
+        plugin.set(10, input, output)

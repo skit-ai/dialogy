@@ -190,7 +190,6 @@ class Workflow:
         if not output:
             output = Output()
 
-        pipeline_start = time.perf_counter()
         for plugin in self.plugins:
             if not callable(plugin):
                 raise TypeError(f"{plugin=} is not a callable")
@@ -220,8 +219,6 @@ class Workflow:
 
             if history:
                 logger.debug(pformat(history))
-        pipeline_end = time.perf_counter()
-        output.duration = round(pipeline_end - pipeline_start, 3)
 
         return input, output
 

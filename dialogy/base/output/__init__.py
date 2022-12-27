@@ -76,12 +76,11 @@ class Output(BaseModel):
 
     original_intent: ORIGINAL_INTENT_TYPE = Field(default_factory=dict)
 
-    duration: float = Field(default=0.0)
-
     def __init__(self, **data: Any):
-        if "entities" in data:
+        if "entities" in data and isinstance(data["entities"], list):
             entities = [
-                EntityDeserializer.deserialize_json(**ent) for ent in data["entities"]
+                EntityDeserializer.deserialize_json(**ent) if isinstance(ent, dict) else ent
+                for ent in data["entities"]
             ]
             data["entities"] = entities
 
@@ -89,12 +88,6 @@ class Output(BaseModel):
 
     @validator("intents")
     def are_intents_valid(cls, v):
-        if not isinstance(v, list):
-            raise TypeError(f"`intents` must be a list, not {type(v)}")
-
-        if not v:
-            return []
-
         if any(not isinstance(intent, Intent) for intent in v):
             raise TypeError(f"`intents` must be a List[Intent] but {v} was provided.")
 
@@ -102,12 +95,6 @@ class Output(BaseModel):
 
     @validator("entities")
     def are_entities_valid(cls, v):
-        if not isinstance(v, list):
-            raise TypeError(f"`entities` must be a list, not {type(v)}")
-
-        if not v:
-            return []
-
         if any(not isinstance(entity, BaseEntity) for entity in v):
             raise TypeError(
                 f"`entities` must be a List[BaseEntity] but {v} was provided."
@@ -117,12 +104,6 @@ class Output(BaseModel):
 
     @validator("original_intent")
     def is_original_intent_valid(cls, v):
-        if not isinstance(v, dict):
-            raise TypeError(f"original_intent must be a dict, not {type(v)}")
-
-        if not v:
-            return {}
-
         if const.NAME not in v:
             raise TypeError(
                 f"original_intent must contain {const.NAME} but {v} was provided."
@@ -137,10 +118,6 @@ class Output(BaseModel):
             )
 
         v[const.SCORE] = float(v[const.SCORE])
-        # if not isinstance(v[const.SCORE], float):
-        #     raise TypeError(
-        #         f"original_intent[{const.SCORE}] must be a float, not {type(v[const.SCORE])}"
-        #     )
 
         return v
 

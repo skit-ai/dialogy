@@ -3,6 +3,8 @@ import os
 import pathlib
 from typing import Any, Callable, List
 
+from pydantic import ValidationError
+
 import pytz
 import yaml
 
@@ -12,6 +14,7 @@ EXCEPTIONS = {
     "ValueError": ValueError,
     "NotImplementedError": NotImplementedError,
     "UnknownTimeZoneError": pytz.UnknownTimeZoneError,
+    "ValidationError": ValidationError,
 }
 
 

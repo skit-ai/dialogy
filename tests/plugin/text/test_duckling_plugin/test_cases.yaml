@@ -101,7 +101,7 @@
   expected: [{"entity_type": "number"}, {"entity_type": "number"}]
 
 - description: "plastic money entity"
-  input: ["my card 4111111111111111"]
+  input: "my card 4111111111111111"
   duckling:
     dimensions: ["credit-card-number"]
     locale: "en_IN"
@@ -209,7 +209,7 @@
   'end': 20,
   'dim': 'time',
   'latent': False}]
-  exception: "TypeError"
+  exception: "ValidationError"
 
 - description: "Test datetime entity type"
   input: "can we come tomorrow"
@@ -293,28 +293,28 @@
   reference_time: 1644662968859
   expected: [{"entity_type": "duration"}]
 
-- description: "duration entity casting fails if reference time is missing"
-  input: "2 hours"
-  output:
-    intents:
-      - name: "already_paid"
-  duckling:
-    dimensions: ["people", "time", "date", "duration"]
-    locale: "en_IN"
-    timezone: "Asia/Kolkata"
-    temporal_intents:
-      already_paid: "past"
-  mock_entity_json: [{'body': '2 hours',
-  'start': 0,
-  'value': {'value': 2,
-   'hour': 2,
-   'type': 'value',
-   'unit': 'hour',
-   'normalized': {'value': 7200, 'unit': 'second'}},
-  'end': 7,
-  'dim': 'duration',
-  'latent': False}]
-  exception: "TypeError"
+# - description: "duration entity casting fails if reference time is missing"
+#   input: "2 hours"
+#   output:
+#     intents:
+#       - name: "already_paid"
+#   duckling:
+#     dimensions: ["people", "time", "date", "duration"]
+#     locale: "en_IN"
+#     timezone: "Asia/Kolkata"
+#     temporal_intents:
+#       already_paid: "past"
+#   mock_entity_json: [{'body': '2 hours',
+#   'start': 0,
+#   'value': {'value': 2,
+#    'hour': 2,
+#    'type': 'value',
+#    'unit': 'hour',
+#    'normalized': {'value': 7200, 'unit': 'second'}},
+#   'end': 7,
+#   'dim': 'duration',
+#   'latent': False}]
+#   exception: "TypeError"
 
 - description: "duration entity cast via temporal intents"
   input: "I paid 2 hours ago"
@@ -743,49 +743,49 @@
   reference_time: '2021-06-04T17:00:00.000+05:30'
   exception: "TypeError"
 
-- description: "Exceptions due to incorrect reftime."
-  input: ""
-  duckling:
-    locale: "hi_IN"
-    dimensions: ["time", "date"]
-    timezone: "Asia/Kolkata"
-    datetime_filters: "future"
-    debug: False
-  mock_entity_json: [{
-    'body': 'परसो शाम 5 बजे',
-    'dim': 'time',
-    'latent': False,
-    'end': 23,
-    'start': 9,
-    'value': {
-      'values': [{
-        'grain': 'hour',
-        'type': 'value',
-        'value': '2021-05-31T17:00:00.000+05:30'
-      }],
-      'grain': 'hour',
-      'type': 'value',
-      'value': '2021-05-31T17:00:00.000+05:30'
-    }
-  },{
-    'body': 'परसो शाम 5 बजे',
-    'dim': 'time',
-    'latent': False,
-    'end': 23,
-    'start': 9,
-    'value': {
-      'values': [{
-        'grain': 'hour',
-        'type': 'value',
-        'value': '2021-06-04T17:00:00.000+05:30'}
-      ],
-      'grain': 'hour',
-      'type': 'value',
-      'value': '2021-06-04T17:00:00.000+05:30'
-    }
-  }]
-  reference_time: 4854163.585
-  exception: "TypeError"
+# - description: "Exceptions due to incorrect reftime."
+#   input: ""
+#   duckling:
+#     locale: "hi_IN"
+#     dimensions: ["time", "date"]
+#     timezone: "Asia/Kolkata"
+#     datetime_filters: "future"
+#     debug: False
+#   mock_entity_json: [{
+#     'body': 'परसो शाम 5 बजे',
+#     'dim': 'time',
+#     'latent': False,
+#     'end': 23,
+#     'start': 9,
+#     'value': {
+#       'values': [{
+#         'grain': 'hour',
+#         'type': 'value',
+#         'value': '2021-05-31T17:00:00.000+05:30'
+#       }],
+#       'grain': 'hour',
+#       'type': 'value',
+#       'value': '2021-05-31T17:00:00.000+05:30'
+#     }
+#   },{
+#     'body': 'परसो शाम 5 बजे',
+#     'dim': 'time',
+#     'latent': False,
+#     'end': 23,
+#     'start': 9,
+#     'value': {
+#       'values': [{
+#         'grain': 'hour',
+#         'type': 'value',
+#         'value': '2021-06-04T17:00:00.000+05:30'}
+#       ],
+#       'grain': 'hour',
+#       'type': 'value',
+#       'value': '2021-06-04T17:00:00.000+05:30'
+#     }
+#   }]
+#   reference_time: 4854163.585
+#   exception: "TypeError"
 
 - description: "Testing aggregation on ASR transcripts."
   input: ""
@@ -893,7 +893,7 @@
   'dim': 'time',
   'latent': False}]
   reference_time: 1622640071000
-  expected: [{"entity": "number"},
+  expected: [{"entity_type": "number"},
   {"entity_type": "time"},
   {"entity_type": "time"},
   {"entity_type": "time"}]

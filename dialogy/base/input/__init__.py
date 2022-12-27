@@ -211,16 +211,26 @@ class Input(BaseModel):
     history: Optional[List[Dict[str, Any]]] = None
 
     def __init__(self, **data):
-        data["transcripts"] = normalize(data["utterances"])
-        data["best_transcript"] = get_best_transcript(data["transcripts"])
+        if "utterances" in data:
+            data["transcripts"] = normalize(data["utterances"])
+            data["best_transcript"] = get_best_transcript(data["transcripts"])
         data["expected_slots"] = list(set(data.get("expected_slots", [])))
+
+        defaults = {
+            "latent_entities": False,
+            "lang": "en",
+            "locale": "en_IN",
+            "timezone": "UTC"
+        }
+        for k, d in defaults.items():
+            data[k] = data.get(k, d) or d
 
         super().__init__(**data)
 
     @validator("reference_time")
     def check_reference_time(cls, v):
-        if not isinstance(v, int):
-            raise TypeError(f"`reference_time` must be an integer.")
+        if not v:
+            return None
         if not is_unix_ts(v):
             raise ValueError(f"`reference_time` must be a unix timestamp but got {v}.")
         return v

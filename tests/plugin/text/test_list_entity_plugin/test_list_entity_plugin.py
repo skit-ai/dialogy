@@ -161,7 +161,7 @@ def test_get_list_entities(payload):
     exception = payload.get("exception")
     config = payload.get("config")
     spacy_mocker = None
-    transcripts = [expectation["text"] for expectation in input_]
+    transcripts = [[{"transcript": expectation["text"]} for expectation in input_]]
 
     if config["style"] == "spacy":
         spacy_mocker = SpacyMocker(input_)
@@ -172,7 +172,8 @@ def test_get_list_entities(payload):
         )
 
         workflow = Workflow([list_entity_plugin])
-        _, output = workflow.run(input_=Input(utterances=transcripts))
+        _, output = workflow.run(input=Input(utterances=transcripts))
+        output = output.dict()
         entities = output["entities"]
 
         if not entities and expected:
@@ -190,4 +191,4 @@ def test_get_list_entities(payload):
             )
 
             workflow = Workflow([list_entity_plugin])
-            _, output = workflow.run(input_=Input(utterances=transcripts))
+            _, output = workflow.run(input=Input(utterances=transcripts))
