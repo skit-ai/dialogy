@@ -1,6 +1,9 @@
 import json
 
 import pytest
+import os
+import hashlib
+import pathlib
 
 from dialogy.base import Input
 from dialogy.plugins import ListSearchPlugin
@@ -106,8 +109,13 @@ def test_get_list_entities(payload, mocker):
             assert entity["score"] == expected[i]["score"]
 
 
-def test_get_words_from_nlp_download_model(mocker):
-    # here we are not mocking the model download step
+def test_nlp_download_method():
+    download_default_path = os.path.join(os.path.expanduser("~"), "stanza_resources")
+
+    if os.path.exists(download_default_path):
+        os.remove(download_default_path)
+
+    # first check if model can be downloaded
     l = ListSearchPlugin(
         dest="output.entities",
         fuzzy_threshold=0.3,
@@ -121,19 +129,37 @@ def test_get_words_from_nlp_download_model(mocker):
             }
         },
     )
-    expected = json.loads(
-        """[[{"id": 1, "text": "I", "lemma": "I", "upos": "PRON", "xpos": "PRP", 
-    "feats": "Case=Nom|Number=Sing|Person=1|PronType=Prs", "head": 2, "deprel": "nsubj", "misc": "", 
-    "start_char": 0, "end_char": 1, "ner": "O"}, {"id": 2, "text": "live", "lemma": "live", 
-    "upos": "VERB", "xpos": "VBP", "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin", "head": 0, "deprel": "root", 
-    "misc": "", "start_char": 2, "end_char": 6, "ner": "O"}, {"id": 3, "text": "in", "lemma": "in", 
-    "upos": "ADP", "xpos": "IN", "head": 4, "deprel": "case", "misc": "", "start_char": 7, "end_char": 9, 
-    "ner": "O"}, {"id": 4, "text": "Delhi", "lemma": "Delhi", "upos": "PROPN", 
-    "xpos": "NNP", "feats": "Number=Sing", "head": 2, "deprel": "obl", "misc": "", 
-    "start_char": 10, "end_char": 16, "ner": "O"}]]"""
+
+    assert os.path.exists(download_default_path)
+
+    # now check if model is reused and not downloaded again
+    # compute the checksum of resources file in download path
+    original_checksum = hashlib.md5(
+        pathlib.Path(
+            os.path.join(f"{download_default_path}/resources.json")
+        ).read_bytes()
+    ).hexdigest()
+
+    del l
+
+    l = ListSearchPlugin(
+        dest="output.entities",
+        fuzzy_threshold=0.3,
+        fuzzy_dp_config={
+            "en": {
+                "location": {
+                    "New Delhi": "Delhi",
+                    "new deli": "Delhi",
+                    "delhi": "Delhi",
+                }
+            }
+        },
     )
 
-    def mock_nlp(query):
-        return MockDocument(expected)
+    new_checksum = hashlib.md5(
+        pathlib.Path(
+            os.path.join(f"{download_default_path}/resources.json")
+        ).read_bytes()
+    ).hexdigest()
 
-    assert expected[0] == l.get_words_from_nlp(mock_nlp, "I live in Delhi")
+    assert new_checksum == original_checksum
