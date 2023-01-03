@@ -498,7 +498,7 @@ def test_slot_filling_order_by_alternative_index() -> None:
 
     workflow.set("output.intents", [intent]).set(
         "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
-    )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
+    )
 
     _, output = workflow.run(Input(utterances=body))
 
