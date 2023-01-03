@@ -52,7 +52,6 @@ class RuleBasedSlotFillerPlugin(Plugin):
         replace_output: bool = True,
         fill_multiple: bool = True,
         sort_by_score: bool = True,
-        sort_by_alternative_index: bool = False,
         debug: bool = False,
     ) -> None:
         """
