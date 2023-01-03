@@ -82,11 +82,6 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # if required, can be set to False
         self.sort_by_score = sort_by_score
 
-        # sort_by_alternative_index
-        # Flag which enables to sort the slots in ascending order of sort_by_alternative_index, by default set to False,
-        # if required, can be set to True
-        self.sort_by_alternative_index = sort_by_alternative_index
-
     def fill(
         self,
         intents: List[Intent],
@@ -102,9 +97,6 @@ class RuleBasedSlotFillerPlugin(Plugin):
         if self.sort_by_score:
             entities = sorted(
                 entities, key=lambda parse: parse.score or 0, reverse=True)
-        if self.sort_by_alternative_index:
-            entities = sorted(
-                entities, key=lambda parse: parse.alternative_index or 0)
         for entity in entities:
             intent.fill_slot(
                 entity, fill_multiple=self.fill_multiple, expected_slots=expected_slots
