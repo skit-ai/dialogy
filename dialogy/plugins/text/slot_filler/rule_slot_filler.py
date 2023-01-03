@@ -51,6 +51,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         guards: Union[List[Guard], None] = None,
         replace_output: bool = True,
         fill_multiple: bool = True,
+        sort_by_score: bool = True,
         debug: bool = False,
     ) -> None:
         """
@@ -75,6 +76,11 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # same entity type within a slot.
         self.fill_multiple = fill_multiple
 
+        # sort_by_score
+        # Flag which enables to sort the slots in descending order of score, by default set to True,
+        # if required, can be set to False which would then enable sorting by `alternative_index`.
+        self.sort_by_score = sort_by_score
+
     def fill(
         self,
         intents: List[Intent],
@@ -87,12 +93,13 @@ class RuleBasedSlotFillerPlugin(Plugin):
         intent, *rest = intents
 
         intent.apply(self.rules)
-
+        if self.sort_by_score:
+            entities = sorted(
+                entities, key=lambda parse: parse.score or 0, reverse=True)
         for entity in entities:
             intent.fill_slot(
                 entity, fill_multiple=self.fill_multiple, expected_slots=expected_slots
             )
-
         intent.cleanup()
         return [intent, *rest]
 
