@@ -15,7 +15,10 @@ def test_plugin_working_cases(payload) -> None:
     """
     An end-to-end example showing how to use `DucklingPlugin` with a `Workflow`.
     """
-    body = payload["input"]
+    inputs = payload["input"]
+    if isinstance(inputs, str):
+        inputs = [inputs]
+    body = [[{"transcript": x} for x in inputs]]
     mock_entity_json = payload["mock_entity_json"]
     expected_types = payload.get("expected")
     exception = payload.get("exception")
@@ -43,6 +46,7 @@ def test_plugin_working_cases(payload) -> None:
                 latent_entities=use_latent,
             )
         )
+        output = output.dict()
 
         for i, entity in enumerate(output["entities"]):
             assert entity["entity_type"] == expected_types[i]["entity_type"]

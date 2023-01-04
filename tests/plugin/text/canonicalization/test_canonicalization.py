@@ -102,7 +102,7 @@ TEST_DATA_2 = pd.DataFrame(
 def test_canonicalization_utility():
     input_ = Input(utterances=[[{"transcript": "hello apple"}]])
     input_, _ = workflow.run(input_)
-    assert input_["clf_feature"] == ["MASK <fruits>"]
+    assert input_.clf_feature == ["MASK <fruits>"]
 
 
 def test_canonicalization_transform():

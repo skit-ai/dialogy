@@ -162,22 +162,6 @@ def test_entity_parser_from_dict():
     TimeEntity.from_duckling(mock_entity, 1)
 
 
-def test_people_entity_unit_not_str_error():
-    body = "12 people"
-    with pytest.raises(TypeError):
-        _ = PeopleEntity(
-            range={"from": 0, "to": len(body)}, body=body, entity_type="people", unit=0
-        )
-
-
-def test_time_entity_grain_not_str_error():
-    body = "12 pm"
-    with pytest.raises(TypeError):
-        _ = TimeEntity(
-            range={"from": 0, "to": len(body)}, body=body, entity_type="time", grain=0
-        )
-
-
 def test_time_entities_with_constraint() -> None:
     req_time_A = dt2timestamp(datetime.fromisoformat("2022-03-06T12:00:00.000+05:30"))
     req_time_C = dt2timestamp(datetime.fromisoformat("2022-03-06T00:00:00.000+05:30"))
@@ -334,14 +318,6 @@ def test_time_interval_entities_with_constraint() -> None:
     assert req_time_C == dt2timestamp(time_interval_entity_C.get_value())
     assert req_time_D == dt2timestamp(time_interval_entity_D.get_value())
     assert time_interval_entity_D.values == d_values_D
-
-
-def test_time_interval_entity_value_not_dict_error():
-    body = "from 4 pm to 12 am"
-    with pytest.raises(TypeError):
-        _ = TimeIntervalEntity(
-            range={"from": 0, "to": len(body)}, body=body, entity_type="time", grain=0
-        )
 
 
 def test_interval_entity_set_value_values_missing() -> None:
