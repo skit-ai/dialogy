@@ -1,6 +1,9 @@
 import json
 
 import pytest
+import os
+import hashlib
+import pathlib
 
 from dialogy.base import Input
 from dialogy.plugins import ListSearchPlugin
@@ -105,3 +108,59 @@ def test_get_list_entities(payload, mocker):
         assert entity["type"] == expected[i]["type"]
         if "score" in expected[i]:
             assert entity["score"] == expected[i]["score"]
+
+
+def test_nlp_download_method():
+    download_default_path = os.path.join(os.path.expanduser("~"), "stanza_resources")
+
+    if os.path.exists(download_default_path):
+        os.remove(download_default_path)
+
+    # first check if model can be downloaded
+    l = ListSearchPlugin(
+        dest="output.entities",
+        fuzzy_threshold=0.3,
+        fuzzy_dp_config={
+            "en": {
+                "location": {
+                    "New Delhi": "Delhi",
+                    "new deli": "Delhi",
+                    "delhi": "Delhi",
+                }
+            }
+        },
+    )
+
+    assert os.path.exists(download_default_path)
+
+    # now check if model is reused and not downloaded again
+    # compute the checksum of resources file in download path
+    original_checksum = hashlib.md5(
+        pathlib.Path(
+            os.path.join(f"{download_default_path}/resources.json")
+        ).read_bytes()
+    ).hexdigest()
+
+    del l
+
+    l = ListSearchPlugin(
+        dest="output.entities",
+        fuzzy_threshold=0.3,
+        fuzzy_dp_config={
+            "en": {
+                "location": {
+                    "New Delhi": "Delhi",
+                    "new deli": "Delhi",
+                    "delhi": "Delhi",
+                }
+            }
+        },
+    )
+
+    new_checksum = hashlib.md5(
+        pathlib.Path(
+            os.path.join(f"{download_default_path}/resources.json")
+        ).read_bytes()
+    ).hexdigest()
+
+    assert new_checksum == original_checksum

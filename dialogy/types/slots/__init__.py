@@ -40,5 +40,4 @@ class Slot(BaseModel):
         self.values = []
         return self
 
-
 Rule = Dict[str, Dict[str, Any]]
