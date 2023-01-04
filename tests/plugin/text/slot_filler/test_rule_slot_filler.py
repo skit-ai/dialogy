@@ -473,7 +473,7 @@ def test_slot_filling_order_by_alternative_index() -> None:
         score=0.2,
         entity_type="entity_1",
         values=[{"value": "value_1"}],
-        alternative_index=0
+        alternative_index=2
     )
 
     entity_2 = BaseEntity(
@@ -493,7 +493,7 @@ def test_slot_filling_order_by_alternative_index() -> None:
         score=0.5,
         entity_type="entity_1",
         values=[{"value": "value_3"}],
-        alternative_index=2
+        alternative_index=0
     )
 
     workflow.set("output.intents", [intent]).set(
