@@ -76,6 +76,9 @@ class Output(BaseModel):
 
     original_intent: ORIGINAL_INTENT_TYPE = Field(default_factory=dict)
 
+    class Config:
+        allow_mutation = False
+
     def __init__(self, **data: Any):
         if "entities" in data and isinstance(data["entities"], list):
             entities = [
@@ -86,24 +89,10 @@ class Output(BaseModel):
 
         super().__init__(**data)
 
-    @validator("intents")
-    def are_intents_valid(cls, v):
-        if any(not isinstance(intent, Intent) for intent in v):
-            raise TypeError(f"`intents` must be a List[Intent] but {v} was provided.")
-
-        return v
-
-    @validator("entities")
-    def are_entities_valid(cls, v):
-        if any(not isinstance(entity, BaseEntity) for entity in v):
-            raise TypeError(
-                f"`entities` must be a List[BaseEntity] but {v} was provided."
-            )
-
-        return v
-
     @validator("original_intent")
     def is_original_intent_valid(cls, v):
+        if not v:
+            return {}
         if const.NAME not in v:
             raise TypeError(
                 f"original_intent must contain {const.NAME} but {v} was provided."

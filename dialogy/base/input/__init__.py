@@ -210,6 +210,9 @@ class Input(BaseModel):
     """
     history: Optional[List[Dict[str, Any]]] = None
 
+    class Config:
+        allow_mutation = False
+
     def __init__(self, **data):
         if "utterances" in data:
             data["transcripts"] = normalize(data["utterances"])

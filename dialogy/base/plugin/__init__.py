@@ -318,7 +318,7 @@ class Plugin(ABC):
         dest, attribute = self.dest.split(".")
 
         if dest == const.INPUT:
-            setattr(input, attribute, value)
+            input = input.copy(update={attribute: value}, deep=True)
         elif dest == const.OUTPUT:
             if attribute not in const.OUTPUT_ATTRIBUTES:
                 raise ValueError(
@@ -342,7 +342,7 @@ class Plugin(ABC):
                         reverse=True,
                     )
 
-            setattr(output, attribute, value)
+            output = output.copy(update={attribute: value}, deep=True)
         else:
             raise ValueError(f"dest: {self.dest} is not valid.")
 
