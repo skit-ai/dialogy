@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import stanza
 from loguru import logger
 from stanza.models.common.doc import Document
+from stanza.pipeline.core import DownloadMethod
 from thefuzz import fuzz
 
 from dialogy import constants as const
@@ -113,7 +114,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             self.entity_dict[lang_code] = self.fuzzy_dp_config[lang_code]
             self.entity_types[lang_code] = list(self.entity_dict[lang_code].keys())
             self.nlp[lang_code] = stanza.Pipeline(
-                lang=lang_code, tokenize_pretokenized=True
+                lang=lang_code, tokenize_pretokenized=True, download_method=DownloadMethod.REUSE_RESOURCES
             )
 
     def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:
