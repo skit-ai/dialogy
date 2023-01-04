@@ -32,7 +32,7 @@ def test_plugin_cases(payload) -> None:
     workflow = Workflow(plugins=[combine_date_time_plugin])
     _, output = workflow.run(
         Input(utterances=[[{"transcript": ""}]], slot_tracker=tracker),
-        Output(entities=current_turn_entities)
+        Output(entities=current_turn_entities),
     )
     output = output.dict()
     entity_values = [entity["value"] for entity in output[const.ENTITIES]]

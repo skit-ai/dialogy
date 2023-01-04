@@ -149,7 +149,7 @@ class BaseEntity(BaseModel):
     # **entity_type**
     entity_type: Optional[str] = None
 
-    def __init__(self, **data):
+    def __init__(self, **data): # type: ignore
         if (
             "values" in data
             and data["values"]

@@ -77,15 +77,19 @@ class TimeIntervalEntity(TimeEntity):
     type: str = "value"
     from_value: Optional[datetime] = None
     to_value: Optional[datetime] = None
-    values: List[Dict[str, Any]] = None
-    value: Dict[str, Any] = None
+    values: List[Dict[str, Any]] = None  # type: ignore
+    value: Dict[str, Any] = None  # type: ignore
 
-    def __init__(self, **data):
-        if ("values" in data and data["values"]) and ("value" not in data or not data["value"]):
+    def __init__(self, **data):  # type: ignore
+        if ("values" in data and data["values"]) and (
+            "value" not in data or not data["value"]
+        ):
             data["from_value"] = data["values"][0].get(const.FROM, {}).get(const.VALUE)
             data["to_value"] = data["values"][0].get(const.TO, {}).get(const.VALUE)
             data["value"] = {const.FROM: data["from_value"], const.TO: data["to_value"]}
-        elif ("value" in data and data["value"]) and ("values" not in data or not data["values"]):
+        elif ("value" in data and data["value"]) and (
+            "values" not in data or not data["values"]
+        ):
             data["from_value"] = data["value"].get(const.FROM, {})
             data["to_value"] = data["value"].get(const.TO, {})
             data["values"] = [
@@ -98,10 +102,10 @@ class TimeIntervalEntity(TimeEntity):
         super().__init__(**data)
 
     @root_validator
-    def check_root(cls, values):
+    def check_root(cls, values):  # type: ignore
         if not values["values"]:
             return values
-            
+
         for value in values["values"]:
             obj_keys = set(value.keys())
             if not obj_keys.issubset(values["value_keys"]):

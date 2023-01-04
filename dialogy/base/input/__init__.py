@@ -115,13 +115,13 @@ class Input(BaseModel):
     It may be helpful to keep it :code:`False` unless clearly required. 
     """
 
-    transcripts: List[str] = None
+    transcripts: List[str] = None  # type: ignore
     """
     A derived attribute. We cross product each utterance and return a list of strings.
     We use this to :ref:`normalize <normalize>` utterances.
     """
 
-    best_transcript: str = None
+    best_transcript: str = None  # type: ignore
     """
     A derived attribute. Contains the best alternative selected out of the utterances.
     """
@@ -213,7 +213,7 @@ class Input(BaseModel):
     class Config:
         allow_mutation = False
 
-    def __init__(self, **data):
+    def __init__(self, **data):  # type: ignore
         if "utterances" in data:
             data["transcripts"] = normalize(data["utterances"])
             data["best_transcript"] = get_best_transcript(data["transcripts"])
@@ -223,7 +223,7 @@ class Input(BaseModel):
             "latent_entities": False,
             "lang": "en",
             "locale": "en_IN",
-            "timezone": "UTC"
+            "timezone": "UTC",
         }
         for k, d in defaults.items():
             data[k] = data.get(k, d) or d
@@ -231,7 +231,7 @@ class Input(BaseModel):
         super().__init__(**data)
 
     @validator("reference_time")
-    def check_reference_time(cls, v):
+    def check_reference_time(cls, v):  # type: ignore
         if not v:
             return None
         if not is_unix_ts(v):

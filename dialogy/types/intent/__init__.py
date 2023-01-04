@@ -227,7 +227,7 @@ class Intent(BaseModel):
             if not self.slots[slot_name].values:
                 del self.slots[slot_name]
 
-    def dict(self, *args, **kwargs) -> Dict[str, Any]:
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:  # type: ignore
         """
         Convert the object to a dictionary.
 

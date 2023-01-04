@@ -530,7 +530,7 @@ class ErrorRecoveryPlugin(Plugin):
             entities=output.entities,
             previous_intent=input_.previous_intent,
             current_state=input_.current_state,
-            expected_slots=input_.expected_slots or set(),
+            expected_slots=input_.expected_slots or set(),  # type: ignore
         )
         for rule in self.rules:
             rule.parse(environment)

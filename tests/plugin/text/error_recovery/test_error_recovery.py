@@ -100,8 +100,12 @@ def test_error_recovery_plugin():
 
     output = Output(
         intents=[Intent(name="future_date", score=0.99)],
-        entities=[EntityDeserializer.deserialize_duckling(entity, 0) for entity in entities]
+        entities=[
+            EntityDeserializer.deserialize_duckling(entity, 0) for entity in entities
+        ],
     )
-    _, output = workflow.run(Input(utterances=[[{"transcript": "this week"}]]), output=output)
+    _, output = workflow.run(
+        Input(utterances=[[{"transcript": "this week"}]]), output=output
+    )
     output = output.dict()
     assert output["entities"][0]["value"] == "2022-07-24T00:00:00+00:00"

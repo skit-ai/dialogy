@@ -452,7 +452,9 @@ def test_slot_filling_with_expected_slots() -> None:
     #     "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
     # )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
     output = Output(intents=[intent], entities=[entity_1, entity_2, entity_3])
-    _, output = workflow.run(Input(utterances=body, expected_slots=["entity_1_slot"]), output)
+    _, output = workflow.run(
+        Input(utterances=body, expected_slots=["entity_1_slot"]), output
+    )
     output = output.dict()
 
     assert [s["name"] for s in output["intents"][0]["slots"]] == ["entity_1_slot"]

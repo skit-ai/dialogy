@@ -171,7 +171,7 @@ class Workflow:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug
 
-    def run(self, input: Input, output: Output = None):
+    def run(self, input: Input, output: Output = None):  # type: ignore
         """
         .. _workflow_run:
 

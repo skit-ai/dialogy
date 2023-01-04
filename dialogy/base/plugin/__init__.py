@@ -258,7 +258,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    def __call__(self, input, output):
+    def __call__(self, input, output):  # type: ignore
         """
         Set workflow with output.
 
@@ -295,7 +295,7 @@ class Plugin(ABC):
 
         return input, output
 
-    def set(
+    def set( # type: ignore
         self,
         value: Any,
         input,
@@ -315,7 +315,7 @@ class Plugin(ABC):
         :return: This instance
         :rtype: Workflow
         """
-        dest, attribute = self.dest.split(".")
+        dest, attribute = self.dest.split(".")  # type: ignore
 
         if dest == const.INPUT:
             input = input.copy(update={attribute: value}, deep=True)

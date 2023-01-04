@@ -82,7 +82,9 @@ class Output(BaseModel):
     def __init__(self, **data: Any):
         if "entities" in data and isinstance(data["entities"], list):
             entities = [
-                EntityDeserializer.deserialize_json(**ent) if isinstance(ent, dict) else ent
+                EntityDeserializer.deserialize_json(**ent)
+                if isinstance(ent, dict)
+                else ent
                 for ent in data["entities"]
             ]
             data["entities"] = entities
@@ -90,7 +92,7 @@ class Output(BaseModel):
         super().__init__(**data)
 
     @validator("original_intent")
-    def is_original_intent_valid(cls, v):
+    def is_original_intent_valid(cls, v):  # type: ignore
         if not v:
             return {}
         if const.NAME not in v:

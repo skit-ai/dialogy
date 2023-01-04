@@ -83,14 +83,14 @@ class EntityDeserializer:
         return entity
 
     @classmethod
-    def deserialize_json(cls, **data) -> Optional[BaseEntity]:
+    def deserialize_json(cls, **data) -> Optional[BaseEntity]: # type: ignore
         entity_class_name = cls.get_entity_class_str(data)
         EntityClass: BaseEntity = cls.entitiy_classes.get(
-            entity_class_name, KeywordEntity
+            entity_class_name, KeywordEntity # type: ignore
         )
 
         try:
-            entity = EntityClass(**data)
+            entity = EntityClass(**data) # type: ignore
         except KeyError as e:
             raise ValueError(
                 f"Failed to deserialize {EntityClass} "

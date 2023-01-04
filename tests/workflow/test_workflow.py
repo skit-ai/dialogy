@@ -27,4 +27,3 @@ def test_workflow_history_logs() -> None:
     )
     input_, _ = workflow.run(Input(utterances=[[{"transcript": "apples"}]]))
     assert input_.clf_feature == ["<s> apples </s>"]
-    

@@ -84,15 +84,15 @@ class TimeEntity(BaseEntity):
 
     origin: str = const.VALUE
     dim: str = const.TIME
-    grain: str = None
+    grain: str = None  # type: ignore
 
     __TIMERANGE_OPERATION_ALIAS: Dict[str, Callable[[Any, Any], bool]] = {
         const.LTE: operator.le,
         const.GTE: operator.ge,
     }
 
-    def __setattr__(self, key, val):
-        method = self.__config__.property_set_methods.get(key)
+    def __setattr__(self, key, val):  # type: ignore
+        method = self.__config__.property_set_methods.get(key)  # type: ignore
         if method is None:
             super().__setattr__(key, val)
         else:

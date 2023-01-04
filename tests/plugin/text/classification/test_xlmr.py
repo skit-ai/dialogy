@@ -311,9 +311,7 @@ def test_inference(payload, mocker, tmpdir):
     ), "model should be a MockClassifier after training."
 
     _, output = workflow.run(
-        Input(
-            utterances=[[{"transcript": transcript} for transcript in transcripts]]
-        )
+        Input(utterances=[[{"transcript": transcript} for transcript in transcripts]])
     )
     output = output.dict()
 

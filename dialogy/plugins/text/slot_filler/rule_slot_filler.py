@@ -97,4 +97,4 @@ class RuleBasedSlotFillerPlugin(Plugin):
         return [intent, *rest]
 
     def utility(self, input_: Input, output: Output) -> List[Intent]:
-        return self.fill(output.intents, output.entities, input_.expected_slots)
+        return self.fill(output.intents, output.entities, input_.expected_slots) # type: ignore
