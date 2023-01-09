@@ -198,6 +198,9 @@ class Intent(BaseModel):
             logger.debug(
                 f"entity type: {entity.entity_type}",
             )
+            logger.debug(
+                f"entity value: {entity.value}",
+            )
             if entity.entity_type in slot.types:
                 if fill_multiple:
                     logger.debug(f"filling {entity} into {self.name}.")
@@ -209,9 +212,7 @@ class Intent(BaseModel):
                 else:
                     logger.debug(
                         f"removing {entity} from {self.name}, because the slot was filled previously. "
-                        "Use fill_multiple=True if this is not required.",
-                        entity,
-                        self.name,
+                        "Use fill_multiple=True if this is not required."
                     )
                     self.slots[slot_name].clear()
         return self
