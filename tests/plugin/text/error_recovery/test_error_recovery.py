@@ -54,8 +54,7 @@ def test_error_recovery(payload):
 
     for rule in rules:
         rule.parse(env)
-    entities_json = [e.json() for e in env.entities]
-
+    entities_json = [e.dict() for e in env.entities]
     if expected_intent:
         assert env.intents[0] == expected_intent
     if expected_entities:
