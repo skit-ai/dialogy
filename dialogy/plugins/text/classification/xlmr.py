@@ -19,6 +19,7 @@ import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, read_from_json, save_file
+from torch.profiler import profile, record_function, ProfilerActivity
 
 
 class XLMRMultiClass(Plugin):
@@ -62,6 +63,9 @@ class XLMRMultiClass(Plugin):
                 "Plugin requires simpletransformers -- https://simpletransformers.ai/docs/installation/"
             ) from error
 
+        import os
+        os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
         super().__init__(dest=dest, guards=guards, debug=debug)
         self.labelencoder = preprocessing.LabelEncoder()
         self.classifier = classifer
@@ -93,6 +97,7 @@ class XLMRMultiClass(Plugin):
         self.skip_labels = set(skip_labels or set())
         self.purpose = purpose
         self.round = score_round_off
+        print("argument map sent", args_map, purpose)
         if args_map and (
             const.TRAIN not in args_map
             or const.TEST not in args_map
@@ -137,6 +142,7 @@ class XLMRMultiClass(Plugin):
             if self.args_map and self.purpose in self.args_map
             else {}
         )
+        print("args used during init", args)
         self.use_calibration = args.get(const.MODEL_CALIBRATION)
         try:
             self.model = self.classifier(
@@ -156,6 +162,7 @@ class XLMRMultiClass(Plugin):
                 args=args,
                 **self.kwargs,
             )
+            print("model loading failed from model dir, so loaded default weights")
 
     @property
     def valid_labelencoder(self) -> bool:
@@ -221,10 +228,15 @@ class XLMRMultiClass(Plugin):
 
         logger.debug(f"Classifier Input:\n{texts}")
 
-        predictions, logits = self.model.predict(texts)
+        with profile(activities=[ProfilerActivity.CPU], profile_memory=True, record_shapes=True) as prof:
+            with record_function("model_inference"):
+                predictions, logits = self.model.predict(texts)
+
         if not predictions:
             return [fallback_output]
 
+        print("Predictions", np.array(predictions).shape, np.array(logits).shape)
+        print(prof.key_averages(group_by_input_shape=True).table(sort_by="cpu_time_total", row_limit=10))
         logits = logits / self.ts_parameter
         confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
         intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
