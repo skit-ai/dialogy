@@ -91,7 +91,6 @@ def test_slot_no_fill() -> None:
 
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
     output = Output(intents=[intent], entities=[entity])
-    # workflow.set("output.intents", [intent]).set("output.entities", [entity])
 
     _, output = workflow.run(Input(utterances=body), output)
     output = output.dict()
