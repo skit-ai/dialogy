@@ -186,9 +186,6 @@ def test_plugin_working_cases(payload) -> None:
     if isinstance(reference_time, str):
         reference_time = make_unix_ts("Asia/Kolkata")(reference_time)
 
-    # if "intents" in output:
-    #     intents = [Intent(name=output["intents"][0]["name"], score=1.0)]
-    #     workflow.set("output.intents", intents)
 
     if expected is not None:
         input_ = Input(
