@@ -146,8 +146,6 @@ def test_address_parser_plugin(payload, monkeypatch) -> None:
     )
 
     workflow = Workflow([address_plugin])
-    # workflow.input = input_
-    # workflow.output = output
 
     _, predicted_output = workflow.run(input_, output)
 

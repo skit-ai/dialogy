@@ -198,9 +198,6 @@ class Intent(BaseModel):
             logger.debug(
                 f"entity type: {entity.entity_type}",
             )
-            logger.debug(
-                f"entity value: {entity.value}",
-            )
             if entity.entity_type in slot.types:
                 if fill_multiple:
                     logger.debug(f"filling {entity} into {self.name}.")
