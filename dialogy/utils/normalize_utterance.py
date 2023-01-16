@@ -4,7 +4,7 @@ we will ship functions to assist normalization of ASR output, we will refer to t
 """
 import itertools
 from functools import partial
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Union
 
 from dialogy import constants as const
 from dialogy.types.utterances import Transcript, Utterance
@@ -180,7 +180,8 @@ def utterance2alternatives(
     ]
 
 
-def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
+# TODO: Return values of this method is not compatible with the Input type. Need to fix this
+def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> Union[List[List[Dict[str,Any]]], List[str]]:
     """
     Adapt various non-standard ASR alternative forms.
 
@@ -237,7 +238,7 @@ def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> List[str]:
         return [utterance for utterance in maybe_utterance]
 
     if is_string(maybe_utterance):
-        return [maybe_utterance]
+        return [[{"transcript": maybe_utterance}]]
 
     else:
         raise TypeError(
