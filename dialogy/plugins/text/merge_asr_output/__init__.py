@@ -29,7 +29,7 @@ from dialogy.utils import normalize
 
 
 # == merge_asr_output ==
-def merge_asr_output(utterances: Any) -> List[str]:
+def merge_asr_output(utterances: Any) -> Union[List[List[Dict[str, Any]]], List[str]]:
     """
     .. _merge_asr_output:
 

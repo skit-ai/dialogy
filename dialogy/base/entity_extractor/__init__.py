@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from pydash import py_
 
@@ -122,7 +122,7 @@ class EntityScoringMixin:
         return self.apply_filters(aggregate_entities)
 
     @staticmethod
-    def make_transform_values(transcript: Any) -> List[str]:
+    def make_transform_values(transcript: Any) -> Union[List[List[Dict[str, Any]]], List[str]]:
         """
         Make transcripts from a string/json-string.
 
