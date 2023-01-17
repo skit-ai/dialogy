@@ -24,6 +24,7 @@ DUCKLING_TIME_INTERVAL_ENTITY_KEYS = (
     "from type values",
     "to type values",
     "from to type values",
+    "from to"
 )
 
 # Time Entity types

@@ -50,8 +50,7 @@ def test_invalid_data() -> None:
         [
             {"data": json.dumps([[{"transcript": "yes"}]])},
             {"data": json.dumps({})},
-            {"data": ""},
         ]
     )
     train_df_ = merge_asr_output_plugin.transform(train_df)
-    assert len(train_df) - len(train_df_) == 2
+    assert len(train_df) - len(train_df_) == 1

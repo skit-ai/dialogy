@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+import json
 
 from dialogy.base import Input, Output
 from dialogy.workflow import Workflow
@@ -25,6 +26,10 @@ def test_error_recovery(payload):
     entities = [
         EntityDeserializer.deserialize_duckling(entity, 0)
         for entity in payload.get("entities", [])
+    ]
+    entities = [
+        EntityDeserializer.deserialize_json(**json.loads(json.dumps(entity.dict())))
+        for entity in entities
     ]
 
     expected_intent = payload.get("expect", {}).get("intent")
@@ -97,11 +102,18 @@ def test_error_recovery_plugin():
         }
     ]
 
+    entities = [
+        EntityDeserializer.deserialize_duckling(entity, 0)
+        for entity in entities
+    ]
+    entities = [
+        EntityDeserializer.deserialize_json(**json.loads(json.dumps(entity.dict())))
+        for entity in entities
+    ]
+
     output = Output(
         intents=[Intent(name="future_date", score=0.99)],
-        entities=[
-            EntityDeserializer.deserialize_duckling(entity, 0) for entity in entities
-        ],
+        entities=entities,
     )
     _, output = workflow.run(
         Input(utterances=[[{"transcript": "this week"}]]), output=output

@@ -225,6 +225,12 @@ class Input(BaseModel):
             "locale": "en_IN",
             "timezone": "UTC",
         }
+
+        # validator for `reference_time` before int type casting
+        if "reference_time" in data and data["reference_time"] is not None:
+            if not isinstance(data["reference_time"], int):
+                raise TypeError(f"`reference_time` should be int but got: {data['reference_time']}")
+
         for k, d in defaults.items():
             data[k] = data.get(k, d) or d
 
@@ -232,6 +238,7 @@ class Input(BaseModel):
 
     @validator("reference_time")
     def check_reference_time(cls, v):  # type: ignore
+        print(v)
         if not v:
             return None
         if not is_unix_ts(v):

@@ -73,7 +73,7 @@ class TimeIntervalEntity(TimeEntity):
 
     origin = "interval"
     dim = "time"
-    value_keys = {const.FROM, const.TO, const.TYPE}
+    value_keys = [const.FROM, const.TO, const.TYPE]
     type: str = "value"
     from_value: Optional[datetime] = None
     to_value: Optional[datetime] = None
@@ -108,7 +108,7 @@ class TimeIntervalEntity(TimeEntity):
 
         for value in values["values"]:
             obj_keys = set(value.keys())
-            if not obj_keys.issubset(values["value_keys"]):
+            if not obj_keys.issubset(set(values["value_keys"])):
                 raise TypeError(
                     f"Expected {obj_keys} to be a subset of {values['value_keys']} for values"
                 )

@@ -34,6 +34,7 @@ class EntityDeserializer:
 
     @staticmethod
     def get_keys_in_value_as_str(duckling_entity_dict: Dict[str, Any]) -> str:
+        # to prevent attribute error when value is str
         if not isinstance(duckling_entity_dict[const.VALUE], dict):
             return ""
         return " ".join(sorted(duckling_entity_dict[const.VALUE].keys()))

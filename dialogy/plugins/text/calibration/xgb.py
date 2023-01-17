@@ -63,7 +63,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
                     ]
                 )
             except Exception as error:
-                logger.error(f"{error}\n{traceback.format_exc()}")
+                logger.error(f"{error}\n{alternatives}\n{traceback.format_exc()}")
 
         return features
 
