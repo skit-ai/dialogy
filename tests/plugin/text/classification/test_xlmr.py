@@ -311,10 +311,10 @@ def test_inference(payload, mocker, tmpdir):
     ), "model should be a MockClassifier after training."
 
     _, output = workflow.run(
-        input_=Input(
-            utterances=[[{"transcript": transcript} for transcript in transcripts]]
-        )
+        Input(utterances=[[{"transcript": transcript} for transcript in transcripts]])
     )
+    output = output.dict()
+
     assert output[const.INTENTS][0]["name"] == intent
     assert output[const.INTENTS][0]["score"] > 0.9
 

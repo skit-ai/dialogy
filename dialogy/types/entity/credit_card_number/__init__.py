@@ -50,7 +50,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-import attr
+from pydantic import Field
 
 from dialogy import constants as const
 from dialogy.types import BaseEntity
@@ -58,16 +58,11 @@ from dialogy.types.entity.deserialize import EntityDeserializer
 
 
 @EntityDeserializer.register(const.CREDIT_CARD_NUMBER)
-@attr.s
 class CreditCardNumberEntity(BaseEntity):
-    entity_type: Optional[str] = attr.ib(
-        repr=False, default=const.CREDIT_CARD_NUMBER, kw_only=True
-    )
-    issuer: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
-    value: Optional[str] = attr.ib(default=None, kw_only=True)
-    values: List[Dict[str, Any]] = attr.ib(
-        validator=attr.validators.instance_of(list), kw_only=True
-    )
+    entity_type: str = const.CREDIT_CARD_NUMBER
+    issuer: str
+    value: str = None  # type: ignore
+    values: List[Dict[str, Any]]
 
     @classmethod
     def from_duckling(

@@ -34,7 +34,11 @@
   expect:
     entities:
     - alternative_index: 0
+      alternative_indices:
       body: 23rd july
+      dim: time
+      latent: False
+      origin: value
       entity_type: date
       grain: day
       parsers: []
@@ -44,6 +48,16 @@
       score: null
       type: value
       value: '2022-07-23T00:00:00.000+00:00'
+      values:
+        - grain: day
+          type: value
+          value: '2022-07-23T00:00:00.000+00:00'
+        - grain: day
+          type: value
+          value: '2023-07-23T00:00:00.000+00:00'
+        - grain: day
+          type: value
+          value: '2024-07-23T00:00:00.000+00:00'
   rules:
   - doc: Remove entities that belong to `now` if other time entities are present.
     remove: entities
@@ -116,6 +130,11 @@
   expect:
     entities:
     - alternative_index: 0
+      alternative_indices:
+      dim: time
+      latent: False
+      origin: value
+
       body: this month
       entity_type: date
       grain: month
@@ -126,6 +145,10 @@
       score: null
       type: value
       value: '2022-07-31T00:00:00+00:00'
+      values:
+        - grain: month
+          type: value
+          value: '2022-07-31T00:00:00+00:00'
   rules:
   - doc: Update datetime entities such that day is set to month's last date.
     find: entities
@@ -155,6 +178,11 @@
   expect:
     entities:
     - alternative_index: 0
+      alternative_indices:
+      dim: time
+      latent: False
+      origin: value
+
       body: this week
       entity_type: date
       grain: week
@@ -165,6 +193,10 @@
       score: null
       type: value
       value: '2022-07-24T00:00:00+00:00'
+      values:
+        - grain: week
+          type: value
+          value: '2022-07-24T00:00:00+00:00'
   intents:
   - name: future_date
     score: 0.99

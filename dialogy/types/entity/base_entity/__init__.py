@@ -80,14 +80,13 @@ from __future__ import annotations
 import copy
 from typing import Any, Dict, List, Optional, Union
 
-import attr
-
 from dialogy import constants as const
+
+from pydantic import BaseModel, Field
 
 
 # = BaseEntity =
-@attr.s
-class BaseEntity:
+class BaseEntity(BaseModel):
     """
     Base Entity Type.
 
@@ -98,72 +97,73 @@ class BaseEntity:
     # **range**
     #
     # is the character range in the alternative where the entity is parsed.
-    range: Dict[str, int] = attr.ib(repr=False, order=False, kw_only=True)
+    range: Dict[str, int]
 
     # **body**
     #
     # is the string from which the entity is extracted.
-    body: str = attr.ib(validator=attr.validators.instance_of(str), order=False)
+    body: str
 
     # **dim**
     #
     # is influenced from Duckling's convention of categorization.
-    dim: Optional[str] = attr.ib(default=None, repr=False, order=False)
+    dim: Optional[str] = None
 
     # **type**
     #
     # is same as dimension or `dim` for now. We may deprecate `dim` and retain only `type`.
-    type: str = attr.ib(default="value", order=False, kw_only=True)
+    type: str = "value"
 
     # **parsers**
     #
     # gives the trail of all the functions that have changed this entity in the sequence of application.
-    parsers: List[str] = attr.ib(
-        default=attr.Factory(list),
-        validator=attr.validators.instance_of(list),
-        order=False,
-    )
+    parsers: List[str] = Field(default_factory=list)
 
     # **score**
     #
     # is the confidence that the range is the entity.
-    score: Optional[float] = attr.ib(default=None)
+    score: Optional[float] = None
 
     # **alternative_index**
     #
     # is the index of transcript within the ASR output: `List[Utterances]`
     # from which this entity was picked up. This may be None.
-    alternative_index: Optional[int] = attr.ib(default=None, order=False)
-    alternative_indices: Optional[List[int]] = attr.ib(default=None, order=False)
+    alternative_index: Optional[int] = None
+    alternative_indices: Optional[List[int]] = None
 
     # **latent**
     #
     # Duckling influenced attribute, tells if there is less evidence for an entity if latent is True.
-    latent: bool = attr.ib(default=False, order=False)
+    latent: bool = False
 
     # **values**
     #
     # The parsed value of an entity resides within this attribute.
-    values: List[Dict[str, Any]] = attr.ib(
-        default=attr.Factory(list),
-        validator=attr.validators.optional(attr.validators.instance_of(list)),  # type: ignore
-        repr=False,
-        order=False,
-    )
+    values: List[Dict[str, Any]] = Field(default_factory=list)
 
     # **values**
     #
     # A single value interpretation from values.
-    value: Any = attr.ib(default=None, order=False)
+    value: Any = None
 
     # **entity_type**
-    entity_type: Optional[str] = attr.ib(default=None, repr=True, order=False)
+    entity_type: Optional[str] = None
 
-    def __attrs_post_init__(self) -> None:
-        if self.values and not self.value:
-            self.value = self.values[0][const.VALUE]
-        elif self.value and not self.values:
-            self.values = [{const.VALUE: self.value}]
+    def __init__(self, **data):  # type: ignore
+        if (
+            "values" in data
+            and data["values"]
+            and ("value" not in data or not data["value"])
+        ):
+            data["value"] = data["values"][0][const.VALUE]
+        elif (
+            "value" in data
+            and data["value"]
+            and ("values" not in data or not data["values"])
+        ):
+            data["values"] = [{const.VALUE: data["value"]}]
+
+        super().__init__(**data)
 
     def add_parser(self, plugin: Union[Any, str]) -> "BaseEntity":
         """
@@ -201,40 +201,6 @@ class BaseEntity:
         except IndexError as index_error:
             raise IndexError(error_message) from index_error
 
-    def copy(self) -> BaseEntity:
-        """
-        Create a deep copy of the instance and return.
-
-        This is needed to prevent mutation of an original entity.
-        :return: A copy of BaseEntity that calls this method.
-        :rtype: BaseEntity
-        """
-        return copy.deepcopy(self)
-
-    def json(
-        self, skip: Optional[List[str]] = None, add: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
-        """
-        Convert the object to a dictionary.
-
-        Applies some expected filters to prevent information bloat.
-
-        Add section for skipping more properties using const.SKIP_ENTITY_ATTRS + [""]
-
-        :param skip: Names of attributes that should not be included while converting to a dict.
-            Defaults to None.
-        :type skip: Optional[List[str]]
-        :param add: Names of attributes that should be included while converting to a dict.
-            Defaults to None.
-        :type add: Optional[List[str]]
-        :return: Dictionary representation of the object
-        :rtype: Dict[str, Any]
-        """
-        skip_ = skip or const.SKIP_ENTITY_ATTRS
-        if add and isinstance(add, list):
-            skip_ = [name for name in const.SKIP_ENTITY_ATTRS if name not in add]
-        return attr.asdict(self, filter=lambda attr, _: attr.name not in skip_)
-
     @classmethod
     def from_dict(
         cls, dict_: Dict[str, Any], reference: Optional[BaseEntity] = None
@@ -243,7 +209,7 @@ class BaseEntity:
             if const.VALUES in dict_ or const.VALUE in dict_:
                 object.__setattr__(reference, const.VALUES, None)
                 object.__setattr__(reference, const.VALUE, None)
-            return attr.evolve(reference, **dict_)
+            return reference.copy(update=dict_, deep=True)
         return cls(**dict_)
 
     @classmethod

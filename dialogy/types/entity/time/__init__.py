@@ -54,7 +54,6 @@ import operator
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional
 
-import attr
 import pydash as py_
 
 from dialogy import constants as const
@@ -70,7 +69,6 @@ def dt_from_isoformat(iso_datetime: str) -> datetime:
 
 
 @EntityDeserializer.register(const.TIME)
-@attr.s
 class TimeEntity(BaseEntity):
     """
     Entities that can be parsed to obtain date, time or datetime values.
@@ -84,13 +82,31 @@ class TimeEntity(BaseEntity):
     - `grain` tells us the smallest unit of time in the utterance
     """
 
-    origin: str = attr.ib(default=const.VALUE)
-    dim: str = attr.ib(default=const.TIME)
-    grain: str = attr.ib(default=None, validator=attr.validators.instance_of(str))
+    origin: str = const.VALUE
+    dim: str = const.TIME
+    grain: str = None  # type: ignore
+
     __TIMERANGE_OPERATION_ALIAS: Dict[str, Callable[[Any, Any], bool]] = {
         const.LTE: operator.le,
         const.GTE: operator.ge,
     }
+
+    def __setattr__(self, key, val):  # type: ignore
+        method = self.__config__.property_set_methods.get(key)  # type: ignore
+        if method is None:
+            super().__setattr__(key, val)
+        else:
+            getattr(self, method)(val)
+
+    class Config:
+        property_set_methods = {
+            "day": "set_day",
+            "month": "set_month",
+            "year": "set_year",
+            "hour": "set_hour",
+            "minute": "set_minute",
+            "second": "set_second",
+        }
 
     @property
     def day(self) -> int:
@@ -103,8 +119,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.day
 
-    @day.setter
-    def day(self, value: int) -> None:
+    # @day.setter
+    def set_day(self, value: int) -> None:
         """
         Set the day of the month for the first datetime value.
         """
@@ -124,8 +140,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.month
 
-    @month.setter
-    def month(self, value: int) -> None:
+    # @month.setter
+    def set_month(self, value: int) -> None:
         """
         Set the month for the first datetime value.
         """
@@ -145,8 +161,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.year
 
-    @year.setter
-    def year(self, value: int) -> None:
+    # @year.setter
+    def set_year(self, value: int) -> None:
         """
         Set the year for the first datetime value.
         """
@@ -166,8 +182,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.hour
 
-    @hour.setter
-    def hour(self, value: int) -> None:
+    # @hour.setter
+    def set_hour(self, value: int) -> None:
         """
         Set the hour for the first datetime value.
         """
@@ -187,8 +203,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.minute
 
-    @minute.setter
-    def minute(self, value: int) -> None:
+    # @minute.setter
+    def set_minute(self, value: int) -> None:
         """
         Set the minute for the first datetime value.
         """
@@ -208,8 +224,8 @@ class TimeEntity(BaseEntity):
         dt = self.get_value()
         return dt.second
 
-    @second.setter
-    def second(self, value: int) -> None:
+    # @second.setter
+    def set_second(self, value: int) -> None:
         """
         Set the second for the first datetime value.
         """

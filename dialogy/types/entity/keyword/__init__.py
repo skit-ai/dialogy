@@ -9,19 +9,17 @@ Import classes:
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Dict
 
-import attr
+from pydantic import Field
 
-from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
 
 
-@attr.s
 class KeywordEntity(BaseEntity):
     """
     Use this type for handling keyword based extractions where presence of specific tokens in the ASR
     is enough for detection.
     """
 
-    _meta = attr.ib(type=Dict[str, str], default=attr.Factory(dict))
+    _meta: Dict[str, str] = Field(default_factory=dict)

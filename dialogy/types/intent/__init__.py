@@ -19,27 +19,26 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Set
 
-import attr
+from pydantic import BaseModel, Field
 
 from dialogy.types import BaseEntity
 from dialogy.types.slots import Rule, Slot
 from dialogy.utils.logger import logger
 
 
-@attr.s
-class Intent:
+class Intent(BaseModel):
     """
     An instance of this class contains the name of the action associated with a body of text.
     """
 
     # The name of the intent to be used.
-    name: str = attr.ib(kw_only=True, order=False)
+    name: str
     """
     The description of an intent separated by '_'
     """
 
     # The confidence of this intent being present in the utterance.
-    score: float = attr.ib(kw_only=True, default=0.0, order=True)
+    score: float = 0.0
     """
     A positive real number that represents confidence of this intent
     being the meaning of an utterance. Higher is better.
@@ -49,25 +48,23 @@ class Intent:
 
     # In case of an ASR, `alternative_index` points at one of the nth
     # alternatives that help in predictions.
-    alternative_index: Optional[int] = attr.ib(kw_only=True, default=None, order=False)
+    alternative_index: Optional[int] = None
     """
     Tells us the index of transcript that yeilds this intent. Since our featurizer
     concatenates all transcripts, we currently don't have a use for it.
-
+    
     If we were to predict the intent for each transcript separately and vote, in those
     cases it would be helpful to log this property.
     """
 
     # Trail of functions that modify the attributes of an instance.
-    parsers: List[str] = attr.ib(kw_only=True, factory=list, order=False, repr=False)
+    parsers: List[str] = Field(default_factory=list)
     """
     Contains a list of plugins that have created, updated this Intent.
     """
 
     # Container for holding `List[BaseEntity]`.
-    slots: Dict[str, Slot] = attr.ib(
-        kw_only=True, factory=dict, order=False, repr=False
-    )
+    slots: Dict[str, Slot] = Field(default_factory=dict)
     """
     Placeholders for :ref:`entities <BaseEntity>` that are relevant to this intent. 
     More details are available in the doc for :ref:`slots <Slot>`.
@@ -212,9 +209,7 @@ class Intent:
                 else:
                     logger.debug(
                         f"removing {entity} from {self.name}, because the slot was filled previously. "
-                        "Use fill_multiple=True if this is not required.",
-                        entity,
-                        self.name,
+                        "Use fill_multiple=True if this is not required."
                     )
                     self.slots[slot_name].clear()
         return self
@@ -230,7 +225,7 @@ class Intent:
             if not self.slots[slot_name].values:
                 del self.slots[slot_name]
 
-    def json(self) -> Dict[str, Any]:
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:  # type: ignore
         """
         Convert the object to a dictionary.
 
@@ -246,5 +241,5 @@ class Intent:
             "alternative_index": self.alternative_index,
             "score": self.score,
             "parsers": self.parsers,
-            "slots": [slot.json() for slot in self.slots.values()],
+            "slots": [slot.dict() for slot in self.slots.values()],
         }

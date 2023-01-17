@@ -19,6 +19,7 @@ import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, read_from_json, save_file
+from torch.profiler import profile, record_function, ProfilerActivity
 
 
 class XLMRMultiClass(Plugin):
@@ -222,6 +223,7 @@ class XLMRMultiClass(Plugin):
         logger.debug(f"Classifier Input:\n{texts}")
 
         predictions, logits = self.model.predict(texts)
+
         if not predictions:
             return [fallback_output]
 

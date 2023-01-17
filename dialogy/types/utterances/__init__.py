@@ -5,8 +5,8 @@ Import Types:
     - Alternative
     - Utterance
 """
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Any
 
 Transcript = str
-Alternative = Dict[str, Union[str, Optional[float]]]
+Alternative = Dict[str, Any]
 Utterance = List[Alternative]

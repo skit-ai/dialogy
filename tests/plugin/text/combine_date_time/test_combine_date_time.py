@@ -30,8 +30,11 @@ def test_plugin_cases(payload) -> None:
     )
 
     workflow = Workflow(plugins=[combine_date_time_plugin])
-    workflow.output = Output(entities=current_turn_entities)
-    _, output = workflow.run(Input(utterances=[""], slot_tracker=tracker))
+    _, output = workflow.run(
+        Input(utterances=[[{"transcript": ""}]], slot_tracker=tracker),
+        Output(entities=current_turn_entities),
+    )
+    output = output.dict()
     entity_values = [entity["value"] for entity in output[const.ENTITIES]]
 
     if len(entity_values) != len(expected):
@@ -54,7 +57,8 @@ def test_plugin_exit_at_missing_trigger_intents():
     )
 
     workflow = Workflow(plugins=[combine_date_time_plugin])
-    _, output = workflow.run(Input(utterances=[""]))
+    _, output = workflow.run(Input(utterances=[[{"transcript": ""}]]))
+    output = output.dict()
     assert output[const.ENTITIES] == []
 
 
@@ -64,5 +68,6 @@ def test_plugin_exit_at_missing_tracker():
     )
 
     workflow = Workflow(plugins=[combine_date_time_plugin])
-    _, output = workflow.run(Input(utterances=[""]))
+    _, output = workflow.run(Input(utterances=[[{"transcript": ""}]]))
+    output = output.dict()
     assert output[const.ENTITIES] == []

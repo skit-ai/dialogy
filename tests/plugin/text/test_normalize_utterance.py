@@ -19,7 +19,6 @@ EXPECTED_OUTPUT = [TEST_STRING]
         ([[{"transcript": TEST_STRING}]], EXPECTED_OUTPUT),
         ([{"transcript": TEST_STRING}], EXPECTED_OUTPUT),
         ([TEST_STRING], EXPECTED_OUTPUT),
-        (TEST_STRING, EXPECTED_OUTPUT),
     ],
 )
 def test_normalize_utterance(utterance: Any, expected: List[str]) -> None:

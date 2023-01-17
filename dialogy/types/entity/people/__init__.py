@@ -48,15 +48,12 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-import attr
-
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
 from dialogy.types.entity.deserialize import EntityDeserializer
 
 
 @EntityDeserializer.register(const.PEOPLE)
-@attr.s
 class PeopleEntity(BaseEntity):
     """
     A variant of numerical entity which addresses collections of people.
@@ -67,8 +64,8 @@ class PeopleEntity(BaseEntity):
     - "I have triplets" ~ 3 children.
     """
 
-    unit = attr.ib(type=str, default="", validator=attr.validators.instance_of(str))
-    entity_type: Optional[str] = attr.ib(default=const.PEOPLE, order=False)
+    unit: str = ""
+    entity_type: str = const.PEOPLE
 
     @classmethod
     def from_duckling(

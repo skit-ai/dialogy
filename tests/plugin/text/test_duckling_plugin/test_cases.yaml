@@ -101,7 +101,7 @@
   expected: [{"entity_type": "number"}, {"entity_type": "number"}]
 
 - description: "plastic money entity"
-  input: ["my card 4111111111111111"]
+  input: "my card 4111111111111111"
   duckling:
     dimensions: ["credit-card-number"]
     locale: "en_IN"
@@ -209,7 +209,7 @@
   'end': 20,
   'dim': 'time',
   'latent': False}]
-  exception: "TypeError"
+  exception: "ValidationError"
 
 - description: "Test datetime entity type"
   input: "can we come tomorrow"
@@ -318,8 +318,8 @@
 
 - description: "duration entity cast via temporal intents"
   input: "I paid 2 hours ago"
-  output: 
-    intents: 
+  output:
+    intents:
       - name: "already_paid"
   duckling:
     dimensions: ["people", "time", "date", "duration"]
@@ -555,7 +555,7 @@
     }
   }]
   reference_time: 1622640071000
-  expected: [{"entity_type": "time"}]
+  expected: [{"entity_type": "datetime"}]
 
 
 - description: "Filter out future dates using 'ge' (greater than or equals) filter."
@@ -600,7 +600,7 @@
     }
   }]
   reference_time: 1622640071000
-  expected: [{"entity_type": "time"}]
+  expected: [{"entity_type": "datetime"}]
 
 
 - description: "Filter out future dates only but preserve other entities."
@@ -652,7 +652,7 @@
     'latent': False
   }]
   reference_time: 1622640071000
-  expected: [{"entity_type": "time"}, {"entity_type": "number"}]
+  expected: [{"entity_type": "datetime"}, {"entity_type": "number"}]
 
 
 - description: "Exceptions due to incorrect datetime filter value."
@@ -893,10 +893,10 @@
   'dim': 'time',
   'latent': False}]
   reference_time: 1622640071000
-  expected: [{"entity": "number"},
-  {"entity_type": "time"},
-  {"entity_type": "time"},
-  {"entity_type": "time"}]
+  expected: [{"entity_type": "number", "id": 1},
+  {"entity_type": "time", "id": 2},
+  {"entity_type": "datetime", "id": 3},
+  {"entity_type": "time"}, "id": 4]
 
 - description: "Testing currency entity."
   input: "300 dollars"

@@ -47,10 +47,11 @@ Workflow Integration
 from __future__ import annotations
 
 import operator
+
 from datetime import timedelta
 from typing import Any, Dict, Optional, Union
 
-import attr
+from pydantic import Field
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
@@ -60,7 +61,6 @@ from dialogy.utils import unix_ts_to_datetime
 
 
 @EntityDeserializer.register(const.DURATION)
-@attr.s
 class DurationEntity(BaseEntity):
     """
     This entity type expects a normalized attribute. This provides the duration normalized to seconds.
@@ -74,10 +74,10 @@ class DurationEntity(BaseEntity):
     to get to a date that's 2 days ahead.
     """
 
-    unit: str = attr.ib(validator=attr.validators.instance_of(str), kw_only=True)
-    normalized: Dict[str, Any] = attr.ib(default=attr.Factory(dict))
-    _meta: Dict[str, str] = attr.ib(default=attr.Factory(dict))
-    entity_type: str = attr.ib(default=const.DURATION, kw_only=True)
+    unit: str
+    normalized: Dict[str, Any] = Field(default_factory=dict)
+    _meta: Dict[str, str] = Field(default_factory=dict)
+    entity_type: str = const.DURATION
 
     @classmethod
     def from_duckling(

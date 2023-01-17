@@ -80,9 +80,7 @@ The default assumption is to use the number as :code:`day` but we can also repla
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, Optional
-
-import attr
+from typing import Any, Dict
 
 from dialogy import constants as const
 from dialogy.types.entity.base_entity import BaseEntity
@@ -92,7 +90,6 @@ from dialogy.utils import unix_ts_to_datetime
 
 
 @EntityDeserializer.register(const.NUMBER)
-@attr.s
 class NumericalEntity(BaseEntity):
     """
     Numerical Entity Type
@@ -108,10 +105,8 @@ class NumericalEntity(BaseEntity):
         - `type` is the type of the entity which can have values in ["value", "interval"]
     """
 
-    origin = attr.ib(
-        type=str, default="value", validator=attr.validators.instance_of(str)
-    )
-    entity_type: Optional[str] = attr.ib(default=const.NUMBER, order=False)
+    origin: str = "value"
+    entity_type: str = const.NUMBER
 
     @classmethod
     def from_duckling(
