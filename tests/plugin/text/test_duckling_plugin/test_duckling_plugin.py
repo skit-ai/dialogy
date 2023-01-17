@@ -186,7 +186,6 @@ def test_plugin_working_cases(payload) -> None:
     if isinstance(reference_time, str):
         reference_time = make_unix_ts("Asia/Kolkata")(reference_time)
 
-
     if expected is not None:
         input_ = Input(
             utterances=body,

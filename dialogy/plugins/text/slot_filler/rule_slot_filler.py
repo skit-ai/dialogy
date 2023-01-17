@@ -95,10 +95,10 @@ class RuleBasedSlotFillerPlugin(Plugin):
         intent.apply(self.rules)
         if self.sort_by_score:
             entities = sorted(
-                entities, key=lambda parse: parse.score or 0, reverse=True)
+                entities, key=lambda parse: parse.score or 0, reverse=True
+            )
         else:
-            entities = sorted(
-                entities, key=lambda parse: parse.alternative_index or 0)
+            entities = sorted(entities, key=lambda parse: parse.alternative_index or 0)
         for entity in entities:
             intent.fill_slot(
                 entity, fill_multiple=self.fill_multiple, expected_slots=expected_slots

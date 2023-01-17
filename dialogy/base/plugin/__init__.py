@@ -295,7 +295,7 @@ class Plugin(ABC):
 
         return input, output
 
-    def set( # type: ignore
+    def set(  # type: ignore
         self,
         value: Any,
         input,

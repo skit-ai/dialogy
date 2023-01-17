@@ -17,7 +17,7 @@ for the task. We featurize the utterances by concatenation of all transcripts.
 """
 import json
 import traceback
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union, Dict
 
 import pandas as pd
 from loguru import logger
@@ -29,7 +29,7 @@ from dialogy.utils import normalize
 
 
 # == merge_asr_output ==
-def merge_asr_output(utterances: Any) -> Union[List[List[Dict[str, Any]]], List[str]]:
+def merge_asr_output(utterances: Any) -> Union[List[List[Dict[str, Any]]], List[str], List]:  # type: ignore
     """
     .. _merge_asr_output:
 
@@ -60,7 +60,7 @@ def merge_asr_output(utterances: Any) -> Union[List[List[Dict[str, Any]]], List[
         :code:`List[Dict[str, str]]`.
     """
     try:
-        transcripts: List[str] = normalize(utterances)
+        transcripts = normalize(utterances)
         invalid_transcript = len(transcripts) == 1 and any(
             token.lower() in transcripts for token in const.INVALID_TOKENS
         )

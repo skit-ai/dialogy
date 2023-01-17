@@ -229,7 +229,9 @@ class Input(BaseModel):
         # validator for `reference_time` before int type casting
         if "reference_time" in data and data["reference_time"] is not None:
             if not isinstance(data["reference_time"], int):
-                raise TypeError(f"`reference_time` should be int but got: {data['reference_time']}")
+                raise TypeError(
+                    f"`reference_time` should be int but got: {data['reference_time']}"
+                )
 
         for k, d in defaults.items():
             data[k] = data.get(k, d) or d

@@ -336,6 +336,7 @@ def test_slot_competition_fill_one() -> None:
 
     assert "entity_1_slot" not in output[const.INTENTS][0]["slots"]
 
+
 def test_slot_filling_order() -> None:
     """
     Here, we will see that entities of same type filled in a slot are sorted by their score in descending order.
@@ -362,7 +363,7 @@ def test_slot_filling_order() -> None:
         score=0.2,
         entity_type="entity_1",
         values=[{"value": "value_1"}],
-        alternative_index=2
+        alternative_index=2,
     )
 
     entity_2 = BaseEntity(
@@ -372,7 +373,7 @@ def test_slot_filling_order() -> None:
         score=0.9,
         entity_type="entity_1",
         values=[{"value": "value_2"}],
-        alternative_index=1
+        alternative_index=1,
     )
 
     entity_3 = BaseEntity(
@@ -382,7 +383,7 @@ def test_slot_filling_order() -> None:
         score=0.5,
         entity_type="entity_1",
         values=[{"value": "value_3"}],
-        alternative_index=0
+        alternative_index=0,
     )
 
     # workflow.set("output.intents", [intent]).set(
@@ -452,8 +453,7 @@ def test_slot_filling_with_expected_slots() -> None:
     )
     output = output.dict()
 
-    assert [s["name"]
-            for s in output["intents"][0]["slots"]] == ["entity_1_slot"]
+    assert [s["name"] for s in output["intents"][0]["slots"]] == ["entity_1_slot"]
 
 
 def test_slot_filling_order_by_alternative_index() -> None:
@@ -482,7 +482,7 @@ def test_slot_filling_order_by_alternative_index() -> None:
         score=0.2,
         entity_type="entity_1",
         values=[{"value": "value_1"}],
-        alternative_index=2
+        alternative_index=2,
     )
 
     entity_2 = BaseEntity(
@@ -492,7 +492,7 @@ def test_slot_filling_order_by_alternative_index() -> None:
         score=0.9,
         entity_type="entity_1",
         values=[{"value": "value_2"}],
-        alternative_index=1
+        alternative_index=1,
     )
 
     entity_3 = BaseEntity(
@@ -502,7 +502,7 @@ def test_slot_filling_order_by_alternative_index() -> None:
         score=0.5,
         entity_type="entity_1",
         values=[{"value": "value_3"}],
-        alternative_index=0
+        alternative_index=0,
     )
 
     output = Output(intents=[intent], entities=[entity_1, entity_2, entity_3])
@@ -510,7 +510,6 @@ def test_slot_filling_order_by_alternative_index() -> None:
     _, output = workflow.run(Input(utterances=body), output)
     slot_values = output.dict()["intents"][0]["slots"][0]["values"]
     assert all(
-        slot_values[i]["alternative_index"] <= slot_values[i +
-                                                           1]["alternative_index"]
+        slot_values[i]["alternative_index"] <= slot_values[i + 1]["alternative_index"]
         for i in range(len(slot_values) - 1)
     )

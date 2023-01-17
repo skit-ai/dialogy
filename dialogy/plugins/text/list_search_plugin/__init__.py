@@ -114,7 +114,9 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             self.entity_dict[lang_code] = self.fuzzy_dp_config[lang_code]
             self.entity_types[lang_code] = list(self.entity_dict[lang_code].keys())
             self.nlp[lang_code] = stanza.Pipeline(
-                lang=lang_code, tokenize_pretokenized=True, download_method=DownloadMethod.REUSE_RESOURCES
+                lang=lang_code,
+                tokenize_pretokenized=True,
+                download_method=DownloadMethod.REUSE_RESOURCES,
             )
 
     def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:

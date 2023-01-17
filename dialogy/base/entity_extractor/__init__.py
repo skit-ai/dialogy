@@ -122,7 +122,7 @@ class EntityScoringMixin:
         return self.apply_filters(aggregate_entities)
 
     @staticmethod
-    def make_transform_values(transcript: Any) -> Union[List[List[Dict[str, Any]]], List[str]]:
+    def make_transform_values(transcript: Any) -> Any:
         """
         Make transcripts from a string/json-string.
 

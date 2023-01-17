@@ -103,8 +103,7 @@ def test_error_recovery_plugin():
     ]
 
     entities = [
-        EntityDeserializer.deserialize_duckling(entity, 0)
-        for entity in entities
+        EntityDeserializer.deserialize_duckling(entity, 0) for entity in entities
     ]
     entities = [
         EntityDeserializer.deserialize_json(**json.loads(json.dumps(entity.dict())))

@@ -181,7 +181,7 @@ def utterance2alternatives(
 
 
 # TODO: Return values of this method is not compatible with the Input type. Need to fix this
-def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> Union[List[List[Dict[str, Any]]], List[str]]:  # type: ignore
+def normalize(maybe_utterance: Any, key: str = const.TRANSCRIPT) -> Any:
     """
     Adapt various non-standard ASR alternative forms.
 
