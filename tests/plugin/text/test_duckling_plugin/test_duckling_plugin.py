@@ -214,7 +214,8 @@ def test_plugin_working_cases(payload) -> None:
                 reference_time=reference_time,
                 latent_entities=use_latent,
             )
-            workflow.run(input_)
+            output = Output(**output)
+            workflow.run(input_, output)
 
 
 @httpretty.activate
