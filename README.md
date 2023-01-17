@@ -121,4 +121,4 @@ will happen through the `0.9.x` branch and will result in
 new patch versions of the same minor version, for e.g. `0.9.30`.
 
 The new API will live on `master` and all changes built on top of new API 
-should be released from `master` with minor version `0.10`, for e.g. `0.10.2`.
+should be released from `master` with a new major version `1.0.x`, for e.g. `1.0.1`.
