@@ -1,3 +1,5 @@
+import os.path
+
 import pandas as pd
 import pytest
 
@@ -29,9 +31,9 @@ from dialogy.plugins import LabelDenoiserPlugin
         ),
     ],
 )
-def test_drop_conflicting_labels(alternatives, tags, drop, discard_size) -> None:
+def test_drop_conflicting_labels(alternatives, tags, drop, discard_size, tmp_path) -> None:
     label_denoiser_plugin = LabelDenoiserPlugin(
-        use_transform=True, drop_conflicting_labels=drop
+        discarded_output_path=tmp_path, use_transform=True, drop_conflicting_labels=drop
     )
 
     training_data = pd.DataFrame({"alternatives": alternatives, "tag": tags})
@@ -39,3 +41,4 @@ def test_drop_conflicting_labels(alternatives, tags, drop, discard_size) -> None
     training_data_ = label_denoiser_plugin.transform(training_data)
 
     assert len(training_data) - len(training_data_) == discard_size
+    assert os.path.exists(os.path.join(tmp_path, "discarded_train_data.csv"))

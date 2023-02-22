@@ -7,6 +7,7 @@ Make sure that you add this plugin as the very first plugin.
 """
 import json
 from typing import Any, List, Optional
+import os
 
 import pandas as pd
 from loguru import logger
@@ -29,6 +30,7 @@ class LabelDenoiserPlugin(Plugin):
 
     def __init__(
         self,
+        discarded_output_path: str,
         input_column: str = const.ALTERNATIVES,
         output_column: Optional[str] = None,
         use_transform: bool = False,
@@ -45,6 +47,7 @@ class LabelDenoiserPlugin(Plugin):
             use_transform=use_transform,
             debug=debug,
         )
+        self.discarded_output_path = discarded_output_path
         self.drop_conflicting_labels = drop_conflicting_labels
 
     @staticmethod
@@ -61,8 +64,6 @@ class LabelDenoiserPlugin(Plugin):
         )
 
         hash_with_different_intents_tagged = {}
-
-        training_data = training_data[training_data["tag"] != "_audio_issue_"]
 
         for _, row in training_data.iterrows():
 
@@ -109,9 +110,13 @@ class LabelDenoiserPlugin(Plugin):
 
         training_data_ = training_data[training_data.use].copy()
         training_data_.drop("use", axis=1, inplace=True)
-        discarded_data = len(training_data) - len(training_data_)
-        if discarded_data:
+        discarded_data = training_data[~training_data["use"]]
+        discarded_data_size = len(discarded_data)
+        if discarded_data_size:
             logger.debug(
-                f"Discarding {discarded_data} samples out of {len(training_data)} because of conflicting labels."
+                f"Discarding {discarded_data_size} samples out of {len(training_data)} because of conflicting labels."
             )
+        discarded_data.to_csv(
+            os.path.join(self.discarded_output_path, "discarded_train_data.csv")
+        )
         return training_data_
