@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ master, feat/python_3.10_support ]
+    branches: [ master, feat/python_3.10_support, 0.9.x ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, 0.9.x ]
 
 jobs:
   build:
