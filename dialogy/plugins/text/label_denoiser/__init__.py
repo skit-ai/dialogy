@@ -3,19 +3,7 @@ We attempt to denoise the intent labels by employing different approaches:
 
 1. Drop data points where same utterance is tagged with two different labels in two different data points.
 
-
-.. ipython::
-
-    In [1]: from dialogy.workflow import Workflow
-       ...: from dialogy.plugins import MergeASROutputPlugin
-       ...: from dialogy.base import Input
-
-    In [2]: merge_asr_output_plugin = MergeASROutputPlugin(dest="input.clf_feature")
-       ...: workflow = Workflow([merge_asr_output_plugin])
-
-    In [3]: input_, _ = workflow.run(Input(utterances=["we will come by 7 pm", " will come by 7 pm"]))
-
-    In [4]: input_
+Make sure that you add this plugin as the very first plugin.
 """
 import json
 from typing import Any, List, Optional
