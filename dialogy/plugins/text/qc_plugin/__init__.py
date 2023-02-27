@@ -1,5 +1,5 @@
 """
-We attempt to denoise the intent labels by employing different approaches:
+We attempt to add certain quality check approaches here:
 
 1. Drop data points where same utterance is tagged with two different labels in two different data points.
 
@@ -20,9 +20,9 @@ from dialogy.base import Guard, Input, Output, Plugin
 
 class QCPlugin(Plugin):
     """
-    .. _LabelDenoiserPlugin:
+    .. _QCPlugin:
 
-    Working details are covered in :ref:`LabelDenoiserPlugin<LabelDenoiserPlugin>`.
+    Working details are covered in :ref:`QCPlugin<QCPlugin>`.
 
     :param Plugin: [description]
     :type Plugin: [type]
