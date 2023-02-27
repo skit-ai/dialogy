@@ -18,7 +18,7 @@ import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 
 
-class LabelDenoiserPlugin(Plugin):
+class QCPlugin(Plugin):
     """
     .. _LabelDenoiserPlugin:
 

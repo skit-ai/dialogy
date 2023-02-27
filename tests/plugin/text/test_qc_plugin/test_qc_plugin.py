@@ -3,7 +3,7 @@ import os.path
 import pandas as pd
 import pytest
 
-from dialogy.plugins import LabelDenoiserPlugin
+from dialogy.plugins import QCPlugin
 
 
 @pytest.mark.parametrize(
@@ -32,7 +32,7 @@ from dialogy.plugins import LabelDenoiserPlugin
     ],
 )
 def test_drop_conflicting_labels(alternatives, tags, drop, discard_size, tmp_path) -> None:
-    label_denoiser_plugin = LabelDenoiserPlugin(
+    label_denoiser_plugin = QCPlugin(
         discarded_output_path=tmp_path, use_transform=True, drop_conflicting_labels=drop
     )
 

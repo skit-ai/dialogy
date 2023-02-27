@@ -12,4 +12,4 @@ from dialogy.plugins.text.merge_asr_output import MergeASROutputPlugin
 from dialogy.plugins.text.slot_filler.rule_slot_filler import RuleBasedSlotFillerPlugin
 from dialogy.plugins.text.address_parser import AddressParserPlugin
 from dialogy.plugins.text.error_recovery.error_recovery import ErrorRecoveryPlugin
-from dialogy.plugins.text.label_denoiser import LabelDenoiserPlugin
+from dialogy.plugins.text.qc_plugin import QCPlugin
