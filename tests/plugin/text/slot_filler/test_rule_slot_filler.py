@@ -60,7 +60,7 @@ def test_slot_filling() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # so we are checking if the `entity_1_slot` is filled by our mock entity.
-    assert intent["slots"][0]["values"][0] == entity.dict()
+    assert intent["slots"]["entity_1_slot"]["values"][0] == entity.dict()
 
 
 def test_slot_no_fill() -> None:
@@ -183,11 +183,12 @@ def test_slot_dual_fill() -> None:
     output = Output(intents=[intent], entities=[entity_1, entity_2])
     _, output = workflow.run(Input(utterances=body), output)
     output = output.dict()
+    intent, *_ = output[const.INTENTS]
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"][0]["values"] == [entity_1.dict()]
-    assert output[const.INTENTS][0]["slots"][1]["values"] == [entity_2.dict()]
+    assert intent["slots"]["entity_1_slot"]["values"] == [entity_1.dict()]
+    assert intent["slots"]["entity_2_slot"]["values"] == [entity_2.dict()]
 
 
 def test_slot_filling_multiple() -> None:
@@ -236,8 +237,8 @@ def test_slot_filling_multiple() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-    assert output[const.INTENTS][0]["slots"][0]["values"] == [entity_1.dict()]
-    assert output[const.INTENTS][0]["slots"][1]["values"] == [entity_2.dict()]
+    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [entity_1.dict()]
+    assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [entity_2.dict()]
 
 
 def test_slot_competition_fill_multiple() -> None:
@@ -284,8 +285,7 @@ def test_slot_competition_fill_multiple() -> None:
 
     # `workflow.output[0]` is the `Intent` we created.
     # The `entity_1_slot` and `entity_2_slot` are filled.
-
-    assert output[const.INTENTS][0]["slots"][0]["values"] == [
+    assert output[const.INTENTS][0]["slots"]["entity_1_slot"]["values"] == [
         entity_1.dict(),
         entity_2.dict(),
     ]
@@ -393,7 +393,7 @@ def test_slot_filling_order() -> None:
     _, output = workflow.run(Input(utterances=body), output)
     output = output.dict()
 
-    slot_values = output["intents"][0]["slots"][0]["values"]
+    slot_values = output["intents"][0]["slots"]["entity_1_slot"]["values"]
     assert all(
         slot_values[i]["score"] >= slot_values[i + 1]["score"]
         for i in range(len(slot_values) - 1)
@@ -453,7 +453,7 @@ def test_slot_filling_with_expected_slots() -> None:
     )
     output = output.dict()
 
-    assert [s["name"] for s in output["intents"][0]["slots"]] == ["entity_1_slot"]
+    assert [s_val["name"] for s_key, s_val in output["intents"][0]["slots"].items()] == ["entity_1_slot"]
 
 
 def test_slot_filling_order_by_alternative_index() -> None:
@@ -508,7 +508,7 @@ def test_slot_filling_order_by_alternative_index() -> None:
     output = Output(intents=[intent], entities=[entity_1, entity_2, entity_3])
 
     _, output = workflow.run(Input(utterances=body), output)
-    slot_values = output.dict()["intents"][0]["slots"][0]["values"]
+    slot_values = output.dict()["intents"][0]["slots"]["entity_1_slot"]["values"]
     assert all(
         slot_values[i]["alternative_index"] <= slot_values[i + 1]["alternative_index"]
         for i in range(len(slot_values) - 1)
