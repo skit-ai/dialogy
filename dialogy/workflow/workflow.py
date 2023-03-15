@@ -227,7 +227,7 @@ class Workflow:
         return input, output
 
     @staticmethod
-    def add_transcript_to_input(input):
+    def add_transcript_to_input(input: Input) -> Input:
         transcripts, best_transcript = input.get_transcript_information()
         return input.copy(update={"transcripts": transcripts, "best_transcript": best_transcript}, deep=True)
 
