@@ -214,9 +214,6 @@ class Input(BaseModel):
         allow_mutation = False
 
     def __init__(self, **data):  # type: ignore
-        if "utterances" in data:
-            data["transcripts"] = normalize(data["utterances"])
-            data["best_transcript"] = get_best_transcript(data["transcripts"])
         data["expected_slots"] = list(set(data.get("expected_slots", [])))
 
         defaults = {
@@ -224,6 +221,8 @@ class Input(BaseModel):
             "lang": "en",
             "locale": "en_IN",
             "timezone": "UTC",
+            "transcripts": [],
+            "best_transcript": ""
         }
 
         # validator for `reference_time` before int type casting
@@ -295,3 +294,9 @@ class Input(BaseModel):
         return list(
             reduce(lambda entities, slot: entities + slot["values"], required_slots, [])
         )
+
+    def get_transcript_information(self) -> Union[Any, str]:
+        transcripts = normalize(self.utterances)
+        best_transcript = get_best_transcript(transcripts)
+
+        return transcripts, best_transcript
