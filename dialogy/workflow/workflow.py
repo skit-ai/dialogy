@@ -128,6 +128,7 @@ from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.base.plugin import Plugin
 from dialogy.utils.logger import logger
+from dialogy.utils import normalize, get_best_transcript
 
 
 @attr.s
@@ -228,7 +229,8 @@ class Workflow:
 
     @staticmethod
     def add_transcript_to_input(input: Input) -> Input:
-        transcripts, best_transcript = input.get_transcript_information()
+        transcripts = normalize(input.utterances)
+        best_transcript = get_best_transcript(transcripts)
         return input.copy(update={"transcripts": transcripts, "best_transcript": best_transcript}, deep=True)
 
     def train(self, training_data: pd.DataFrame) -> Workflow:

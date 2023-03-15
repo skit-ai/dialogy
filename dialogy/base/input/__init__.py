@@ -84,7 +84,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field, validator
 
 from dialogy.types import Utterance
-from dialogy.utils import normalize, get_best_transcript, is_unix_ts
+from dialogy.utils import is_unix_ts
 
 
 class Input(BaseModel):
@@ -294,9 +294,3 @@ class Input(BaseModel):
         return list(
             reduce(lambda entities, slot: entities + slot["values"], required_slots, [])
         )
-
-    def get_transcript_information(self) -> Union[Any, str]:
-        transcripts = normalize(self.utterances)
-        best_transcript = get_best_transcript(transcripts)
-
-        return transcripts, best_transcript
