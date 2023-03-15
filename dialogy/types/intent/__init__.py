@@ -241,5 +241,5 @@ class Intent(BaseModel):
             "alternative_index": self.alternative_index,
             "score": self.score,
             "parsers": self.parsers,
-            "slots": [slot.dict() for slot in self.slots.values()],
+            "slots": {slot_name: slot_value.dict() for slot_name, slot_value in self.slots.items()},
         }
