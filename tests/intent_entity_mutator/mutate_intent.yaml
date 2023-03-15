@@ -1,0 +1,293 @@
+swap_rules:
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "bill_paid"
+    conditions:
+      state:
+        in: ["ASK_BILL_PAID_DATE", "CONFIRM_BILL_PAID_DATE"]
+        not_in: []
+      intent:
+        in: ["entity_only"]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity: null
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "_call_me_back_"
+    conditions:
+      state:
+        in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
+        not_in: []
+      intent:
+        in: ["entity_only"]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity: null
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "payment_promise"
+    conditions:
+      state:
+        in: ["entity_only"]
+        not_in: []
+      intent:
+        in: []
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity: null
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "_call_me_back_"
+    conditions:
+      state:
+        in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
+        not_in: []
+      intent:
+        in: ["bill_paid"]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity: null
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "_call_me_back_"
+    conditions:
+      state:
+        in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
+        not_in: []
+      intent:
+        in: ["payment_promise"]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity: null
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "port_to_prepaid"
+    conditions:
+      state:
+        in: []
+        not_in: []
+      intent:
+        in: ["_churn_"]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity:
+        type:
+          in: ["prepaid"]
+          not_in: []
+
+        dim:
+          in: []
+          not_in: []
+
+        value:
+          in: []
+          not_in: []
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "payment_whatsapp"
+    conditions:
+      state:
+        in: []
+        not_in: []
+      intent:
+        in: ["how_to_pay", "payment_vi_app"]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity:
+        type:
+          in: ["payment_mode_enquiry"]
+          not_in: []
+
+        dim:
+          in: []
+          not_in: []
+
+        value:
+          in: ["whatsapp"]
+          not_in: []
+    
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "payment_promise_next_bill_cycle"
+    conditions:
+      state:
+        in: []
+        not_in: []
+      
+      intent:
+        in: ["payment_promise"]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity:
+        type:
+          in: ["next_bill_cycle"]
+          not_in: []
+
+        dim:
+          in: []
+          not_in: []
+
+        value:
+          in: [""]
+          not_in: []
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "payment_vi_app"
+    conditions:
+      state:
+        in: []
+        not_in: []
+      intent:
+        in: ["how_to_pay", "payment_vi_app"]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity:
+        type:
+          in: ["payment_mode_enquiry"]
+          not_in: []
+
+        dim:
+          in: []
+          not_in: []
+
+        value:
+          in: ["vi_app"]
+          not_in: []
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "old_user_waiver"
+    conditions:
+      state:
+        in: []
+        not_in: []
+      intent:
+        in:
+          [
+            "deactivate_ir_service",
+            "vas_charges",
+            "roaming_charges",
+            "google_play_charges",
+            "late_fee_charges",
+            "bill_breakup_details",
+          ]
+        not_in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity:
+        type:
+          in: ["fee_waiver"]
+          not_in: []
+
+        dim:
+          in: []
+          not_in: []
+
+        value:
+          in: []
+          not_in: []
+        
+        
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "place_order_ocs"
+    conditions:
+      state:
+        in: ["CONFIRM_TIME_REMOTE"]
+        not_in: []
+      intent:
+        in: ["_ood_"]
+        not_in: []
+
+      previous_intent:
+        in: ["place_order_ocs"]
+        not_in: []
+
+      transcript: null
+
+      entity: null
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "inform_credit_card_number"
+    conditions:
+      state:
+        in: ["ASK_CARD_NUMBER_AGAIN"]
+        not_in: []
+      intent:
+        not_in:
+          - _cancel_
+          - _confirm_
+          - _repeat_
+          - put_on_hold
+          - _identity_
+          - why_ask
+          - _callback_
+          - ask_for_agent
+        in: []
+
+      previous_intent: null
+
+      transcript: null
+
+      entity: null
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "web_check_in_change_details"
+    conditions:
+      state:
+        in:
+          [
+            "CONFIRM_MANDATORY_SEAT_SELECTION",
+            "COF",
+            "COF_QUERY",
+            "COF_LANG",
+            "REPROMPT_INTENT",
+            "SPECIFY_BAGGAGE_QUERY",
+          ]
+        not_in: []
+      intent:
+        not_in: []
+        in: ["web_check_in_seat_selection_compulsory"]
+
+      previous_intent: null
+
+      transcript:
+        in: ["change", "modify"]
+        not_in: []
+
+      entity: null
