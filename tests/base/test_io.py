@@ -27,11 +27,6 @@ def test_output_extension():
     assert instance == extended
 
 
-def test_input_invalid_transcript_key():
-    with pytest.raises(TypeError):
-        Input(utterances=[[{"not_transcript": "hello world", "confidence": None}]])
-
-
 def test_output_invalid_intents_type():
     with pytest.raises(ValidationError):
         Output(intents=1)

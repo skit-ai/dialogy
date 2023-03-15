@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dialogy"
-version = "1.0.1"
+version = "1.0.2"
 description = "Dialogy is a library for building and managing SLU applications."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 license = "MIT"
@@ -58,5 +58,5 @@ ipykernel = "^6.15.0"
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
