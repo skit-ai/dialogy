@@ -4,7 +4,10 @@ from dialogy.workflow import Workflow
 from dialogy.types import Intent, BaseEntity
 from dialogy.base.plugin import Input, Output
 from typing import List, Any, Dict, Union
+import pytest
 
+with open("tests/plugin/text/intent_entity_mutator/mutate_intent.yaml", "r") as f:
+    rules = yaml.load(f, Loader=yaml.Loader)
 
 
 def intent_mutation(
@@ -35,11 +38,16 @@ def intent_mutation(
     assert out.intents[0].name == mutate_val
 
 
-def test_intent_mutation_cases():
-    with open("tests/intent_entity_mutator/mutate_intent.yaml", "r") as f:
-        rules = yaml.load(f, Loader=yaml.Loader)
+def test_empty_rules():
+    with pytest.raises(TypeError):
+        intent_entity_no_rules = IntentEntityMutatorPlugin(rules=None)
 
-    with open("tests/intent_entity_mutator/test_cases_intent.yaml", "r") as f:
+
+def test_intent_mutation_cases():
+
+    with open(
+        "tests/plugin/text/intent_entity_mutator/test_cases_intent.yaml", "r"
+    ) as f:
         test_cases = yaml.load(f, Loader=yaml.Loader)["test_cases"]
 
     for case in test_cases:
