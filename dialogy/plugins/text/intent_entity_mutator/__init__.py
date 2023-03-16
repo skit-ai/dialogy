@@ -149,11 +149,6 @@ class IntentEntityMutatorPlugin(Plugin):
                     else:
                         intents[0].name = mutated_intent[0].name
                         return intents
-                else:
-                    continue
-
-            else:
-                continue
 
         return intents
 
@@ -235,61 +230,61 @@ class IntentEntityMutatorPlugin(Plugin):
             )
 
 
-def test_intent_entity_plugin(name, rules, current_state, previous_intent):
-    entity_dict = {
-        "type": "fee_waiver",
-        "entity_type": "",
-        # this was parser earlier
-        "parsers": ["other-reason-parser"],
-        # this was values earlier, and structure has also changed (referenced https://gitlab.com/vernacularai/ai/clients/oppo-v1/-/blob/master/slu/src/controller/custom_plugins.py#L539)
-        # "value": {
-        #     "values": [
-        #         {"value": rlabel},
-        #     ],
-        # },
-        "value": "",
-        "score": 20,
-        # newly added attributes
-        "dim": "",
-        "latent": True,
-        "range": {"start": 0, "end": 0},
-        # "start": 0,
-        # "end": 0,
-        "body": "",
-    }
-    entity = BaseEntity.from_dict(entity_dict)
-    intent_entity = IntentEntityMutatorPlugin(rules=rules)
-    workflow = Workflow([intent_entity])
-    intent = Intent(name=name, score=0.4)
+# def test_intent_entity_plugin(name, rules, current_state, previous_intent):
+#     entity_dict = {
+#         "type": "fee_waiver",
+#         "entity_type": "",
+#         # this was parser earlier
+#         "parsers": ["other-reason-parser"],
+#         # this was values earlier, and structure has also changed (referenced https://gitlab.com/vernacularai/ai/clients/oppo-v1/-/blob/master/slu/src/controller/custom_plugins.py#L539)
+#         # "value": {
+#         #     "values": [
+#         #         {"value": rlabel},
+#         #     ],
+#         # },
+#         "value": "",
+#         "score": 20,
+#         # newly added attributes
+#         "dim": "",
+#         "latent": True,
+#         "range": {"start": 0, "end": 0},
+#         # "start": 0,
+#         # "end": 0,
+#         "body": "",
+#     }
+#     entity = BaseEntity.from_dict(entity_dict)
+#     intent_entity = IntentEntityMutatorPlugin(rules=rules)
+#     workflow = Workflow([intent_entity])
+#     intent = Intent(name=name, score=0.4)
 
-    body = [[{"transcript": ""}]]
-    inp = Input(
-        utterances=body, current_state=current_state, previous_intent=previous_intent
-    )
-    out = Output(intents=[intent], entities=[entity])
-    # print(out,"CHECK")
-    _, out = workflow.run(inp, out)
-    print(out.intents[0].name, "INTENT")
+#     body = [[{"transcript": ""}]]
+#     inp = Input(
+#         utterances=body, current_state=current_state, previous_intent=previous_intent
+#     )
+#     out = Output(intents=[intent], entities=[entity])
+#     # print(out,"CHECK")
+#     _, out = workflow.run(inp, out)
+#     print(out.intents[0].name, "INTENT")
 
 
-entity_dict = {
-    "type": "fee_waiver",
-    "entity_type": "",
-    # this was parser earlier
-    "parsers": ["other-reason-parser"],
-    # this was values earlier, and structure has also changed (referenced https://gitlab.com/vernacularai/ai/clients/oppo-v1/-/blob/master/slu/src/controller/custom_plugins.py#L539)
-    # "value": {
-    #     "values": [
-    #         {"value": rlabel},
-    #     ],
-    # },
-    "value": "",
-    "score": "",
-    # newly added attributes
-    "dim": "extra_baggage_intent",
-    "latent": True,
-    "range": {"start": 0, "end": 0},
-    # "start": 0,
-    # "end": 0,
-    "body": "",
-}
+# entity_dict = {
+#     "type": "fee_waiver",
+#     "entity_type": "",
+#     # this was parser earlier
+#     "parsers": ["other-reason-parser"],
+#     # this was values earlier, and structure has also changed (referenced https://gitlab.com/vernacularai/ai/clients/oppo-v1/-/blob/master/slu/src/controller/custom_plugins.py#L539)
+#     # "value": {
+#     #     "values": [
+#     #         {"value": rlabel},
+#     #     ],
+#     # },
+#     "value": "",
+#     "score": "",
+#     # newly added attributes
+#     "dim": "extra_baggage_intent",
+#     "latent": True,
+#     "range": {"start": 0, "end": 0},
+#     # "start": 0,
+#     # "end": 0,
+#     "body": "",
+# }
