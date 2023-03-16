@@ -6,17 +6,17 @@ Expects 2 mandatory arguments:
 2. threshold value -> float
 """
 
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, List, Optional
 
-from dialogy.base.plugin import Input, Output, Plugin
+from dialogy.base.plugin import Input, Output, Plugin, Guard
 from dialogy.types import Intent
 
 
 class OOSFilterPlugin(Plugin):
     def __init__(
         self,
-        dest=None,
-        guards=None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
         threshold: float = 0.5,
         intent_oos: str = "_oos_",
         **kwargs
@@ -25,10 +25,10 @@ class OOSFilterPlugin(Plugin):
         self.threshold = threshold
         self.intent_oos = intent_oos
 
-    def set_oos_intent(self, intents: List[Intent]) -> Any:
+    def set_oos_intent(self, intents: List[Intent]) -> List[Intent]:
         if intents[0].score < self.threshold:
             intents[0].name = self.intent_oos
         return intents
 
-    def utility(self, input_: Input, output: Output) -> Any:
+    def utility(self, input_: Input, output: Output) -> List[Intent]:
         return self.set_oos_intent(output.intents)
