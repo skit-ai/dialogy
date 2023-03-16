@@ -7,7 +7,8 @@ Expects 2 mandatory arguments:
 """
 
 from typing import Any, Callable, Dict, List, Optional
-from dialogy.base.plugin import Plugin, Input, Output
+
+from dialogy.base.plugin import Input, Output, Plugin
 from dialogy.types import Intent
 
 
@@ -16,8 +17,8 @@ class OOSFilterPlugin(Plugin):
         self,
         dest=None,
         guards=None,
-        threshold: float = None,
-        intent_oos: str = None,
+        threshold: float = 0.5,
+        intent_oos: str = "_oos_",
         **kwargs
     ) -> None:
         super().__init__(dest=dest, guards=guards, **kwargs)
