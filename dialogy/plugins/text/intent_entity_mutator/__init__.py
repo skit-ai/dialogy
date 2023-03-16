@@ -2,9 +2,9 @@
     IntentEntityMutatorPlugin
 """
 
-from typing import Any, List, Union
+from typing import Any, List, Union, Optional, Dict
 
-from dialogy.base.plugin import Input, Output, Plugin
+from dialogy.base import Input, Output, Plugin, Guard
 from dialogy.types import BaseEntity, Intent
 import copy
 from dialogy.workflow import Workflow
@@ -16,12 +16,13 @@ from dialogy.plugins.text.intent_entity_mutator.actions_on_primitives import (
 class IntentEntityMutatorPlugin(Plugin):
     def __init__(
         self,
-        dest=None,
-        guards=None,
-        rules=None,
+        dest: Optional[str] = None,
+        guards: Optional[List[Guard]] = None,
+        rules: Optional[Dict[str, List[Any]]] = None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(guards=guards, dest=dest, **kwargs)
+
         if rules:
             self.rules = rules[
                 "swap_rules"
@@ -31,11 +32,11 @@ class IntentEntityMutatorPlugin(Plugin):
 
     def mutate_intent(
         self,
-        current_state: str = None,
-        previous_intent: str = None,
-        entities: List[BaseEntity] = None,
-        intents: List[Intent] = None,
-        transcripts: List[str] = None,
+        current_state: Optional[str],
+        previous_intent: Optional[str],
+        entities: List[BaseEntity],
+        intents: List[Intent],
+        transcripts: List[str],
     ) -> List[Intent]:
 
         for rule in self.rules:
@@ -152,31 +153,25 @@ class IntentEntityMutatorPlugin(Plugin):
 
         return intents
 
-    def mutate_entity(
-        self,
-        intents: List[Intent],
-        current_state: str,
-        entities: List[BaseEntity],
-    ) -> List[BaseEntity]:
-        pass
-        # for rule in self.rules:
-        #     conditions = self.rules['conditions']
-
-    # def mutate_original_intent(
+    # def mutate_entity(
     #     self,
-    #     current_intents: List[Intent],
-    # ):
+    #     intents: List[Intent],
+    #     current_state: str,
+    #     entities: List[BaseEntity],
+    # ) -> List[BaseEntity]:
     #     pass
+    #     # for rule in self.rules:
+    #     #     conditions = self.rules['conditions']
 
     @staticmethod
     def handle_entity_cases(
         entities: List[BaseEntity],
         intents: List[Intent],
         mutate_to: str,
-        entity_entitytype_in: Union[List[str], None],
-        entity_type_in: Union[List[str], None],
-        entity_value_in: Union[List[str], None],
-        entity_dim_in: Union[List[str], None],
+        entity_entitytype_in: Optional[List[str]],
+        entity_type_in: Optional[List[str]],
+        entity_value_in: Optional[List[str]],
+        entity_dim_in: Optional[List[str]],
     ) -> List[Intent]:
 
         intents_copy = copy.deepcopy(intents)
@@ -211,7 +206,7 @@ class IntentEntityMutatorPlugin(Plugin):
 
     # The below static methods are helper methods coming from ashley's StateToIntent code wherein we need to count the number of digits and check if a number is present in more than 50% of transcripts
 
-    def utility(self, input_: Input, output: Output) -> Any:
+    def utility(self, input_: Input, output: Output) -> List[Intent]:
 
         current_state = input_.current_state
         intents = output.intents
@@ -223,68 +218,9 @@ class IntentEntityMutatorPlugin(Plugin):
             return self.mutate_intent(
                 current_state, previous_intent, entities, intents, transcripts
             )
+        return intents
 
-        elif self.rules[0]["mutate"] == "entity":
-            return self.mutate_entity(
-                current_state, previous_intent, current_state, entities
-            )
-
-
-# def test_intent_entity_plugin(name, rules, current_state, previous_intent):
-#     entity_dict = {
-#         "type": "fee_waiver",
-#         "entity_type": "",
-#         # this was parser earlier
-#         "parsers": ["other-reason-parser"],
-#         # this was values earlier, and structure has also changed (referenced https://gitlab.com/vernacularai/ai/clients/oppo-v1/-/blob/master/slu/src/controller/custom_plugins.py#L539)
-#         # "value": {
-#         #     "values": [
-#         #         {"value": rlabel},
-#         #     ],
-#         # },
-#         "value": "",
-#         "score": 20,
-#         # newly added attributes
-#         "dim": "",
-#         "latent": True,
-#         "range": {"start": 0, "end": 0},
-#         # "start": 0,
-#         # "end": 0,
-#         "body": "",
-#     }
-#     entity = BaseEntity.from_dict(entity_dict)
-#     intent_entity = IntentEntityMutatorPlugin(rules=rules)
-#     workflow = Workflow([intent_entity])
-#     intent = Intent(name=name, score=0.4)
-
-#     body = [[{"transcript": ""}]]
-#     inp = Input(
-#         utterances=body, current_state=current_state, previous_intent=previous_intent
-#     )
-#     out = Output(intents=[intent], entities=[entity])
-#     # print(out,"CHECK")
-#     _, out = workflow.run(inp, out)
-#     print(out.intents[0].name, "INTENT")
-
-
-# entity_dict = {
-#     "type": "fee_waiver",
-#     "entity_type": "",
-#     # this was parser earlier
-#     "parsers": ["other-reason-parser"],
-#     # this was values earlier, and structure has also changed (referenced https://gitlab.com/vernacularai/ai/clients/oppo-v1/-/blob/master/slu/src/controller/custom_plugins.py#L539)
-#     # "value": {
-#     #     "values": [
-#     #         {"value": rlabel},
-#     #     ],
-#     # },
-#     "value": "",
-#     "score": "",
-#     # newly added attributes
-#     "dim": "extra_baggage_intent",
-#     "latent": True,
-#     "range": {"start": 0, "end": 0},
-#     # "start": 0,
-#     # "end": 0,
-#     "body": "",
-# }
+        # elif self.rules[0]["mutate"] == "entity":
+        #     return self.mutate_entity(
+        #         current_state, previous_intent, current_state, entities
+        #     )
