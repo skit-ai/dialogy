@@ -25,7 +25,7 @@ class OOSFilterPlugin(Plugin):
 
         if not threshold or not intent_oos:
             raise TypeError(
-                "Thereshold and intent_oos are mandatory arguments for the OOSFilterPlugin"
+                "Threshold and intent_oos are mandatory arguments for the OOSFilterPlugin"
             )
 
         self.threshold = threshold
