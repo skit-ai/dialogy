@@ -10,7 +10,16 @@ import pytest
 def test_oos_filter(payload) -> None:
     intent_oos = payload["intent_oos"]
 
-    if not payload["threshold"] or not intent_oos:
+    if not isinstance(payload["threshold"], float):
+        with pytest.raises(EXCEPTIONS[payload["exception"]]):
+            oos_filter = OOSFilterPlugin(
+                dest="output.intents",
+                threshold=payload["threshold"],
+                replace_output=True,
+                intent_oos=intent_oos,
+            )
+    
+    elif not isinstance(payload["intent_oos"], str):
         with pytest.raises(EXCEPTIONS[payload["exception"]]):
             oos_filter = OOSFilterPlugin(
                 dest="output.intents",

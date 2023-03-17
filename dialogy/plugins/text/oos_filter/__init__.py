@@ -23,9 +23,14 @@ class OOSFilterPlugin(Plugin):
     ) -> None:
         super().__init__(dest=dest, guards=guards, **kwargs)
 
-        if not threshold or not intent_oos:
+        if not isinstance(threshold, float):
             raise TypeError(
-                "Threshold and intent_oos are mandatory arguments for the OOSFilterPlugin"
+                f"Threshold type should be float, received {type(threshold)}"
+            )
+        
+        if not isinstance(intent_oos, str):
+            raise TypeError(
+                f"Threshold type should be float, received {type(intent_oos)}"
             )
 
         self.threshold = threshold
@@ -33,7 +38,7 @@ class OOSFilterPlugin(Plugin):
 
     def set_oos_intent(self, intents: List[Intent]) -> List[Intent]:
         if not intents:
-            raise TypeError(
+            raise ValueError(
                 "Either OOSFilter was added before the intent classifier plugin or the intents list is empty"
             )
 

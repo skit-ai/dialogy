@@ -23,12 +23,21 @@
   transcript: "I have already paid"
   predicted_confidence: 0
   expected_intent: "intent_oos"
-  exception: "TypeError"
+  exception: "ValueError"
   empty_intents: True
 
 
 - intent_oos: "intent_oos"
-  threshold: null
+  threshold: "thresh"
+  original_intent: "already_paid"
+  transcript: "I have already paid"
+  predicted_confidence: 0.08
+  expected_intent: "intent_oos"
+  exception: "TypeError"
+  empty_intents: False
+
+- intent_oos: 2
+  threshold: 0.5
   original_intent: "already_paid"
   transcript: "I have already paid"
   predicted_confidence: 0.08
