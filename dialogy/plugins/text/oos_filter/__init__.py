@@ -6,7 +6,7 @@ Expects 2 mandatory arguments:
 2. threshold value -> float
 """
 
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 from dialogy.base.plugin import Input, Output, Plugin, Guard
 from dialogy.types import Intent
@@ -19,7 +19,7 @@ class OOSFilterPlugin(Plugin):
         intent_oos: str,
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         super().__init__(dest=dest, guards=guards, **kwargs)
 
