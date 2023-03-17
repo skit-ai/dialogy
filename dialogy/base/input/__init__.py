@@ -84,7 +84,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field, validator
 
 from dialogy.types import Utterance
-from dialogy.utils import normalize, get_best_transcript, is_unix_ts
+from dialogy.utils import is_unix_ts
 
 
 class Input(BaseModel):
@@ -214,9 +214,6 @@ class Input(BaseModel):
         allow_mutation = False
 
     def __init__(self, **data):  # type: ignore
-        if "utterances" in data:
-            data["transcripts"] = normalize(data["utterances"])
-            data["best_transcript"] = get_best_transcript(data["transcripts"])
         data["expected_slots"] = list(set(data.get("expected_slots", [])))
 
         defaults = {
@@ -224,6 +221,8 @@ class Input(BaseModel):
             "lang": "en",
             "locale": "en_IN",
             "timezone": "UTC",
+            "transcripts": [],
+            "best_transcript": ""
         }
 
         # validator for `reference_time` before int type casting

@@ -128,6 +128,7 @@ from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.base.plugin import Plugin
 from dialogy.utils.logger import logger
+from dialogy.utils import normalize, get_best_transcript
 
 
 @attr.s
@@ -190,6 +191,10 @@ class Workflow:
         if not output:
             output = Output()
 
+        # Populate transcript and best transcript before running the pipeline.
+        # This should be always done right before passing the input to the first plugin
+        input = self.add_transcript_to_input(input)
+
         for plugin in self.plugins:
             if not callable(plugin):
                 raise TypeError(f"{plugin=} is not a callable")
@@ -221,6 +226,12 @@ class Workflow:
                 logger.debug(pformat(history))
 
         return input, output
+
+    @staticmethod
+    def add_transcript_to_input(input: Input) -> Input:
+        transcripts = normalize(input.utterances)
+        best_transcript = get_best_transcript(transcripts)
+        return input.copy(update={"transcripts": transcripts, "best_transcript": best_transcript}, deep=True)
 
     def train(self, training_data: pd.DataFrame) -> Workflow:
         """
