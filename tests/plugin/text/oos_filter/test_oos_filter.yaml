@@ -1,0 +1,37 @@
+- intent_oos: "intent_oos"
+  threshold: 0.5
+  original_intent: "already_paid"
+  transcript: "I have already paid"
+  predicted_confidence: 0.8
+  expected_intent: "already_paid"
+  exception: null
+  empty_intents: False
+
+
+- intent_oos: "intent_oos"
+  threshold: 0.5
+  original_intent: "already_paid"
+  transcript: "I have already paid"
+  predicted_confidence: 0.08
+  expected_intent: "intent_oos"
+  exception: null
+  empty_intents: False
+
+- intent_oos: "intent_oos"
+  threshold: 0.5
+  original_intent: ""
+  transcript: "I have already paid"
+  predicted_confidence: 0
+  expected_intent: "intent_oos"
+  exception: "TypeError"
+  empty_intents: True
+
+
+- intent_oos: "intent_oos"
+  threshold: null
+  original_intent: "already_paid"
+  transcript: "I have already paid"
+  predicted_confidence: 0.08
+  expected_intent: "intent_oos"
+  exception: "TypeError"
+  empty_intents: False

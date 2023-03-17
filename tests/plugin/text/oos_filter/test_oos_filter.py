@@ -2,31 +2,44 @@ from dialogy.base import Input, Output
 from dialogy.plugins.text.oos_filter import OOSFilterPlugin
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
+from tests import EXCEPTIONS, load_tests
+import pytest
 
 
-def test_oos_filter() -> None:
-    intent_oos = "_oos_"
+@pytest.mark.parametrize("payload", load_tests("oos_filter", __file__))
+def test_oos_filter(payload) -> None:
+    intent_oos = payload["intent_oos"]
 
-    oos_filter = OOSFilterPlugin(
-        dest="output.intents",
-        threshold=0.1,
-        replace_output=True,
-        intent_oos=intent_oos,
-    )
+    if not payload["threshold"] or not intent_oos:
+        with pytest.raises(EXCEPTIONS[payload["exception"]]):
+            oos_filter = OOSFilterPlugin(
+                dest="output.intents",
+                threshold=payload["threshold"],
+                replace_output=True,
+                intent_oos=intent_oos,
+            )
 
-    # Create a mock workflow
-    workflow = Workflow([oos_filter])
-    intent_name = "already_paid"
-    body = [[{"transcript": "I have already paid"}]]
-    intent = Intent(name=intent_name, score=0.8)  # Not mutate to oos
-    oos_intent = Intent(name=intent_oos, score=0.08)  # mutate to oos
+    else:
+        oos_filter = OOSFilterPlugin(
+            dest="output.intents",
+            threshold=payload["threshold"],
+            replace_output=True,
+            intent_oos=intent_oos,
+        )
 
-    output_non_oos = Output(intents=[intent])
-    output_oos = Output(intents=[oos_intent])
-    _, output_non_oos = workflow.run(Input(utterances=body), output_non_oos)
-    _, output_oos = workflow.run(Input(utterances=body), output_oos)
+        # Create a mock workflow
+        workflow = Workflow([oos_filter])
+        intent_name = payload["original_intent"]
+        body = [[{"transcript": payload["transcript"]}]]
+        intent = Intent(name=intent_name, score=payload["predicted_confidence"])
+        
+        if payload["empty_intents"]:
+            output = Output(intents=[])
+            with pytest.raises(EXCEPTIONS[payload["exception"]]):
+                _, output = workflow.run(Input(utterances=body), output)
 
-    assert (
-        output_non_oos.intents[0].name == intent_name
-        and output_oos.intents[0].name == intent_oos
-    )
+        else:
+            output = Output(intents=[intent])
+            _, output = workflow.run(Input(utterances=body), output)
+
+            assert output.intents[0].name == payload["expected_intent"]
