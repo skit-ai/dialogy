@@ -29,6 +29,26 @@ from dialogy.plugins import QCPlugin
             False,
             0,
         ),
+        (
+            [
+                '[[{"transcript": "hello"}]]',
+                '[[{"transcript": "hello"}]]',
+                '[]',
+            ],
+            ["x1", "x2", "x3"],
+            True,
+            2,
+        ),
+        (
+            [
+                '[[{"transcript": "hello"}]]',
+                '[[{"transcript": "hello"}]]',
+                """[[{\""confidence\"": 0.801317, \""transcript"" :\""hello\""}]]""",
+            ],
+            ["x1", "x2", "x3"],
+            True,
+            3,
+        ),
     ],
 )
 def test_drop_conflicting_labels(alternatives, tags, drop, discard_size, tmp_path) -> None:
