@@ -22,9 +22,9 @@ def is_number_absent(transcripts: List[str]) -> bool:
     return True
 
 
-def get_len_of_digits(ner_input: List[str]) -> bool:
+def get_len_of_digits(ner_input: List[str], threshold: int = 5) -> bool:
     first_alternative = ner_input[0]
-    return sum(c.isdigit() for c in first_alternative)
+    return sum(c.isdigit() for c in first_alternative) >= threshold
 
 
 def custom_logic_on_transcripts(
@@ -33,7 +33,7 @@ def custom_logic_on_transcripts(
     intent_not_in: List[str],
     mutate_to: str,
 ) -> List[Intent]:
-    
+
     intent_copy = copy.deepcopy(intents)
 
     if is_number_absent(transcripts):
@@ -43,8 +43,8 @@ def custom_logic_on_transcripts(
 
     else:
 
-        is_not_callback = (
-            intent_copy[0].name not in intent_not_in or get_len_of_digits(transcripts) >= 5
+        is_not_callback = intent_copy[0].name not in intent_not_in or get_len_of_digits(
+            transcripts, threshold=5
         )
 
         if is_not_callback:

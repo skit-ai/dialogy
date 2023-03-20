@@ -452,7 +452,8 @@ swap_rules:
       transcript:
         in: ["change", "modify"]
         not_in: []
-        transcript_apply_func: false
+        is_number_absent: False
+        get_len_of_digits: False
 
       entity: null
   
