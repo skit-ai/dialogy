@@ -13,3 +13,4 @@ from dialogy.plugins.text.slot_filler.rule_slot_filler import RuleBasedSlotFille
 from dialogy.plugins.text.address_parser import AddressParserPlugin
 from dialogy.plugins.text.error_recovery.error_recovery import ErrorRecoveryPlugin
 from dialogy.plugins.text.oos_filter import OOSFilterPlugin
+from dialogy.plugins.text.qc_plugin import QCPlugin
