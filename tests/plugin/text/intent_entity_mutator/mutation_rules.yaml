@@ -14,6 +14,24 @@ swap_rules:
       transcript: null
 
       entity: null
+  
+  
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "inform_already_paid"
+    conditions:
+      state: null
+      intent:
+        in: ["date_entity_only"]
+        not_in: []
+
+      previous_intent:
+        in: ["_callback_", "inform_already_paid", "inform_pay_later"]
+        not_in: []
+
+      transcript: null
+
+      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "_call_me_back_"
@@ -46,7 +64,7 @@ swap_rules:
       transcript: null
 
       entity: null
-  
+
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "old_user_waiver"
     conditions:
@@ -81,7 +99,7 @@ swap_rules:
         value:
           in: []
           not_in: []
-        
+
         entity_type:
           in: []
           not_in: []
@@ -144,7 +162,7 @@ swap_rules:
         value:
           in: []
           not_in: []
-        
+
         entity_type:
           in: []
           not_in: []
@@ -174,7 +192,7 @@ swap_rules:
         value:
           in: ["whatsapp"]
           not_in: []
-        
+
         entity_type:
           in: []
           not_in: []
@@ -206,12 +224,11 @@ swap_rules:
         value:
           in: []
           not_in: []
-        
+
         entity_type:
           in: []
           not_in: []
-      
-  
+
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "ask_for_installment"
     conditions:
@@ -239,7 +256,7 @@ swap_rules:
         value:
           in: [""]
           not_in: []
-        
+
         entity_type:
           in: ["number"]
 
@@ -269,7 +286,7 @@ swap_rules:
         value:
           in: ["vi_app"]
           not_in: []
-        
+
         entity_type:
           in: []
           not_in: []
@@ -308,11 +325,10 @@ swap_rules:
         value:
           in: []
           not_in: []
-        
+
         entity_type:
           in: []
           not_in: []
-
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "entity_only"
@@ -340,7 +356,7 @@ swap_rules:
         value:
           in: []
           not_in: []
-        
+
         entity_type:
           in: []
           not_in: []
@@ -379,12 +395,10 @@ swap_rules:
         value:
           in: []
           not_in: []
-        
+
         entity_type:
           in: []
           not_in: []
-  
-
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "place_order_ocs"
@@ -425,7 +439,33 @@ swap_rules:
       previous_intent: null
 
       transcript:
-        transcript_apply_func: true
+        is_number_absent: true
+
+      entity: null
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "inform_credit_card_number"
+    conditions:
+      state:
+        in: ["ASK_CARD_NUMBER_AGAIN"]
+        not_in: []
+      intent:
+        not_in:
+          - _cancel_
+          - _confirm_
+          - _repeat_
+          - put_on_hold
+          - _identity_
+          - why_ask
+          - _callback_
+          - ask_for_agent
+        in: []
+
+      previous_intent: null
+
+      transcript:
+        contain_digits: true
+        is_number_absent: false
 
       entity: null
 
@@ -452,8 +492,31 @@ swap_rules:
       transcript:
         in: ["change", "modify"]
         not_in: []
-        is_number_absent: False
-        get_len_of_digits: False
 
       entity: null
-  
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "web_check_in_change_details"
+    conditions:
+      state:
+        in:
+          [
+            "CONFIRM_MANDATORY_SEAT_SELECTION",
+            "COF",
+            "COF_QUERY",
+            "COF_LANG",
+            "REPROMPT_INTENT",
+            "SPECIFY_BAGGAGE_QUERY",
+          ]
+        not_in: []
+      intent:
+        not_in: []
+        in: ["web_check_in_seat_selection_compulsory"]
+
+      previous_intent: null
+
+      transcript:
+        in: []
+        not_in: ["change", "modify"]
+
+      entity: null

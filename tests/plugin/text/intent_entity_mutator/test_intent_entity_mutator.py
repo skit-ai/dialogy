@@ -1,16 +1,17 @@
-import yaml
-from dialogy.plugins.text.intent_entity_mutator import IntentEntityMutatorPlugin
-from dialogy.workflow import Workflow
-from dialogy.types import Intent, BaseEntity
-from dialogy.base.plugin import Input, Output
-from typing import List, Any, Dict, Union
 import pytest
+import yaml
 
-with open("tests/plugin/text/intent_entity_mutator/mutate_intent.yaml", "r") as f:
+from dialogy.base.plugin import Input, Output
+from dialogy.plugins.text.intent_entity_mutator import IntentEntityMutatorPlugin
+from dialogy.types import BaseEntity, Intent
+from dialogy.workflow import Workflow
+from tests import load_tests
+
+with open("tests/plugin/text/intent_entity_mutator/mutation_rules.yaml", "r") as f:
     rules = yaml.load(f, Loader=yaml.Loader)
 
 
-def intent_mutation(
+def mutation(
     intent_name,
     rules,
     current_state,
@@ -18,11 +19,21 @@ def intent_mutation(
     entity_dict,
     transcript,
     mutate_val,
+    mutate,
 ):
 
     if entity_dict:
         entity = BaseEntity.from_dict(entity_dict)
-    intent_entity = IntentEntityMutatorPlugin(rules=rules)
+
+    if mutate == "intent":
+        intent_entity = IntentEntityMutatorPlugin(
+            rules=rules, dest="output.intents", replace_output=True
+        )
+
+    else:
+        intent_entity = IntentEntityMutatorPlugin(
+            rules=rules, dest="output.entities", replace_output=True
+        )
     workflow = Workflow([intent_entity])
     intent = Intent(name=intent_name, score=0.4)
 
@@ -31,39 +42,45 @@ def intent_mutation(
         utterances=body, current_state=current_state, previous_intent=previous_intent
     )
     if entity_dict:
+        print("WORK2")
         out = Output(intents=[intent], entities=[entity])
+        print(out.entities, "SS")
     else:
         out = Output(intents=[intent])
     _, out = workflow.run(inp, out)
-    assert out.intents[0].name == mutate_val
+
+    assert mutate in ["intent", "entity"]
+
+    if isinstance(mutate_val, str):
+        assert out.intents[0].name == mutate_val
+    else:
+        print("CHEEEK", out.entities, "DDD")
+        assert out.entities == BaseEntity.from_dict(mutate_val)
 
 
 def test_empty_rules():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         intent_entity_no_rules = IntentEntityMutatorPlugin(rules=None)
 
 
-def test_intent_mutation_cases():
+@pytest.mark.parametrize("payload", load_tests("mutation_cases", __file__))
+def test_mutation_cases(payload):
 
-    with open(
-        "tests/plugin/text/intent_entity_mutator/test_cases_intent.yaml", "r"
-    ) as f:
-        test_cases = yaml.load(f, Loader=yaml.Loader)["test_cases"]
+    intent_name = payload["intent_name"]
+    current_state = payload["current_state"]
+    transcript = payload["transcript"]
+    entity_dict = payload["entity_dict"]
+    previous_intent = payload["previous_intent"]
+    mutate_val = payload["mutate_val"]
+    mutate = payload["mutate"]
 
-    for case in test_cases:
-        intent_name = case["intent_name"]
-        current_state = case["current_state"]
-        transcript = case["transcript"]
-        entity_dict = case["entity_dict"]
-        previous_intent = case["previous_intent"]
-        mutate_val = case["mutate_val"]
-
-        intent_mutation(
-            intent_name,
-            rules,
-            current_state,
-            previous_intent,
-            entity_dict,
-            transcript,
-            mutate_val,
-        )
+    mutation(
+        intent_name,
+        rules,
+        current_state,
+        previous_intent,
+        entity_dict,
+        transcript,
+        mutate_val,
+        mutate,
+    )

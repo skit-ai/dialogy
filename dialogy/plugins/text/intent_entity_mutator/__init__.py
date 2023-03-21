@@ -2,15 +2,20 @@
     IntentEntityMutatorPlugin
 """
 
-from typing import Any, List, Union, Optional, Dict
+from typing import Any, List, Optional, Dict, Iterable, Union
 
 from dialogy.base import Input, Output, Plugin, Guard
 from dialogy.types import BaseEntity, Intent
-import copy
-from dialogy.workflow import Workflow
+
 from dialogy.plugins.text.intent_entity_mutator.actions_on_primitives import (
-    custom_logic_on_transcripts,
+    contain_digits,
+    is_number_absent,
 )
+
+transcript_functions_map = {
+    "is_number_absent": is_number_absent,
+    "contain_digits": contain_digits,
+}
 
 
 class IntentEntityMutatorPlugin(Plugin):
@@ -19,7 +24,7 @@ class IntentEntityMutatorPlugin(Plugin):
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         rules: Optional[Dict[str, List[Any]]] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         super().__init__(guards=guards, dest=dest, **kwargs)
 
@@ -28,181 +33,207 @@ class IntentEntityMutatorPlugin(Plugin):
                 "swap_rules"
             ]  # Rules is a python object parsed by yaml and loaded in memory
         else:
-            raise TypeError("Rules have not been instantiated")
+            raise ValueError("Rules have not been instantiated")
 
-    def mutate_intent(
+    def check_present_absent_other_primitives(
+        self, primitive: str, primitive_in: List[str], primitive_not_in: List[str]
+    ) -> bool:
+        if primitive_in:
+            return primitive in primitive_in
+        else:
+            return primitive not in primitive_not_in
+
+    def check_present_absent_transcript(
+        self,
+        transcripts: Optional[Iterable[str]],
+        primitive_in: Optional[List[str]],
+        primitive_not_in: Optional[List[str]],
+    ) -> bool:
+
+        if transcripts:
+            alternatives = "".join(transcripts)
+        else:
+            raise ValueError("No transcripts provided")
+
+        if primitive_in:
+            if any(word in alternatives for word in primitive_in):
+                return True
+            return False
+
+        elif primitive_not_in:
+            if not any(word in alternatives for word in primitive_not_in):
+                return True
+            return False
+
+    def calculate_passed_functional_conditions(
+        self,
+        transcripts: List[str],
+        conditions: Dict[str, bool],
+    ) -> int:
+
+        total_passed_conditions = 0
+        for key, val in conditions.items():
+            apply_function = transcript_functions_map[key]
+            if apply_function(transcripts) == val:
+                total_passed_conditions += 1
+        return total_passed_conditions
+
+    def check_present_absent_entity(
+        self,
+        primitive_ent: List[str],
+        primitive_in: Optional[Iterable[str]],
+        primitive_not_in: Optional[Iterable[str]],
+    ) -> bool:
+
+        if primitive_in:
+            total_len = len(set(primitive_ent) & set(primitive_in))
+            return total_len > 0
+
+        elif primitive_not_in:
+            return len(set(primitive_ent) & set(primitive_not_in)) == 0
+
+    def calculate_number_of_passed_conditions(
+        self,
+        type_of_condition: str,
+        primitive_conditions: Dict[str, List[str]],
+        transcripts: List[str],
+        unpacked_entities: Dict[str, Optional[List[str]]],
+        map_primitive_to_vals: Dict[str, Optional[str]],
+    ) -> int:
+
+        if type_of_condition not in ["in", "not_in"]:
+            raise ValueError(f"{type_of_condition} type of condition does not exist")
+
+        total_passed_conditions = 0
+        for primitive, val in primitive_conditions.items():
+
+            if primitive in ["dim", "value", "type", "entity_type"]:
+
+                if self.check_present_absent_entity(
+                    primitive_ent=unpacked_entities[primitive],
+                    primitive_in=(val if type_of_condition == "in" else None),
+                    primitive_not_in=(val if type_of_condition == "not_in" else None),
+                ):
+                    total_passed_conditions += 1
+
+            elif primitive == "transcript":
+                if self.check_present_absent_transcript(
+                    transcripts=transcripts,
+                    primitive_in=val if type_of_condition == "in" else None,
+                    primitive_not_in=val if type_of_condition == "not_in" else None,
+                ):
+                    total_passed_conditions += 1
+
+            else:
+                if self.check_present_absent_other_primitives(
+                    primitive=map_primitive_to_vals.get(primitive),
+                    primitive_in=val if type_of_condition == "in" else None,
+                    primitive_not_in=val if type_of_condition == "not_in" else None,
+                ):
+                    total_passed_conditions += 1
+
+        return total_passed_conditions
+
+    def mutate(
         self,
         current_state: Optional[str],
         previous_intent: Optional[str],
         entities: List[BaseEntity],
         intents: List[Intent],
         transcripts: List[str],
-    ) -> List[Intent]:
+        rules,
+    ) -> Union[List[Intent], List[BaseEntity]]:
 
-        for rule in self.rules:
-            conditions = rule[
-                "conditions"
-            ]  # This is the list of all the conditions in the rules
+        unpacked_entities = {
+            "type": [x.type for x in entities],
+            "dim": [x.dim for x in entities],
+            "entity_type": [x.entity_type for x in entities],
+            "value": [x.value for x in entities],
+        }
 
-            # The below code mostly covers `ContextualIntentSwap` and `RuleBasedIntentSwap` patterns
+        map_primitive_to_vals = {
+            "intent": intents[0].name,
+            "state": current_state,
+            "transcript": " ".join(transcripts),
+            "previous_intent": previous_intent,
+        }
+        for rule in rules:
+            # Collect all the non_empty ins and or not_ins
+            conditions = rule["conditions"]
 
             mutate_to = rule["mutate_to"]
 
-            if conditions["intent"]:
-                intent_in = conditions["intent"]["in"]
-                intent_not_in = conditions["intent"]["not_in"]
+            primitive_in_conditions = {}
+            primitive_not_in_conditions = {}
+            transcript_functional_conditions = {}
 
-            if conditions["state"]:
-                state_in = conditions["state"]["in"]
+            for primitive, vals in conditions.items():
 
-            if conditions["previous_intent"]:
-                previous_intent_in = conditions["previous_intent"]["in"]
+                if primitive == "transcript" and vals:
+                    transcript_functional_conditions = {
+                        key: value
+                        for key, value in vals.items()
+                        if isinstance(value, bool)
+                    }
 
-            # Entity sub_types
-            entity_in = conditions["entity"]
-            if entity_in:
-                entity_type_in = conditions["entity"]["type"]["in"]
+                if vals:
+                    if vals.get("in"):
+                        primitive_in_conditions[primitive] = vals.get("in")
 
-                entity_entitytype_in = conditions["entity"]["entity_type"]["in"]
+                    if vals.get("not_in"):
+                        primitive_not_in_conditions[primitive] = vals.get("not_in")
 
-                entity_value_in = conditions["entity"]["value"]["in"]
+                if primitive == "entity" and vals:
+                    for entity_primitive, entity_vals in vals.items():
+                        if entity_vals.get("in"):
+                            primitive_in_conditions[entity_primitive] = entity_vals.get(
+                                "in"
+                            )
 
-                entity_dim_in = conditions["entity"]["dim"]["in"]
+                        if entity_vals.get("not_in"):
+                            primitive_not_in_conditions[
+                                entity_primitive
+                            ] = entity_vals.get("not_in")
 
-            if intents[0].name in intent_in:
-                if state_in and (current_state in state_in):
-                    if entity_in:
-                        mutated_intent = self.handle_entity_cases(
-                            entities,
-                            intents,
-                            mutate_to,
-                            entity_entitytype_in,
-                            entity_type_in,
-                            entity_value_in,
-                            entity_dim_in,
-                        )
-                        if mutated_intent[0].name == intents[0].name:
-                            continue
-                        else:
-                            intents[0].name = mutated_intent[0].name
-                            return intents
+            # And with all the in_conditions
+            passed_in_conditions = self.calculate_number_of_passed_conditions(
+                "in",
+                primitive_in_conditions,
+                transcripts,
+                unpacked_entities,
+                map_primitive_to_vals,
+            )
 
-                    elif conditions["transcript"] and conditions["transcript"]["in"]:
-                        transcript_in = conditions["transcript"]["in"]
-                        alternatives = "".join(transcripts)
-                        if any(word in alternatives for word in transcript_in):
-                            intents[0].name = mutate_to
-                            return intents
+            passed_not_in_conditions = self.calculate_number_of_passed_conditions(
+                "not_in",
+                primitive_not_in_conditions,
+                transcripts,
+                unpacked_entities,
+                map_primitive_to_vals,
+            )
 
-                    elif conditions["previous_intent"]:
-                        if previous_intent in previous_intent_in:
-                            intents[0].name = mutate_to
+            total_available_in_conditions = len(primitive_in_conditions)
+            total_available_not_in_conditions = len(primitive_not_in_conditions)
 
-                    else:
-                        intents[0].name = mutate_to
-                        return intents
+            total_functional_conditions = len(transcript_functional_conditions)
 
-                elif not state_in and entity_in:
-                    mutated_intent = self.handle_entity_cases(
-                        entities,
-                        intents,
-                        mutate_to,
-                        entity_entitytype_in,
-                        entity_type_in,
-                        entity_value_in,
-                        entity_dim_in,
-                    )
-                    if mutated_intent[0].name == intents[0].name:
-                        continue
-                    else:
-                        intents[0].name = mutated_intent[0].name
-                        return intents
+            passed_functional_conditions = self.calculate_passed_functional_conditions(
+                transcripts, transcript_functional_conditions
+            )
 
-            elif state_in and (current_state in state_in):
-
-                if entities and entity_in:
-                    mutated_intent = self.handle_entity_cases(
-                        entities,
-                        intents,
-                        mutate_to,
-                        entity_entitytype_in,
-                        entity_type_in,
-                        entity_value_in,
-                        entity_dim_in,
-                    )
-                    if mutated_intent[0].name == intents[0].name:
-                        continue
-                    else:
-                        intents[0].name = mutated_intent[0].name
-                        return intents
-
-                elif (
-                    transcripts
-                    and conditions["transcript"]
-                    and conditions["transcript"]["transcript_apply_func"]
-                ):
-                    # Ashley had this custom check
-                    mutated_intent = custom_logic_on_transcripts(
-                        transcripts, intents, intent_not_in, mutate_to
-                    )
-                    if mutated_intent[0].name == intents[0].name:
-                        continue
-                    else:
-                        intents[0].name = mutated_intent[0].name
-                        return intents
+            if (
+                passed_in_conditions == total_available_in_conditions
+                and passed_not_in_conditions == total_available_not_in_conditions
+                and total_functional_conditions == passed_functional_conditions
+            ):
+                if rule["mutate"] == "intent":
+                    intents[0].name = mutate_to
+                    return intents
+                else:
+                    mutate_entities = BaseEntity.from_dict(mutate_to)
+                    return mutate_entities
 
         return intents
-
-    # def mutate_entity(
-    #     self,
-    #     intents: List[Intent],
-    #     current_state: str,
-    #     entities: List[BaseEntity],
-    # ) -> List[BaseEntity]:
-    #     pass
-    #     # for rule in self.rules:
-    #     #     conditions = self.rules['conditions']
-
-    @staticmethod
-    def handle_entity_cases(
-        entities: List[BaseEntity],
-        intents: List[Intent],
-        mutate_to: str,
-        entity_entitytype_in: Optional[List[str]],
-        entity_type_in: Optional[List[str]],
-        entity_value_in: Optional[List[str]],
-        entity_dim_in: Optional[List[str]],
-    ) -> List[Intent]:
-
-        intents_copy = copy.deepcopy(intents)
-
-        if entity_type_in and entity_value_in:
-            for ent_type_in in entity_type_in:
-                for ent_value_in in entity_value_in:
-                    if ent_type_in in [x.type for x in entities]:
-                        if ent_value_in in [x.value for x in entities]:
-                            intents_copy[0].name = mutate_to
-                            return intents_copy
-
-        if entity_dim_in:
-            for ent_dim_in in entity_dim_in:
-                if ent_dim_in in [x.dim for x in entities]:
-                    intents_copy[0].name = mutate_to
-                    return intents_copy
-
-        if entity_type_in:
-            for ent_type_in in entity_type_in:
-                if ent_type_in in [x.type for x in entities]:
-                    intents_copy[0].name = mutate_to
-                    return intents_copy
-
-        if entity_entitytype_in:
-            for ent_enttype_in in entity_entitytype_in:
-                if ent_enttype_in in [x.entity_type for x in entities]:
-                    intents_copy[0].name = mutate_to
-                    return intents_copy
-
-        return intents_copy
 
     # The below static methods are helper methods coming from ashley's StateToIntent code wherein we need to count the number of digits and check if a number is present in more than 50% of transcripts
 
@@ -214,13 +245,11 @@ class IntentEntityMutatorPlugin(Plugin):
         previous_intent = input_.previous_intent
         transcripts = input_.transcripts
 
-        if self.rules[0]["mutate"] == "intent":
-            return self.mutate_intent(
-                current_state, previous_intent, entities, intents, transcripts
-            )
-        return intents
-
-        # elif self.rules[0]["mutate"] == "entity":
-        #     return self.mutate_entity(
-        #         current_state, previous_intent, current_state, entities
-        #     )
+        return self.mutate(
+            current_state=current_state,
+            previous_intent=previous_intent,
+            entities=entities,
+            intents=intents,
+            transcripts=transcripts,
+            rules=self.rules,
+        )
