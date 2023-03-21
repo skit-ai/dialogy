@@ -70,6 +70,38 @@
   mutate_val: "web_check_in_change_details"
   mutate: "intent"
 
+- intent_name: "web_check_in_seat_selection"
+  current_state: "CONFIRM_MANDATORY_SEAT_SELECTION"
+  transcript: "please work my seat"
+  entity_dict:
+    type: "prepaid"
+    entity_type: ""
+    parsers:
+      - other-reason-parser
+    value: ""
+    score: 20
+    dim: ""
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  previous_intent: ""
+  mutate_val:
+    type: "next_bill_cycle"
+    entity_type: "number"
+    parsers:
+      - other-reason-parser
+    value: ""
+    score: 20
+    dim: ""
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  mutate: "entity"
+
 - intent_name: "web_check_in_seat_selection_compulsory"
   current_state: "CONFIRM_MANDATORY_SEAT_SELECTION"
   transcript: "please my seat"

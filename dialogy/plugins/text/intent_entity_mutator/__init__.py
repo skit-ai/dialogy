@@ -2,7 +2,7 @@
     IntentEntityMutatorPlugin
 """
 
-from typing import Any, List, Optional, Dict, Iterable, Union
+from typing import Any, List, Optional, Dict, Iterable, Union, Callable
 
 from dialogy.base import Input, Output, Plugin, Guard
 from dialogy.types import BaseEntity, Intent
@@ -12,7 +12,7 @@ from dialogy.plugins.text.intent_entity_mutator.actions_on_primitives import (
     is_number_absent,
 )
 
-transcript_functions_map = {
+transcript_functions_map: Dict[str, Callable[[List[str]], int]] = {
     "is_number_absent": is_number_absent,
     "contain_digits": contain_digits,
 }
@@ -36,12 +36,17 @@ class IntentEntityMutatorPlugin(Plugin):
             raise ValueError("Rules have not been instantiated")
 
     def check_present_absent_other_primitives(
-        self, primitive: str, primitive_in: List[str], primitive_not_in: List[str]
+        self,
+        primitive: str,
+        primitive_in: Optional[List[str]],
+        primitive_not_in: Optional[List[str]],
     ) -> bool:
-        if primitive_in:
+
+        if primitive and primitive_in:
             return primitive in primitive_in
-        else:
+        elif primitive and primitive_not_in:
             return primitive not in primitive_not_in
+        return False
 
     def check_present_absent_transcript(
         self,
@@ -55,15 +60,17 @@ class IntentEntityMutatorPlugin(Plugin):
         else:
             raise ValueError("No transcripts provided")
 
-        if primitive_in:
+        if alternatives and primitive_in:
             if any(word in alternatives for word in primitive_in):
                 return True
             return False
 
-        elif primitive_not_in:
+        elif alternatives and primitive_not_in:
             if not any(word in alternatives for word in primitive_not_in):
                 return True
             return False
+
+        return False
 
     def calculate_passed_functional_conditions(
         self,
@@ -73,8 +80,7 @@ class IntentEntityMutatorPlugin(Plugin):
 
         total_passed_conditions = 0
         for key, val in conditions.items():
-            apply_function = transcript_functions_map[key]
-            if apply_function(transcripts) == val:
+            if transcript_functions_map[key](transcripts) == val:
                 total_passed_conditions += 1
         return total_passed_conditions
 
@@ -85,20 +91,22 @@ class IntentEntityMutatorPlugin(Plugin):
         primitive_not_in: Optional[Iterable[str]],
     ) -> bool:
 
-        if primitive_in:
+        if primitive_ent and primitive_in:
             total_len = len(set(primitive_ent) & set(primitive_in))
             return total_len > 0
 
-        elif primitive_not_in:
+        elif primitive_ent and primitive_not_in:
             return len(set(primitive_ent) & set(primitive_not_in)) == 0
+
+        return False
 
     def calculate_number_of_passed_conditions(
         self,
         type_of_condition: str,
         primitive_conditions: Dict[str, List[str]],
         transcripts: List[str],
-        unpacked_entities: Dict[str, Optional[List[str]]],
-        map_primitive_to_vals: Dict[str, Optional[str]],
+        unpacked_entities: Dict[str, Any],
+        map_primitive_to_vals: Dict[str, Any],
     ) -> int:
 
         if type_of_condition not in ["in", "not_in"]:
@@ -126,7 +134,7 @@ class IntentEntityMutatorPlugin(Plugin):
 
             else:
                 if self.check_present_absent_other_primitives(
-                    primitive=map_primitive_to_vals.get(primitive),
+                    primitive=map_primitive_to_vals[primitive],
                     primitive_in=val if type_of_condition == "in" else None,
                     primitive_not_in=val if type_of_condition == "not_in" else None,
                 ):
@@ -141,7 +149,7 @@ class IntentEntityMutatorPlugin(Plugin):
         entities: List[BaseEntity],
         intents: List[Intent],
         transcripts: List[str],
-        rules,
+        rules: List[Dict[str, Any]],
     ) -> Union[List[Intent], List[BaseEntity]]:
 
         unpacked_entities = {
@@ -230,14 +238,21 @@ class IntentEntityMutatorPlugin(Plugin):
                     intents[0].name = mutate_to
                     return intents
                 else:
-                    mutate_entities = BaseEntity.from_dict(mutate_to)
+                    mutate_entities = [BaseEntity.from_dict(mutate_to)]
                     return mutate_entities
 
-        return intents
+        if rules[0]["mutate"] == "intent":
+            return intents
+
+        return entities
+
+        # return intents if rules[0]["mutate"] == "intent" else entities
 
     # The below static methods are helper methods coming from ashley's StateToIntent code wherein we need to count the number of digits and check if a number is present in more than 50% of transcripts
 
-    def utility(self, input_: Input, output: Output) -> List[Intent]:
+    def utility(
+        self, input_: Input, output: Output
+    ) -> Union[List[Intent], List[BaseEntity]]:
 
         current_state = input_.current_state
         intents = output.intents

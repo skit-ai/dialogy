@@ -42,9 +42,7 @@ def mutation(
         utterances=body, current_state=current_state, previous_intent=previous_intent
     )
     if entity_dict:
-        print("WORK2")
         out = Output(intents=[intent], entities=[entity])
-        print(out.entities, "SS")
     else:
         out = Output(intents=[intent])
     _, out = workflow.run(inp, out)
@@ -54,8 +52,7 @@ def mutation(
     if isinstance(mutate_val, str):
         assert out.intents[0].name == mutate_val
     else:
-        print("CHEEEK", out.entities, "DDD")
-        assert out.entities == BaseEntity.from_dict(mutate_val)
+        assert out.entities[0] == BaseEntity.from_dict(mutate_val)
 
 
 def test_empty_rules():

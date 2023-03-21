@@ -14,8 +14,6 @@ swap_rules:
       transcript: null
 
       entity: null
-  
-  
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "inform_already_paid"
@@ -520,3 +518,39 @@ swap_rules:
         not_in: ["change", "modify"]
 
       entity: null
+
+  - mutate: entity # Can only mutate intent or entity
+    mutate_to:
+      type: next_bill_cycle
+      entity_type: "number"
+      parsers:
+        - other-reason-parser
+      value: ""
+      score: 20
+      dim: ""
+      latent: true
+      range:
+        start: 0
+        end: 0
+      body: ""
+    conditions:
+      state:
+        in:
+          [
+            "CONFIRM_MANDATORY_SEAT_SELECTION",
+            "COF",
+            "COF_QUERY",
+            "COF_LANG",
+            "REPROMPT_INTENT",
+            "SPECIFY_BAGGAGE_QUERY",
+          ]
+        not_in: []
+      intent:
+        not_in: []
+        in: []
+
+      previous_intent: null
+
+      transcript:
+        in: []
+        not_in: []
