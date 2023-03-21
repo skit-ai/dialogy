@@ -60,15 +60,19 @@ class IntentEntityMutatorPlugin(Plugin):
         else:
             raise ValueError("No transcripts provided")
 
-        if alternatives and primitive_in:
-            if any(word in alternatives for word in primitive_in):
-                return True
-            return False
+        if (
+            alternatives
+            and primitive_in
+            and any(word in alternatives for word in primitive_in)
+        ):
+            return True
 
-        elif alternatives and primitive_not_in:
-            if not any(word in alternatives for word in primitive_not_in):
-                return True
-            return False
+        elif (
+            alternatives
+            and primitive_not_in
+            and not any(word in alternatives for word in primitive_not_in)
+        ):
+            return True
 
         return False
 
@@ -92,8 +96,7 @@ class IntentEntityMutatorPlugin(Plugin):
     ) -> bool:
 
         if primitive_ent and primitive_in:
-            total_len = len(set(primitive_ent) & set(primitive_in))
-            return total_len > 0
+            return len(set(primitive_ent) & set(primitive_in)) > 0
 
         elif primitive_ent and primitive_not_in:
             return len(set(primitive_ent) & set(primitive_not_in)) == 0
