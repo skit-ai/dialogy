@@ -1,3 +1,4 @@
+
 from dialogy.plugins.text.calibration.xgb import CalibrationModel
 from dialogy.plugins.text.canonicalization import CanonicalizationPlugin
 from dialogy.plugins.text.classification.mlp import MLPMultiClass
@@ -14,3 +15,16 @@ from dialogy.plugins.text.address_parser import AddressParserPlugin
 from dialogy.plugins.text.error_recovery.error_recovery import ErrorRecoveryPlugin
 from dialogy.plugins.text.oos_filter import OOSFilterPlugin
 from dialogy.plugins.text.qc_plugin import QCPlugin
+
+# TODO: fill this
+
+plugin_cls_lib = {
+    "CalibrationModel": CalibrationModel,
+    "CanonicalizationPlugin": CanonicalizationPlugin,
+    "MLPMultiClass": MLPMultiClass,
+    "MergeASROutputPlugin": MergeASROutputPlugin,
+    "DucklingPlugin": DucklingPlugin,
+    "ListEntityPlugin": ListEntityPlugin,
+    "XLMRMultiClass": XLMRMultiClass,
+    "RuleBasedSlotFillerPlugin": RuleBasedSlotFillerPlugin
+}

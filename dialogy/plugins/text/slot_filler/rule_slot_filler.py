@@ -9,7 +9,7 @@ role. This plugin orchestrates the execution of slot filling via methods availab
 #. Once entities are found, we check if the slots can fill them using the :ref:`fill<FillSlot>` method.
 #. If no slots were filled, we remove the placeholders using :ref:`cleanup<CleanupSlot>` method.
 """
-from typing import List, Union, Set
+from typing import List, Union, Set, Any
 
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import BaseEntity
@@ -53,6 +53,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         fill_multiple: bool = True,
         sort_by_score: bool = True,
         debug: bool = False,
+        **kwargs: Any
     ) -> None:
         """
         constructor

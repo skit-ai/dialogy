@@ -90,6 +90,7 @@ class MergeASROutputPlugin(Plugin):
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
+        **kwargs: Any
     ) -> None:
         super().__init__(
             dest=dest,

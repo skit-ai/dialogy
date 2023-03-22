@@ -236,6 +236,7 @@ class Plugin(ABC):
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
+        **kwargs: Any
     ) -> None:
         self.debug = debug
         self.guards = guards
@@ -244,6 +245,7 @@ class Plugin(ABC):
         self.input_column = input_column
         self.output_column = output_column or input_column
         self.use_transform = use_transform
+        self.purpose = kwargs.pop("purpose", const.PRODUCTION)
 
     @abstractmethod
     def utility(self, input_: Input, output: Output) -> Any:

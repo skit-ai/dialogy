@@ -32,14 +32,11 @@ class XLMRMultiClass(Plugin):
 
     def __init__(
         self,
-        model_dir: str,
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
         threshold: float = 0.1,
-        use_cuda: bool = False,
         score_round_off: int = 5,
-        purpose: str = const.TRAIN,
         fallback_label: str = const.ERROR_LABEL,
         use_state: bool = False,
         data_column: str = const.DATA,
@@ -52,7 +49,7 @@ class XLMRMultiClass(Plugin):
         prompts_map: Dict[Any, Any] = {const.LANG: []},
         use_prompt: bool = False,
         null_prompt_token: str = const.NULL_PROMPT_TOKEN,
-        kwargs: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
     ) -> None:
         try:
             classifer = getattr(
@@ -67,44 +64,57 @@ class XLMRMultiClass(Plugin):
         self.labelencoder = preprocessing.LabelEncoder()
         self.classifier = classifer
         self.model: Any = None
-        self.model_dir = model_dir
         self.fallback_label = fallback_label
         self.data_column = data_column
         self.label_column = label_column
         self.state_column = state_column
         self.lang_column = lang_column
         self.nls_label_column = nls_label_column
-        self.use_cuda = use_cuda
         self.use_state = use_state
         self.use_prompt = use_prompt
         self.null_prompt_token = null_prompt_token
         self.prompts_map = prompts_map
+
+        self.purpose = kwargs.pop("purpose", const.TRAIN)
+        self.use_cuda = self.purpose == const.TRAIN
+
+        if args_map and self.purpose not in args_map:
+            raise ValueError(
+                f"Attempting to set invalid {args_map}. "
+                f"It is missing {self.purpose}. {self.purpose} has to be one of "
+                f"{const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
+            )
+        self.args_map = args_map[self.purpose]
+
+        self.model_dir = self.args_map.get("best_model_dir")
+
+        if not self.model_dir:
+            raise ValueError(
+                f"'best_model_dir' missing in passed args_map."
+            )
+
+        self.use_calibration = self.args_map.get(const.MODEL_CALIBRATION, False)
 
         self.labelencoder_file_path = os.path.join(
             self.model_dir, const.LABELENCODER_FILE
         )
         self.ts_parameter: float = (
             read_from_json(
-                [const.TS_PARAMETER], model_dir, const.CALIBRATION_CONFIG_FILE
+                [const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE
             ).get(const.TS_PARAMETER)
             or 1.0
         )
 
         self.threshold = threshold
         self.skip_labels = set(skip_labels or set())
-        self.purpose = purpose
+
         self.round = score_round_off
-        if args_map and (
-            const.TRAIN not in args_map
-            or const.TEST not in args_map
-            or const.PRODUCTION not in args_map
-        ):
-            raise ValueError(
-                f"Attempting to set invalid {args_map}. "
-                f"It is missing some of {const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
-            )
-        self.args_map = args_map
+
         self.kwargs = kwargs or {}
+
+        # TODO: check if this can be avoided
+        del self.kwargs["name"]
+
         try:
             if os.path.exists(self.labelencoder_file_path):
                 self.init_model()
@@ -123,38 +133,33 @@ class XLMRMultiClass(Plugin):
         :type label_count: Optional[int], optional
         :raises ValueError: In case n is not provided or can't be calculated.
         """
-        model_dir = const.XLMR_MODEL_TIER
         if os.path.exists(self.labelencoder_file_path):
             self.load()
             label_count = len(self.labelencoder.classes_)
-            model_dir = self.model_dir
         if not label_count:
             raise ValueError(
                 f"Plugin {self} needs either the training data "
                 "or an existing labelencoder to initialize."
             )
-        args = (
-            self.args_map[self.purpose]
-            if self.args_map and self.purpose in self.args_map
-            else {}
-        )
-        self.use_calibration = args.get(const.MODEL_CALIBRATION)
+
         try:
             self.model = self.classifier(
                 const.XLMR_MODEL,
-                model_dir,
+                self.model_dir,
                 num_labels=label_count,
                 use_cuda=self.use_cuda,
-                args=args,
+                args=self.args_map,
                 **self.kwargs,
             )
         except OSError:
+            logger.info(f"Model not found at {self.model_dir}. "
+                        f"Default model weights will be loaded")
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 const.XLMR_MODEL_TIER,
                 num_labels=label_count,
                 use_cuda=self.use_cuda,
-                args=args,
+                args=self.args_map,
                 **self.kwargs,
             )
 

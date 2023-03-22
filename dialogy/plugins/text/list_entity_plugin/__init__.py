@@ -135,6 +135,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         use_transform: bool = True,
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
+        **kwargs: Any
     ):
         super().__init__(
             dest=dest,

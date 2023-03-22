@@ -593,6 +593,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         output_column: Optional[str] = None,
         use_transform: bool = False,
         debug: bool = False,
+        **kwargs: Any
     ) -> None:
         """
         constructor
