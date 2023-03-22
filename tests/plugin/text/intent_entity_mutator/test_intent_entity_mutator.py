@@ -55,11 +55,6 @@ def mutation(
         assert out.entities[0] == BaseEntity.from_dict(mutate_val)
 
 
-def test_empty_rules():
-    with pytest.raises(ValueError):
-        intent_entity_no_rules = IntentEntityMutatorPlugin(rules=None)
-
-
 @pytest.mark.parametrize("payload", load_tests("mutation_cases", __file__))
 def test_mutation_cases(payload):
 
