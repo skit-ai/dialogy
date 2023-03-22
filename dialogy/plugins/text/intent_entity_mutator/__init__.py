@@ -34,7 +34,7 @@ class IntentEntityMutatorPlugin(Plugin):
 
         if "swap_rules" not in rules_base_keys:
             raise ValueError(
-                "Swap rules is not the base key in the rules, received {rule_base_keys[0]}"
+                f"Did not receive swap_rules as the base key, received {rules_base_keys[0]}"
             )
 
         rules_ = rules["swap_rules"]
@@ -226,13 +226,10 @@ class IntentEntityMutatorPlugin(Plugin):
                 if rule["mutate"] == "intent":
                     intents[0].name = mutate_to
                     return intents
-                elif rule["mutate"] == "entity":
+                else:
                     mutate_entities = [BaseEntity.from_dict(mutate_to)]
                     return mutate_entities
-                else:
-                    raise ValueError(
-                        f"Correct mutation type not received. Received:{rule['mutate']}"
-                    )
+               
 
         return intents if rules[0]["mutate"] == "intent" else entities
 
