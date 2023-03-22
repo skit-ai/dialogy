@@ -76,3 +76,19 @@ def test_mutation_cases(payload):
         mutate_val,
         mutate,
     )
+
+@pytest.mark.parametrize("payload", load_tests("mutation_rules", __file__))
+def test_mutation_rules(payload):
+    intent_entity = IntentEntityMutatorPlugin(
+            rules=payload, dest="output.intents", replace_output=True
+        )
+    
+    workflow = Workflow([intent_entity])
+    intent_name = "sample_intent"
+    body = [[{"transcript": "sample_transcript"}]]
+    intent = Intent(name=intent_name, score=0.2)
+    output = Output(intents=[intent])
+    input = Input(utterances=body)
+    
+    with pytest.raises(ValueError):
+        _,output = workflow.run(input, output)

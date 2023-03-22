@@ -1,0 +1,83 @@
+- swp_rules:
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "bill_paid"
+    conditions:
+      state:
+        in: ["ASK_BILL_PAID_DATE", "CONFIRM_BILL_PAID_DATE"]
+      intent:
+        in: ["entity_only"]
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "inform_already_paid"
+    conditions:
+      intent:
+        in: ["date_entity_only"]
+
+      previous_intent:
+        in: ["_callback_", "inform_already_paid", "inform_pay_later"]
+
+
+- swap_rules:
+  - mutates: intent # Can only mutate intent or entity
+    mutate_to: "bill_paid"
+    conditions:
+      state:
+        in: ["ASK_BILL_PAID_DATE", "CONFIRM_BILL_PAID_DATE"]
+      intent:
+        in: ["entity_only"]
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "inform_already_paid"
+    conditions:
+      intent:
+        in: ["date_entity_only"]
+
+      previous_intent:
+        in: ["_callback_", "inform_already_paid", "inform_pay_later"]
+
+
+- swap_rules:
+  - mutate: intet # Can only mutate intent or entity
+    mutate_to: "bill_paid"
+    conditions:
+      state:
+        in: ["ASK_BILL_PAID_DATE", "CONFIRM_BILL_PAID_DATE"]
+      intent:
+        in: ["entity_only"]
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "inform_already_paid"
+    conditions:
+      intent:
+        in: ["date_entity_only"]
+
+      previous_intent:
+        in: ["_callback_", "inform_already_paid", "inform_pay_later"]
+
+
+- swap_rules:
+  - mutate: intnet # Can only mutate intent or entity
+    mutate_to: "bill_paid"
+    conditions:
+      stat:
+        in: ["ASK_BILL_PAID_DATE", "CONFIRM_BILL_PAID_DATE"]
+      intent:
+        in: ["entity_only"]
+
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "inform_already_paid"
+    conditions:
+      intent:
+        in: ["date_entity_only"]
+
+      previous_intent:
+        in: ["_callback_", "inform_already_paid", "inform_pay_later"]
+
+- swap_rules:
+  - mutate: intent # Can only mutate intent or entity
+    mutate_to: "bill_paid"
+    conditions:
+      stat:
+        in: ["ASK_BILL_PAID_DATE", "CONFIRM_BILL_PAID_DATE"]
+      intent:
+        in: ["entity_only"]

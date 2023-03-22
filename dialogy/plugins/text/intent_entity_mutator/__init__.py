@@ -21,41 +21,82 @@ transcript_functions_map: Dict[str, Callable[[List[str]], int]] = {
 class IntentEntityMutatorPlugin(Plugin):
     def __init__(
         self,
-        rules: Dict[str, List[Any]],
+        rules: Dict[str, List[Dict[str, Any]]],
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         **kwargs: Any,
     ) -> None:
+        self.rules = rules
         super().__init__(guards=guards, dest=dest, **kwargs)
-        self.rules = rules["swap_rules"]
 
-    def check_present_absent_other_primitives(
+    def validate_rules(self, rules: Dict[str, List[Dict[str, Any]]]) -> bool:
+        rules_base_keys = list(rules.keys())
+
+        if "swap_rules" not in rules_base_keys:
+            raise ValueError(
+                "Swap rules is not the base key in the rules, received {rule_base_keys[0]}"
+            )
+
+        rules_ = rules["swap_rules"]
+        mandatory_rule_keys = ["conditions", "mutate", "mutate_to"]
+        base_condition_primitives = [
+            "intent",
+            "entity",
+            "state",
+            "transcript",
+            "previous_intent",
+        ]
+
+        for rule in rules_:
+            rule_keys = sorted(list(rule.keys()))
+            if rule_keys != mandatory_rule_keys:
+                raise ValueError(
+                    f"The rule is either missing some keyword or incorrect keyword entered. Received: {rule_keys}. Expected: {mandatory_rule_keys}"
+                )
+
+            mutate = rule["mutate"]
+            if mutate not in ["intent", "entity"]:
+                raise ValueError(
+                    f"The mutate keyword received incorrect value. Received {mutate}. Expected: intent or entity"
+                )
+
+            condition_keys = list(rule["conditions"].keys())
+
+            for primitive in condition_keys:
+                if primitive not in base_condition_primitives:
+                    raise ValueError(
+                        f"Received invalid primitive in the rules. Received: {primitive}"
+                    )
+
+        return True
+
+    def check_present_absent_primitive_val(
         self,
-        primitive_val: str,
+        primitive_val: Union[str, List[str]],
         check_presence: bool,
         primitive_val_in_not_in: List[str],
+        received_transcripts: bool = False,
     ) -> bool:
 
-        return (
-            primitive_val in primitive_val_in_not_in
-            if check_presence
-            else primitive_val not in primitive_val_in_not_in
-        )
+        if isinstance(primitive_val, str):
+            return (
+                primitive_val in primitive_val_in_not_in
+                if check_presence
+                else primitive_val not in primitive_val_in_not_in
+            )
+        elif not received_transcripts and isinstance(primitive_val, list):
+            return (
+                len(set(primitive_val) & set(primitive_val_in_not_in)) > 0
+                if check_presence
+                else len(set(primitive_val) & set(primitive_val_in_not_in)) == 0
+            )
 
-    def check_present_absent_transcript(
-        self,
-        transcripts: Iterable[str],
-        check_presence: bool,
-        primitive_val_in_not_in: List[str],
-    ) -> bool:
-
-        alternatives = "".join(transcripts)
-
-        return (
-            any(word in alternatives for word in primitive_val_in_not_in)
-            if check_presence
-            else not any(word in alternatives for word in primitive_val_in_not_in)
-        )
+        else:
+            return (
+                any(word in primitive_val for word in primitive_val_in_not_in)
+                if check_presence
+                else not any(word in primitive_val for word in primitive_val_in_not_in)
+            )
 
     def check_passed_functional_conditions(
         self,
@@ -71,24 +112,10 @@ class IntentEntityMutatorPlugin(Plugin):
 
         return passed_conditions
 
-    def check_present_absent_entity(
-        self,
-        primitive_ent_val: List[str],
-        check_presence: bool,
-        primitive_val_in_not_in: Iterable[str],
-    ) -> bool:
-
-        return (
-            len(set(primitive_ent_val) & set(primitive_val_in_not_in)) > 0
-            if check_presence
-            else len(set(primitive_ent_val) & set(primitive_val_in_not_in)) == 0
-        )
-
     def check_passed_conditions(
         self,
         type_of_condition: str,
         primitive_conditions: Dict[str, List[str]],
-        transcripts: List[str],
         unpacked_entities: Dict[str, Any],
         map_primitive_to_vals: Dict[str, Any],
     ) -> bool:
@@ -99,33 +126,16 @@ class IntentEntityMutatorPlugin(Plugin):
         passed_conditions = True
         for primitive, val in primitive_conditions.items():
 
-            if primitive in ["dim", "value", "type", "entity_type"]:
-
-                if not self.check_present_absent_entity(
-                    primitive_ent_val=unpacked_entities[primitive],
-                    check_presence=True if type_of_condition == "in" else False,
-                    primitive_val_in_not_in=val,
-                ):
-                    passed_conditions = False
-                    break
-
-            elif primitive == "transcript":
-                if not self.check_present_absent_transcript(
-                    transcripts=transcripts,
-                    check_presence=True if type_of_condition == "in" else False,
-                    primitive_val_in_not_in=val,
-                ):
-                    passed_conditions = False
-                    break
-
-            else:
-                if not self.check_present_absent_other_primitives(
-                    primitive_val=map_primitive_to_vals[primitive],
-                    check_presence=True if type_of_condition == "in" else False,
-                    primitive_val_in_not_in=val,
-                ):
-                    passed_conditions = False
-                    break
+            if not self.check_present_absent_primitive_val(
+                primitive_val=map_primitive_to_vals[primitive]
+                if primitive not in ["dim", "value", "type", "entity_type"]
+                else unpacked_entities[primitive],
+                check_presence=True if type_of_condition == "in" else False,
+                primitive_val_in_not_in=val,
+                received_transcripts=True if primitive == "transcript" else False,
+            ):
+                passed_conditions = False
+                break
 
         return passed_conditions
 
@@ -193,7 +203,6 @@ class IntentEntityMutatorPlugin(Plugin):
             passed_in_conditions = self.check_passed_conditions(
                 "in",
                 primitive_in_conditions,
-                transcripts,
                 unpacked_entities,
                 map_primitive_to_vals,
             )
@@ -201,7 +210,6 @@ class IntentEntityMutatorPlugin(Plugin):
             passed_not_in_conditions = self.check_passed_conditions(
                 "not_in",
                 primitive_not_in_conditions,
-                transcripts,
                 unpacked_entities,
                 map_primitive_to_vals,
             )
@@ -218,14 +226,15 @@ class IntentEntityMutatorPlugin(Plugin):
                 if rule["mutate"] == "intent":
                     intents[0].name = mutate_to
                     return intents
-                else:
+                elif rule["mutate"] == "entity":
                     mutate_entities = [BaseEntity.from_dict(mutate_to)]
                     return mutate_entities
+                else:
+                    raise ValueError(
+                        f"Correct mutation type not received. Received:{rule['mutate']}"
+                    )
 
-        if rules[0]["mutate"] == "intent":
-            return intents
-
-        return entities
+        return intents if rules[0]["mutate"] == "intent" else entities
 
     def utility(
         self, input_: Input, output: Output
@@ -237,11 +246,14 @@ class IntentEntityMutatorPlugin(Plugin):
         previous_intent = input_.previous_intent
         transcripts = input_.transcripts
 
-        return self.mutate(
-            current_state=current_state,
-            previous_intent=previous_intent,
-            entities=entities,
-            intents=intents,
-            transcripts=transcripts,
-            rules=self.rules,
-        )
+        if self.validate_rules(self.rules):
+            return self.mutate(
+                current_state=current_state,
+                previous_intent=previous_intent,
+                entities=entities,
+                intents=intents,
+                transcripts=transcripts,
+                rules=self.rules["swap_rules"],
+            )
+
+        raise ValueError("Received undefined rules")

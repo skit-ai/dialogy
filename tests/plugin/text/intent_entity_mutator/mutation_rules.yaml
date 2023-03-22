@@ -4,71 +4,37 @@ swap_rules:
     conditions:
       state:
         in: ["ASK_BILL_PAID_DATE", "CONFIRM_BILL_PAID_DATE"]
-        not_in: []
       intent:
         in: ["entity_only"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
-
-      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "inform_already_paid"
     conditions:
-      state: null
       intent:
         in: ["date_entity_only"]
-        not_in: []
 
       previous_intent:
         in: ["_callback_", "inform_already_paid", "inform_pay_later"]
-        not_in: []
-
-      transcript: null
-
-      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "_call_me_back_"
     conditions:
       state:
         in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
-        not_in: []
       intent:
         in: ["entity_only"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
-
-      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "payment_promise"
     conditions:
       state:
         in: ["entity_only"]
-        not_in: []
-      intent:
-        in: []
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
-
-      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "old_user_waiver"
     conditions:
       state:
         in: ["CHECK_CURRENT_STATE"]
-        not_in: []
       intent:
         in:
           [
@@ -79,181 +45,72 @@ swap_rules:
             "late_fee_charges",
             "bill_breakup_details",
           ]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
 
       entity:
         type:
           in: ["fee_waiver"]
-          not_in: []
-
-        dim:
-          in: []
-          not_in: []
-
-        value:
-          in: []
-          not_in: []
-
-        entity_type:
-          in: []
-          not_in: []
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "_call_me_back_"
     conditions:
       state:
         in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
-        not_in: []
       intent:
         in: ["bill_paid"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
-
-      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "_call_me_back_"
     conditions:
       state:
         in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
-        not_in: []
       intent:
         in: ["payment_promise"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
-
-      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "port_to_prepaid"
     conditions:
-      state:
-        in: []
-        not_in: []
       intent:
         in: ["_churn_"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
 
       entity:
         type:
           in: ["prepaid"]
-          not_in: []
 
-        dim:
-          in: []
-          not_in: []
-
-        value:
-          in: []
-          not_in: []
-
-        entity_type:
-          in: []
-          not_in: []
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "payment_whatsapp"
     conditions:
-      state:
-        in: []
-        not_in: []
       intent:
         in: ["how_to_pay", "payment_vi_app"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
 
       entity:
         type:
           in: ["payment_mode_enquiry"]
-          not_in: []
-
-        dim:
-          in: []
-          not_in: []
 
         value:
           in: ["whatsapp"]
-          not_in: []
-
-        entity_type:
-          in: []
-          not_in: []
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "payment_promise_next_bill_cycle"
     conditions:
-      state:
-        in: []
-        not_in: []
-
       intent:
         in: ["payment_promise"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
 
       entity:
         type:
           in: ["next_bill_cycle"]
-          not_in: []
-
-        dim:
-          in: []
-          not_in: []
-
-        value:
-          in: []
-          not_in: []
-
-        entity_type:
-          in: []
-          not_in: []
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "ask_for_installment"
     conditions:
       state:
         in: ["RECORD_EXPLAIN_DUE_1_1065", "ASK_HOW_MUCH_1"]
-        not_in: []
 
       intent:
         in: ["_confirm_", "payment_amount", "inform_ssn_number"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
 
       entity:
         type:
           in: ["next_bill_cycle"]
-          not_in: []
-
-        dim:
-          in: []
-          not_in: []
-
-        value:
-          in: [""]
-          not_in: []
 
         entity_type:
           in: ["number"]
@@ -261,33 +118,15 @@ swap_rules:
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "payment_vi_app"
     conditions:
-      state:
-        in: []
-        not_in: []
       intent:
         in: ["how_to_pay", "payment_vi_app"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
 
       entity:
         type:
           in: ["payment_mode_enquiry"]
-          not_in: []
-
-        dim:
-          in: []
-          not_in: []
 
         value:
           in: ["vi_app"]
-          not_in: []
-
-        entity_type:
-          in: []
-          not_in: []
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "extra_baggage_charges"
@@ -302,69 +141,23 @@ swap_rules:
             "SPECIFY_BAGGAGE_QUERY",
           ]
 
-        not_in: []
-      intent:
-        in: []
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
-
       entity:
-        type:
-          in: []
-          not_in: []
-
         dim:
           in: ["extra_baggage_intent"]
-          not_in: []
-
-        value:
-          in: []
-          not_in: []
-
-        entity_type:
-          in: []
-          not_in: []
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "entity_only"
     conditions:
-      state:
-        in: []
-        not_in: []
       intent:
         in: ["_confirm_", "_cancel_", "_oos_", "_greeting_"]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
 
       entity:
         type:
           in: ["value", "date", "datetime", "interval"]
-          not_in: []
-
-        dim:
-          in: []
-          not_in: []
-
-        value:
-          in: []
-          not_in: []
-
-        entity_type:
-          in: []
-          not_in: []
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "old_user_waiver"
     conditions:
-      state:
-        in: []
-        not_in: []
       intent:
         in:
           [
@@ -375,53 +168,27 @@ swap_rules:
             "late_fee_charges",
             "bill_breakup_details",
           ]
-        not_in: []
-
-      previous_intent: null
-
-      transcript: null
 
       entity:
         type:
           in: ["fee_waiver"]
-          not_in: []
-
-        dim:
-          in: []
-          not_in: []
-
-        value:
-          in: []
-          not_in: []
-
-        entity_type:
-          in: []
-          not_in: []
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "place_order_ocs"
     conditions:
       state:
         in: ["CONFIRM_TIME_REMOTE"]
-        not_in: []
       intent:
         in: ["_ood_"]
-        not_in: []
 
       previous_intent:
         in: ["place_order_ocs"]
-        not_in: []
-
-      transcript: null
-
-      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "inform_credit_card_number"
     conditions:
       state:
         in: ["ASK_CARD_NUMBER_AGAIN"]
-        not_in: []
       intent:
         not_in:
           - _cancel_
@@ -432,21 +199,15 @@ swap_rules:
           - why_ask
           - _callback_
           - ask_for_agent
-        in: []
-
-      previous_intent: null
 
       transcript:
         is_number_absent: true
 
-      entity: null
-
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "inform_credit_card_number"
     conditions:
       state:
         in: ["ASK_CARD_NUMBER_AGAIN"]
-        not_in: []
       intent:
         not_in:
           - _cancel_
@@ -457,16 +218,11 @@ swap_rules:
           - why_ask
           - _callback_
           - ask_for_agent
-        in: []
-
-      previous_intent: null
 
       transcript:
         contain_digits: true
         is_number_absent: false
 
-      entity: null
-
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "web_check_in_change_details"
     conditions:
@@ -480,18 +236,12 @@ swap_rules:
             "REPROMPT_INTENT",
             "SPECIFY_BAGGAGE_QUERY",
           ]
-        not_in: []
       intent:
-        not_in: []
         in: ["web_check_in_seat_selection_compulsory"]
 
-      previous_intent: null
 
       transcript:
         in: ["change", "modify"]
-        not_in: []
-
-      entity: null
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "web_check_in_change_details"
@@ -506,18 +256,12 @@ swap_rules:
             "REPROMPT_INTENT",
             "SPECIFY_BAGGAGE_QUERY",
           ]
-        not_in: []
       intent:
-        not_in: []
         in: ["web_check_in_seat_selection_compulsory"]
 
-      previous_intent: null
-
       transcript:
-        in: []
         not_in: ["change", "modify"]
 
-      entity: null
 
   - mutate: entity # Can only mutate intent or entity
     mutate_to:
@@ -544,13 +288,3 @@ swap_rules:
             "REPROMPT_INTENT",
             "SPECIFY_BAGGAGE_QUERY",
           ]
-        not_in: []
-      intent:
-        not_in: []
-        in: []
-
-      previous_intent: null
-
-      transcript:
-        in: []
-        not_in: []
