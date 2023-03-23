@@ -88,7 +88,7 @@ def test_mutation_rules(payload):
     body = [[{"transcript": "sample_transcript"}]]
     intent = Intent(name=intent_name, score=0.2)
     output = Output(intents=[intent])
-    input = Input(utterances=body)
+    input_ = Input(utterances=body)
     
     with pytest.raises(ValueError):
-        _,output = workflow.run(input, output)
+        _,output = workflow.run(input_, output)

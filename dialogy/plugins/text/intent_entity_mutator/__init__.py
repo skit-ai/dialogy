@@ -32,9 +32,13 @@ class IntentEntityMutatorPlugin(Plugin):
     def validate_rules(self, rules: Dict[str, List[Dict[str, Any]]]) -> bool:
         rules_base_keys = list(rules.keys())
 
-        if "swap_rules" not in rules_base_keys:
+        if rules_base_keys and "swap_rules" not in rules_base_keys:
             raise ValueError(
                 f"Did not receive swap_rules as the base key, received {rules_base_keys[0]}"
+            )
+        elif not rules_base_keys:
+            raise ValueError(
+                "Did not receive any base_key"
             )
 
         rules_ = rules["swap_rules"]
@@ -106,7 +110,7 @@ class IntentEntityMutatorPlugin(Plugin):
 
         passed_conditions = True
         for key, val in conditions.items():
-            if not transcript_functions_map[key](transcripts) == val:
+            if transcript_functions_map[key](transcripts) != val:
                 passed_conditions = False
                 break
 
