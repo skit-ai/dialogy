@@ -22,15 +22,8 @@ def mutation(
     mutate,
 ):
 
-    if mutate == "intent":
-        intent_entity = IntentEntityMutatorPlugin(
-            rules=rules, dest="output.intents", replace_output=True
-        )
-
-    else:
-        intent_entity = IntentEntityMutatorPlugin(
-            rules=rules, dest="output.entities", replace_output=True
-        )
+   
+    intent_entity = IntentEntityMutatorPlugin(rules=rules, replace_output=True)
     workflow = Workflow([intent_entity])
     intent = Intent(name=intent_name, score=0.4)
 
@@ -44,7 +37,6 @@ def mutation(
     else:
         out = Output(intents=[intent])
     _, out = workflow.run(inp, out)
-
 
     if isinstance(mutate_val, str):
         assert out.intents[0].name == mutate_val

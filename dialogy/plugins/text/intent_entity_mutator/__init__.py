@@ -15,13 +15,13 @@ class IntentEntityMutatorPlugin(Plugin):
     def __init__(
         self,
         rules: Dict[str, List[Dict[str, Any]]],
-        dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         **kwargs: Any,
     ) -> None:
         self.rules = rules if self.validate_rules(rules) else None
+        self.dest = None
 
-        super().__init__(guards=guards, dest=dest, **kwargs)
+        super().__init__(guards=guards, **kwargs)
 
     def validate_rules(self, rules: Dict[str, List[Dict[str, Any]]]) -> bool:
         rules_base_keys = list(rules.keys())
@@ -34,29 +34,17 @@ class IntentEntityMutatorPlugin(Plugin):
             raise ValueError("Did not receive any base_key")
 
         rules_ = rules[const.BASE_KEY]
-        mandatory_rule_keys = [const.CONDITIONS, const.MUTATE, const.MUTATE_TO]
-
-        base_condition_primitives = [
-            const.INTENT,
-            const.ENTITY,
-            const.STATE,
-            const.TRANSCRIPT,
-            const.PREVIOUS_INTENT,
-        ]
 
         permissible_transcript_functional_condition_keys = list(
             transcript_functions_map.keys()
         )
 
-        base_entity_primitives = [const.DIM, const.TYPE, const.ENTITY_TYPE, const.VALUE]
-        sub_primitives = [const.IN, const.NOT_IN]
-
         for rule in rules_:
             rule_keys = sorted(list(rule.keys()))
-            if rule_keys != mandatory_rule_keys:
+            if rule_keys != const.MANDATORY_RULE_KEYS:
                 raise ValueError(
                     f"The rule is either missing some keyword or incorrect keyword entered. \
-                        Received: {rule_keys}. Expected: {mandatory_rule_keys} \
+                        Received: {rule_keys}. Expected: {const.MANDATORY_RULE_KEYS} \
                             {rule}"
                 )
 
@@ -71,10 +59,10 @@ class IntentEntityMutatorPlugin(Plugin):
             conditions = rule[const.CONDITIONS]
 
             for primitive, search_lists in conditions.items():
-                if primitive not in base_condition_primitives:
+                if primitive not in const.BASE_CONDITION_PRIMITIVES:
                     raise ValueError(
                         f"Received invalid primitive in the rules. Received: {primitive}.  \
-                            Expected from: {base_condition_primitives} \
+                            Expected from: {const.BASE_ENTITY_PRIMITIVES} \
                                 {rule}"
                     )
 
@@ -85,10 +73,10 @@ class IntentEntityMutatorPlugin(Plugin):
                             search_lists.keys()
                         )  # Get keys such as [dim, type, ..]
                         for ent_primitives in received_entity_primitives:
-                            if ent_primitives not in base_entity_primitives:
+                            if ent_primitives not in const.BASE_ENTITY_PRIMITIVES:
                                 raise ValueError(
                                     f"The rule did not receive correct entity sub_type. Received: {ent_primitives} \
-                                        Expected: {base_condition_primitives} \
+                                        Expected: {const.BASE_ENTITY_PRIMITIVES} \
                                             {rule}"
                                 )
 
@@ -98,10 +86,10 @@ class IntentEntityMutatorPlugin(Plugin):
                         )  # list of dictionaries. [{in: [], not_in: [], }]
                         for key in received_primitive_keys:
                             if isinstance(search_lists[key], list):
-                                if key not in sub_primitives:
+                                if key not in const.SUB_PRIMITIVES:
                                     raise ValueError(
                                         f"The rule did not receive the correct list type. Received: {key} \
-                                            Expected: {sub_primitives} \
+                                            Expected: {const.SUB_PRIMITIVES} \
                                                 {rule}"
                                     )
 
@@ -288,9 +276,11 @@ class IntentEntityMutatorPlugin(Plugin):
             ):
                 if rule[const.MUTATE] == const.INTENT:
                     intents[0].name = mutate_to
+                    self.dest = const.OUTPUT_DEST_INTENT
                     return intents
                 else:
                     mutate_entities = [BaseEntity.from_dict(mutate_to)]
+                    self.dest = const.OUTPUT_DEST_ENTITY
                     return mutate_entities
 
     def utility(
