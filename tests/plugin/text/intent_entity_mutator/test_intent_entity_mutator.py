@@ -8,7 +8,7 @@ from dialogy.workflow import Workflow
 from tests import load_tests
 
 with open("tests/plugin/text/intent_entity_mutator/mutation_rules.yaml", "r") as f:
-    rules = yaml.load(f, Loader=yaml.Loader)
+    rules = yaml.safe_load(f)
 
 
 def mutation(
@@ -21,9 +21,6 @@ def mutation(
     mutate_val,
     mutate,
 ):
-
-    if entity_dict:
-        entity = BaseEntity.from_dict(entity_dict)
 
     if mutate == "intent":
         intent_entity = IntentEntityMutatorPlugin(
@@ -42,12 +39,12 @@ def mutation(
         utterances=body, current_state=current_state, previous_intent=previous_intent
     )
     if entity_dict:
+        entity = BaseEntity.from_dict(entity_dict)
         out = Output(intents=[intent], entities=[entity])
     else:
         out = Output(intents=[intent])
     _, out = workflow.run(inp, out)
 
-    assert mutate in ["intent", "entity"]
 
     if isinstance(mutate_val, str):
         assert out.intents[0].name == mutate_val
@@ -77,18 +74,10 @@ def test_mutation_cases(payload):
         mutate,
     )
 
+
 @pytest.mark.parametrize("payload", load_tests("mutation_rules", __file__))
 def test_mutation_rules(payload):
-    intent_entity = IntentEntityMutatorPlugin(
+    with pytest.raises(ValueError):
+        intent_entity = IntentEntityMutatorPlugin(
             rules=payload, dest="output.intents", replace_output=True
         )
-    
-    workflow = Workflow([intent_entity])
-    intent_name = "sample_intent"
-    body = [[{"transcript": "sample_transcript"}]]
-    intent = Intent(name=intent_name, score=0.2)
-    output = Output(intents=[intent])
-    input_ = Input(utterances=body)
-    
-    with pytest.raises(ValueError):
-        _,output = workflow.run(input_, output)

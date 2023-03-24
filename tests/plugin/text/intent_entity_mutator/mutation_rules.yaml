@@ -17,14 +17,6 @@ swap_rules:
         in: ["_callback_", "inform_already_paid", "inform_pay_later"]
 
   - mutate: intent # Can only mutate intent or entity
-    mutate_to: "_call_me_back_"
-    conditions:
-      state:
-        in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
-      intent:
-        in: ["entity_only"]
-
-  - mutate: intent # Can only mutate intent or entity
     mutate_to: "payment_promise"
     conditions:
       state:
@@ -48,23 +40,7 @@ swap_rules:
 
       entity:
         type:
-          in: ["fee_waiver"]
-
-  - mutate: intent # Can only mutate intent or entity
-    mutate_to: "_call_me_back_"
-    conditions:
-      state:
-        in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
-      intent:
-        in: ["bill_paid"]
-
-  - mutate: intent # Can only mutate intent or entity
-    mutate_to: "_call_me_back_"
-    conditions:
-      state:
-        in: ["WHEN_TO_CALL", "ASK_CALLBACK_TIME"]
-      intent:
-        in: ["payment_promise"]
+          in: ["fee_waiver", "no_fee_waiver"]
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "port_to_prepaid"
@@ -74,7 +50,7 @@ swap_rules:
 
       entity:
         type:
-          in: ["prepaid"]
+          in: ["prepaid", "postpaid"]
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "payment_whatsapp"
@@ -84,20 +60,11 @@ swap_rules:
 
       entity:
         type:
-          in: ["payment_mode_enquiry"]
+          in: ["payment_mode_enquiry", "payment_mode"]
 
         value:
-          in: ["whatsapp"]
+          in: ["whatsapp", "telegram", "signal"]
 
-  - mutate: intent # Can only mutate intent or entity
-    mutate_to: "payment_promise_next_bill_cycle"
-    conditions:
-      intent:
-        in: ["payment_promise"]
-
-      entity:
-        type:
-          in: ["next_bill_cycle"]
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "ask_for_installment"
@@ -113,7 +80,7 @@ swap_rules:
           in: ["next_bill_cycle"]
 
         entity_type:
-          in: ["number"]
+          in: ["number", "letter"]
 
   - mutate: intent # Can only mutate intent or entity
     mutate_to: "payment_vi_app"
@@ -239,7 +206,6 @@ swap_rules:
       intent:
         in: ["web_check_in_seat_selection_compulsory"]
 
-
       transcript:
         in: ["change", "modify"]
 
@@ -261,7 +227,6 @@ swap_rules:
 
       transcript:
         not_in: ["change", "modify"]
-
 
   - mutate: entity # Can only mutate intent or entity
     mutate_to:

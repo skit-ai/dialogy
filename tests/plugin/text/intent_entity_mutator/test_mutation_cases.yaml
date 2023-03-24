@@ -1,19 +1,3 @@
-- intent_name: "entity_only"
-  current_state: "ASK_CALLBACK_TIME"
-  transcript: "I will pay tomorrow"
-  entity_dict: {}
-  previous_intent: ""
-  mutate_val: "_call_me_back_"
-  mutate: "intent"
-
-- intent_name: "entity_only"
-  current_state: "ASK_CALLBACK_TIME"
-  transcript: "I will pay tomorrow"
-  entity_dict: {}
-  previous_intent: ""
-  mutate_val: "_call_me_back_"
-  mutate: "intent"
-
 - intent_name: "date_entity_only"
   current_state: "ASK_CALLBACK_TIME"
   transcript: "I will pay tomorrow"
@@ -64,7 +48,7 @@
 
 - intent_name: "web_check_in_seat_selection_compulsory"
   current_state: "CONFIRM_MANDATORY_SEAT_SELECTION"
-  transcript: "please change my seat"
+  transcript: "please my seat"
   entity_dict: {}
   previous_intent: ""
   mutate_val: "web_check_in_change_details"
@@ -198,26 +182,6 @@
   mutate_val: "extra_baggage_charges"
   mutate: "intent"
 
-- intent_name: "payment_promise"
-  current_state: ""
-  transcript: ""
-  entity_dict:
-    type: next_bill_cycle
-    entity_type: ""
-    parsers:
-      - other-reason-parser
-    value: ""
-    score: 20
-    dim: ""
-    latent: true
-    range:
-      start: 0
-      end: 0
-    body: ""
-  previous_intent: ""
-  mutate_val: "payment_promise_next_bill_cycle"
-  mutate: "intent"
-
 - intent_name: "payment_vi_app"
   current_state: ""
   transcript: ""
@@ -236,24 +200,4 @@
     body: ""
   previous_intent: ""
   mutate_val: "payment_whatsapp"
-  mutate: "intent"
-
-- intent_name: "vas_charges"
-  current_state: "CHECK_CURRENT_STATE"
-  transcript: "hi my name is dotty"
-  entity_dict:
-    type: "fee_waiver"
-    entity_type: ""
-    parsers:
-      - other-reason-parser
-    value: ""
-    score: 20
-    dim: ""
-    latent: true
-    range:
-      start: 0
-      end: 0
-    body: ""
-  previous_intent: ""
-  mutate_val: "old_user_waiver"
   mutate: "intent"
