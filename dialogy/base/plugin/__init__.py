@@ -290,6 +290,9 @@ class Plugin(ABC):
 
         # compute
         return_value = self.utility(input, output)
+        if return_value is None:
+            return input, output
+
         if self.dynamic_output_path:
             value, dest = return_value[0], return_value[1]
         else:
