@@ -16,12 +16,13 @@ class IntentEntityMutatorPlugin(Plugin):
         self,
         rules: Dict[str, List[Dict[str, Any]]],
         guards: Optional[List[Guard]] = None,
+        dynamic_output_path: bool = True,
         **kwargs: Any,
     ) -> None:
         self.rules = rules if self.validate_rules(rules) else None
         self.dest = None
 
-        super().__init__(guards=guards, **kwargs)
+        super().__init__(guards=guards, dyanamic_output_path=dynamic_output_path, **kwargs)
 
     def validate_rules(self, rules: Dict[str, List[Dict[str, Any]]]) -> bool:
         rules_base_keys = list(rules.keys())
@@ -276,8 +277,7 @@ class IntentEntityMutatorPlugin(Plugin):
             ):
                 if rule[const.MUTATE] == const.INTENT:
                     intents[0].name = mutate_to
-                    self.dest = const.OUTPUT_DEST_INTENT
-                    return intents
+                    return intents, const.OUTPUT_DEST_INTENT
                 else:
                     mutate_entities = [BaseEntity.from_dict(mutate_to)]
                     self.dest = const.OUTPUT_DEST_ENTITY
