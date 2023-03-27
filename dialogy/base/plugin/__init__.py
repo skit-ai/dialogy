@@ -316,6 +316,7 @@ class Plugin(ABC):
         :rtype: Workflow
         """
         dest, attribute = self.dest.split(".")  # type: ignore
+        
         if dest == const.INPUT:
             input = input.copy(update={attribute: value}, deep=True)
         elif dest == const.OUTPUT:
