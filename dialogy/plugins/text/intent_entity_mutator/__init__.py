@@ -2,7 +2,7 @@
     IntentEntityMutatorPlugin
 """
 
-from typing import Any, List, Optional, Dict, Union
+from typing import Any, List, Optional, Dict, Union, Tuple, cast
 
 from dialogy.base import Input, Output, Plugin, Guard
 from dialogy.types import BaseEntity, Intent
@@ -19,10 +19,15 @@ class IntentEntityMutatorPlugin(Plugin):
         dynamic_output_path: bool = True,
         **kwargs: Any,
     ) -> None:
-        self.rules = rules if self.validate_rules(rules) else None
-        self.dest = None
 
-        super().__init__(guards=guards, dyanamic_output_path=dynamic_output_path, **kwargs)
+        if self.validate_rules(rules):
+            self.rules = rules
+        else:
+            raise ValueError("The rules file is not in the correct format")
+
+        super().__init__(
+            guards=guards, dynamic_output_path=dynamic_output_path, **kwargs
+        )
 
     def validate_rules(self, rules: Dict[str, List[Dict[str, Any]]]) -> bool:
         rules_base_keys = list(rules.keys())
@@ -192,7 +197,7 @@ class IntentEntityMutatorPlugin(Plugin):
         intents: List[Intent],
         transcripts: List[str],
         rules: List[Dict[str, Any]],
-    ) -> Union[List[Intent], List[BaseEntity]]:
+    ) -> Tuple[Union[List[Intent], List[BaseEntity]], str]:
 
         unpacked_entities = {
             const.TYPE: [x.type for x in entities],
@@ -282,9 +287,11 @@ class IntentEntityMutatorPlugin(Plugin):
                     mutate_entities = [BaseEntity.from_dict(mutate_to)]
                     return mutate_entities, const.OUTPUT_DEST_ENTITY
 
+        return intents, const.OUTPUT_DEST_INTENT
+
     def utility(
         self, input_: Input, output: Output
-    ) -> Union[List[Intent], List[BaseEntity]]:
+    ) -> Tuple[Union[List[Intent], List[BaseEntity]], str]:
 
         current_state = input_.current_state
         intents = output.intents
