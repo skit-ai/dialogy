@@ -280,8 +280,7 @@ class IntentEntityMutatorPlugin(Plugin):
                     return intents, const.OUTPUT_DEST_INTENT
                 else:
                     mutate_entities = [BaseEntity.from_dict(mutate_to)]
-                    self.dest = const.OUTPUT_DEST_ENTITY
-                    return mutate_entities
+                    return mutate_entities, const.OUTPUT_DEST_ENTITY
 
     def utility(
         self, input_: Input, output: Output
