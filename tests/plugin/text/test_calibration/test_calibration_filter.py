@@ -97,8 +97,7 @@ def test_calibration_model_validation():
 
 def test_calibration_model_utility():
     input_ = Input(
-        utterances=[[{"transcript": "hello", "am_score": -100, "lm_score": -200}]],
-        transcripts=["hello"], best_transcript="hello"
+        utterances=[[{"transcript": "hello", "am_score": -100, "lm_score": -200}]]
     )
     assert calibration_model.utility(input_, Output()) == ["hello"]
     calibration_model.threshold = float("inf")
@@ -111,8 +110,6 @@ def test_calibration_model_utility():
                     "lm_score": -200,
                 }
             ]
-        ],
-        transcripts=["hello world hello world"],
-        best_transcript="hello world hello world"
+        ]
     )
     assert calibration_model.utility(input_, Output()) == ["hello world hello world"]
