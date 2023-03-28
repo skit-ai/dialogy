@@ -2,7 +2,7 @@
     IntentEntityMutatorPlugin
 """
 
-from typing import Any, List, Optional, Dict, Union, Tuple, cast
+from typing import Any, List, Optional, Dict, Union, Tuple
 
 from dialogy.base import Input, Output, Plugin, Guard
 from dialogy.types import BaseEntity, Intent
@@ -20,24 +20,26 @@ class IntentEntityMutatorPlugin(Plugin):
         **kwargs: Any,
     ) -> None:
 
-        if self.validate_rules(rules):
-            self.rules = rules
-        else:
-            raise ValueError("The rules file is not in the correct format")
-
         super().__init__(
             guards=guards, dynamic_output_path=dynamic_output_path, **kwargs
         )
 
-    def validate_rules(self, rules: Dict[str, List[Dict[str, Any]]]) -> bool:
+        self.validate_rules(rules)
+        self.rules = rules
+
+    def validate_rules(self, rules: Dict[str, List[Dict[str, Any]]]) -> None:
+
         rules_base_keys = list(rules.keys())
 
-        if rules_base_keys and "swap_rules" not in rules_base_keys:
+        if not rules_base_keys:
             raise ValueError(
-                f"Did not receive {const.BASE_KEY} as the base key, received {rules_base_keys[0]}"
+                f"Rules passed are invalid. Did not receive any base key - Possible base keys - [{const.BASE_KEY}]"
             )
-        elif not rules_base_keys:
-            raise ValueError("Did not receive any base_key")
+
+        if const.BASE_KEY not in rules_base_keys:
+            raise ValueError(
+                f"Did not receive {const.BASE_KEY} as the base key, received {rules_base_keys}"
+            )
 
         rules_ = rules[const.BASE_KEY]
 
@@ -50,16 +52,16 @@ class IntentEntityMutatorPlugin(Plugin):
             if rule_keys != const.MANDATORY_RULE_KEYS:
                 raise ValueError(
                     f"The rule is either missing some keyword or incorrect keyword entered. \
-                        Received: {rule_keys}. Expected: {const.MANDATORY_RULE_KEYS} \
-                            {rule}"
+                        Received: {rule_keys}. Expected: {const.MANDATORY_RULE_KEYS}\n"
+                    "{rule}"
                 )
 
             mutate = rule[const.MUTATE]
             if mutate not in [const.INTENT, const.ENTITY]:
                 raise ValueError(
                     f"The mutate keyword received incorrect value. \
-                        Received {mutate}. Expected: intent or entity \
-                            {rule}"
+                        Received {mutate}. Expected: intent or entity\n"
+                    "{rule}"
                 )
 
             conditions = rule[const.CONDITIONS]
@@ -68,8 +70,8 @@ class IntentEntityMutatorPlugin(Plugin):
                 if primitive not in const.BASE_CONDITION_PRIMITIVES:
                     raise ValueError(
                         f"Received invalid primitive in the rules. Received: {primitive}.  \
-                            Expected from: {const.BASE_ENTITY_PRIMITIVES} \
-                                {rule}"
+                            Expected from: {const.BASE_ENTITY_PRIMITIVES}\n"
+                        "{rule}"
                     )
 
                 if search_lists:
@@ -82,8 +84,8 @@ class IntentEntityMutatorPlugin(Plugin):
                             if ent_primitives not in const.BASE_ENTITY_PRIMITIVES:
                                 raise ValueError(
                                     f"The rule did not receive correct entity sub_type. Received: {ent_primitives} \
-                                        Expected: {const.BASE_ENTITY_PRIMITIVES} \
-                                            {rule}"
+                                        Expected: {const.BASE_ENTITY_PRIMITIVES}\n"
+                                    "{rule}"
                                 )
 
                     else:
@@ -95,22 +97,27 @@ class IntentEntityMutatorPlugin(Plugin):
                                 if key not in const.SUB_PRIMITIVES:
                                     raise ValueError(
                                         f"The rule did not receive the correct list type. Received: {key} \
-                                            Expected: {const.SUB_PRIMITIVES} \
-                                                {rule}"
+                                            Expected: {const.SUB_PRIMITIVES}\n"
+                                        "{rule}"
                                     )
 
                             else:  # boolean instance -> Transcript cases
                                 if (
-                                    key
+                                    primitive == const.TRANSCRIPT
+                                    and key
                                     not in permissible_transcript_functional_condition_keys
                                 ):
                                     raise ValueError(
                                         f"The function called for transcripts is not registered. \
-                                        Function called: {key} \ Permissible Functions: {permissible_transcript_functional_condition_keys} \
-                                        {rule}"
+                                        Function called: {key} \ Permissible Functions: {permissible_transcript_functional_condition_keys}\n"
+                                        "{rule}"
                                     )
 
-        return True
+                                elif primitive != const.TRANSCRIPT:
+                                    raise ValueError(
+                                        f"The function calls are only applicable for the transcript primitive but registered under {primitive}\n"
+                                        "{rule}"
+                                    )
 
     def check_present_absent_primitive_val(
         self,

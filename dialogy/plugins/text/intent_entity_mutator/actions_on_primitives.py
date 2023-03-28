@@ -3,11 +3,7 @@
 
 """
 
-from dialogy.types import BaseEntity, Intent
 from typing import List
-import copy
-
-# The below custom functions are coming in from ashley's StateToIntent code wherein we need to count the number of digits and check if a number is present in more than 50% of transcripts
 
 
 def is_number_absent(transcripts: List[str]) -> bool:

@@ -104,7 +104,6 @@
           type:
             in: ["fee_waiver", "no_fee_waiver"]
 
-
 - swap_rules:
     - mutate: intent # Can only mutate intent or entity
       mutate_to: "bill_paid"
@@ -115,4 +114,18 @@
           in: ["entity_only"]
         entity:
           typez:
+            in: ["fee_waiver", "no_fee_waiver"]
+
+- swap_rules:
+    - mutate: intent # Can only mutate intent or entity
+      mutate_to: "bill_paid"
+      conditions:
+        state:
+          in: ["ASK_BILL_PAID_DATE_CFFHECK", "CONFIRM_BILL_PAID_DATE"]
+        intent:
+          in: ["entity_only"]
+          is_number_absent: true
+
+        entity:
+          type:
             in: ["fee_waiver", "no_fee_waiver"]
