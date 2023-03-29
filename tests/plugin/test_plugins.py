@@ -150,7 +150,12 @@ def test_plugin_set_path():
     plugin = ArbitraryPlugin(dest="output.original_intent")
     input = Input(utterances=[[{"transcript": "hello"}]])
     output = Output()
-    input, output = plugin.set({"name": "test", "score": 0.5}, input, output)
+    input, output = plugin.set(
+        path="output.original_intent",
+        value={"name": "test", "score": 0.5},
+        input=input,
+        output=output,
+    )
     assert output.original_intent == {"name": "test", "score": 0.5}
 
 
@@ -162,7 +167,7 @@ def test_plugin_invalid_set_path():
     input = Input(utterances=[[{"transcript": "hello"}]])
     output = Output()
     with pytest.raises(ValueError):
-        plugin.set([], input, output)
+        plugin.set(path="invalid.path", value=[], input=input, output=output)
 
 
 def test_plugin_invalid_set_attribute():
@@ -173,7 +178,7 @@ def test_plugin_invalid_set_attribute():
     input = Input(utterances=[[{"transcript": "hello"}]])
     output = Output()
     with pytest.raises(ValueError):
-        plugin.set([], input, output)
+        plugin.set(path="output.invalid", value=[], input=input, output=output)
 
 
 def test_plugin_invalid_set_value():
@@ -184,4 +189,4 @@ def test_plugin_invalid_set_value():
     input = Input(utterances=[[{"transcript": "hello"}]])
     output = Output()
     with pytest.raises(ValueError):
-        plugin.set(10, input, output)
+        plugin.set(path="output.intents", value=10, input=input, output=output)

@@ -1,0 +1,203 @@
+- intent_name: "date_entity_only"
+  current_state: "ASK_CALLBACK_TIME"
+  transcript: "I will pay tomorrow"
+  entity_dict: {}
+  previous_intent: "inform_already_paid"
+  mutate_val: "inform_already_paid"
+  mutate: "intent"
+
+- intent_name: "_ood_"
+  current_state: "CONFIRM_TIME_REMOTE"
+  transcript: "I will pay tomorrow"
+  entity_dict: {}
+  previous_intent: "place_order_ocs"
+  mutate_val: "place_order_ocs"
+  mutate: "intent"
+
+- intent_name: "inform_card_number"
+  current_state: "ASK_CARD_NUMBER_AGAIN"
+  transcript: "I have already paid"
+  entity_dict: {}
+  previous_intent: ""
+  mutate_val: "inform_credit_card_number"
+  mutate: "intent"
+
+- intent_name: "tmp_intent"
+  current_state: "ASK_CARD_NUMBER_AGAIN"
+  transcript: "I have already paid 444444 days"
+  entity_dict: {}
+  previous_intent: ""
+  mutate_val: "inform_credit_card_number"
+  mutate: "intent"
+
+- intent_name: "random"
+  current_state: "ASK_CARD_NUMBER_AGAIN"
+  transcript: "random transcript"
+  entity_dict: {}
+  previous_intent: ""
+  mutate_val: "inform_credit_card_number"
+  mutate: "intent"
+
+- intent_name: "_callback_"
+  current_state: "ASK_CARD_NUMBER_AGAIN"
+  transcript: "I have already paid 44 days"
+  entity_dict: {}
+  previous_intent: ""
+  mutate_val: "_callback_"
+  mutate: "intent"
+
+- intent_name: "web_check_in_seat_selection_compulsory"
+  current_state: "CONFIRM_MANDATORY_SEAT_SELECTION"
+  transcript: "please my seat"
+  entity_dict: {}
+  previous_intent: ""
+  mutate_val: "web_check_in_change_details"
+  mutate: "intent"
+
+- intent_name: "web_check_in_seat_selection"
+  current_state: "CONFIRM_MANDATORY_SEAT_SELECTION"
+  transcript: "please work my seat"
+  entity_dict:
+    type: "prepaid"
+    entity_type: ""
+    parsers:
+      - other-reason-parser
+    value: ""
+    score: 20
+    dim: ""
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  previous_intent: ""
+  mutate_val:
+    type: "next_bill_cycle"
+    entity_type: "number"
+    parsers:
+      - other-reason-parser
+    value: ""
+    score: 20
+    dim: ""
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  mutate: "entity"
+
+- intent_name: "web_check_in_seat_selection_compulsory"
+  current_state: "CONFIRM_MANDATORY_SEAT_SELECTION"
+  transcript: "please my seat"
+  entity_dict: {}
+  previous_intent: ""
+  mutate_val: "web_check_in_change_details"
+  mutate: "intent"
+
+- intent_name: "inform_card_number"
+  current_state: "ASK_CARD_NUMBER_AGAIN"
+  transcript: ""
+  entity_dict: {}
+  previous_intent: ""
+  mutate_val: "inform_credit_card_number"
+  mutate: "intent"
+
+- intent_name: "_churn_"
+  current_state: ""
+  transcript: ""
+  entity_dict:
+    type: prepaid
+    entity_type: ""
+    parsers:
+      - other-reason-parser
+    value: ""
+    score: 20
+    dim: ""
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  previous_intent: ""
+  mutate_val: "port_to_prepaid"
+  mutate: "intent"
+
+- intent_name: "inform_ssn_number"
+  current_state: "RECORD_EXPLAIN_DUE_1_1065"
+  transcript: "this is my ssn number"
+  entity_dict:
+    type: next_bill_cycle
+    entity_type: "number"
+    parsers:
+      - other-reason-parser
+    value: ""
+    score: 20
+    dim: ""
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  previous_intent: ""
+  mutate_val: "ask_for_installment"
+  mutate: "intent"
+
+- intent_name: "_greeting_"
+  current_state: ""
+  transcript: "hi my name is dotty"
+  entity_dict:
+    type: "value"
+    entity_type: ""
+    parsers:
+      - other-reason-parser
+    value: ""
+    score: 20
+    dim: ""
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  previous_intent: ""
+  mutate_val: "entity_only"
+  mutate: "intent"
+
+- intent_name: "_random_"
+  current_state: "COF"
+  transcript: "convert my baggage"
+  entity_dict:
+    type: ""
+    entity_type: ""
+    parsers:
+      - other-reason-parser
+    value: ""
+    score: 20
+    dim: "extra_baggage_intent"
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  previous_intent: ""
+  mutate_val: "extra_baggage_charges"
+  mutate: "intent"
+
+- intent_name: "payment_vi_app"
+  current_state: ""
+  transcript: ""
+  entity_dict:
+    type: payment_mode_enquiry
+    entity_type: ""
+    parsers:
+      - other-reason-parser
+    value: "whatsapp"
+    score: 20
+    dim: ""
+    latent: true
+    range:
+      start: 0
+      end: 0
+    body: ""
+  previous_intent: ""
+  mutate_val: "payment_whatsapp"
+  mutate: "intent"

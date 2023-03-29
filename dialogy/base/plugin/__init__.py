@@ -236,6 +236,7 @@ class Plugin(ABC):
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
+        dynamic_output_path: bool = False,
     ) -> None:
         self.debug = debug
         self.guards = guards
@@ -244,6 +245,7 @@ class Plugin(ABC):
         self.input_column = input_column
         self.output_column = output_column or input_column
         self.use_transform = use_transform
+        self.dynamic_output_path = dynamic_output_path
 
     @abstractmethod
     def utility(self, input_: Input, output: Output) -> Any:
@@ -287,16 +289,23 @@ class Plugin(ABC):
             return input, output
 
         # compute
-        value = self.utility(input, output)
+        return_value = self.utility(input, output)
+        if return_value is None:
+            return input, output
 
+        if self.dynamic_output_path:
+            value, dest = return_value[0], return_value[1]
+        else:
+            value, dest = return_value, self.dest
         # update
-        if value is not None and isinstance(self.dest, str):
-            input, output = self.set(value, input, output)
+        if value is not None and isinstance(dest, str):
+            input, output = self.set(dest, value, input, output)
 
         return input, output
 
     def set(  # type: ignore
         self,
+        path: str,
         value: Any,
         input,
         output,
@@ -315,8 +324,8 @@ class Plugin(ABC):
         :return: This instance
         :rtype: Workflow
         """
-        dest, attribute = self.dest.split(".")  # type: ignore
-
+        dest, attribute = path.split(".")  # type: ignore
+        
         if dest == const.INPUT:
             input = input.copy(update={attribute: value}, deep=True)
         elif dest == const.OUTPUT:
