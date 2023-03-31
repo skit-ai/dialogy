@@ -17,11 +17,12 @@ class IntentEntityMutatorPlugin(Plugin):
         rules: Dict[str, List[Dict[str, Any]]],
         guards: Optional[List[Guard]] = None,
         dynamic_output_path: bool = True,
+        replace_output: bool = True,
         **kwargs: Any,
     ) -> None:
 
         super().__init__(
-            guards=guards, dynamic_output_path=dynamic_output_path, **kwargs
+            guards=guards, dynamic_output_path=dynamic_output_path, replace_output=replace_output, **kwargs
         )
 
         self.validate_rules(rules)
