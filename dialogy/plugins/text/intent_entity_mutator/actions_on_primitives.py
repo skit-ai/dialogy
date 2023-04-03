@@ -20,4 +20,4 @@ def is_number_absent(transcripts: List[str]) -> bool:
 
 def contain_digits(ner_input: List[str], threshold: int = 5) -> bool:
     first_alternative = ner_input[0]
-    return sum(c.isdigit() for c in first_alternative) >= threshold
+    return sum(c.isdigit() for c in first_alternative) < threshold
