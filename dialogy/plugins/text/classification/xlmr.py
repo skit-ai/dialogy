@@ -8,7 +8,9 @@ import importlib
 import os
 import pickle
 import random
-from typing import Any, Dict, List, Optional
+import requests
+from typing import Any, Dict, List, Optional, Tuple
+from pprint import pformat
 
 import numpy as np
 import pandas as pd
@@ -33,6 +35,8 @@ class XLMRMultiClass(Plugin):
     def __init__(
         self,
         dest: Optional[str] = None,
+        timeout: float = 0.5,
+        url: str = "http://0.0.0.0:8000/",
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
         threshold: float = 0.1,
@@ -44,26 +48,12 @@ class XLMRMultiClass(Plugin):
         state_column: str = const.STATE,
         lang_column: str = const.LANG,
         nls_label_column: str = const.NLS_LABEL,
-        args_map: Optional[Dict[str, Any]] = None,
-        skip_labels: Optional[List[str]] = None,
         prompts_map: Dict[Any, Any] = {const.LANG: []},
         use_prompt: bool = False,
         null_prompt_token: str = const.NULL_PROMPT_TOKEN,
         **kwargs: Any,
     ) -> None:
-        try:
-            classifer = getattr(
-                importlib.import_module(const.XLMR_MODULE), const.XLMR_MULTI_CLASS_MODEL
-            )
-        except ModuleNotFoundError as error:
-            raise ModuleNotFoundError(
-                "Plugin requires simpletransformers -- https://simpletransformers.ai/docs/installation/"
-            ) from error
-
         super().__init__(dest=dest, guards=guards, debug=debug)
-        self.labelencoder = preprocessing.LabelEncoder()
-        self.classifier = classifer
-        self.model: Any = None
         self.fallback_label = fallback_label
         self.data_column = data_column
         self.label_column = label_column
@@ -75,97 +65,58 @@ class XLMRMultiClass(Plugin):
         self.null_prompt_token = null_prompt_token
         self.prompts_map = prompts_map
 
-        self.purpose = kwargs.pop("purpose", const.TRAIN)
-        self.use_cuda = self.purpose == const.TRAIN
-
-        if args_map and self.purpose not in args_map:
-            raise ValueError(
-                f"Attempting to set invalid {args_map}. "
-                f"It is missing {self.purpose}. {self.purpose} has to be one of "
-                f"{const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
-            )
-        self.args_map = args_map[self.purpose]
-
-        self.model_dir = self.args_map.get("best_model_dir")
-
-        if not self.model_dir:
-            raise ValueError(
-                f"'best_model_dir' missing in passed args_map."
-            )
-
-        self.use_calibration = self.args_map.get(const.MODEL_CALIBRATION, False)
-
-        self.labelencoder_file_path = os.path.join(
-            self.model_dir, const.LABELENCODER_FILE
-        )
-        self.ts_parameter: float = (
-            read_from_json(
-                [const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE
-            ).get(const.TS_PARAMETER)
-            or 1.0
-        )
+        self.purpose = kwargs.pop("purpose", const.PRODUCTION)
 
         self.threshold = threshold
-        self.skip_labels = set(skip_labels or set())
-
         self.round = score_round_off
 
-        self.kwargs = kwargs or {}
 
-        # TODO: check if this can be avoided
-        del self.kwargs["name"]
-
-        try:
-            if os.path.exists(self.labelencoder_file_path):
-                self.init_model()
-        except EOFError:
-            logger.error(
-                f"Plugin {self} Failed to load labelencoder from {self.labelencoder_file_path}. "
-                "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
-            )
         self.debug = debug
 
-    def init_model(self, label_count: Optional[int] = None) -> None:
-        """
-        Initialize the model if artifacts are available.
+        # model inference service session configuration
+        self.url = url
+        self.timeout = timeout
+        self.session = requests.Session()
+        self.session.mount(
+            "http://",
+            requests.adapters.HTTPAdapter(
+                max_retries=1, pool_maxsize=10, pool_block=True
+            ),
+        )
+        self.headers: Dict[str, str] = {
+            "Content-Type": "application/json"
+        }
 
-        :param label_count: number of labels to train on or predict, defaults to None
-        :type label_count: Optional[int], optional
-        :raises ValueError: In case n is not provided or can't be calculated.
-        """
-        if os.path.exists(self.labelencoder_file_path):
-            self.load()
-            label_count = len(self.labelencoder.classes_)
-        if not label_count:
-            raise ValueError(
-                f"Plugin {self} needs either the training data "
-                "or an existing labelencoder to initialize."
-            )
-
+    def _request_model_inference(self, texts: List[str]) -> Tuple[List, List]:
+        payload = {
+            "transcripts": texts
+        }
         try:
-            self.model = self.classifier(
-                const.XLMR_MODEL,
-                self.model_dir,
-                num_labels=label_count,
-                use_cuda=self.use_cuda,
-                args=self.args_map,
-                **self.kwargs,
-            )
-        except OSError:
-            logger.info(f"Model not found at {self.model_dir}. "
-                        f"Default model weights will be loaded")
-            self.model = self.classifier(
-                const.XLMR_MODEL,
-                const.XLMR_MODEL_TIER,
-                num_labels=label_count,
-                use_cuda=self.use_cuda,
-                args=self.args_map,
-                **self.kwargs,
+            response = self.session.post(
+                self.url, json=payload, headers=self.headers, timeout=self.timeout
             )
 
-    @property
-    def valid_labelencoder(self) -> bool:
-        return hasattr(self.labelencoder, "classes_")
+            if response.status_code == 200:
+                # The API call was successful, expect the following to contain entities.
+                # A list of dicts or an empty list.
+                result = response.json()
+                return result.get("intents", {})
+            
+        except requests.exceptions.Timeout as timeout_exception:
+            logger.error(f"Model Inference Service timed out: {timeout_exception}")  # pragma: no cover
+            logger.error(pformat(payload))  # pragma: no cover
+            return {}  # pragma: no cover
+        
+        except requests.exceptions.ConnectionError as connection_error:
+            logger.error(f"Model Inference Service is turned off?: {connection_error}")
+            logger.error(pformat(payload))
+            raise requests.exceptions.ConnectionError from connection_error
+
+        # Control flow reaching here would mean the API call wasn't successful.
+        # To prevent rest of the things from crashing, we will raise an exception.
+        raise ValueError(
+            f"Model Inference Service API call failed | [{response.status_code}]: {response.text}"
+        )
 
     def inference(
         self,
@@ -194,10 +145,6 @@ class XLMRMultiClass(Plugin):
             logger.error(f"texts passed to model {texts}!")
             return [fallback_output]
 
-        if self.model is None:
-            logger.error(f"No model found for plugin {self.__class__.__name__}!")
-            return [fallback_output]
-
         if self.use_state and not state:
             raise ValueError(
                 f"Plugin {self.__class__.__name__} requires state to be passed to the model."
@@ -219,37 +166,13 @@ class XLMRMultiClass(Plugin):
         if self.use_state and state:
             texts[0] += "<s> " + state + " </s>"
 
-        if not self.valid_labelencoder:
-            raise AttributeError(
-                "Seems like you forgot to "
-                f"save the {self.__class__.__name__} plugin."
-            )
-
         logger.debug(f"Classifier Input:\n{texts}")
 
-        predictions, logits = self.model.predict(texts)
-
-        if not predictions:
-            return [fallback_output]
-
-        logits = logits / self.ts_parameter
-        confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
-        intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
-        predicted_intents = self.labelencoder.inverse_transform(
-            intents_confidence_order
-        )
-        ordered_confidence_scores = [
-            confidence_scores[0][idx] for idx in intents_confidence_order
-        ]
-
-        if self.use_calibration:
-            ordered_confidence_scores = [
-                logits[0][idx] for idx in np.argsort(logits)[0][::-1]
-            ]  # ordered logits for calibration
+        intents = self._request_model_inference(texts)
 
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(self)
-            for intent, score in zip(predicted_intents, ordered_confidence_scores)
+            for intent, score in intents.items()
         ]
 
     def validate(self, training_data: pd.DataFrame) -> bool:
@@ -280,80 +203,6 @@ class XLMRMultiClass(Plugin):
                 return False
         return True
 
-    def train(self, training_data: pd.DataFrame) -> None:
-        """
-        Train an intent-classifier on the provided training data.
-
-        The training is skipped if the data-format is not valid.
-        While training with the use_state flag as true, make sure that the state column is the part of the training_data dataframe
-        :param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
-        :type training_data: pd.DataFrame
-        """
-        if not self.validate(training_data):
-            logger.warning(
-                f"Training dataframe is invalid, for {self.__class__.__name__} plugin."
-            )
-            return
-
-        skip_labels_filter = training_data[self.label_column].isin(self.skip_labels)
-        training_data = training_data[~skip_labels_filter].copy()
-
-        encoder = self.labelencoder.fit(training_data[self.label_column])
-
-        sample_size = 5 if len(training_data) > 5 else len(training_data)
-        training_data.rename(
-            columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
-            inplace=True,
-        )
-        training_data.loc[:, const.LABELS] = encoder.transform(
-            training_data[const.LABELS]
-        )
-
-        # Append state to text
-        if self.use_state:
-            training_data[const.TEXT] += (
-                "<s> " + training_data[self.state_column] + " </s>"
-            )
-
-        # Append prompt to text
-        if self.use_prompt:
-            logger.debug("Adding prompts to input text")
-            for i in tqdm(range(training_data.shape[0]), desc="progress bar:"):
-                _lang = training_data.iloc[i][self.lang_column]
-                _nls_label = training_data.iloc[i][self.nls_label_column]
-                _prompt = self.lookup_prompt(_lang, _nls_label)
-                training_data.at[i, const.TEXT] = (
-                    training_data.iloc[i][const.TEXT] + "<s> " + _prompt
-                    if _prompt
-                    else self.null_prompt_token + " </s>"
-                )
-
-        training_data = training_data[[const.TEXT, const.LABELS]]
-        self.init_model(len(encoder.classes_))
-        logger.debug(
-            f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}\nLabels: {len(encoder.classes_)}."
-        )
-
-        self.model.train_model(training_data)
-        self.save()
-
-    def save(self) -> None:
-        """
-        Save the plugin artifacts.
-
-        :raises ValueError: In case the labelencoder is not trained.
-        """
-        if not self.model or not self.valid_labelencoder:
-            raise ValueError(
-                f"Plugin {self.__class__.__name__} seems to be un-trained."
-            )
-        save_file(
-            self.labelencoder_file_path,
-            self.labelencoder,
-            mode="wb",
-            writer=pickle.dump,
-        )
-
     def lookup_prompt(self, lang: Optional[str], nls_label: Optional[str]) -> str:
         """
         Same as get_prompt() method, but built for faster lookup to reduce latency during inference.
@@ -365,14 +214,6 @@ class XLMRMultiClass(Plugin):
                 logger.debug(e)
                 logger.debug(f"Prompt not found for Lang: {lang} \t State: {nls_label}")
             return self.null_prompt_token
-
-    def load(self) -> None:
-        """
-        Load the plugin artifacts.
-        """
-        self.labelencoder = load_file(
-            self.labelencoder_file_path, mode="rb", loader=pickle.load
-        )
 
     def utility(self, input: Input, _: Output) -> List[Intent]:
         return self.inference(
