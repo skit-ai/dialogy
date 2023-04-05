@@ -48,9 +48,12 @@ class XLMRMultiClass(Plugin):
         state_column: str = const.STATE,
         lang_column: str = const.LANG,
         nls_label_column: str = const.NLS_LABEL,
+        skip_labels: Optional[List[str]] = None,
         prompts_map: Dict[Any, Any] = {const.LANG: []},
         use_prompt: bool = False,
         null_prompt_token: str = const.NULL_PROMPT_TOKEN,
+        use_calibration: bool = False,
+        ts_parameter: float = 1.0,
         **kwargs: Any,
     ) -> None:
         super().__init__(dest=dest, guards=guards, debug=debug)
@@ -67,11 +70,13 @@ class XLMRMultiClass(Plugin):
 
         self.purpose = kwargs.pop("purpose", const.PRODUCTION)
 
+
+        self.use_calibration = use_calibration
+        self.ts_parameter = ts_parameter
+        self.threshold = threshold
+        self.skip_labels = set(skip_labels or set())
         self.threshold = threshold
         self.round = score_round_off
-
-
-        self.debug = debug
 
         # model inference service session configuration
         self.url = url
@@ -87,10 +92,11 @@ class XLMRMultiClass(Plugin):
             "Content-Type": "application/json"
         }
 
+        self.debug = debug
+
     def _request_model_inference(self, texts: List[str]) -> Tuple[List, List]:
-        payload = {
-            "transcripts": texts
-        }
+        payload = {"transcripts": texts}
+
         try:
             response = self.session.post(
                 self.url, json=payload, headers=self.headers, timeout=self.timeout
@@ -100,12 +106,12 @@ class XLMRMultiClass(Plugin):
                 # The API call was successful, expect the following to contain entities.
                 # A list of dicts or an empty list.
                 result = response.json()
-                return result.get("intents", {})
+                return result.get("intents", []), result.get("logits", [])
             
         except requests.exceptions.Timeout as timeout_exception:
             logger.error(f"Model Inference Service timed out: {timeout_exception}")  # pragma: no cover
             logger.error(pformat(payload))  # pragma: no cover
-            return {}  # pragma: no cover
+            return [], []  # pragma: no cover
         
         except requests.exceptions.ConnectionError as connection_error:
             logger.error(f"Model Inference Service is turned off?: {connection_error}")
@@ -139,8 +145,8 @@ class XLMRMultiClass(Plugin):
         :rtype: List[Intent]
         """
 
+        # validation
         fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
-
         if not texts:
             logger.error(f"texts passed to model {texts}!")
             return [fallback_output]
@@ -160,6 +166,7 @@ class XLMRMultiClass(Plugin):
                 f"In order to use prompts as feature, Plugin {self.__class__.__name__} is requires lang to be passed to the model."
             )
 
+        # preprocessing
         if self.use_prompt and nls_label:
             texts[0] += "<s> " + self.lookup_prompt(lang, nls_label) + " </s>"
 
@@ -168,11 +175,27 @@ class XLMRMultiClass(Plugin):
 
         logger.debug(f"Classifier Input:\n{texts}")
 
-        intents = self._request_model_inference(texts)
+        # inference
+        intents, logits = self._request_model_inference(texts)
+
+        # postprocessing
+        logits = np.array(logits)
+        logits = logits / self.ts_parameter
+        confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
+        intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
+
+        ordered_confidence_scores = [
+            confidence_scores[0][idx] for idx in intents_confidence_order
+        ]
+
+        if self.use_calibration:
+            ordered_confidence_scores = [
+                logits[0][idx] for idx in np.argsort(logits)[0][::-1]
+            ]  # ordered logits for calibration
 
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(self)
-            for intent, score in intents.items()
+            for intent, score in zip(intents, ordered_confidence_scores)
         ]
 
     def validate(self, training_data: pd.DataFrame) -> bool:
@@ -202,6 +225,78 @@ class XLMRMultiClass(Plugin):
                 logger.warning(f"Column {column} not found in training data")
                 return False
         return True
+    
+    # def train(self, training_data: pd.DataFrame) -> None:
+    #     """
+    #     Train an intent-classifier on the provided training data.
+    #     The training is skipped if the data-format is not valid.
+    #     While training with the use_state flag as true, make sure that the state column is the part of the training_data dataframe
+    #     :param training_data: A pandas dataframe containing at least list of strings and corresponding labels.
+    #     :type training_data: pd.DataFrame
+    #     """
+    #     if not self.validate(training_data):
+    #         logger.warning(
+    #             f"Training dataframe is invalid, for {self.__class__.__name__} plugin."
+    #         )
+    #         return
+
+    #     skip_labels_filter = training_data[self.label_column].isin(self.skip_labels)
+    #     training_data = training_data[~skip_labels_filter].copy()
+
+    #     encoder = self.labelencoder.fit(training_data[self.label_column])
+
+    #     sample_size = 5 if len(training_data) > 5 else len(training_data)
+    #     training_data.rename(
+    #         columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
+    #         inplace=True,
+    #     )
+    #     training_data.loc[:, const.LABELS] = encoder.transform(
+    #         training_data[const.LABELS]
+    #     )
+
+    #     # Append state to text
+    #     if self.use_state:
+    #         training_data[const.TEXT] += (
+    #             "<s> " + training_data[self.state_column] + " </s>"
+    #         )
+
+    #     # Append prompt to text
+    #     if self.use_prompt:
+    #         logger.debug("Adding prompts to input text")
+    #         for i in tqdm(range(training_data.shape[0]), desc="progress bar:"):
+    #             _lang = training_data.iloc[i][self.lang_column]
+    #             _nls_label = training_data.iloc[i][self.nls_label_column]
+    #             _prompt = self.lookup_prompt(_lang, _nls_label)
+    #             training_data.at[i, const.TEXT] = (
+    #                 training_data.iloc[i][const.TEXT] + "<s> " + _prompt
+    #                 if _prompt
+    #                 else self.null_prompt_token + " </s>"
+    #             )
+
+    #     training_data = training_data[[const.TEXT, const.LABELS]]
+    #     self.init_model(len(encoder.classes_))
+    #     logger.debug(
+    #         f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}\nLabels: {len(encoder.classes_)}."
+    #     )
+
+    #     self.model.train_model(training_data)
+    #     self.save()
+
+    # def save(self) -> None:
+    #     """
+    #     Save the plugin artifacts.
+    #     :raises ValueError: In case the labelencoder is not trained.
+    #     """
+    #     if not self.model or not self.valid_labelencoder:
+    #         raise ValueError(
+    #             f"Plugin {self.__class__.__name__} seems to be un-trained."
+    #         )
+    #     save_file(
+    #         self.labelencoder_file_path,
+    #         self.labelencoder,
+    #         mode="wb",
+    #         writer=pickle.dump,
+    #     )
 
     def lookup_prompt(self, lang: Optional[str], nls_label: Optional[str]) -> str:
         """
