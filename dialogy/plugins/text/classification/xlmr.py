@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 from sklearn import preprocessing
 from tqdm import tqdm
+import torch
 
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
@@ -73,7 +74,7 @@ class XLMRMultiClass(Plugin):
         self.state_column = state_column
         self.lang_column = lang_column
         self.nls_label_column = nls_label_column
-        self.use_cuda = use_cuda
+        self.use_cuda = torch.cuda.is_available()
         self.use_state = use_state
         self.use_prompt = use_prompt
         self.null_prompt_token = null_prompt_token
