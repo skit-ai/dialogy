@@ -82,15 +82,24 @@ class XLMRMultiClass(Plugin):
         self.args_map = args_map[self.purpose]
 
         self.use_calibration = self.args_map.get(const.MODEL_CALIBRATION, False)
-        self.ts_parameter: float = (
-                read_from_json(
-                    [const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE
-                ).get(const.TS_PARAMETER)
-                or 1.0
+        self.model_dir = self.args_map.get("best_model_dir")
+        if not self.model_dir:
+            raise ValueError(
+                f"'best_model_dir' missing in passed args_map."
             )
+        
+        self.ts_parameter: float = (
+            read_from_json(
+                [const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE
+            ).get(const.TS_PARAMETER)
+            or 1.0
+        )
 
-        if self.purpose == const.TRAIN:
-            self.use_cuda = True
+        # flag that specifies whether plugin is being imported externally solely for model
+        imported = kwargs.get("imported", False)
+
+        if self.purpose == const.TRAIN or imported:
+            self.use_cuda = self.purpose == const.TRAIN
             try:
                 classifer = getattr(
                     importlib.import_module(const.XLMR_MODULE), const.XLMR_MULTI_CLASS_MODEL
@@ -104,12 +113,6 @@ class XLMRMultiClass(Plugin):
             self.classifier = classifer
             self.model: Any = None
 
-            self.model_dir = self.args_map.get("best_model_dir")
-            if not self.model_dir:
-                raise ValueError(
-                    f"'best_model_dir' missing in passed args_map."
-                )
-
             self.labelencoder_file_path = os.path.join(
                 self.model_dir, const.LABELENCODER_FILE
             )
@@ -119,6 +122,8 @@ class XLMRMultiClass(Plugin):
             # TODO: check if this can be avoided
             if "name" in self.kwargs:
                 del self.kwargs["name"]
+            if "imported" in self.kwargs:
+                del self.kwargs["imported"]
 
             try:
                 if os.path.exists(self.labelencoder_file_path):
