@@ -17,7 +17,6 @@ from dialogy.plugins.text.oos_filter import OOSFilterPlugin
 from dialogy.plugins.text.intent_entity_mutator import IntentEntityMutatorPlugin
 from dialogy.plugins.text.qc_plugin import QCPlugin
 
-# TODO: fill this
 
 plugin_cls_lib = {
     "CalibrationModel": CalibrationModel,
@@ -27,5 +26,14 @@ plugin_cls_lib = {
     "DucklingPlugin": DucklingPlugin,
     "ListEntityPlugin": ListEntityPlugin,
     "XLMRMultiClass": XLMRMultiClass,
-    "RuleBasedSlotFillerPlugin": RuleBasedSlotFillerPlugin
+    "RuleBasedSlotFillerPlugin": RuleBasedSlotFillerPlugin,
+    "AddressParserPlugin": AddressParserPlugin,
+    "RetainOriginalIntentPlugin": RetainOriginalIntentPlugin,
+    "CombineDateTimeOverSlots": CombineDateTimeOverSlots,
+    "DucklingPluginLB": DucklingPluginLB,
+    "ListSearchPlugin": ListSearchPlugin,
+    "ErrorRecoveryPlugin": ErrorRecoveryPlugin,
+    "OOSFilterPlugin": OOSFilterPlugin,
+    "IntentEntityMutatorPlugin": IntentEntityMutatorPlugin,
+    "QCPlugin": QCPlugin
 }
