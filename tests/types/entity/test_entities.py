@@ -5,6 +5,7 @@ import copy
 from ast import Num
 from datetime import datetime
 from unicodedata import numeric
+from typing import Optional
 
 import httpretty
 import pytest
@@ -18,9 +19,11 @@ from dialogy.types import (
     CreditCardNumberEntity,
     NumericalEntity,
     PeopleEntity,
+    KeywordEntity,
     TimeEntity,
     TimeIntervalEntity,
     entity_synthesis,
+    EntityDeserializer
 )
 from dialogy.types.entity.pincode import PincodeEntity
 from dialogy.utils import dt2timestamp
@@ -764,3 +767,37 @@ def test_pincode_entity() -> None:
     )
     assert entity.dim == "pincode"
     assert entity.value == "560038"
+
+
+def test_custom_entity_deser() -> None:
+    # deserializing custom entitiy json dict to keyword entity when custom entity class is not accessible
+    custom_entity_json_dict = {
+        "dim": "custom",
+        "custom_attr": "custom-attr",
+        "value": "custom-value",
+        "body": "custom-value body",
+        "range": {"start": 0, "end": 12},
+    }
+
+    ent = EntityDeserializer.deserialize_json(**custom_entity_json_dict)
+    assert isinstance(ent, KeywordEntity)
+    assert ent.meta["custom_attr"] == custom_entity_json_dict["custom_attr"]
+
+    # deserializing keyword entity json dict to custom entity when custom entity class is accessible
+    CUSTOM = "custom"
+    @EntityDeserializer.register(CUSTOM)
+    class CustomEntity(BaseEntity):
+        dim: str = CUSTOM
+
+        custom_attr: Optional[str]
+
+        def __init__(self, **data) -> None:
+            super().__init__(**data)
+
+        def set_value(self, custom_attr: str):
+            self.custom_attr = custom_attr
+
+    data = ent.dict()
+    custom_ent = CustomEntity.from_dict(data)
+    assert custom_ent.custom_attr == custom_entity_json_dict["custom_attr"]
+    

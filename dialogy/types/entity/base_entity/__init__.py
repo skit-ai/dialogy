@@ -163,6 +163,11 @@ class BaseEntity(BaseModel):
         ):
             data["values"] = [{const.VALUE: data["value"]}]
 
+        if "meta" in data and isinstance(data["meta"], dict):
+            for k, v in data["meta"].items():
+                if k not in data:
+                    data[k] = v
+
         super().__init__(**data)
 
     def add_parser(self, plugin: Union[Any, str]) -> "BaseEntity":
