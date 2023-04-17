@@ -10,6 +10,7 @@ import yaml
 import glob
 
 import dialogy.constants as const
+from dialogy.utils.misc import traverse_dict
 
 
 class BaseConfig:
@@ -18,7 +19,14 @@ class BaseConfig:
         if "." in attribute:
             levels = attribute.split(".")
             first, rest = levels[0], ".".join(levels[1:])
-            return vars(self).get(first).get(rest)
+            first_accessed_val = vars(self).get(first)
+            if isinstance(first_accessed_val, dict):
+                key_list = rest.split(".")
+                return traverse_dict(first_accessed_val, key_list)
+            elif isinstance(first_accessed_val, BaseConfig):
+                return first_accessed_val.get(rest)
+            else:
+                raise ValueError(f"Fetching {attribute} from config failed.")
         else:
             return vars(self).get(attribute)
 
