@@ -206,3 +206,15 @@ ENTITY_COLUMN = "entities"
 
 FUZZY_DP = "fuzzy_dp"
 ENTITY_VALUE_TOKEN = "__value__"
+
+OUTPUT_DIR = "output_dir"
+BEST_MODEL_DIR = "best_model_dir"
+BEST_MODEL = BEST_MODEL_DIR
+MODELS = "models"
+METRICS = "metrics"
+DATASETS = "datasets"
+CLASSIFICATION = "classification"
+EPOCHS = "epochs"
+PIPELINE_CONFIG_FILE = "pipeline_config.yaml"
+CORE_PLUGINS_CONFIG_FILE = "core_plugins_config.yaml"
+MODEL_CONFIG_FILE = "model_config.yaml"
