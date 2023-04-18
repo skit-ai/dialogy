@@ -134,7 +134,7 @@ class Config(BaseConfig):
     - Load models and their configurations
     - Save pickled objects.
     """
-
+    project_artifacts_root_path = attr.ib(type=str, kw_only=True)
     pipeline_config = attr.ib(type=PipelineConfig, kw_only=True)
     core_plugins_config = attr.ib(type=CorePluginsConfig, kw_only=True)
     model_config = attr.ib(factory=dict, type=Dict[str, Any], kw_only=True)
@@ -146,6 +146,10 @@ class Config(BaseConfig):
 
     def update_paths(self, project_path):
         self.core_plugins_config.update_paths(project_path)
+
+    @staticmethod
+    def _get_data_dir(task_name: str) -> str:
+        return os.path.join(const.DATA, task_name)
 
     def get_metrics_dir(self, task_name: str) -> str:
         return os.path.join(self._get_data_dir(task_name), const.METRICS)
@@ -159,7 +163,7 @@ class Config(BaseConfig):
         raise NotImplementedError(f"Model for {task_name} is not defined!")
 
     def get_dataset(self, task_name: str, file_name: str) -> Any:
-        return os.path.join(self._get_data_dir(task_name), const.DATASETS, file_name)
+        return os.path.join(self.project_artifacts_root_path, self._get_data_dir(task_name), const.DATASETS, file_name)
 
     def get_model_args(self, task_name: str, purpose: str, **kwargs) -> Dict[str, Any]:
         if task_name == const.CLASSIFICATION:
@@ -210,11 +214,11 @@ def resolve_expressions(config: Config) -> Config:
 
 
 def get_project_artifacts_path_by_name(project_name: str, project_artifacts_root: str):
-    return os.path.join(project_artifacts_root,project_name, "configs")
+    return os.path.join(project_artifacts_root, project_name, "configs")
 
 
-def fetch_project_config(project, project_artifacts_root):
-    project_config_path = get_project_artifacts_path_by_name(project, project_artifacts_root)
+def fetch_project_config(project, all_project_artifacts_root):
+    project_config_path = get_project_artifacts_path_by_name(project, all_project_artifacts_root)
     pipeline_config, core_plugins_config, model_config, misc_config = None, None, {}, {}
     for file in glob.glob(os.path.join(project_config_path, "*.yaml")):
         with open(file, "r", encoding="utf8") as handle:
@@ -230,6 +234,7 @@ def fetch_project_config(project, project_artifacts_root):
     # TODO: raise exception for both kind of configs not found
     config = Config(
         **{
+            "project_artifacts_root_path": os.path.join(all_project_artifacts_root, project),
             "pipeline_config": pipeline_config,
             "core_plugins_config": core_plugins_config,
             "model_config": model_config,
@@ -237,7 +242,7 @@ def fetch_project_config(project, project_artifacts_root):
         }
     )
     config = resolve_expressions(config)
-    config.update_paths(os.path.join(project_artifacts_root, project))
+    config.update_paths(os.path.join(all_project_artifacts_root, project))
     return config
 
 

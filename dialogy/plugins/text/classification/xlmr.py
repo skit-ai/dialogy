@@ -21,6 +21,7 @@ import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, read_from_json, save_file
+import torch
 from torch.profiler import profile, record_function, ProfilerActivity
 
 
@@ -99,7 +100,7 @@ class XLMRMultiClass(Plugin):
         imported = kwargs.get("imported", False)
 
         if self.purpose == const.TRAIN or imported:
-            self.use_cuda = self.purpose == const.TRAIN
+            self.use_cuda = torch.cuda.is_available()
             try:
                 classifer = getattr(
                     importlib.import_module(const.XLMR_MODULE), const.XLMR_MULTI_CLASS_MODEL
