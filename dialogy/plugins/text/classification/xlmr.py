@@ -67,7 +67,6 @@ class XLMRMultiClass(Plugin):
         self.use_prompt = use_prompt
         self.null_prompt_token = null_prompt_token
         self.prompts_map = prompts_map
-        self.threshold = threshold
         self.skip_labels = set(skip_labels or set())
         self.threshold = threshold
         self.round = score_round_off
