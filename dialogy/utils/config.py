@@ -91,23 +91,10 @@ class PipelineConfig(BaseConfig):
 
 
 @attr.s
-class CorePluginsConfig(BaseConfig):
+class ModelConfig(BaseConfig):
     tasks = attr.ib(type=Tasks, kw_only=True)
-    slots: Dict[str, Dict[str, Any]] = attr.ib(factory=dict, kw_only=True)
-    calibration = attr.ib(factory=dict, type=Dict[str, Any], kw_only=True)
-    entity_patterns = attr.ib(factory=dict, type=Dict[str, List[str]], kw_only=True)
-    datetime_rules = attr.ib(
-        factory=dict, type=Dict[str, Dict[str, Dict[str, int]]], kw_only=True
-    )
-    timerange_constraints = attr.ib(
-        factory=dict, type=Dict[str, Dict[str, Dict[str, Dict[str, int]]]], kw_only=True
-    )
-    error_recovery = attr.ib(factory=list, type=List[str], kw_only=True)
 
     def __attrs_post_init__(self) -> None:
-        """
-        Update default values of attributes from `conifg.yaml`.
-        """
         self.tasks = Tasks(**self.tasks)  # type: ignore
 
     def update_paths(self, project_path):
@@ -119,6 +106,20 @@ class CorePluginsConfig(BaseConfig):
 
     def get_model_dir(self, task_name: str) -> str:
         return os.path.join(self._get_data_dir(task_name), const.MODELS)
+
+
+@attr.s
+class CorePluginsConfig(BaseConfig):
+    slots: Dict[str, Dict[str, Any]] = attr.ib(factory=dict, kw_only=True)
+    calibration = attr.ib(factory=dict, type=Dict[str, Any], kw_only=True)
+    entity_patterns = attr.ib(factory=dict, type=Dict[str, List[str]], kw_only=True)
+    datetime_rules = attr.ib(
+        factory=dict, type=Dict[str, Dict[str, Dict[str, int]]], kw_only=True
+    )
+    timerange_constraints = attr.ib(
+        factory=dict, type=Dict[str, Dict[str, Dict[str, Dict[str, int]]]], kw_only=True
+    )
+    error_recovery = attr.ib(factory=list, type=List[str], kw_only=True)
 
 
 # TODO: Fix getter methods here
@@ -137,15 +138,17 @@ class Config(BaseConfig):
     project_artifacts_root_path = attr.ib(type=str, kw_only=True)
     pipeline_config = attr.ib(type=PipelineConfig, kw_only=True)
     core_plugins_config = attr.ib(type=CorePluginsConfig, kw_only=True)
-    model_config = attr.ib(factory=dict, type=Dict[str, Any], kw_only=True)
+    model_config = attr.ib(type=ModelConfig, kw_only=True)
     misc_config = attr.ib(factory=dict, type=Dict[str, Any], kw_only=True)
 
     def __attrs_post_init__(self):
         self.pipeline_config = PipelineConfig(**self.pipeline_config)
         self.core_plugins_config = CorePluginsConfig(**self.core_plugins_config)
+        self.model_config = ModelConfig(**self.model_config)
+        self.update_paths()
 
-    def update_paths(self, project_path):
-        self.core_plugins_config.update_paths(project_path)
+    def update_paths(self):
+        self.model_config.update_paths(self.project_artifacts_root_path)
 
     @staticmethod
     def _get_data_dir(task_name: str) -> str:
@@ -242,7 +245,6 @@ def fetch_project_config(project, all_project_artifacts_root):
         }
     )
     config = resolve_expressions(config)
-    config.update_paths(os.path.join(all_project_artifacts_root, project))
     return config
 
 
