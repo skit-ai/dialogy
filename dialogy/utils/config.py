@@ -248,13 +248,15 @@ def fetch_project_config(project, all_project_artifacts_root):
     return config
 
 
-def read_project_configs(project_artifacts_root) -> Dict[str, Config]:
+def read_project_configs(project_artifacts_root, filter_list: Optional[List[str]] = None) -> Dict[str, Config]:
     print(project_artifacts_root)
     # TODO: raise exception if root is empty
     all_project_configs = {}
     for project in os.listdir(project_artifacts_root):
         # hidden files from editors / OS like .idea
         if project.startswith("."):
+            continue
+        if filter_list and project not in filter_list:
             continue
         print(project)
         config = fetch_project_config(project, project_artifacts_root)

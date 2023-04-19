@@ -73,6 +73,8 @@ class XLMRMultiClass(Plugin):
 
         self.purpose = kwargs.pop("purpose", const.TRAIN)
 
+        logger.error(f"purpose - {self.purpose}")
+
         if args_map and self.purpose not in args_map:
             raise ValueError(
                 f"Attempting to set invalid `args_map`. "
@@ -98,7 +100,7 @@ class XLMRMultiClass(Plugin):
         # flag that specifies whether plugin is being imported externally solely for model
         imported = kwargs.get("imported", False)
 
-        if self.purpose == const.TRAIN or imported:
+        if self.purpose in [const.TRAIN, const.TEST] or imported:
             self.use_cuda = torch.cuda.is_available()
             try:
                 classifer = getattr(
@@ -127,6 +129,7 @@ class XLMRMultiClass(Plugin):
 
             try:
                 if os.path.exists(self.labelencoder_file_path):
+                    logger.debug(f"initializing label encoder file from {self.labelencoder_file_path}")
                     self.init_model()
             except EOFError:
                 logger.error(
@@ -168,6 +171,7 @@ class XLMRMultiClass(Plugin):
             )
 
         try:
+            logger.debug(f"loading model weights from {self.model_dir}")
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 self.model_dir,
@@ -274,10 +278,21 @@ class XLMRMultiClass(Plugin):
         logger.debug(f"Classifier Input:\n{texts}")
 
         # inference
-        intents, logits = self._request_model_inference(texts)
+        if self.purpose == const.PRODUCTION:
+            predicted_intents, logits = self._request_model_inference(texts)
+            # postprocessing
+            logits = np.array(logits)
 
-        # postprocessing
-        logits = np.array(logits)
+        elif self.purpose == const.TEST:
+            predictions, logits = self.model.predict(texts)
+            if not predictions:
+                return [fallback_output]
+
+        else:
+            raise RuntimeError(f"Inference method called with purpose "
+                               f"set to '{self.purpose}'. Valid "
+                               f"values - [{const.PRODUCTION}, {const.TEST}]")
+
         logits = logits / self.ts_parameter
         confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
         intents_confidence_order = np.argsort(confidence_scores)[0][::-1]
@@ -286,6 +301,11 @@ class XLMRMultiClass(Plugin):
             confidence_scores[0][idx] for idx in intents_confidence_order
         ]
 
+        if self.purpose == const.TEST:
+            predicted_intents = self.labelencoder.inverse_transform(
+                intents_confidence_order
+            )
+
         if self.use_calibration:
             ordered_confidence_scores = [
                 logits[0][idx] for idx in np.argsort(logits)[0][::-1]
@@ -293,7 +313,7 @@ class XLMRMultiClass(Plugin):
 
         return [
             Intent(name=intent, score=round(score, self.round)).add_parser(self)
-            for intent, score in zip(intents, ordered_confidence_scores)
+            for intent, score in zip(predicted_intents, ordered_confidence_scores)
         ]
 
     def validate(self, training_data: pd.DataFrame) -> bool:
