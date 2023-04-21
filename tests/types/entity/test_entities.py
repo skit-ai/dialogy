@@ -535,13 +535,6 @@ def test_plastic_currency_set_no_number():
         CreditCardNumberEntity(range={"from": 0, "to": 1}, body="", issuer="visa")
 
 
-def test_plastic_currency_set_no_issuer():
-    with pytest.raises(ValidationError):
-        CreditCardNumberEntity(
-            range={"from": 0, "to": 1}, body="", value="1234-5678-9012-3456"
-        )
-
-
 def test_plastic_currency_get_value():
     body = "My card number is 4111-1111-1111-1111"
     d = {

@@ -60,7 +60,7 @@ from dialogy.types.entity.deserialize import EntityDeserializer
 @EntityDeserializer.register(const.CREDIT_CARD_NUMBER)
 class CreditCardNumberEntity(BaseEntity):
     entity_type: str = const.CREDIT_CARD_NUMBER
-    issuer: str = ""
+    issuer: Optional[str] = None
     value: str = None  # type: ignore
     values: List[Dict[str, Any]]
 
