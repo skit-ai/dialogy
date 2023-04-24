@@ -9,7 +9,7 @@ Import classes:
 """
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, Any
 
 from pydantic import Field
 
@@ -23,3 +23,10 @@ class KeywordEntity(BaseEntity):
     """
 
     _meta: Dict[str, str] = Field(default_factory=dict)
+
+    # stores extra attributes defined by custom entities that can be later used by desiarialization methods once they have access to said entity classes
+    meta: Dict[str, Any] = Field(default_factory=dict)
+
+    def __init__(self, **data):  # type: ignore
+        super().__init__(**data)
+        self.meta = {k: v for k, v in data.items() if k not in self.__dict__}
