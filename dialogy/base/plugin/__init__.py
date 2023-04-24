@@ -199,14 +199,13 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Any, Callable, List, Optional
-
 import dialogy.constants as const
 from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.utils.logger import logger
 
 
-Guard = Callable[[Input, Output], bool]
+Guard = Callable[[Input, Output, str], bool]
 
 
 class Plugin(ABC):
@@ -372,7 +371,7 @@ class Plugin(ABC):
         """
         if not self.guards:
             return False
-        return any(guard(input_, output) for guard in self.guards)
+        return any(guard(input_, output, self.purpose) for guard in self.guards)
 
     def train(self, _: Any) -> Any:
         """
