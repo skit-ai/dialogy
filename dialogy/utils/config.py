@@ -155,7 +155,7 @@ class Config(BaseConfig):
         return os.path.join(const.DATA, task_name)
 
     def get_metrics_dir(self, task_name: str) -> str:
-        return os.path.join(self._get_data_dir(task_name), const.METRICS)
+        return os.path.join(self.project_artifacts_root_path, self._get_data_dir(task_name), const.METRICS)
 
     def get_dataset_dir(self, task_name: str) -> str:
         return os.path.join(self._get_data_dir(task_name), const.DATASETS)
@@ -170,7 +170,7 @@ class Config(BaseConfig):
 
     def get_model_args(self, task_name: str, purpose: str, **kwargs) -> Dict[str, Any]:
         if task_name == const.CLASSIFICATION:
-            args_map = self.tasks.classification.model_args
+            args_map = self.model_config.tasks.classification.model_args
             if purpose == const.TRAIN:
                 if epochs := kwargs.get(const.EPOCHS):
                     args_map[const.TRAIN][const.NUM_TRAIN_EPOCHS] = epochs
@@ -179,7 +179,7 @@ class Config(BaseConfig):
 
     def get_model_confidence_threshold(self, task_name: str) -> float:
         if task_name == const.CLASSIFICATION:
-            return self.tasks.classification.threshold
+            return self.model_config.tasks.classification.threshold
         raise NotImplementedError(f"Model for {task_name} is not defined!")
 
     def get_supported_languages(self) -> List[str]:
