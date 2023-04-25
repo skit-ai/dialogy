@@ -162,7 +162,7 @@ class Config(BaseConfig):
 
     def get_skip_list(self, task_name: str) -> Set[str]:
         if task_name == const.CLASSIFICATION:
-            return set(self.tasks.classification.skip)
+            return set(self.model_config.tasks.classification.skip)
         raise NotImplementedError(f"Model for {task_name} is not defined!")
 
     def get_dataset(self, task_name: str, file_name: str) -> Any:
