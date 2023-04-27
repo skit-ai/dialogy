@@ -246,7 +246,14 @@ class Plugin(ABC):
         self.output_column = output_column or input_column
         self.use_transform = use_transform
         self.purpose = kwargs.pop("purpose", const.PRODUCTION)
+        self.project_name = kwargs.pop("project_name", None)
         self.dynamic_output_path = dynamic_output_path
+        if not self.project_name:
+            logger.warning(
+                f"project_name is set to None for {type(self)} because no value was received during "
+                f"the instantiation of the plugin."
+                f"If you are seeing this on core-slu-service, pipeline will fail."
+            )
 
     @abstractmethod
     def utility(self, input_: Input, output: Output) -> Any:
