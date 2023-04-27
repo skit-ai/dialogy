@@ -261,7 +261,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    def __call__(self, input, output, project_name: Optional[str] = None):  # type: ignore
+    def __call__(self, input, output):  # type: ignore
         """
         Set workflow with output.
 

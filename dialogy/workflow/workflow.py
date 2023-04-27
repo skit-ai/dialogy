@@ -172,7 +172,7 @@ class Workflow:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug
 
-    def run(self, input: Input, output: Output = None, project_name: Optional[str] = None):  # type: ignore
+    def run(self, input: Input, output: Output = None):  # type: ignore
         """
         .. _workflow_run:
 
@@ -207,7 +207,7 @@ class Workflow:
 
             start = time.perf_counter()
             with self.lock:
-                input, output = plugin(input, output, project_name)
+                input, output = plugin(input, output)
             end = time.perf_counter()
 
             # logs are available only when debug=False during class initialization

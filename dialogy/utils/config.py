@@ -33,25 +33,29 @@ class BaseConfig:
 
 @attr.s
 class Task(BaseConfig):
-    use: bool = attr.ib(
+    use = attr.ib(
         type=bool, kw_only=True, validator=attr.validators.instance_of(bool)
     )
-    threshold: float = attr.ib(
+    threshold = attr.ib(
         type=float, kw_only=True, validator=attr.validators.instance_of(float)
     )
-    model_args: Dict[str, Any] = attr.ib(
-        type=dict, kw_only=True, validator=attr.validators.instance_of(dict)
+    model_args = attr.ib(
+        type=Dict[Any, Any], kw_only=True, validator=attr.validators.instance_of(dict)
     )
-    alias: Dict[str, Any] = attr.ib(
+    alias = attr.ib(
+        type=Dict[Any, Any],
         factory=dict, kw_only=True, validator=attr.validators.instance_of(dict)
     )
-    skip: List[str] = attr.ib(
+    skip = attr.ib(
+        type=List[Any],
         factory=list, kw_only=True, validator=attr.validators.instance_of(list)
     )
-    confidence_levels: List[float] = attr.ib(
+    confidence_levels = attr.ib(
+        type=List[Any],
         factory=list, kw_only=True, validator=attr.validators.instance_of(list)
     )
-    format: Optional[str] = attr.ib(
+    format = attr.ib(
+        type=str,
         factory=str,
         kw_only=True,
         validator=attr.validators.optional(attr.validators.instance_of(str)),
