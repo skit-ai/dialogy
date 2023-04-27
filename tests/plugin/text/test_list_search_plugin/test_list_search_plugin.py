@@ -6,7 +6,7 @@ import hashlib
 import pathlib
 
 from dialogy.base import Input
-from dialogy.plugins import ListSearchPlugin
+from dialogy.plugins.registry import ListSearchPlugin
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 

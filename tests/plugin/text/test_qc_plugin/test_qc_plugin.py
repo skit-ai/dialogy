@@ -3,7 +3,7 @@ import os.path
 import pandas as pd
 import pytest
 
-from dialogy.plugins import QCPlugin
+from dialogy.plugins.registry import QCPlugin
 
 
 @pytest.mark.parametrize(

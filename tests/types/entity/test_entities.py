@@ -13,7 +13,7 @@ import pytest
 from pydantic import ValidationError
 
 from dialogy.base import Input, Plugin
-from dialogy.plugins import DucklingPlugin
+from dialogy.plugins.registry import DucklingPlugin
 from dialogy.types import (
     BaseEntity,
     CreditCardNumberEntity,

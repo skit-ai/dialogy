@@ -1,5 +1,5 @@
 from dialogy.base import Input, Output
-from dialogy.plugins import RetainOriginalIntentPlugin
+from dialogy.plugins.registry import RetainOriginalIntentPlugin
 from dialogy.types import Intent
 from dialogy.workflow import Workflow
 

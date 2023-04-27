@@ -8,7 +8,7 @@ import pytest
 import requests
 
 from dialogy.base import Input, Output
-from dialogy.plugins import DucklingPlugin
+from dialogy.plugins.registry import DucklingPlugin
 from dialogy.types import BaseEntity, Intent, KeywordEntity, TimeEntity
 from dialogy.utils import make_unix_ts
 from dialogy.workflow import Workflow

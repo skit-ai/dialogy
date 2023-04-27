@@ -4,7 +4,7 @@ import pytest
 
 from dialogy import constants as const
 from dialogy.base import Input, Output
-from dialogy.plugins import CombineDateTimeOverSlots, DucklingPlugin
+from dialogy.plugins.registry import CombineDateTimeOverSlots, DucklingPlugin
 from dialogy.workflow import Workflow
 from tests import load_tests
 

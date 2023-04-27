@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from dialogy.base import Input, Output
-from dialogy.plugins import ListEntityPlugin
+from dialogy.base import Input
+from dialogy.plugins.registry import ListEntityPlugin
 from dialogy.types import KeywordEntity
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests

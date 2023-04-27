@@ -10,7 +10,7 @@ from sklearn.model_selection import GridSearchCV
 
 import dialogy.constants as const
 from dialogy.base import Input
-from dialogy.plugins import MergeASROutputPlugin, MLPMultiClass
+from dialogy.plugins.registry import MergeASROutputPlugin, MLPMultiClass
 from dialogy.utils import load_file
 from dialogy.workflow import Workflow
 from tests import load_tests

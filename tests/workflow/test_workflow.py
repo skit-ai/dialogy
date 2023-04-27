@@ -4,7 +4,7 @@ import pytest
 
 import dialogy.constants as const
 from dialogy.base import Input, Output, Plugin
-from dialogy.plugins import MergeASROutputPlugin
+from dialogy.plugins.registry import MergeASROutputPlugin
 from dialogy.types import Intent
 from dialogy.workflow import Workflow
 

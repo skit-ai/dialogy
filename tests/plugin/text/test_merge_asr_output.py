@@ -4,7 +4,7 @@ import pandas as pd
 import pytest
 
 from dialogy.base import Input
-from dialogy.plugins import MergeASROutputPlugin
+from dialogy.plugins.registry import MergeASROutputPlugin
 from dialogy.workflow import Workflow
 
 merge_asr_output_plugin = MergeASROutputPlugin(

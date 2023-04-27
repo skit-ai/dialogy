@@ -8,7 +8,7 @@ import pytest
 
 import dialogy.constants as const
 from dialogy.base import Input, Output
-from dialogy.plugins import RuleBasedSlotFillerPlugin
+from dialogy.plugins.registry import RuleBasedSlotFillerPlugin
 from dialogy.types import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow

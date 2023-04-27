@@ -4,7 +4,7 @@ import httpretty
 import pytest
 
 from dialogy.base import Input, Output
-from dialogy.plugins import DucklingPluginLB
+from dialogy.plugins.registry import DucklingPluginLB
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
