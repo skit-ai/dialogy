@@ -1,7 +1,7 @@
 """
 [summary]
 """
-import abc
+# type: ignore
 import os
 from typing import Any, Dict, List, Optional, Set, Union
 
