@@ -14,7 +14,7 @@ from dialogy.utils.misc import traverse_dict
 
 
 class BaseConfig:
-    def get(self, attribute: str):
+    def get(self, attribute: str) -> Any:
         # handles nested attributes
         if "." in attribute:
             levels = attribute.split(".")
@@ -33,29 +33,29 @@ class BaseConfig:
 
 @attr.s
 class Task(BaseConfig):
-    use = attr.ib(type=bool, kw_only=True, validator=attr.validators.instance_of(bool))
-    threshold = attr.ib(
+    use: bool = attr.ib(type=bool, kw_only=True, validator=attr.validators.instance_of(bool))
+    threshold: float = attr.ib(
         type=float, kw_only=True, validator=attr.validators.instance_of(float)
     )
-    model_args = attr.ib(
+    model_args: Dict[str, Any] = attr.ib(
         type=dict, kw_only=True, validator=attr.validators.instance_of(dict)
     )
-    alias = attr.ib(
+    alias: Dict[str, Any] = attr.ib(
         factory=dict, kw_only=True, validator=attr.validators.instance_of(dict)
     )
-    skip = attr.ib(
+    skip: List[str] = attr.ib(
         factory=list, kw_only=True, validator=attr.validators.instance_of(list)
     )
-    confidence_levels = attr.ib(
+    confidence_levels: List[float] = attr.ib(
         factory=list, kw_only=True, validator=attr.validators.instance_of(list)
     )
-    format = attr.ib(
+    format: str = attr.ib(
         factory=str,
         kw_only=True,
         validator=attr.validators.optional(attr.validators.instance_of(str)),
     )
 
-    def update_paths(self, project_config_path):
+    def update_paths(self, project_config_path: str) -> None:
         for purpose in self.model_args:
             purpose_args = self.model_args[purpose]
             purpose_args[const.BEST_MODEL_DIR] = os.path.join(
@@ -75,7 +75,7 @@ class Tasks(BaseConfig):
     def __attrs_post_init__(self) -> None:
         self.classification = Task(**self.classification)  # type: ignore
 
-    def update_paths(self, project_path):
+    def update_paths(self, project_path: str) -> None:
         self.classification.update_paths(project_path)
 
 
@@ -97,7 +97,7 @@ class ModelConfig(BaseConfig):
     def __attrs_post_init__(self) -> None:
         self.tasks = Tasks(**self.tasks)  # type: ignore
 
-    def update_paths(self, project_path):
+    def update_paths(self, project_path: str) -> None:
         self.tasks.update_paths(project_path)
 
     @staticmethod
@@ -147,7 +147,7 @@ class Config(BaseConfig):
         self.model_config = ModelConfig(**self.model_config)
         self.update_paths()
 
-    def update_paths(self):
+    def update_paths(self) -> None:
         self.model_config.update_paths(self.project_artifacts_root_path)
 
     @staticmethod
