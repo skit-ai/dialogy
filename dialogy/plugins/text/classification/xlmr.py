@@ -7,7 +7,6 @@ This module provides a trainable XLMR classifier.
 import importlib
 import os
 import pickle
-import random
 import requests
 from typing import Any, Dict, List, Optional, Tuple
 from pprint import pformat
@@ -81,7 +80,8 @@ class XLMRMultiClass(Plugin):
                 f"It is missing {self.purpose}. `purpose` has to be one of "
                 f"{const.TRAIN}, {const.TEST}, {const.PRODUCTION} in configs."
             )
-        self.args_map = args_map[self.purpose]
+        if args_map:
+            self.args_map = args_map[self.purpose]
 
         self.use_calibration = self.args_map.get(const.MODEL_CALIBRATION, False)
         self.model_dir = self.args_map.get("best_model_dir")
@@ -196,7 +196,7 @@ class XLMRMultiClass(Plugin):
     def valid_labelencoder(self) -> bool:
         return hasattr(self.labelencoder, "classes_")
 
-    def _request_model_inference(self, texts: List[str]) -> Tuple[List, List]:
+    def _request_model_inference(self, texts: List[str]) -> Tuple[Any, Any]:
         payload = {"transcripts": texts}
 
         try:
