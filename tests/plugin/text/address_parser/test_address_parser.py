@@ -154,7 +154,7 @@ def test_address_parser_plugin(payload, monkeypatch) -> None:
 
 def test_missing_creds_gmaps() -> None:
     with pytest.raises(MissingCredentials):
-        address_plugin = plugins.AddressParserPlugin(
+        address_plugin = AddressParserPlugin(
             dest="output.entities",
             provider="google",
             address_capturing_intents="inform_address",
@@ -167,7 +167,7 @@ def test_missing_creds_gmaps() -> None:
 
 def test_missing_creds_mmi() -> None:
     with pytest.raises(MissingCredentials):
-        address_plugin = plugins.AddressParserPlugin(
+        address_plugin = AddressParserPlugin(
             dest="output.entities",
             provider="mmi",
             address_capturing_intents="inform_address",
