@@ -108,7 +108,7 @@ def test_plugin_transform() -> None:
 def test_plugin_guards() -> None:
     arbitrary_plugin = ArbitraryPlugin(
         dest="output.intents",
-        guards=[lambda i, _: i.current_state == "COF"],
+        guards=[lambda i, _, p: i.current_state == "COF"],
     )
     input = Input(utterances=[[{"transcript": "hello"}]], current_state="COF")
     output = Output()
@@ -123,7 +123,7 @@ def test_plugin_guards() -> None:
 def test_plugin_no_set_on_invalid_input():
     arbitrary_plugin = ArbitraryPlugin(
         dest="output.intents",
-        guards=[lambda i, _: i.current_state == "COF"],
+        guards=[lambda i, _, p: i.current_state == "COF"],
     )
     input = None
     output = Output()
@@ -136,7 +136,7 @@ def test_plugin_no_set_on_invalid_input():
 def test_plugin_no_set_on_invalid_output():
     arbitrary_plugin = ArbitraryPlugin(
         dest="output.intents",
-        guards=[lambda i, _: i.current_state == "COF"],
+        guards=[lambda i, _, p: i.current_state == "COF"],
     )
     input = Input(utterances=[[{"transcript": "hello"}]], current_state="COF")
     output = Output()

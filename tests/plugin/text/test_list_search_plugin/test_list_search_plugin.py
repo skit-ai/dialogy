@@ -90,7 +90,7 @@ def test_get_list_entities(payload, mocker):
     mocker.patch("stanza.download", return_value=1)
     mocker.patch("stanza.Pipeline", return_value={})
     mocker.patch(
-        "dialogy.plugins.ListSearchPlugin.get_words_from_nlp", return_value=nlp_words
+        "dialogy.plugins.registry.ListSearchPlugin.get_words_from_nlp", return_value=nlp_words
     )
 
     list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)

@@ -7,7 +7,7 @@ import httpretty
 import pytest
 import googlemaps
 
-from dialogy import plugins
+from dialogy.plugins.registry import AddressParserPlugin
 from dialogy.base import Input, Output
 from dialogy.plugins.text.address_parser import MissingCredentials
 from dialogy.plugins.text.address_parser.mapmyindia import MapMyIndia
@@ -132,7 +132,7 @@ def test_address_parser_plugin(payload, monkeypatch) -> None:
     httpretty.register_uri(
         httpretty.GET, url, body=json.dumps(maps_api_response), status=req_status
     )
-    address_plugin = plugins.AddressParserPlugin(
+    address_plugin = AddressParserPlugin(
         dest="output.entities",
         provider=provider,
         address_capturing_intents="inform_address",

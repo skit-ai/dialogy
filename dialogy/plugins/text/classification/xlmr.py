@@ -55,7 +55,7 @@ class XLMRMultiClass(Plugin):
         null_prompt_token: str = const.NULL_PROMPT_TOKEN,
         **kwargs: Any,
     ) -> None:
-        super().__init__(dest=dest, guards=guards, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug, **kwargs)
         self.fallback_label = fallback_label
         self.data_column = data_column
         self.label_column = label_column
@@ -70,6 +70,10 @@ class XLMRMultiClass(Plugin):
         self.threshold = threshold
         self.round = score_round_off
 
+        if not args_map and self.purpose != const.PRODUCTION:
+            raise ValueError(
+                f"args_map was set to None with purpose={self.purpose} which is not allowed."
+            )
         if args_map and self.purpose not in args_map:
             raise ValueError(
                 f"Attempting to set invalid `args_map`. "
@@ -78,20 +82,12 @@ class XLMRMultiClass(Plugin):
             )
         if args_map:
             self.args_map = args_map[self.purpose]
+        else:
+            self.args_map = {}
 
         self.use_calibration = self.args_map.get(const.MODEL_CALIBRATION, False)
-        self.model_dir = self.args_map.get("best_model_dir")
-        if not self.model_dir:
-            raise ValueError(
-                f"'best_model_dir' missing in passed args_map."
-            )
-        
-        self.ts_parameter: float = (
-            read_from_json(
-                [const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE
-            ).get(const.TS_PARAMETER)
-            or 1.0
-        )
+
+        self.ts_parameter: float = self.args_map.get("ts_parameter") or 1.0
 
         # flag that specifies whether plugin is being imported externally solely for model
         imported = kwargs.get("imported", False)
@@ -106,6 +102,12 @@ class XLMRMultiClass(Plugin):
                 raise ModuleNotFoundError(
                     "Plugin requires simpletransformers -- https://simpletransformers.ai/docs/installation/"
                 ) from error
+
+            self.model_dir = self.args_map.get("best_model_dir")
+            if not self.model_dir:
+                raise ValueError(
+                    f"'best_model_dir' missing in passed args_map."
+                )
             
             self.labelencoder = preprocessing.LabelEncoder()
             self.classifier = classifer
@@ -280,6 +282,8 @@ class XLMRMultiClass(Plugin):
             logits = np.array(logits)
 
         elif self.purpose == const.TEST:
+            if not self.model:
+                return [fallback_output]
             predictions, logits = self.model.predict(texts)
             if not predictions:
                 return [fallback_output]
