@@ -144,6 +144,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
+            **kwargs
         )
         self.__style_search_map = {
             const.SPACY: self.ner_search,

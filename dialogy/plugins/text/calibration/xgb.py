@@ -102,6 +102,7 @@ class CalibrationModel(Plugin):
         output_column: Optional[str] = const.ALTERNATIVES,
         use_transform: bool = False,
         model_name: str = "calibration.pkl",
+        **kwargs: Any
     ) -> None:
         super().__init__(
             dest=dest,
@@ -110,6 +111,7 @@ class CalibrationModel(Plugin):
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
+            **kwargs
         )
         self.extraction_pipeline = FeatureExtractor()
         self.clf = XGBRegressor(n_jobs=1)

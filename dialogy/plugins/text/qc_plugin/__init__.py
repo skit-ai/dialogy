@@ -34,6 +34,7 @@ class QCPlugin(Plugin):
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
         drop_conflicting_labels: bool = True,
+        **kwargs: Any
     ) -> None:
         super().__init__(
             dest=dest,
@@ -42,6 +43,7 @@ class QCPlugin(Plugin):
             output_column=output_column,
             use_transform=use_transform,
             debug=debug,
+            **kwargs
         )
         self.discarded_output_path = discarded_output_path
         self.drop_conflicting_labels = drop_conflicting_labels

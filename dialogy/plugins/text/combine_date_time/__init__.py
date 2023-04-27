@@ -94,6 +94,7 @@ class CombineDateTimeOverSlots(Plugin):
         use_transform: bool = False,
         trigger_intents: Optional[List[str]] = None,
         debug: bool = False,
+        **kwargs: Any
     ) -> None:
         super().__init__(
             dest=dest,
@@ -103,6 +104,7 @@ class CombineDateTimeOverSlots(Plugin):
             output_column=output_column,
             use_transform=use_transform,
             debug=debug,
+            **kwargs
         )
         self.trigger_intents = trigger_intents
 

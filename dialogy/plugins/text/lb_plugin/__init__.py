@@ -25,6 +25,7 @@ class DucklingPluginLB(DucklingPlugin):
         output_column: Optional[str] = None,
         use_transform: bool = False,
         debug: bool = False,
+        **kwargs: Any
     ):
         super().__init__(
             dimensions,
@@ -41,6 +42,7 @@ class DucklingPluginLB(DucklingPlugin):
             output_column=output_column,
             use_transform=use_transform,
             debug=debug,
+            **kwargs
         )
 
     def utility(self, input_: Input, output: Output) -> List[BaseEntity]:

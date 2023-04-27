@@ -68,7 +68,7 @@ class RuleBasedSlotFillerPlugin(Plugin):
         # rules = {"intent": {"slot_name": "entity_type"}}
         # ```
         super().__init__(
-            dest=dest, guards=guards, debug=debug, replace_output=replace_output
+            dest=dest, guards=guards, debug=debug, replace_output=replace_output, **kwargs
         )
         self.rules: Rule = rules or {}
 

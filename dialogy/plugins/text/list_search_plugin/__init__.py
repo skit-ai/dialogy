@@ -69,6 +69,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
         fuzzy_threshold: Optional[float] = 0.1,
+        **kwargs: Any
     ):
         super().__init__(
             dest=dest,
@@ -77,6 +78,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
+            **kwargs
         )
         self.__style_search_map = {
             const.FUZZY_DP: self.get_fuzzy_dp_search,

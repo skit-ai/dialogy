@@ -70,10 +70,6 @@ class XLMRMultiClass(Plugin):
         self.threshold = threshold
         self.round = score_round_off
 
-        self.purpose = kwargs.pop("purpose", const.TRAIN)
-
-        logger.error(f"purpose - {self.purpose}")
-
         if args_map and self.purpose not in args_map:
             raise ValueError(
                 f"Attempting to set invalid `args_map`. "
@@ -134,7 +130,8 @@ class XLMRMultiClass(Plugin):
             except EOFError:
                 logger.error(
                     f"Plugin {self} Failed to load labelencoder from {self.labelencoder_file_path}. "
-                    "Ignore this message if you are training but if you are using this in production or testing, then this is serious!"
+                    "Ignore this message if you are training but if you are using this in "
+                    "production or testing, then this should be checked!"
                 )
 
         elif self.purpose == const.PRODUCTION:
@@ -250,7 +247,6 @@ class XLMRMultiClass(Plugin):
         # validation
         fallback_output = Intent(name=self.fallback_label, score=1.0).add_parser(self)
         if not texts:
-            logger.error(f"texts passed to model {texts}!")
             return [fallback_output]
 
         if self.use_state and not state:

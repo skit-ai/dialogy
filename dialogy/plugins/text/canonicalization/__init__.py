@@ -36,6 +36,7 @@ class CanonicalizationPlugin(Plugin):
         use_transform: bool = False,
         threshold: float = 0.0,
         debug: bool = False,
+        **kwargs: Any,
     ) -> None:
         super().__init__(
             dest=dest,
@@ -44,6 +45,7 @@ class CanonicalizationPlugin(Plugin):
             use_transform=use_transform,
             input_column=input_column,
             output_column=output_column,
+            **kwargs
         )
         self.mask = mask
         self.mask_tokens = mask_tokens or []

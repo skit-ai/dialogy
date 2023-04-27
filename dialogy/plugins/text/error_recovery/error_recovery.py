@@ -517,6 +517,7 @@ class ErrorRecoveryPlugin(Plugin):
         guards: Optional[List[Guard]] = None,
         replace_output: bool = True,
         debug: bool = False,
+        **kwargs: Any
     ) -> None:
         self.rules = Rule.from_list(rules)
         self.dest = dest

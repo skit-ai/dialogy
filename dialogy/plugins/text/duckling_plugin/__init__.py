@@ -605,6 +605,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
+            **kwargs
         )
         self.dimensions = dimensions
         self.locale = locale

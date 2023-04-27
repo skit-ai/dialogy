@@ -4,7 +4,7 @@
 We may apply transforms over predicted intents. This makes it hard to track the impact of classifiers. 
 Here, we will track the original intent, the one produced by a classifier.
 """
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from dialogy import constants as const
 from dialogy.base import Guard, Input, Output, Plugin
@@ -19,9 +19,10 @@ class RetainOriginalIntentPlugin(Plugin):
         dest: Optional[str] = "output.original_intent",
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
+        **kwargs: Any
     ) -> None:
         super().__init__(
-            replace_output=replace_output, dest=dest, guards=guards, debug=debug
+            replace_output=replace_output, dest=dest, guards=guards, debug=debug, **kwargs
         )
 
     def retain(self, intents: List[Intent]) -> ORIGINAL_INTENT_TYPE:

@@ -99,6 +99,7 @@ class MergeASROutputPlugin(Plugin):
             output_column=output_column,
             use_transform=use_transform,
             debug=debug,
+            **kwargs
         )
 
     def utility(self, input: Input, _: Output) -> Any:
