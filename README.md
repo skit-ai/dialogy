@@ -94,6 +94,7 @@ Clone the repository. We use [poetry](https://python-poetry.org/) to setup depen
 git clone git@github.com:skit-ai/dialogy.git
 cd dialogy
 # Activate your virtualenv, you can also let poetry take care of it.
+pip install poetry
 poetry install
 make test
 ```
