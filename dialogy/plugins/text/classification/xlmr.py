@@ -124,6 +124,8 @@ class XLMRMultiClass(Plugin):
                 del self.kwargs["name"]
             if "imported" in self.kwargs:
                 del self.kwargs["imported"]
+            if "purpose" in self.kwargs:
+                del self.kwargs["purpose"]
 
             try:
                 if os.path.exists(self.labelencoder_file_path):

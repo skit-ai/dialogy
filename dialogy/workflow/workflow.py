@@ -206,8 +206,8 @@ class Workflow:
                 }
 
             start = time.perf_counter()
-            # with self.lock:
-            input, output = plugin(input, output)
+            with self.lock:
+                input, output = plugin(input, output)
             end = time.perf_counter()
 
             # logs are available only when debug=False during class initialization
