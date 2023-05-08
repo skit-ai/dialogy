@@ -78,6 +78,7 @@ class DurationEntity(BaseEntity):
     normalized: Dict[str, Any] = attr.ib(default=attr.Factory(dict))
     _meta: Dict[str, str] = attr.ib(default=attr.Factory(dict))
     entity_type: str = attr.ib(default=const.DURATION, kw_only=True)
+    grain: Optional[str] = attr.ib(default=None, validator=attr.validators.instance_of(str))
 
     @classmethod
     def from_duckling(
@@ -89,7 +90,9 @@ class DurationEntity(BaseEntity):
         duration_cast_operator: Optional[str] = None,
         **kwargs: Any,
     ) -> Union[DurationEntity, TimeEntity]:
-        value = d[const.VALUE][const.NORMALIZED][const.VALUE]
+        value_dict = d[const.VALUE]
+        value = value_dict[const.NORMALIZED][const.VALUE]
+        grain = value_dict.get(const.UNIT)
         entity = cls(
             range={const.START: d[const.START], const.END: d[const.END]},
             body=d[const.BODY],
@@ -99,6 +102,7 @@ class DurationEntity(BaseEntity):
             values=[{const.VALUE: value}],
             unit=d[const.VALUE][const.UNIT],
             normalized=d[const.VALUE][const.NORMALIZED],
+            grain=grain,
         )
         if reference_time and timezone and duration_cast_operator:
             return entity.as_time(reference_time, timezone, duration_cast_operator)
