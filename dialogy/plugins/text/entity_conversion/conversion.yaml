@@ -1,0 +1,17 @@
+---
+- from: "number"
+  to: "amount"
+  min_amount_acceptable: 150
+  min_year_val: 2015
+  max_year_val: 2025
+
+- from: "number"
+  to: "date"
+  min_date_val: 1
+  max_date_val: 31
+
+- from: "duration"
+  to: "datetime"
+  min_date_val: 1
+  max_date_val: 31
+
