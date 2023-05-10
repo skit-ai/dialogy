@@ -1,6 +1,7 @@
 import json
 
 import pandas as pd
+import pytest
 
 from dialogy.base import Input
 from dialogy.plugins.text.canonicalization import CanonicalizationPlugin
