@@ -78,8 +78,9 @@ def test_not_supported_lang(mocker):
         l.get_entities(["........."], "te")
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_get_list_entities(payload, mocker):
+async def test_get_list_entities(payload, mocker):
     input_ = payload.get("input")
     lang_ = payload.get("lang")
     expected = payload.get("expected")
@@ -96,7 +97,7 @@ def test_get_list_entities(payload, mocker):
     list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)
 
     workflow = Workflow([list_entity_plugin])
-    _, output = workflow.run(Input(utterances=transcripts, lang=lang_))
+    _, output = await workflow.run(Input(utterances=transcripts, lang=lang_))
     output = output.dict()
     entities = output["entities"]
 

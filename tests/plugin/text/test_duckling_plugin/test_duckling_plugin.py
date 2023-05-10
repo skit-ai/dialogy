@@ -100,7 +100,8 @@ def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
     ]
 
 
-def test_duckling_connection_error() -> None:
+@pytest.mark.asyncio
+async def test_duckling_connection_error() -> None:
     """
     [summary]
 
@@ -121,10 +122,11 @@ def test_duckling_connection_error() -> None:
 
     workflow = Workflow([duckling_plugin])
     with pytest.raises(requests.exceptions.ConnectionError):
-        workflow.run(Input(utterances=[[{"transcript": "test"}]], locale=locale))
+        await workflow.run(Input(utterances=[[{"transcript": "test"}]], locale=locale))
 
 
-def test_max_workers_greater_than_zero() -> None:
+@pytest.mark.asyncio
+async def test_max_workers_greater_than_zero() -> None:
     """Checks that "ValueError: max_workers must be greater than 0" is not raised when there are no transcriptions
 
     When we get an empty transcription from ASR in a production setup, FSM does not send the empty transcription to the SLU service.
@@ -149,14 +151,15 @@ def test_max_workers_greater_than_zero() -> None:
     workflow = Workflow([duckling_plugin])
     alternatives = []  # When ASR returns empty transcriptions.
     try:
-        workflow.run(Input(utterances=alternatives, locale=locale))
+        await workflow.run(Input(utterances=alternatives, locale=locale))
     except ValueError as exc:
         pytest.fail(f"{exc}")
 
 
+@pytest.mark.asyncio
 @httpretty.activate
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_plugin_working_cases(payload) -> None:
+async def test_plugin_working_cases(payload) -> None:
     """
     An end-to-end example showing how to use `DucklingPlugin` with a `Workflow`.
     """
@@ -194,7 +197,7 @@ def test_plugin_working_cases(payload) -> None:
             latent_entities=use_latent,
         )
         output = Output(**output)
-        _, output = workflow.run(input_, output)
+        _, output = await workflow.run(input_, output)
         output = output.dict()
 
         if not output["entities"]:
@@ -214,7 +217,7 @@ def test_plugin_working_cases(payload) -> None:
                 latent_entities=use_latent,
             )
             output = Output(**output)
-            workflow.run(input_, output)
+            await workflow.run(input_, output)
 
 
 @httpretty.activate

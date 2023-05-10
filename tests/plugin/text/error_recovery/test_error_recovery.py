@@ -66,7 +66,8 @@ def test_error_recovery(payload):
         assert entities_json == expected_entities
 
 
-def test_error_recovery_plugin():
+@pytest.mark.asyncio
+async def test_error_recovery_plugin():
     rules = [
         {
             "find": "entities",
@@ -114,7 +115,7 @@ def test_error_recovery_plugin():
         intents=[Intent(name="future_date", score=0.99)],
         entities=entities,
     )
-    _, output = workflow.run(
+    _, output = await workflow.run(
         Input(utterances=[[{"transcript": "this week"}]]), output=output
     )
     output = output.dict()

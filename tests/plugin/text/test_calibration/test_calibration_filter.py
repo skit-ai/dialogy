@@ -1,6 +1,6 @@
 import json
 from copy import copy
-
+import pytest
 import numpy as np
 import pandas as pd
 from scipy import sparse
@@ -95,11 +95,12 @@ def test_calibration_model_validation():
     )
 
 
-def test_calibration_model_utility():
+@pytest.mark.asyncio
+async def test_calibration_model_utility():
     input_ = Input(
         utterances=[[{"transcript": "hello", "am_score": -100, "lm_score": -200}]]
     )
-    assert calibration_model.utility(input_, Output()) == ["hello"]
+    assert await calibration_model.utility(input_, Output()) == ["hello"]
     calibration_model.threshold = float("inf")
     input_ = Input(
         utterances=[
@@ -112,4 +113,4 @@ def test_calibration_model_utility():
             ]
         ]
     )
-    assert calibration_model.utility(input_, Output()) == ["hello world hello world"]
+    assert await calibration_model.utility(input_, Output()) == ["hello world hello world"]

@@ -9,8 +9,9 @@ from dialogy.workflow import Workflow
 from tests import load_tests
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_plugin_cases(payload) -> None:
+async def test_plugin_cases(payload) -> None:
     """
     Test cases where the plugin should work.
     """
@@ -30,7 +31,7 @@ def test_plugin_cases(payload) -> None:
     )
 
     workflow = Workflow(plugins=[combine_date_time_plugin])
-    _, output = workflow.run(
+    _, output = await workflow.run(
         Input(utterances=[[{"transcript": ""}]], slot_tracker=tracker),
         Output(entities=current_turn_entities),
     )
@@ -51,23 +52,25 @@ def test_plugin_cases(payload) -> None:
             assert entity_value == expected_value
 
 
-def test_plugin_exit_at_missing_trigger_intents():
+@pytest.mark.asyncio
+async def test_plugin_exit_at_missing_trigger_intents():
     combine_date_time_plugin = CombineDateTimeOverSlots(
         trigger_intents=[], dest="output.entities"
     )
 
     workflow = Workflow(plugins=[combine_date_time_plugin])
-    _, output = workflow.run(Input(utterances=[[{"transcript": ""}]]))
+    _, output = await workflow.run(Input(utterances=[[{"transcript": ""}]]))
     output = output.dict()
     assert output[const.ENTITIES] == []
 
 
-def test_plugin_exit_at_missing_tracker():
+@pytest.mark.asyncio
+async def test_plugin_exit_at_missing_tracker():
     combine_date_time_plugin = CombineDateTimeOverSlots(
         trigger_intents=["_callback_"], dest="output.entities"
     )
 
     workflow = Workflow(plugins=[combine_date_time_plugin])
-    _, output = workflow.run(Input(utterances=[[{"transcript": ""}]]))
+    _, output = await workflow.run(Input(utterances=[[{"transcript": ""}]]))
     output = output.dict()
     assert output[const.ENTITIES] == []

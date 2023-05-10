@@ -11,7 +11,7 @@ with open("tests/plugin/text/intent_entity_mutator/mutation_rules.yaml", "r") as
     rules = yaml.safe_load(f)
 
 
-def mutation(
+async def mutation(
     intent_name,
     rules,
     current_state,
@@ -36,7 +36,7 @@ def mutation(
         out = Output(intents=[intent], entities=[entity])
     else:
         out = Output(intents=[intent])
-    _, out = workflow.run(inp, out)
+    _, out = await workflow.run(inp, out)
 
     if isinstance(mutate_val, str):
         assert out.intents[0].name == mutate_val
@@ -44,6 +44,7 @@ def mutation(
         assert out.entities[0] == BaseEntity.from_dict(mutate_val)
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("mutation_cases", __file__))
 def test_mutation_cases(payload):
 

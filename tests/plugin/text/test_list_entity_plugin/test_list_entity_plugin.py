@@ -154,8 +154,9 @@ def test_entity_extractor_transform_no_existing_entity():
     assert parsed_entities.iloc[1][0].value == "orange"
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_get_list_entities(payload):
+async def test_get_list_entities(payload):
     input_ = payload.get("input")
     expected = payload.get("expected")
     exception = payload.get("exception")
@@ -172,7 +173,7 @@ def test_get_list_entities(payload):
         )
 
         workflow = Workflow([list_entity_plugin])
-        _, output = workflow.run(input=Input(utterances=transcripts))
+        _, output = await workflow.run(input=Input(utterances=transcripts))
         output = output.dict()
         entities = output["entities"]
 
@@ -191,4 +192,4 @@ def test_get_list_entities(payload):
             )
 
             workflow = Workflow([list_entity_plugin])
-            _, output = workflow.run(input=Input(utterances=transcripts))
+            _, output = await workflow.run(input=Input(utterances=transcripts))

@@ -12,7 +12,8 @@ merge_asr_output_plugin = MergeASROutputPlugin(
 )
 
 
-def test_merge_asr_output() -> None:
+@pytest.mark.asyncio
+async def test_merge_asr_output() -> None:
     """
     This case shows the merge in case there is only one option.
     """
@@ -20,11 +21,12 @@ def test_merge_asr_output() -> None:
     workflow = Workflow([merge_asr_output_plugin])
     input_ = Input(utterances=[[{"transcript": "hello world", "confidence": None}]])
 
-    input_, _ = workflow.run(input_)
+    input_, _ = await workflow.run(input_)
     assert input_.clf_feature == ["<s> hello world </s>"]
 
 
-def test_merge_longer_asr_output() -> None:
+@pytest.mark.asyncio
+async def test_merge_longer_asr_output() -> None:
     """
     This case shows the merge in case there are multiple options.
     """
@@ -39,7 +41,7 @@ def test_merge_longer_asr_output() -> None:
         ]
     )
 
-    input_, _ = workflow.run(input_)
+    input_, _ = await workflow.run(input_)
     assert input_.clf_feature == [
         "<s> hello world </s> <s> hello word </s> <s> jello world </s>"
     ]

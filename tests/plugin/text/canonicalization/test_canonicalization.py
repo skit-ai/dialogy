@@ -99,9 +99,10 @@ TEST_DATA_2 = pd.DataFrame(
 )
 
 
-def test_canonicalization_utility():
+@pytest.mark.asyncio
+async def test_canonicalization_utility():
     input_ = Input(utterances=[[{"transcript": "hello apple"}]])
-    input_, _ = workflow.run(input_)
+    input_, _ = await workflow.run(input_)
     assert input_.clf_feature == ["MASK <fruits>"]
 
 

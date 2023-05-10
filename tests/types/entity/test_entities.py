@@ -718,9 +718,10 @@ def test_time_interval_entity_no_value() -> None:
         TimeIntervalEntity.from_duckling(d, 1)
 
 
+@pytest.mark.asyncio
 @httpretty.activate
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_entity_type(payload) -> None:
+async def test_entity_type(payload) -> None:
     """
     Evaluate a set of cases from a file.
     """
@@ -744,14 +745,14 @@ def test_entity_type(payload) -> None:
     workflow = Workflow([duckling_plugin])
 
     if expected:
-        _, output = workflow.run(Input(utterances=body))
+        _, output = await workflow.run(Input(utterances=body))
         output = output.dict()
         entities = output["entities"]
         for i, entity in enumerate(entities):
             assert entity["entity_type"] == expected[i]["entity_type"]
     elif exception:
         with pytest.raises(EXCEPTIONS[exception]):
-            workflow.run(Input(utterances=body))
+            await workflow.run(Input(utterances=body))
 
 
 def test_pincode_entity() -> None:

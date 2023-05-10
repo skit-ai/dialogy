@@ -154,7 +154,8 @@ def test_train_xlmr_mock(mocker, tmpdir):
     assert len(xlmr_clf_copy.labelencoder.classes_) == 2
 
 
-def test_invalid_operations(mocker, tmpdir):
+@pytest.mark.asyncio
+async def test_invalid_operations(mocker, tmpdir):
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
@@ -187,7 +188,8 @@ def test_invalid_operations(mocker, tmpdir):
 
     xlmr_clf.train(train_df_invalid)
     assert load_file(file_path, mode="rb", loader=pickle.load) is None
-    assert xlmr_clf.inference(["text"])[0].name == "_error_"
+    inference_output = await xlmr_clf.inference(["text"])
+    assert inference_output[0].name == "_error_"
 
     with pytest.raises(ValueError):
         xlmr_clf.save()
@@ -197,8 +199,9 @@ def test_invalid_operations(mocker, tmpdir):
     #     xlmr_clf.inference(["text"])
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_inference(payload, mocker, tmpdir):
+async def test_inference(payload, mocker, tmpdir):
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
@@ -253,7 +256,7 @@ def test_inference(payload, mocker, tmpdir):
         xlmr_clf.model, MockClassifier
     ), "model should be a MockClassifier after training."
 
-    _, output = workflow.run(
+    _, output = await workflow.run(
         Input(utterances=[[{"transcript": transcript} for transcript in transcripts]])
     )
     output = output.dict()

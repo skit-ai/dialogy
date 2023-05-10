@@ -87,8 +87,9 @@ def fake_gmaps_client_init(
 
 
 @httpretty.activate
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_address_parser_plugin(payload, monkeypatch) -> None:
+async def test_address_parser_plugin(payload, monkeypatch) -> None:
 
     input_ = Input(**payload["input"])
 
@@ -147,7 +148,7 @@ def test_address_parser_plugin(payload, monkeypatch) -> None:
 
     workflow = Workflow([address_plugin])
 
-    _, predicted_output = workflow.run(input_, output)
+    _, predicted_output = await workflow.run(input_, output)
 
     assert expected == predicted_output
 

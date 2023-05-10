@@ -9,9 +9,10 @@ from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests, request_builder
 
 
+@pytest.mark.asyncio
 @httpretty.activate
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_plugin_working_cases(payload) -> None:
+async def test_plugin_working_cases(payload) -> None:
     """
     An end-to-end example showing how to use `DucklingPlugin` with a `Workflow`.
     """
@@ -38,7 +39,7 @@ def test_plugin_working_cases(payload) -> None:
     workflow = Workflow([duckling_plugin])
 
     if expected_types is not None:
-        _, output = workflow.run(
+        _, output = await workflow.run(
             Input(
                 utterances=body,
                 locale=locale,
@@ -52,4 +53,4 @@ def test_plugin_working_cases(payload) -> None:
             assert entity["entity_type"] == expected_types[i]["entity_type"]
     else:
         with pytest.raises(EXCEPTIONS[exception]):
-            workflow.run(body)
+            await workflow.run(body)
