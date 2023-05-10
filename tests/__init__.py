@@ -56,6 +56,12 @@ class MockResponse:
     async def json(self):
         return json.loads(self._text)
 
+    def __getitem__(self, index):
+        return json.loads(self._text)[index]
+
+    def get(self, key, default):
+        return json.loads(self._text).get(key, default)
+
     async def __aexit__(self, exc_type, exc, tb):
         pass
 

@@ -15,7 +15,7 @@ from dialogy.types import Intent
 from dialogy.workflow import Workflow
 from dialogy import plugins
 from dialogy.types import AddressEntity
-from tests import load_tests
+from tests import load_tests, MockResponse
 
 _USER_AGENT = "GoogleGeoApiClientPython/%s" % googlemaps.__version__
 
@@ -89,7 +89,7 @@ def fake_gmaps_client_init(
 @httpretty.activate
 @pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-async def test_address_parser_plugin(payload, monkeypatch) -> None:
+async def test_address_parser_plugin(payload, monkeypatch, mocker) -> None:
 
     input_ = Input(**payload["input"])
 
@@ -126,13 +126,15 @@ async def test_address_parser_plugin(payload, monkeypatch) -> None:
     if provider == "google":
         url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?"
         monkeypatch.setattr(googlemaps.Client, "__init__", fake_gmaps_client_init)
+        resp = MockResponse(json.dumps(maps_api_response.get("predictions", [])), req_status) \
+            if req_status == 200 else None
+        mocker.patch('googlemaps.Client.places_autocomplete', return_value=resp)
     elif provider == "mmi":
         url = "https://atlas.mapmyindia.com/api/places/geocode?"
         monkeypatch.setattr(MapMyIndia, "_get_token", fake_mmi_get_token)
+        resp = MockResponse(json.dumps(maps_api_response), req_status)
+        mocker.patch('dialogy.plugins.text.address_parser.mapmyindia.MapMyIndia.geocode', return_value=resp)
 
-    httpretty.register_uri(
-        httpretty.GET, url, body=json.dumps(maps_api_response), status=req_status
-    )
     address_plugin = AddressParserPlugin(
         dest="output.entities",
         provider=provider,
