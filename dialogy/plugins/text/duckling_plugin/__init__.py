@@ -846,7 +846,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         except ClientConnectorError as connection_error:
             logger.error(f"Duckling server is turned off?: {connection_error}")
             logger.error(pformat(body))
-            raise requests.exceptions.ConnectionError from connection_error
+            raise connection_error
 
     async def _get_entities_concurrent(
         self,
@@ -993,7 +993,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             intents=output.intents,
         )
 
-    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+    async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         """
         Transform training data.
 
@@ -1024,7 +1024,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                     f"{reference_time=} should be isoformat date or unix timestamp integer."
                 )
             transcripts = self.make_transform_values(row[self.input_column])
-            entities = self.parse(
+            entities = await self.parse(
                 transcripts,
                 lang_detect_from_text(self.input_column),
                 reference_time=reference_time,
