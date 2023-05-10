@@ -256,7 +256,7 @@ class Plugin(ABC):
             )
 
     @abstractmethod
-    def utility(self, input_: Input, output: Output) -> Any:
+    async def utility(self, input_: Input, output: Output) -> Any:
         """
         An abstract method that describes the plugin's functionality.
 
@@ -268,7 +268,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    def __call__(self, input, output):  # type: ignore
+    async def __call__(self, input, output):  # type: ignore
         """
         Set workflow with output.
 
@@ -286,7 +286,6 @@ class Plugin(ABC):
         :type workflow: Workflow
         """
         logger.enable(str(self)) if self.debug else logger.disable(str(self))
-
         if input is None:
             return input, output
 
@@ -297,7 +296,7 @@ class Plugin(ABC):
             return input, output
 
         # compute
-        return_value = self.utility(input, output)
+        return_value = await self.utility(input, output)
         if return_value is None:
             return input, output
 

@@ -46,5 +46,5 @@ class OOSFilterPlugin(Plugin):
             intents[0].name = self.intent_oos
         return intents
 
-    def utility(self, input_: Input, output: Output) -> List[Intent]:
+    async def utility(self, input_: Input, output: Output) -> List[Intent]:
         return self.set_oos_intent(output.intents)

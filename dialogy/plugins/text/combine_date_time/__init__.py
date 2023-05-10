@@ -200,7 +200,7 @@ class CombineDateTimeOverSlots(Plugin):
         ]
         return combined_time_entities + other_entities
 
-    def utility(self, input: Input, output: Output) -> List[BaseEntity]:
+    async def utility(self, input: Input, output: Output) -> List[BaseEntity]:
         """
         Combine the date and time entities collected across turns into a single entity.
         """

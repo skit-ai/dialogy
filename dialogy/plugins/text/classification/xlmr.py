@@ -15,6 +15,9 @@ import numpy as np
 import pandas as pd
 from sklearn import preprocessing
 from tqdm import tqdm
+import aiohttp
+import json
+from aiohttp.client_exceptions import ClientConnectorError
 
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
@@ -142,13 +145,7 @@ class XLMRMultiClass(Plugin):
             # model inference service session configuration
             self.url = url
             self.timeout = timeout
-            self.session = requests.Session()
-            self.session.mount(
-                "http://",
-                requests.adapters.HTTPAdapter(
-                    max_retries=1, pool_maxsize=10, pool_block=True
-                ),
-            )
+            self.session = aiohttp.ClientSession()
             self.headers: Dict[str, str] = {
                 "Content-Type": "application/json"
             }
@@ -197,26 +194,17 @@ class XLMRMultiClass(Plugin):
     def valid_labelencoder(self) -> bool:
         return hasattr(self.labelencoder, "classes_")
 
-    def _request_model_inference(self, texts: List[str]) -> Tuple[Any, Any]:
+    async def _request_model_inference(self, texts: List[str]) -> Tuple[Any, Any]:
         payload = {"transcripts": texts}
-
         try:
-            response = self.session.post(
-                self.url, json=payload, headers=self.headers, timeout=self.timeout
-            )
-
-            if response.status_code == 200:
-                # The API call was successful, expect the following to contain entities.
-                # A list of dicts or an empty list.
-                result = response.json()
-                return result.get("intents", []), result.get("logits", [])
-            
-        except requests.exceptions.Timeout as timeout_exception:
-            logger.error(f"Model Inference Service timed out: {timeout_exception}")  # pragma: no cover
-            logger.error(pformat(payload))  # pragma: no cover
-            return [], []  # pragma: no cover
-        
-        except requests.exceptions.ConnectionError as connection_error:
+            async with self.session.post(self.url, data=json.dumps(payload), headers=self.headers) as resp:
+                status_code = resp.status
+                if status_code == 200:
+                    result = await resp.json()
+                    return result.get("intents", []), result.get("logits", [])
+                else:
+                    result = await resp.text()
+        except ClientConnectorError as connection_error:
             logger.error(f"Model Inference Service is turned off?: {connection_error}")
             logger.error(pformat(payload))
             raise requests.exceptions.ConnectionError from connection_error
@@ -224,10 +212,10 @@ class XLMRMultiClass(Plugin):
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
         raise ValueError(
-            f"Model Inference Service API call failed | [{response.status_code}]: {response.text}"
+            f"Model Inference Service API call failed | [{status_code}]: {result}"
         )
 
-    def inference(
+    async def inference(
         self,
         texts: Optional[List[str]],
         state: Optional[str] = None,
@@ -279,7 +267,7 @@ class XLMRMultiClass(Plugin):
 
         # inference
         if self.purpose == const.PRODUCTION:
-            predicted_intents, logits = self._request_model_inference(texts)
+            predicted_intents, logits = await self._request_model_inference(texts)
             # postprocessing
             logits = np.array(logits)
 
@@ -438,7 +426,7 @@ class XLMRMultiClass(Plugin):
             self.labelencoder_file_path, mode="rb", loader=pickle.load
         )
 
-    def utility(self, input: Input, _: Output) -> List[Intent]:
-        return self.inference(
+    async def utility(self, input: Input, _: Output) -> List[Intent]:
+        return await self.inference(
             input.clf_feature, input.current_state, input.lang, input.nls_label
         )

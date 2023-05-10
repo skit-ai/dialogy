@@ -525,7 +525,7 @@ class ErrorRecoveryPlugin(Plugin):
         self.replace_output = replace_output
         self.debug = debug
 
-    def utility(self, input_: Input, output: Output) -> None:
+    async def utility(self, input_: Input, output: Output) -> None:
         environment = Environment(
             intents=output.intents,
             entities=output.entities,

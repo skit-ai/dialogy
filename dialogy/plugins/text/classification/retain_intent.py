@@ -32,5 +32,5 @@ class RetainOriginalIntentPlugin(Plugin):
         intent, *_ = intents
         return {const.NAME: intent.name, const.SCORE: intent.score}
 
-    def utility(self, _: Input, output: Output) -> ORIGINAL_INTENT_TYPE:
+    async def utility(self, _: Input, output: Output) -> ORIGINAL_INTENT_TYPE:
         return self.retain(output.intents)

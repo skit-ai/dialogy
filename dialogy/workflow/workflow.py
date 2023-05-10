@@ -172,7 +172,7 @@ class Workflow:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug
 
-    def run(self, input: Input, output: Output = None):  # type: ignore
+    async def run(self, input: Input, output: Output = None):  # type: ignore
         """
         .. _workflow_run:
 
@@ -206,8 +206,10 @@ class Workflow:
                 }
 
             start = time.perf_counter()
-            with self.lock:
-                input, output = plugin(input, output)
+            # with self.lock:
+            # Removing the lock as plugins are
+            # expected to be implemented in a thread safe manner
+            input, output = await plugin(input, output)
             end = time.perf_counter()
 
             # logs are available only when debug=False during class initialization

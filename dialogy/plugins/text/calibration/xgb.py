@@ -206,7 +206,7 @@ class CalibrationModel(Plugin):
     def save(self, fname: str) -> None:
         pickle.dump(self, open(fname, "wb"))
 
-    def utility(self, input: Input, _: Output) -> Any:
+    async def utility(self, input: Input, _: Output) -> Any:
         return self.inference(
             input.transcripts, input.utterances
         )  # pylint: disable=no-value-for-parameter

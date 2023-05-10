@@ -321,7 +321,7 @@ class MLPMultiClass(Plugin):
             self.mlp_model_path, mode="rb", loader=joblib.load
         )
 
-    def utility(self, input: Input, _: Output) -> Any:
+    async def utility(self, input: Input, _: Output) -> Any:
         return self.inference(
             input.clf_feature
         )  # pylint: disable=no-value-for-parameter

@@ -96,7 +96,7 @@ class QCPlugin(Plugin):
 
         return training_data
 
-    def utility(self, input: Input, _: Output) -> Any:
+    async def utility(self, input: Input, _: Output) -> Any:
         return
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:

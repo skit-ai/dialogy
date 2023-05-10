@@ -107,5 +107,5 @@ class RuleBasedSlotFillerPlugin(Plugin):
         intent.cleanup()
         return [intent, *rest]
 
-    def utility(self, input_: Input, output: Output) -> List[Intent]:
+    async def utility(self, input_: Input, output: Output) -> List[Intent]:
         return self.fill(output.intents, output.entities, set(input_.expected_slots))

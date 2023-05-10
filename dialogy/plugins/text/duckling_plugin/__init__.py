@@ -502,13 +502,15 @@ to capture *"2022-03-17T12:00:00+05:30"* so for that we can define a time range 
 Now we can see that it gives the correct entity value i.e *"2022-03-17T12:00:00+05:30"*
 
 """
-import json
 import operator
 import traceback
-from concurrent import futures
 from datetime import datetime
 from pprint import pformat
 from typing import Any, Callable, Dict, List, Optional, Union
+import aiohttp
+import asyncio
+import json
+from aiohttp.client_exceptions import ClientConnectorError
 
 import pandas as pd
 import pydash as py_
@@ -688,7 +690,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         payload = {
             "text": text,
             "locale": locale or self.locale,
-            "tz": self.__set_timezone(),
+            "tz": str(self.__set_timezone()),
             "dims": json.dumps(dimensions),
             "reftime": reference_time,
             "latent": activate_latent_entities,
@@ -800,8 +802,9 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
                 deserialized_entities.append(entity)
         return deserialized_entities
 
-    def _get_entities(
+    async def _get_entities(
         self,
+        session: aiohttp.ClientSession,
         text: str,
         locale: str = "en_IN",
         reference_time: Optional[int] = None,
@@ -827,32 +830,25 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         body = self.__create_req_body(
             text, reference_time=reference_time, locale=locale, use_latent=use_latent
         )
-
         try:
-            response = self.session.post(
-                self.url, data=body, headers=self.headers, timeout=self.timeout
-            )
+            async with session.post(self.url, data=body, headers=self.headers) as resp:
+                status = resp.status
+                if status == 200:
+                    result = await resp.json()
+                    # The API call was successful, expect the following to contain entities.
+                    # A list of dicts or an empty list.
+                    return {const.IDX: sort_idx, const.VALUE: result}
+                else:
+                    raise ValueError(
+                        f"Duckling API call failed | [{status}]: {await resp.text()}"
+                    )
 
-            if response.status_code == 200:
-                # The API call was successful, expect the following to contain entities.
-                # A list of dicts or an empty list.
-                return {const.IDX: sort_idx, const.VALUE: response.json()}
-        except requests.exceptions.Timeout as timeout_exception:
-            logger.error(f"Duckling timed out: {timeout_exception}")  # pragma: no cover
-            logger.error(pformat(body))  # pragma: no cover
-            return {const.IDX: sort_idx, const.VALUE: []}  # pragma: no cover
-        except requests.exceptions.ConnectionError as connection_error:
+        except ClientConnectorError as connection_error:
             logger.error(f"Duckling server is turned off?: {connection_error}")
             logger.error(pformat(body))
             raise requests.exceptions.ConnectionError from connection_error
 
-        # Control flow reaching here would mean the API call wasn't successful.
-        # To prevent rest of the things from crashing, we will raise an exception.
-        raise ValueError(
-            f"Duckling API call failed | [{response.status_code}]: {response.text}"
-        )
-
-    def _get_entities_concurrent(
+    async def _get_entities_concurrent(
         self,
         texts: List[str],
         locale: str = "en_IN",
@@ -875,26 +871,24 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         :return: Duckling entities as :code:`dicts`.
         :rtype: List[List[Dict[str, Any]]]
         """
-        workers = min(10, max(len(texts), 1))
-        with futures.ThreadPoolExecutor(max_workers=workers) as executor:
-            futures_ = [
-                executor.submit(
-                    self._get_entities,
-                    text,
-                    locale,
-                    reference_time=reference_time,
-                    use_latent=use_latent,
-                    sort_idx=i,
+        async with aiohttp.ClientSession() as session:
+            tasks = []
+            for i, text in enumerate(texts):
+                tasks.append(asyncio.ensure_future(
+                    self._get_entities(
+                        session,
+                        text,
+                        locale,
+                        reference_time=reference_time,
+                        use_latent=use_latent,
+                        sort_idx=i)))
+            results = await asyncio.gather(*tasks)
+            return [
+                entities[const.VALUE]
+                for entities in sorted(
+                    results, key=lambda entities: entities[const.IDX]
                 )
-                for i, text in enumerate(texts)
             ]
-        entities_list = [future.result() for future in futures.as_completed(futures_)]
-        return [
-            entities[const.VALUE]
-            for entities in sorted(
-                entities_list, key=lambda entities: entities[const.IDX]
-            )
-        ]
 
     def apply_entity_classes(
         self,
@@ -933,7 +927,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             raise TypeError(f"Expected {input_} to be a List[str] or str.")
         return self
 
-    def parse(
+    async def parse(
         self,
         transcripts: Union[str, List[str]],
         locale: Optional[str] = None,
@@ -963,7 +957,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         if isinstance(transcripts, str):
             transcripts = [transcripts]  # pragma: no cover
 
-        list_of_entities = self._get_entities_concurrent(
+        list_of_entities = await self._get_entities_concurrent(
             transcripts,
             locale=locale,
             reference_time=reference_time,
@@ -977,7 +971,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(entities)
 
-    def utility(self, input: Input, output: Output) -> List[BaseEntity]:
+    async def utility(self, input: Input, output: Output) -> List[BaseEntity]:
         """
         Produces Duckling entities, runs with a :ref:`Workflow's run<workflow_run>` method.
 
@@ -991,7 +985,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.locale = input.locale or self.locale
         use_latent = input.latent_entities
 
-        return self.parse(
+        return await self.parse(
             transcripts,
             locale=self.locale,
             reference_time=self.reference_time,

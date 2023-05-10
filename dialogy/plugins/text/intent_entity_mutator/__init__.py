@@ -297,7 +297,7 @@ class IntentEntityMutatorPlugin(Plugin):
 
         return intents, const.OUTPUT_DEST_INTENT
 
-    def utility(
+    async def utility(
         self, input_: Input, output: Output
     ) -> Tuple[Union[List[Intent], List[BaseEntity]], str]:
 

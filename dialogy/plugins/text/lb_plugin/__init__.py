@@ -45,8 +45,8 @@ class DucklingPluginLB(DucklingPlugin):
             **kwargs
         )
 
-    def utility(self, input_: Input, output: Output) -> List[BaseEntity]:
-        entity_list = super().utility(input_, output)
+    async def utility(self, input_: Input, output: Output) -> List[BaseEntity]:
+        entity_list = await super().utility(input_, output)
         datetime_list, other_list = partition(
             entity_list, lambda x: x.entity_type in ["datetime", "date", "time"]
         )

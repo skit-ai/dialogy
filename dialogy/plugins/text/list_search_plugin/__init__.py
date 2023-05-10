@@ -299,7 +299,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
         aggregated_entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(aggregated_entities)
 
-    def utility(self, input_: Input, _: Output) -> Any:
+    async def utility(self, input_: Input, _: Output) -> Any:
         return self.get_entities(
             input_.transcripts, input_.lang
         )  # pylint: disable=no-value-for-parameter

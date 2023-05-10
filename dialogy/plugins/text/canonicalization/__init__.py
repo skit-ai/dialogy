@@ -79,7 +79,7 @@ class CanonicalizationPlugin(Plugin):
 
         return canonicalized_transcripts
 
-    def utility(self, input: Input, output: Output) -> Any:
+    async def utility(self, input: Input, output: Output) -> Any:
         entities = output.entities
         transcripts = input.transcripts
         return self.mask_transcript(entities, transcripts)

@@ -102,7 +102,7 @@ class MergeASROutputPlugin(Plugin):
             **kwargs
         )
 
-    def utility(self, input: Input, _: Output) -> Any:
+    async def utility(self, input: Input, _: Output) -> Any:
         return merge_asr_output(input.utterances)
 
     def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
