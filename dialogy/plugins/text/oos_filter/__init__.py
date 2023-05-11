@@ -10,6 +10,7 @@ from typing import Any, List, Optional, Union
 
 from dialogy.base.plugin import Input, Output, Plugin, Guard
 from dialogy.types import Intent
+from dialogy.utils import logger
 import yaml
 
 
@@ -44,7 +45,7 @@ class OOSFilterPlugin(Plugin):
         if not threshold and not intent_threshold_map_path:
             raise TypeError(
                 "Both threshold and intent_threshold_map_path cannot be empty. \
-                Please give either one"
+                Please give either one."
             )
 
         self.threshold = threshold
@@ -54,6 +55,13 @@ class OOSFilterPlugin(Plugin):
         if intent_threshold_map_path:
             with open(intent_threshold_map_path, "r") as f:
                 self.intent_threshold_map = yaml.safe_load(f)
+
+        if self.threshold and self.intent_threshold_map:
+            self.threshold = None
+            logger.warning(
+                "Both threshold and the intent_threshold_map have been instantiated \
+                The threshold value is being overriden to None."
+            )
 
     def set_oos_intent(self, intents: List[Intent]) -> List[Intent]:
         if not intents:
