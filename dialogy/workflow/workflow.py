@@ -225,7 +225,7 @@ class Workflow:
 
         return input, output
 
-    def train(self, training_data: pd.DataFrame) -> Workflow:
+    async def train(self, training_data: pd.DataFrame) -> Workflow:
         """
         Train all the plugins in the workflow.
 
@@ -238,7 +238,7 @@ class Workflow:
         """
         for plugin in self.plugins:
             plugin.train(training_data)
-            transformed_data = plugin.transform(training_data)
+            transformed_data = await plugin.transform(training_data)
             if transformed_data is not None:
                 training_data = transformed_data
         return self

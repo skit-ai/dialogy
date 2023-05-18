@@ -361,7 +361,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         logger.debug(entity_tokens)
         return entity_tokens
 
-    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+    async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         """
         Transform training data.
 

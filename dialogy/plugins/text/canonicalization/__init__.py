@@ -84,7 +84,7 @@ class CanonicalizationPlugin(Plugin):
         transcripts = input.transcripts
         return self.mask_transcript(entities, transcripts)
 
-    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+    async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         if not self.use_transform:
             return training_data
 

@@ -67,7 +67,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
 
         return features
 
-    def transform(self, df: pd.DataFrame) -> Tuple[Any, Any]:
+    async def transform(self, df: pd.DataFrame) -> Tuple[Any, Any]:
         features, targets = [], []
         for _, row in tqdm(df.iterrows()):
             real_transcript = json.loads(row["tag"])["text"]
@@ -157,7 +157,7 @@ class CalibrationModel(Plugin):
             filtered_utterances.append(filtered_alternatives)
         return filtered_utterances
 
-    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+    async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         # filters df alternatives and feeds into merge_asr_output,
         # doesn't change training_data schema
         training_data["use"] = True
