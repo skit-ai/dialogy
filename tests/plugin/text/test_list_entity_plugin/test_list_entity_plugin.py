@@ -58,7 +58,8 @@ def test_type_error_if_compiled_patterns_missing():
         l.regex_search("...")
 
 
-def test_entity_extractor_transform():
+@pytest.mark.asyncio
+async def test_entity_extractor_transform():
     entity_extractor = ListEntityPlugin(
         dest="output.entities",
         input_column="data",
@@ -86,7 +87,7 @@ def test_entity_extractor_transform():
         ],
         columns=["data", "entities"],
     )
-    df_ = entity_extractor.transform(df)
+    df_ = await entity_extractor.transform(df)
     parsed_entities = df_.entities
     assert parsed_entities.iloc[0][0].entity_type == "fruits"
     assert parsed_entities.iloc[0][0].value == "apple"
@@ -94,7 +95,8 @@ def test_entity_extractor_transform():
     assert parsed_entities.iloc[1][1].value == "orange"
 
 
-def test_entity_extractor_no_transform():
+@pytest.mark.asyncio
+async def test_entity_extractor_no_transform():
     entity_extractor = ListEntityPlugin(
         dest="output.entities",
         input_column="data",
@@ -122,12 +124,13 @@ def test_entity_extractor_no_transform():
         ],
         columns=["data", "entities"],
     )
-    df_ = entity_extractor.transform(df)
+    df_ = await entity_extractor.transform(df)
     parsed_entities = df_.entities
     assert pd.isna(parsed_entities.iloc[0]) is True
 
 
-def test_entity_extractor_transform_no_existing_entity():
+@pytest.mark.asyncio
+async def test_entity_extractor_transform_no_existing_entity():
     entity_extractor = ListEntityPlugin(
         dest="output.entities",
         input_column="data",
@@ -146,7 +149,7 @@ def test_entity_extractor_transform_no_existing_entity():
             },
         ]
     )
-    df_ = entity_extractor.transform(df)
+    df_ = await entity_extractor.transform(df)
     parsed_entities = df_.entities
     assert parsed_entities.iloc[0][0].entity_type == "fruits"
     assert parsed_entities.iloc[0][0].value == "apple"

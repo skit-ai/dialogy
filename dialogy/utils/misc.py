@@ -7,6 +7,7 @@ Import functions:
 """
 from functools import reduce
 from typing import Any, Dict, List, Tuple, Union
+from asyncio import Task
 
 
 def traverse_dict(obj: Dict[Any, Any], properties: List[str]) -> Any:
@@ -78,3 +79,9 @@ def validate_type(obj: Any, obj_type: Union[type, Tuple[type]]) -> None:
     """
     if not isinstance(obj, obj_type):
         raise TypeError(f"{obj} should be a {obj_type}")
+
+
+def _to_task(future, as_task, loop):
+    if not as_task or isinstance(future, Task):
+        return future
+    return loop.create_task(future)

@@ -107,16 +107,19 @@ async def test_canonicalization_utility():
     assert input_.clf_feature == ["MASK <fruits>"]
 
 
-def test_canonicalization_transform():
-    df = canonicalization.transform(TEST_DATA.copy())
+@pytest.mark.asyncio
+async def test_canonicalization_transform():
+    df = await canonicalization.transform(TEST_DATA.copy())
     assert df["data"][0] == json.dumps(["MASK <fruits>", "MASK orange"])
 
 
-def test_canonicalization_transform_check_alts():
-    df = canonicalization.transform(TEST_DATA_2.copy())
+@pytest.mark.asyncio
+async def test_canonicalization_transform_check_alts():
+    df = await canonicalization.transform(TEST_DATA_2.copy())
     assert df["data"][0] == json.dumps(["MASK apple", "MASK orange"])
 
 
-def test_canonicalization_non_transform():
-    df = no_op_canonicalization.transform(TEST_DATA.copy())
+@pytest.mark.asyncio
+async def test_canonicalization_non_transform():
+    df = await no_op_canonicalization.transform(TEST_DATA.copy())
     assert df["data"][0] == json.dumps(["hello apple", "hello orange"])

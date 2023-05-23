@@ -122,14 +122,14 @@ import pandas as pd
 
 from threading import Lock
 from pprint import pformat
-import asyncio
+import asyncio, nest_asyncio
 
 from dialogy import constants as const
 from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.base.plugin import Plugin
 from dialogy.utils.logger import logger
-from dialogy.utils import normalize, get_best_transcript
+from dialogy.utils.misc import _to_task
 
 
 @attr.s
@@ -240,6 +240,7 @@ class Workflow:
         for plugin in self.plugins:
             plugin.train(training_data)
             loop = asyncio.get_event_loop()
+            nest_asyncio.apply(loop)
             coroutine = plugin.transform(training_data)
             transformed_data = loop.run_until_complete(coroutine)
             if transformed_data is not None:

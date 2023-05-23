@@ -47,12 +47,13 @@ async def test_merge_longer_asr_output() -> None:
     ]
 
 
-def test_invalid_data() -> None:
+@pytest.mark.asyncio
+async def test_invalid_data() -> None:
     train_df = pd.DataFrame(
         [
             {"data": json.dumps([[{"transcript": "yes"}]])},
             {"data": json.dumps({})},
         ]
     )
-    train_df_ = merge_asr_output_plugin.transform(train_df)
+    train_df_ = await merge_asr_output_plugin.transform(train_df)
     assert len(train_df) - len(train_df_) == 1

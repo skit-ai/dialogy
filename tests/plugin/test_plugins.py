@@ -94,16 +94,17 @@ def test_plugin_train() -> None:
     assert arbitrary_plugin.train([]) is None
 
 
-def test_plugin_transform_not_use_transform() -> None:
+@pytest.mark.asyncio
+async def test_plugin_transform_not_use_transform() -> None:
     arbitrary_plugin = ArbitraryPlugin(dest="output.intents", use_transform=False)
-    assert arbitrary_plugin.transform([]) == []
+    assert await arbitrary_plugin.transform([]) == []
 
-
-def test_plugin_transform() -> None:
+@pytest.mark.asyncio
+async def test_plugin_transform() -> None:
     arbitrary_plugin = ArbitraryPlugin(
         dest="output.intents", debug=False, use_transform=True
     )
-    assert arbitrary_plugin.transform([{"a": 1}]) == [{"a": 1}]
+    assert await arbitrary_plugin.transform([{"a": 1}]) == [{"a": 1}]
 
 
 @pytest.mark.asyncio
