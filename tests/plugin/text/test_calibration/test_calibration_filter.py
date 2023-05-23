@@ -64,14 +64,17 @@ def test_calibration_model_filter_asr_output():
     assert calibration_model.filter_asr_output(alternatives) == [[]]
 
 
-def test_calibration_model_transform():
-    assert calibration_model.transform(df).equals(df.drop("use", axis=1))
+@pytest.mark.asyncio
+async def test_calibration_model_transform():
+    transformed = await calibration_model.transform(df)
+    assert transformed.equals(df.drop("use", axis=1))
     json_data_no_scores = copy(json_data)
     json_data_no_scores[0][1] = json.dumps({"alternatives": [[{"transcript": "yes"}]]})
     df_no_scores = pd.DataFrame(
         json_data_no_scores, columns=["conv_id", "data", "tag", "value", "time"]
     )
-    assert (calibration_model.transform(df_no_scores).iloc[0]).equals(
+    transformed = await calibration_model.transform(df_no_scores)
+    assert transformed.iloc[0].equals(
         df_no_scores.drop("use", axis=1).iloc[1]
     )
 
@@ -80,10 +83,9 @@ def test_calibration_model_transform():
     df_empty_asr_output = pd.DataFrame(
         json_data_empty_asr_output, columns=["conv_id", "data", "tag", "value", "time"]
     )
+    transformed = await calibration_model.transform(df_empty_asr_output)
     assert (
-        calibration_model.transform(df_empty_asr_output)
-        .iloc[0]
-        .equals(df_empty_asr_output.drop("use", axis=1).iloc[1])
+        transformed.iloc[0].equals(df_empty_asr_output.drop("use", axis=1).iloc[1])
     )
 
 

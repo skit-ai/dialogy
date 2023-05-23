@@ -8,7 +8,7 @@ import pytest
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("oos_filter", __file__))
-def test_oos_filter(payload) -> None:
+async def test_oos_filter(payload) -> None:
     threshold = payload.get("threshold")
     intent_oos = payload.get("intent_oos")
     intent_threshold_map_path = payload.get("intent_threshold_map_path")

@@ -67,7 +67,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
 
         return features
 
-    async def transform(self, df: pd.DataFrame) -> Tuple[Any, Any]:
+    def transform(self, df: pd.DataFrame) -> Tuple[Any, Any]:
         features, targets = [], []
         for _, row in tqdm(df.iterrows()):
             real_transcript = json.loads(row["tag"])["text"]
