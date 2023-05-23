@@ -123,12 +123,10 @@ class XLMRMultiClass(Plugin):
             self.kwargs = kwargs or {}
 
             # TODO: check if this can be avoided
-            if "name" in self.kwargs:
-                del self.kwargs["name"]
-            if "imported" in self.kwargs:
-                del self.kwargs["imported"]
-            if "purpose" in self.kwargs:
-                del self.kwargs["purpose"]
+            avoiding_keys = ["name", "imported", "purpose", "project_name"]
+            for key in avoiding_keys:
+                if key in self.kwargs:
+                    del self.kwargs[key]
 
             try:
                 if os.path.exists(self.labelencoder_file_path):

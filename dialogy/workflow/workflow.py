@@ -122,6 +122,7 @@ import pandas as pd
 
 from threading import Lock
 from pprint import pformat
+import asyncio
 
 from dialogy import constants as const
 from dialogy.base.input import Input
@@ -238,7 +239,9 @@ class Workflow:
         """
         for plugin in self.plugins:
             plugin.train(training_data)
-            transformed_data = plugin.transform(training_data)
+            loop = asyncio.get_event_loop()
+            coroutine = plugin.transform(training_data)
+            transformed_data = loop.run_until_complete(coroutine)
             if transformed_data is not None:
                 training_data = transformed_data
         return self

@@ -169,7 +169,7 @@ class Config(BaseConfig):
         )
 
     def get_dataset_dir(self, task_name: str) -> str:
-        return os.path.join(self._get_data_dir(task_name), const.DATASETS)
+        return os.path.join(self.project_artifacts_root_path, self._get_data_dir(task_name), const.DATASETS)
 
     def get_skip_list(self, task_name: str) -> Set[str]:
         if task_name == const.CLASSIFICATION:
@@ -236,7 +236,7 @@ def get_project_artifacts_path_by_name(project_name: str, project_artifacts_root
     return os.path.join(project_artifacts_root, project_name, "configs")
 
 
-def fetch_project_config(project: str, all_project_artifacts_root: str) -> Config:
+def fetch_project_config(project: str, all_project_artifacts_root: str) -> Optional[Config]:
     project_config_path = get_project_artifacts_path_by_name(
         project, all_project_artifacts_root
     )
@@ -252,6 +252,8 @@ def fetch_project_config(project: str, all_project_artifacts_root: str) -> Confi
             model_config = yaml_contents
         else:
             misc_config.update(yaml_contents)
+    if pipeline_config is None or core_plugins_config is None or not model_config:
+        return None
     # TODO: raise exception for both kind of configs not found
     config = Config(
         **{ # type: ignore
@@ -282,6 +284,8 @@ def read_project_configs(
             continue
         print(project)
         config = fetch_project_config(project, project_artifacts_root)
+        if not config:
+            continue
         all_project_configs.update({project: config})
 
     return all_project_configs

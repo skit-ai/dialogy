@@ -385,7 +385,7 @@ class Plugin(ABC):
         """
         return None
 
-    def transform(self, training_data: Any) -> Any:
+    async def transform(self, training_data: Any) -> Any:
         """
         Transform data for a plugin in the workflow.
         """
