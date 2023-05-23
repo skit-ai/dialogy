@@ -4,7 +4,8 @@
   transcript: "I have already paid"
   predicted_confidence: 0.8
   expected_intent: "already_paid"
-  exception: null
+  exception: "TypeError"
+  intent_threshold_map_path: null
   empty_intents: False
 
 
@@ -14,7 +15,8 @@
   transcript: "I have already paid"
   predicted_confidence: 0.08
   expected_intent: "intent_oos"
-  exception: null
+  exception: "TypeError"
+  intent_threshold_map_path: null
   empty_intents: False
 
 - intent_oos: "intent_oos"
@@ -23,6 +25,7 @@
   transcript: "I have already paid"
   predicted_confidence: 0
   expected_intent: "intent_oos"
+  intent_threshold_map_path: null
   exception: "ValueError"
   empty_intents: True
 
@@ -34,6 +37,7 @@
   predicted_confidence: 0.08
   expected_intent: "intent_oos"
   exception: "TypeError"
+  intent_threshold_map_path: null
   empty_intents: False
 
 - intent_oos: 2
@@ -43,4 +47,35 @@
   predicted_confidence: 0.08
   expected_intent: "intent_oos"
   exception: "TypeError"
+  intent_threshold_map_path: null
+  empty_intents: False
+
+- intent_oos: "intent_oos"
+  threshold: null
+  original_intent: "inform_dob"
+  transcript: "I have already paid"
+  predicted_confidence: 0.1
+  expected_intent: "intent_oos"
+  exception: "TypeError"
+  intent_threshold_map_path: 'tests/plugin/text/oos_filter/intent_threshold_map.yaml'
+  empty_intents: False
+
+- intent_oos: "intent_oos"
+  threshold: null
+  original_intent: "inform_dob"
+  transcript: "I have already paid"
+  predicted_confidence: 0.1
+  expected_intent: "intent_oos"
+  exception: "TypeError"
+  intent_threshold_map_path: null
+  empty_intents: False
+
+- intent_oos: "intent_oos"
+  threshold: null
+  original_intent: "inform_dob"
+  transcript: "I have already paid"
+  predicted_confidence: 0.1
+  expected_intent: "intent_oos"
+  exception: "TypeError"
+  intent_threshold_map_path: 2
   empty_intents: False
