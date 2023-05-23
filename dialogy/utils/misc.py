@@ -81,7 +81,7 @@ def validate_type(obj: Any, obj_type: Union[type, Tuple[type]]) -> None:
         raise TypeError(f"{obj} should be a {obj_type}")
 
 
-def _to_task(future, as_task, loop):
+def _to_task(future: Any, as_task: bool, loop: Any) -> Any:
     if not as_task or isinstance(future, Task):
         return future
     return loop.create_task(future)
