@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "dialogy"
-version = "2.0.6"
+version = "2.0.7"
 description = "Dialogy is a library for building and managing SLU applications."
-authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
+authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>", "Daksh Varshneya <dakshvar22@gmail.com"]
 license = "MIT"
 repository = "https://github.com/skit-ai/dialogy"
 
