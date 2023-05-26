@@ -24,6 +24,7 @@ from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
 from dialogy.utils import load_file, logger, read_from_json, save_file
 import torch
+from peft import get_peft_model, LoraConfig, TaskType
 from torch.profiler import profile, record_function, ProfilerActivity
 
 
@@ -168,25 +169,26 @@ class XLMRMultiClass(Plugin):
 
         try:
             logger.debug(f"loading model weights from {self.model_dir}")
-            self.model = self.classifier(
-                const.XLMR_MODEL,
-                self.model_dir,
-                num_labels=label_count,
-                use_cuda=self.use_cuda,
-                args=self.args_map,
-                **self.kwargs,
-            )
-        except OSError:
+            self.initialize_model(self.model_dir, label_count)
+        except OSError as e:
             logger.info(f"Model not found at {self.model_dir}. "
                         f"Default model weights will be loaded")
-            self.model = self.classifier(
-                const.XLMR_MODEL,
-                const.XLMR_MODEL_TIER,
-                num_labels=label_count,
-                use_cuda=self.use_cuda,
-                args=self.args_map,
-                **self.kwargs,
-            )
+            self.initialize_model(const.XLMR_MODEL_TIER, label_count)
+
+    def initialize_model(self, model_dir, label_count):
+        self.model = self.classifier(
+            const.XLMR_MODEL,
+            model_dir,
+            num_labels=label_count,
+            use_cuda=self.use_cuda,
+            args=self.args_map,
+            **self.kwargs,
+        )
+        peft_config = LoraConfig(
+            task_type=TaskType.SEQ_CLS, inference_mode=self.purpose != const.TRAIN, r=8, lora_alpha=32, lora_dropout=0.1
+        )
+        self.model.model = get_peft_model(self.model.model, peft_config)
+        self.model.model.print_trainable_parameters()
 
     @property
     def valid_labelencoder(self) -> bool:
