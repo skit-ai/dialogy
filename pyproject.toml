@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dialogy"
-version = "0.9.34"
+version = "0.10.0"
 description = "Dialogy is a library for building and managing SLU applications."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 license = "MIT"
@@ -31,7 +31,7 @@ types-requests = "^2.27.11"
 types-setuptools = "^57.4.10"
 black = "^22.8.0"
 googlemaps = "^4.6.0"
-torch = "1.12.1"
+torch = "1.13.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
