@@ -8,9 +8,13 @@ from typing import Any, Dict, List, Optional, Set, Union
 import attr
 import yaml
 import glob
+from loguru import logger
+import traceback
+import sys
 
 import dialogy.constants as const
 from dialogy.utils.misc import traverse_dict
+
 
 
 class BaseConfig:
@@ -273,17 +277,22 @@ def fetch_project_config(project: str, all_project_artifacts_root: str) -> Optio
 def read_project_configs(
     project_artifacts_root: str, filter_list: Optional[List[str]] = None
 ) -> Dict[str, Config]:
-    print(project_artifacts_root)
     # TODO: raise exception if root is empty
     all_project_configs = {}
+    logger.debug(f"Loading configs from {project_artifacts_root}")
     for project in os.listdir(project_artifacts_root):
         # hidden files from editors / OS like .idea
         if project.startswith("."):
             continue
         if filter_list and project not in filter_list:
             continue
-        print(project)
-        config = fetch_project_config(project, project_artifacts_root)
+        logger.debug(f"Loading config for {project}")
+        config = None
+        try:
+            config = fetch_project_config(project, project_artifacts_root)
+        except Exception as e:
+            traceback.print_exception(*sys.exc_info())
+            logger.debug(f"Failed to load config for {project}")
         if not config:
             continue
         all_project_configs.update({project: config})
