@@ -98,6 +98,7 @@ class PipelineConfig(BaseConfig):
     critical_intents = attr.ib(factory=list, type=List[str], kw_only=True)
     parsers = attr.ib(factory=list, type=List[Dict[str, str]], kw_only=True)
     pipeline_order = attr.ib(factory=list, type=List[str], kw_only=True)
+    lang_locale_map = attr.ib(factory=dict, type=Dict[str, str], kw_only=True)
 
 
 @attr.s
@@ -204,6 +205,9 @@ class Config(BaseConfig):
 
     def get_supported_languages(self) -> List[str]:
         return self.pipeline_config.languages
+
+    def get_locale_for_lang(self, lang: str) -> Optional[str]:
+        return self.pipeline_config.lang_locale_map.get(lang)
 
     def json(self) -> Dict[str, Any]:
         """
