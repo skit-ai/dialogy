@@ -253,3 +253,12 @@ swap_rules:
             "REPROMPT_INTENT",
             "SPECIFY_BAGGAGE_QUERY",
           ]
+
+  - mutate: entity # Can only mutate intent or entity
+    mutate_to: null
+    conditions:
+      state:
+        in:
+          [
+            "DUMMY_STATE"
+          ]

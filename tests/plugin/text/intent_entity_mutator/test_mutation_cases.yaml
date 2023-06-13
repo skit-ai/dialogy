@@ -86,6 +86,14 @@
     body: ""
   mutate: "entity"
 
+- intent_name: "web_check_in_seat_selection"
+  current_state: "DUMMY_STATE"
+  transcript: "please look at my dummy state"
+  entity_dict: {}
+  previous_intent: ""
+  mutate_val: null
+  mutate: "entity"
+
 - intent_name: "web_check_in_seat_selection_compulsory"
   current_state: "CONFIRM_MANDATORY_SEAT_SELECTION"
   transcript: "please my seat"

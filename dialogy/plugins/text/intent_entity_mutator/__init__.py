@@ -292,7 +292,11 @@ class IntentEntityMutatorPlugin(Plugin):
                     intents[0].name = mutate_to
                     return intents, const.OUTPUT_DEST_INTENT
                 else:
-                    mutate_entities = [BaseEntity.from_dict(mutate_to)]
+                    mutate_entities = entities
+                    if mutate_to:
+                        mutate_entities.append(BaseEntity.from_dict(mutate_to))
+                    else:
+                        mutate_entities = []
                     return mutate_entities, const.OUTPUT_DEST_ENTITY
 
         return intents, const.OUTPUT_DEST_INTENT
