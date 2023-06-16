@@ -234,7 +234,14 @@ def resolve_expressions(config: Config) -> Config:
             if isinstance(value, dict): # type: ignore
                 if "fetch_from_config" in value.keys(): # type: ignore
                     if isinstance(value["fetch_from_config"], str):
-                        value = config.get(value["fetch_from_config"])
+                        resolved_value = config.get(value["fetch_from_config"])
+                        if resolved_value is None:
+                            logger.error(
+                                f"Value fetched for "
+                                f"{value['fetch_from_config']} "
+                                f"resolves to {resolved_value}"
+                            )
+                        value = resolved_value
             parser[key] = value
         config.pipeline_config.parsers[index] = parser
     return config
@@ -261,7 +268,9 @@ def fetch_project_config(project: str, all_project_artifacts_root: str) -> Optio
         else:
             misc_config.update(yaml_contents)
     if pipeline_config is None or core_plugins_config is None or not model_config:
-        return None
+        raise RuntimeError("One of pipeline config, core_plugins_config or model "
+                           "config is not found. Config for this project won't "
+                           "be loaded")
     # TODO: raise exception for both kind of configs not found
     config = Config(
         **{ # type: ignore
@@ -283,6 +292,7 @@ def read_project_configs(
 ) -> Dict[str, Config]:
     # TODO: raise exception if root is empty
     all_project_configs = {}
+    logger.enable("dialogy")
     logger.debug(f"Loading configs from {project_artifacts_root}")
     for project in os.listdir(project_artifacts_root):
         # hidden files from editors / OS like .idea
@@ -300,5 +310,5 @@ def read_project_configs(
         if not config:
             continue
         all_project_configs.update({project: config})
-
+    logger.disable("dialogy")
     return all_project_configs

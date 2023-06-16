@@ -268,7 +268,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    async def __call__(self, input, output):  # type: ignore
+    async def __call__(self, input, output, **kwargs):  # type: ignore
         """
         Set workflow with output.
 
