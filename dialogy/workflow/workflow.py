@@ -179,8 +179,8 @@ class Workflow:
         if hasattr(executed_plugin, "plugin_name"):
             plugins_executed_names = executed_plugin.plugin_name
         # PluginProxyFused
-        # elif hasattr(executed_plugin, "plugins"):
-        #     plugins_executed_names = plugins_executed_names.plugins
+        elif hasattr(executed_plugin, "plugins"):
+            plugins_executed_names = executed_plugin.plugins
         else:
             plugins_executed_names = str(executed_plugin)
 
@@ -231,8 +231,11 @@ class Workflow:
             # expected to be implemented in a thread safe manner
             input, output = await plugin(input, output, **kwargs)
             end = time.perf_counter()
-            self.log_output(plugin, input, output)
-
+            try:
+                self.log_output(plugin, input, output)
+            except Exception as e:
+                logger.debug(f"logging resultant output after "
+                             f"plugin execution failed because of {e}")
             # logs are available only when debug=False during class initialization
             if self.debug:
                 history["after"] = {
@@ -240,9 +243,6 @@ class Workflow:
                     "output": output.dict(),
                 }
                 history["perf"] = round(end - start, 4)
-
-            # if history:
-            #     logger.debug(pformat(history))
 
         return input, output
 
