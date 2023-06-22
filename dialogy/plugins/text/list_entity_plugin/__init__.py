@@ -378,7 +378,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         if self.output_column not in training_data.columns:
             training_data[self.output_column] = None
 
-        logger.disable("dialogy")
+        # logger.disable("dialogy")
         for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             transcripts = self.make_transform_values(row[self.input_column])
             entities = self.get_entities(transcripts)

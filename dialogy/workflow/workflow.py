@@ -123,13 +123,13 @@ import pandas as pd
 from threading import Lock
 from pprint import pformat
 import asyncio, nest_asyncio
+from collections import OrderedDict
 
 from dialogy import constants as const
 from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.base.plugin import Plugin
 from dialogy.utils.logger import logger
-from dialogy.utils.misc import _to_task
 
 
 @attr.s
@@ -173,6 +173,25 @@ class Workflow:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug
 
+    def log_output(self, executed_plugin, input, output):
+        plugins_executed_names = None
+        # PluginProxy
+        if hasattr(executed_plugin, "plugin_name"):
+            plugins_executed_names = executed_plugin.plugin_name
+        # PluginProxyFused
+        # elif hasattr(executed_plugin, "plugins"):
+        #     plugins_executed_names = plugins_executed_names.plugins
+        else:
+            plugins_executed_names = str(executed_plugin)
+
+        output = {
+            "Resultant Transcripts": input.utterances,
+            "Resultant Feature Input to Classifier": input.clf_feature,
+            "Resultant Output intent": [] if not output.intents else output.intents[0],
+            "Resultant Output entities": output.entities
+        }
+        logger.debug(f"Executed plugin(s) - {plugins_executed_names} \n {pformat(output, sort_dicts=False)}")
+
     async def run(self, input: Input, output: Output = None, **kwargs):  # type: ignore
         """
         .. _workflow_run:
@@ -212,6 +231,7 @@ class Workflow:
             # expected to be implemented in a thread safe manner
             input, output = await plugin(input, output, **kwargs)
             end = time.perf_counter()
+            self.log_output(plugin, input, output)
 
             # logs are available only when debug=False during class initialization
             if self.debug:
@@ -221,8 +241,8 @@ class Workflow:
                 }
                 history["perf"] = round(end - start, 4)
 
-            if history:
-                logger.debug(pformat(history))
+            # if history:
+            #     logger.debug(pformat(history))
 
         return input, output
 

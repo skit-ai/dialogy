@@ -1006,7 +1006,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             return training_data
 
         logger.debug(f"Transforming dataset via {self.__class__.__name__}")
-        logger.disable("dialogy")
+        # logger.disable("dialogy")
         training_data = training_data.copy()
         if self.output_column not in training_data.columns:
             training_data[self.output_column] = None

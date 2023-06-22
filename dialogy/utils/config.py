@@ -292,7 +292,7 @@ def read_project_configs(
 ) -> Dict[str, Config]:
     # TODO: raise exception if root is empty
     all_project_configs = {}
-    logger.enable("dialogy")
+    # logger.enable("dialogy")
     logger.debug(f"Loading configs from {project_artifacts_root}")
     for project in os.listdir(project_artifacts_root):
         # hidden files from editors / OS like .idea
@@ -310,5 +310,5 @@ def read_project_configs(
         if not config:
             continue
         all_project_configs.update({project: config})
-    logger.disable("dialogy")
+    # logger.disable("dialogy")
     return all_project_configs
