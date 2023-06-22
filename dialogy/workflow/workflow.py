@@ -173,7 +173,7 @@ class Workflow:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug
 
-    def log_output(self, executed_plugin, input, output):
+    def log_output(self, executed_plugin: Plugin, input: Input, output: Output) -> None:
         plugins_executed_names = None
         # PluginProxy
         if hasattr(executed_plugin, "plugin_name"):
