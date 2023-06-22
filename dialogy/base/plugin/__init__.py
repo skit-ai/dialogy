@@ -285,7 +285,7 @@ class Plugin(ABC):
         :param workflow: An instance of :ref:`Workflow <WorkflowClass>`.
         :type workflow: Workflow
         """
-        logger.enable("dialogy") if self.debug else logger.disable("dialogy")
+        # logger.enable("dialogy") if self.debug else logger.disable("dialogy")
         # logger.enable(str(self)) if self.debug else logger.disable(str(self))
         if input is None:
             return input, output
@@ -309,7 +309,7 @@ class Plugin(ABC):
         if value is not None and isinstance(dest, str):
             input, output = self.set(dest, value, input, output)
 
-        logger.enable("dialogy")
+        # logger.enable("dialogy") if self.debug else logger.disable("dialogy")
 
         return input, output
 
