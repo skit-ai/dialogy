@@ -115,6 +115,7 @@ from __future__ import annotations
 
 import time
 
+import typing
 from typing import List
 
 import attr
@@ -173,8 +174,8 @@ class Workflow:
             if isinstance(plugin, Plugin):
                 plugin.debug = self.debug & plugin.debug
 
+    @typing.no_type_check
     def log_output(self, executed_plugin: Plugin, input: Input, output: Output) -> None:
-        plugins_executed_names = None
         # PluginProxy
         if hasattr(executed_plugin, "plugin_name"):
             plugins_executed_names = executed_plugin.plugin_name
