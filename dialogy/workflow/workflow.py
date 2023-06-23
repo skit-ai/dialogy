@@ -170,9 +170,6 @@ class Workflow:
         Post init hook.
         """
         self.lock = Lock()
-        for plugin in self.plugins:
-            if isinstance(plugin, Plugin):
-                plugin.debug = self.debug & plugin.debug
 
     @typing.no_type_check
     def log_output(self, executed_plugin: Plugin, input: Input, output: Output) -> None:

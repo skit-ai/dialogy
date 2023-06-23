@@ -285,8 +285,7 @@ class Plugin(ABC):
         :param workflow: An instance of :ref:`Workflow <WorkflowClass>`.
         :type workflow: Workflow
         """
-        # logger.enable("dialogy") if self.debug else logger.disable("dialogy")
-        # logger.enable(str(self)) if self.debug else logger.disable(str(self))
+        logger.enable(self.__module__) if self.debug and not kwargs.pop("is_sensitive", False) else logger.disable(self.__module__)
         if input is None:
             return input, output
 

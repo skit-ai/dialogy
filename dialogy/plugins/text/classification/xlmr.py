@@ -143,7 +143,6 @@ class XLMRMultiClass(Plugin):
             # model inference service session configuration
             self.url = url
             self.timeout = timeout
-            self.session = aiohttp.ClientSession()
             self.headers: Dict[str, str] = {
                 "Content-Type": "application/json"
             }
@@ -195,13 +194,14 @@ class XLMRMultiClass(Plugin):
     async def _request_model_inference(self, texts: List[str]) -> Tuple[Any, Any]:
         payload = {"transcripts": texts}
         try:
-            async with self.session.post(self.url, data=json.dumps(payload), headers=self.headers) as resp:
-                status_code = resp.status
-                if status_code == 200:
-                    result = await resp.json()
-                    return result.get("intents", []), result.get("logits", [])
-                else:
-                    result = await resp.text()
+            async with aiohttp.ClientSession() as session:
+                async with session.post(self.url, data=json.dumps(payload), headers=self.headers) as resp:
+                    status_code = resp.status
+                    if status_code == 200:
+                        result = await resp.json()
+                        return result.get("intents", []), result.get("logits", [])
+                    else:
+                        result = await resp.text()
         except ClientConnectorError as connection_error:
             logger.error(f"Model Inference Service is turned off?: {connection_error}")
             logger.error(pformat(payload))
