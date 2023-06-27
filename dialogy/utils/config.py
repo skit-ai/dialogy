@@ -175,6 +175,12 @@ class Config(BaseConfig):
 
     def get_dataset_dir(self, task_name: str) -> str:
         return os.path.join(self.project_artifacts_root_path, self._get_data_dir(task_name), const.DATASETS)
+    
+    def get_model_dir(self, task_name: str) -> str:
+        return os.path.join(
+            self.project_artifacts_root_path,
+            self.model_config.get_model_dir(task_name)
+        )
 
     def get_skip_list(self, task_name: str) -> Set[str]:
         if task_name == const.CLASSIFICATION:
