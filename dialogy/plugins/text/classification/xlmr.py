@@ -111,7 +111,7 @@ class XLMRMultiClass(Plugin):
                     f"'best_model_dir' missing in passed args_map."
                 )
             
-            self.ts_parameter:float = self.args_map.get("ts_parameter") or read_from_json([const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE).get(const.TS_PARAMETER) or 1.0
+            self.ts_parameter:float = read_from_json([const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE).get(const.TS_PARAMETER) or self.args_map.get("ts_parameter") or 1.0
             
             self.labelencoder = preprocessing.LabelEncoder()
             self.classifier = classifer
