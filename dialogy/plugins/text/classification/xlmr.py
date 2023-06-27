@@ -90,8 +90,6 @@ class XLMRMultiClass(Plugin):
 
         self.use_calibration = self.args_map.get(const.MODEL_CALIBRATION, False)
 
-        self.ts_parameter: float = self.args_map.get("ts_parameter") or 1.0
-
         # flag that specifies whether plugin is being imported externally solely for model
         imported = kwargs.get("imported", False)
 
@@ -99,7 +97,8 @@ class XLMRMultiClass(Plugin):
             self.use_cuda = torch.cuda.is_available()
             try:
                 classifer = getattr(
-                    importlib.import_module(const.XLMR_MODULE), const.XLMR_MULTI_CLASS_MODEL
+                    importlib.import_module(const.XLMR_MODULE),
+                    const.XLMR_MULTI_CLASS_MODEL,
                 )
             except ModuleNotFoundError as error:
                 raise ModuleNotFoundError(
@@ -108,10 +107,16 @@ class XLMRMultiClass(Plugin):
 
             self.model_dir = self.args_map.get("best_model_dir")
             if not self.model_dir:
-                raise ValueError(
-                    f"'best_model_dir' missing in passed args_map."
-                )
-            
+                raise ValueError(f"'best_model_dir' missing in passed args_map.")
+
+            self.ts_parameter: float = (
+                read_from_json(
+                    [const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE
+                ).get(const.TS_PARAMETER)
+                or self.args_map.get("ts_parameter")
+                or 1.0
+            )
+
             self.labelencoder = preprocessing.LabelEncoder()
             self.classifier = classifer
             self.model: Any = None
@@ -130,7 +135,9 @@ class XLMRMultiClass(Plugin):
 
             try:
                 if os.path.exists(self.labelencoder_file_path):
-                    logger.debug(f"initializing label encoder file from {self.labelencoder_file_path}")
+                    logger.debug(
+                        f"initializing label encoder file from {self.labelencoder_file_path}"
+                    )
                     self.init_model()
             except EOFError:
                 logger.error(
@@ -143,9 +150,7 @@ class XLMRMultiClass(Plugin):
             # model inference service session configuration
             self.url = url
             self.timeout = timeout
-            self.headers: Dict[str, str] = {
-                "Content-Type": "application/json"
-            }
+            self.headers: Dict[str, str] = {"Content-Type": "application/json"}
 
         self.debug = debug
 
@@ -176,8 +181,10 @@ class XLMRMultiClass(Plugin):
                 **self.kwargs,
             )
         except OSError:
-            logger.info(f"Model not found at {self.model_dir}. "
-                        f"Default model weights will be loaded")
+            logger.info(
+                f"Model not found at {self.model_dir}. "
+                f"Default model weights will be loaded"
+            )
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 const.XLMR_MODEL_TIER,
@@ -195,7 +202,9 @@ class XLMRMultiClass(Plugin):
         payload = {"transcripts": texts}
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(self.url, data=json.dumps(payload), headers=self.headers) as resp:
+                async with session.post(
+                    self.url, data=json.dumps(payload), headers=self.headers
+                ) as resp:
                     status_code = resp.status
                     if status_code == 200:
                         result = await resp.json()
@@ -220,7 +229,6 @@ class XLMRMultiClass(Plugin):
         lang: Optional[str] = None,
         nls_label: Optional[str] = None,
     ) -> List[Intent]:
-
         """
         Predict the intent of a list of texts.
         If the model has been trained using the state features, it expects the text to also be appended with the state token else the predictions would be spurious.
@@ -277,9 +285,11 @@ class XLMRMultiClass(Plugin):
                 return [fallback_output]
 
         else:
-            raise RuntimeError(f"Inference method called with purpose "
-                               f"set to '{self.purpose}'. Valid "
-                               f"values - [{const.PRODUCTION}, {const.TEST}]")
+            raise RuntimeError(
+                f"Inference method called with purpose "
+                f"set to '{self.purpose}'. Valid "
+                f"values - [{const.PRODUCTION}, {const.TEST}]"
+            )
 
         logits = logits / self.ts_parameter
         confidence_scores = [np.exp(logit) / sum(np.exp(logit)) for logit in logits]
@@ -331,7 +341,7 @@ class XLMRMultiClass(Plugin):
                 logger.warning(f"Column {column} not found in training data")
                 return False
         return True
-    
+
     def train(self, training_data: pd.DataFrame) -> None:
         """
         Train an intent-classifier on the provided training data.
@@ -415,7 +425,7 @@ class XLMRMultiClass(Plugin):
                 logger.debug(e)
                 logger.debug(f"Prompt not found for Lang: {lang} \t State: {nls_label}")
             return self.null_prompt_token
-        
+
     def load(self) -> None:
         """
         Load the plugin artifacts.
