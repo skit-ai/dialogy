@@ -16,7 +16,6 @@ import dialogy.constants as const
 from dialogy.utils.misc import traverse_dict
 
 
-
 class BaseConfig:
     def get(self, attribute: str) -> Any:
         # handles nested attributes
@@ -37,9 +36,7 @@ class BaseConfig:
 
 @attr.s
 class Task(BaseConfig):
-    use = attr.ib(
-        type=bool, kw_only=True, validator=attr.validators.instance_of(bool)
-    )
+    use = attr.ib(type=bool, kw_only=True, validator=attr.validators.instance_of(bool))
     threshold = attr.ib(
         type=float, kw_only=True, validator=attr.validators.instance_of(float)
     )
@@ -48,15 +45,21 @@ class Task(BaseConfig):
     )
     alias = attr.ib(
         type=Dict[Any, Any],
-        factory=dict, kw_only=True, validator=attr.validators.instance_of(dict)
+        factory=dict,
+        kw_only=True,
+        validator=attr.validators.instance_of(dict),
     )
     skip = attr.ib(
         type=List[Any],
-        factory=list, kw_only=True, validator=attr.validators.instance_of(list)
+        factory=list,
+        kw_only=True,
+        validator=attr.validators.instance_of(list),
     )
     confidence_levels = attr.ib(
         type=List[Any],
-        factory=list, kw_only=True, validator=attr.validators.instance_of(list)
+        factory=list,
+        kw_only=True,
+        validator=attr.validators.instance_of(list),
     )
     format = attr.ib(
         type=str,
@@ -104,6 +107,7 @@ class PipelineConfig(BaseConfig):
 @attr.s
 class ModelConfig(BaseConfig):
     tasks = attr.ib(type=Tasks, kw_only=True)
+    project_artifacts_root_path = attr.ib(type=str, kw_only=True)
 
     def __attrs_post_init__(self) -> None:
         self.tasks = Tasks(**self.tasks)  # type: ignore
@@ -113,10 +117,14 @@ class ModelConfig(BaseConfig):
 
     @staticmethod
     def _get_data_dir(task_name: str) -> str:
-        return os.path.join(const.DATA, task_name)
+        return os.path.join(self.project_artifacts_root_path, const.DATA, task_name)
 
     def get_model_dir(self, task_name: str) -> str:
-        return os.path.join(self._get_data_dir(task_name), const.MODELS)
+        return os.path.join(
+            self.project_artifacts_root_path,
+            self._get_data_dir(task_name),
+            const.MODELS,
+        )
 
 
 @attr.s
@@ -154,9 +162,9 @@ class Config(BaseConfig):
     misc_config = attr.ib(factory=dict, type=Dict[str, Any], kw_only=True)
 
     def __attrs_post_init__(self) -> None:
-        self.pipeline_config = PipelineConfig(**self.pipeline_config) # type: ignore
-        self.core_plugins_config = CorePluginsConfig(**self.core_plugins_config) # type: ignore
-        self.model_config = ModelConfig(**self.model_config) # type: ignore
+        self.pipeline_config = PipelineConfig(**self.pipeline_config)  # type: ignore
+        self.core_plugins_config = CorePluginsConfig(**self.core_plugins_config)  # type: ignore
+        self.model_config = ModelConfig(**self.model_config, project_artifacts_root_path=self.project_artifacts_root_path)  # type: ignore
         self.update_paths()
 
     def update_paths(self) -> None:
@@ -174,7 +182,11 @@ class Config(BaseConfig):
         )
 
     def get_dataset_dir(self, task_name: str) -> str:
-        return os.path.join(self.project_artifacts_root_path, self._get_data_dir(task_name), const.DATASETS)
+        return os.path.join(
+            self.project_artifacts_root_path,
+            self._get_data_dir(task_name),
+            const.DATASETS,
+        )
 
     def get_skip_list(self, task_name: str) -> Set[str]:
         if task_name == const.CLASSIFICATION:
@@ -189,7 +201,9 @@ class Config(BaseConfig):
             file_name,
         )
 
-    def get_model_args(self, task_name: str, purpose: str, **kwargs: Any) -> Dict[str, Any]:
+    def get_model_args(
+        self, task_name: str, purpose: str, **kwargs: Any
+    ) -> Dict[str, Any]:
         if task_name == const.CLASSIFICATION:
             args_map = self.model_config.tasks.classification.model_args
             if purpose == const.TRAIN:
@@ -231,8 +245,8 @@ def resolve_expressions(config: Config) -> Config:
                 if value.startswith("{{") and value.endswith("}}"):
                     # python expression detected
                     value = eval(value[2:-2])
-            if isinstance(value, dict): # type: ignore
-                if "fetch_from_config" in value.keys(): # type: ignore
+            if isinstance(value, dict):  # type: ignore
+                if "fetch_from_config" in value.keys():  # type: ignore
                     if isinstance(value["fetch_from_config"], str):
                         resolved_value = config.get(value["fetch_from_config"])
                         if resolved_value is None:
@@ -247,11 +261,15 @@ def resolve_expressions(config: Config) -> Config:
     return config
 
 
-def get_project_artifacts_path_by_name(project_name: str, project_artifacts_root: str) -> str:
+def get_project_artifacts_path_by_name(
+    project_name: str, project_artifacts_root: str
+) -> str:
     return os.path.join(project_artifacts_root, project_name, "configs")
 
 
-def fetch_project_config(project: str, all_project_artifacts_root: str) -> Optional[Config]:
+def fetch_project_config(
+    project: str, all_project_artifacts_root: str
+) -> Optional[Config]:
     project_config_path = get_project_artifacts_path_by_name(
         project, all_project_artifacts_root
     )
@@ -268,12 +286,14 @@ def fetch_project_config(project: str, all_project_artifacts_root: str) -> Optio
         else:
             misc_config.update(yaml_contents)
     if pipeline_config is None or core_plugins_config is None or not model_config:
-        raise RuntimeError("One of pipeline config, core_plugins_config or model "
-                           "config is not found. Config for this project won't "
-                           "be loaded")
+        raise RuntimeError(
+            "One of pipeline config, core_plugins_config or model "
+            "config is not found. Config for this project won't "
+            "be loaded"
+        )
     # TODO: raise exception for both kind of configs not found
     config = Config(
-        **{ # type: ignore
+        **{  # type: ignore
             "project_artifacts_root_path": os.path.join(
                 all_project_artifacts_root, project
             ),
