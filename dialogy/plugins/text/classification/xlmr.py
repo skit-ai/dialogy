@@ -90,6 +90,11 @@ class XLMRMultiClass(Plugin):
 
         self.use_calibration = self.args_map.get(const.MODEL_CALIBRATION, False)
 
+        self.model_dir = self.args_map.get("best_model_dir")
+
+        self.ts_parameter: float = read_from_json([const.TS_PARAMETER], self.model_dir,
+                                                  const.CALIBRATION_CONFIG_FILE).get(
+            const.TS_PARAMETER) or self.args_map.get("ts_parameter") or 1.0
 
         # flag that specifies whether plugin is being imported externally solely for model
         imported = kwargs.get("imported", False)
@@ -105,14 +110,11 @@ class XLMRMultiClass(Plugin):
                     "Plugin requires simpletransformers -- https://simpletransformers.ai/docs/installation/"
                 ) from error
 
-            self.model_dir = self.args_map.get("best_model_dir")
             if not self.model_dir:
                 raise ValueError(
                     f"'best_model_dir' missing in passed args_map."
                 )
-            
-            self.ts_parameter:float = read_from_json([const.TS_PARAMETER], self.model_dir, const.CALIBRATION_CONFIG_FILE).get(const.TS_PARAMETER) or self.args_map.get("ts_parameter") or 1.0
-            
+
             self.labelencoder = preprocessing.LabelEncoder()
             self.classifier = classifer
             self.model: Any = None
