@@ -94,7 +94,7 @@ class XLMRMultiClass(Plugin):
 
         self.ts_parameter: float = read_from_json([const.TS_PARAMETER], self.model_dir,
                                                   const.CALIBRATION_CONFIG_FILE).get(
-            const.TS_PARAMETER) or self.args_map.get("ts_parameter") or 1.0
+            const.TS_PARAMETER) or self.args_map.get(const.TS_PARAMETER) or 1.0
 
         # flag that specifies whether plugin is being imported externally solely for model
         imported = kwargs.get("imported", False)
