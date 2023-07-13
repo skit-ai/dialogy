@@ -52,7 +52,7 @@ class OOSFilterPlugin(Plugin):
         self.intent_oos = intent_oos
 
         self.intent_threshold_map = None
-        if intent_threshold_map_path:
+        if intent_threshold_map_path and self.purpose != "train":
             with open(intent_threshold_map_path, "r") as f:
                 self.intent_threshold_map = yaml.safe_load(f)
 
