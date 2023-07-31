@@ -72,7 +72,7 @@ class Task(BaseConfig):
                 project_config_path, purpose_args[const.BEST_MODEL]
             )
             purpose_args[const.OUTPUT_DIR] = os.path.join(
-                project_config_path, purpose_args[const.BEST_MODEL]
+                project_config_path, purpose_args[const.OUTPUT_DIR]
             )
 
 
