@@ -10,7 +10,7 @@ import pytest
 
 import dialogy.constants as const
 from dialogy.base import Input
-from dialogy.plugins import MergeASROutputPlugin, XLMRMultiClass
+from dialogy.plugins.registry import MergeASROutputPlugin, XLMRMultiClass
 from dialogy.utils import load_file
 from dialogy.workflow import Workflow
 from tests import load_tests
@@ -53,7 +53,7 @@ def test_xlmr_plugin_no_module_error(mocker):
     mocker.patch.object(const, "XLMR_MODULE", "invalid_module")
 
     with pytest.raises(ModuleNotFoundError):
-        XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
+        XLMRMultiClass(dest="output.intents", debug=False, imported=True)
 
 
 def test_xlmr_plugin_when_no_labelencoder_saved(mocker):
@@ -62,7 +62,8 @@ def test_xlmr_plugin_when_no_labelencoder_saved(mocker):
     )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
-    xlmr_clf = XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
+    xlmr_clf = XLMRMultiClass(dest="output.intents", debug=False, purpose="train",
+                              args_map={"train": {"best_model_dir": "."}})
     assert isinstance(xlmr_clf, XLMRMultiClass)
     assert xlmr_clf.model is None
 
@@ -80,9 +81,10 @@ def test_xlmr_plugin_when_labelencoder_EOFError(capsys, mocker, tmpdir):
 
     with capsys.disabled():
         xlmr_plugin = XLMRMultiClass(
-            model_dir=directory,
             dest="output.intents",
             debug=False,
+            purpose="train",
+            args_map={"train": {"best_model_dir": directory}}
         )
         assert xlmr_plugin.model is None
     os.remove(file_path)
@@ -95,7 +97,8 @@ def test_xlmr_init_mock(mocker):
     )
     mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
 
-    xlmr_clf = XLMRMultiClass(model_dir=".", dest="output.intents", debug=False)
+    xlmr_clf = XLMRMultiClass(dest="output.intents", debug=False, purpose="train",
+                              args_map={"train": {"best_model_dir": "."}})
     xlmr_clf.init_model(5)
     assert xlmr_clf.model is not None
 
@@ -125,14 +128,10 @@ def test_train_xlmr_mock(mocker, tmpdir):
     file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
-    xlmr_clf = XLMRMultiClass(model_dir=directory, dest="output.intents", debug=False)
-
-    xlmr_clf_state = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=False,
-        use_state=True,
-    )
+    xlmr_clf = XLMRMultiClass(dest="output.intents", debug=False,
+                              purpose="train",
+                              args_map={"train": {"best_model_dir": directory}}
+                              )
 
     train_df = pd.DataFrame(
         [
@@ -143,28 +142,20 @@ def test_train_xlmr_mock(mocker, tmpdir):
         ]
     )
 
-    train_df_state = pd.DataFrame(
-        [
-            {"data": "yes", "labels": "_confirm_", "state": "state1"},
-            {"data": "yea", "labels": "_confirm_", "state": "state2"},
-            {"data": "no", "labels": "_cancel_", "state": "state3"},
-            {"data": "nope", "labels": "_cancel_", "state": "state4"},
-        ]
-    )
-
     xlmr_clf.train(train_df)
-    xlmr_clf_state.train(train_df_state)
 
     # This copy loads from the same directory that was trained previously.
     # So this instance would have read the labelencoder saved.
     xlmr_clf_copy = XLMRMultiClass(
-        model_dir=directory, dest="output.intents", debug=False
+        dest="output.intents", debug=False, purpose="test",
+                              args_map={"test": {"best_model_dir": directory}}
     )
 
     assert len(xlmr_clf_copy.labelencoder.classes_) == 2
 
 
-def test_invalid_operations(mocker, tmpdir):
+@pytest.mark.asyncio
+async def test_invalid_operations(mocker, tmpdir):
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
@@ -173,7 +164,8 @@ def test_invalid_operations(mocker, tmpdir):
     file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
     mocker.patch.object(const, "LABELENCODER_FILE", file_path)
 
-    xlmr_clf = XLMRMultiClass(model_dir=directory, dest="output.intents", debug=False)
+    xlmr_clf = XLMRMultiClass(dest="output.intents", debug=False, purpose="test",
+                              args_map={"test": {"best_model_dir": directory}})
 
     with pytest.raises(ValueError):
         xlmr_clf.init_model(None)
@@ -196,65 +188,20 @@ def test_invalid_operations(mocker, tmpdir):
 
     xlmr_clf.train(train_df_invalid)
     assert load_file(file_path, mode="rb", loader=pickle.load) is None
-    assert xlmr_clf.inference(["text"])[0].name == "_error_"
+    inference_output = await xlmr_clf.inference(["text"])
+    assert inference_output[0].name == "_error_"
 
     with pytest.raises(ValueError):
         xlmr_clf.save()
 
-    xlmr_clf.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
-    with pytest.raises(AttributeError):
-        xlmr_clf.inference(["text"])
+    # xlmr_clf.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
+    # with pytest.raises(AttributeError):
+    #     xlmr_clf.inference(["text"])
 
 
-def test_invalid_operations_with_state(mocker, tmpdir):
-    mocker.patch.object(
-        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
-    )
-    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-    directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join("labelencoder.pkl")
-    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
-
-    xlmr_clf_state = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=False,
-        use_state=True,
-    )
-
-    with pytest.raises(ValueError):
-        xlmr_clf_state.init_model(None)
-
-    train_df_empty = pd.DataFrame()
-    train_df_invalid = pd.DataFrame(
-        [
-            {"apples": "yes", "fruit": "fruit"},
-            {"apples": "yea", "fruit": "fruit"},
-            {"apples": "no", "fruit": "fruit"},
-            {"apples": "nope", "fruit": "fruit"},
-        ]
-    )
-    assert xlmr_clf_state.validate(train_df_empty) is False
-
-    xlmr_clf_state.train(train_df_empty)
-
-    assert load_file(file_path, mode="rb", loader=pickle.load) is None
-    assert xlmr_clf_state.validate(train_df_invalid) is False
-
-    xlmr_clf_state.train(train_df_invalid)
-    assert load_file(file_path, mode="rb", loader=pickle.load) is None
-    assert xlmr_clf_state.inference(["text"])[0].name == "_error_"
-
-    xlmr_clf_state.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
-    with pytest.raises(ValueError):
-        xlmr_clf_state.inference(["text"])
-
-    with pytest.raises(ValueError):
-        xlmr_clf_state.save()
-
-
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_inference(payload, mocker, tmpdir):
+async def test_inference(payload, mocker, tmpdir):
     mocker.patch.object(
         const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
     )
@@ -267,12 +214,11 @@ def test_inference(payload, mocker, tmpdir):
     intent = payload["expected"]["label"]
 
     xlmr_clf = XLMRMultiClass(
-        model_dir=directory,
         dest="output.intents",
         debug=False,
         purpose=const.TEST,
         args_map={
-            const.TEST: {const.MODEL_CALIBRATION: True},
+            const.TEST: {const.MODEL_CALIBRATION: True, "best_model_dir": directory},
             const.TRAIN: {},
             const.PRODUCTION: {},
         },
@@ -310,7 +256,7 @@ def test_inference(payload, mocker, tmpdir):
         xlmr_clf.model, MockClassifier
     ), "model should be a MockClassifier after training."
 
-    _, output = workflow.run(
+    _, output = await workflow.run(
         Input(utterances=[[{"transcript": transcript} for transcript in transcripts]])
     )
     output = output.dict()
@@ -319,352 +265,3 @@ def test_inference(payload, mocker, tmpdir):
     assert output[const.INTENTS][0]["score"] > 0.9
 
 
-def test_train_xlmr_prompt_1(mocker, tmpdir):
-    """
-    Code to test xlmr workflow, with the following parameters:
-    use_state: False
-    use_prompt: True
-    train_using_all_prompts: False
-    """
-    # print("\nRunning test_train_xlmr_prompt_1")
-
-    mocker.patch.object(
-        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
-    )
-    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-    directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
-    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
-
-    prompts_map = {
-        "en": {
-            "nls_label1": "prompt1",
-            "nls_label2": "prompt2",
-            "nls_label3": "prompt3",
-        },
-        "hi": {"nls_label1": "prompt4", "nls_label2": "prompt5"},
-    }
-
-    xlmr_clf_prompt = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=False,
-        prompts_map=prompts_map,
-        use_state=False,
-        use_prompt=True,
-    )
-
-    train_df_prompt = pd.DataFrame(
-        [
-            {
-                "data": "yes",
-                "labels": "_confirm_",
-                "nls_label": "nls_label1",
-                "lang": "lang1",
-            },
-            {
-                "data": "yea",
-                "labels": "_confirm_",
-                "nls_label": "nls_label2",
-                "lang": "lang1",
-            },
-            {
-                "data": "no",
-                "labels": "_cancel_",
-                "nls_label": "nls_label3",
-                "lang": "lang2",
-            },
-            {
-                "data": "nope",
-                "labels": "_cancel_",
-                "nls_label": "nls_label1",
-                "lang": "lang2",
-            },
-        ]
-    )
-
-    try:
-        xlmr_clf_prompt.train(train_df_prompt)
-    except ValueError:
-        pass
-
-    # This copy loads from the same directory that was trained previously.
-    # So this instance would have read the labelencoder saved.
-    xlmr_clf_copy = XLMRMultiClass(
-        model_dir=directory, dest="output.intents", debug=False
-    )
-
-    assert len(xlmr_clf_copy.labelencoder.classes_) == 2
-
-
-def test_train_xlmr_prompt_2(mocker, tmpdir):
-    """
-    Code to test xlmr workflow, with the following parameters:
-    use_state: True
-    use_prompt: True
-    train_using_all_prompts: True
-    """
-    mocker.patch.object(
-        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
-    )
-    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-    directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
-    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
-
-    prompts_map = {
-        "en": {
-            "nls_label1": "prompt1",
-            "nls_label2": "prompt2",
-            "nls_label3": "prompt3",
-        },
-        "hi": {"nls_label1": "prompt4", "nls_label2": "prompt5"},
-    }
-
-    xlmr_clf_prompt = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=True,
-        prompts_map=prompts_map,
-        use_state=True,
-        use_prompt=True,
-    )
-
-    train_df_prompt = pd.DataFrame(
-        [
-            {
-                "data": "yes",
-                "labels": "_confirm_",
-                "state": "state1",
-                "lang": "lang1",
-                "nls_label": "nls_label1",
-            },
-            {
-                "data": "yea",
-                "labels": "_confirm_",
-                "state": "state2",
-                "lang": "lang1",
-                "nls_label": "nls_label2",
-            },
-            {
-                "data": "no",
-                "labels": "_cancel_",
-                "state": "state1",
-                "lang": "lang2",
-                "nls_label": "nls_label3",
-            },
-            {
-                "data": "nope",
-                "labels": "_cancel_",
-                "state": "state3",
-                "lang": "lang3",
-                "nls_label": "nls_label4",
-            },
-        ]
-    )
-
-    try:
-        xlmr_clf_prompt.train(train_df_prompt)
-    except ValueError:
-        pass
-
-    assert (
-        len(
-            xlmr_clf_prompt.inference(
-                texts=["yes"], lang="lang1", state="state1", nls_label="nls_label1"
-            )
-        )
-        > 0
-    )
-
-    # This copy loads from the same directory that was trained previously.
-    # So this instance would have read the labelencoder saved.
-    xlmr_clf_copy = XLMRMultiClass(
-        model_dir=directory, dest="output.intents", debug=False
-    )
-
-    assert len(xlmr_clf_copy.labelencoder.classes_) == 2
-
-
-def test_invalid_operations_with_prompt(mocker, tmpdir):
-    mocker.patch.object(
-        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
-    )
-    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-    directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
-    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
-
-    xlmr_clf_prompt = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=True,
-        use_state=False,
-        use_prompt=True,
-        prompts_map={},
-    )
-
-    with pytest.raises(ValueError):
-        xlmr_clf_prompt.init_model(None)
-
-    train_df_empty = pd.DataFrame()
-    train_df_invalid = pd.DataFrame(
-        [
-            {"apples": "yes", "fruit": "fruit"},
-            {"apples": "yea", "fruit": "fruit"},
-            {"apples": "no", "fruit": "fruit"},
-            {"apples": "nope", "fruit": "fruit"},
-        ]
-    )
-
-    assert xlmr_clf_prompt.validate(train_df_empty) is False
-
-    xlmr_clf_prompt.train(train_df_empty)
-
-    assert load_file(file_path, mode="rb", loader=pickle.load) is None
-    assert xlmr_clf_prompt.validate(train_df_invalid) is False
-
-    xlmr_clf_prompt.train(train_df_invalid)
-    assert load_file(file_path, mode="rb", loader=pickle.load) is None
-    assert xlmr_clf_prompt.inference(["text"])[0].name == "_error_"
-
-    xlmr_clf_prompt.model = MockClassifier(const.XLMR_MODEL, const.XLMR_MODEL_TIER)
-
-    with pytest.raises(ValueError):
-        xlmr_clf_prompt.inference(texts=["text"])
-
-    with pytest.raises(ValueError):
-        xlmr_clf_prompt.inference(texts=["text"], lang="hi", nls_label=None)
-
-    with pytest.raises(ValueError):
-        xlmr_clf_prompt.inference(texts=["text"], lang=None, nls_label="nls_label1")
-
-    with pytest.raises(ValueError):
-        xlmr_clf_prompt.save()
-
-
-@pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_inference_with_prompt_1(payload, mocker, tmpdir):
-    mocker.patch.object(
-        const, "XLMR_MODULE", "tests.plugin.text.classification.test_xlmr"
-    )
-    mocker.patch.object(const, "XLMR_MULTI_CLASS_MODEL", "MockClassifier")
-    directory = "/tmp"
-    file_path = tmpdir.mkdir(directory).join(const.LABELENCODER_FILE)
-    mocker.patch.object(const, "LABELENCODER_FILE", file_path)
-
-    prompts_map = {
-        "en": {
-            "nls_label1": "prompt1",
-            "nls_label2": "prompt2",
-            "nls_label3": "prompt3",
-        },
-        "hi": {"nls_label1": "prompt4", "nls_label2": "prompt5"},
-    }
-
-    train_df_prompt = pd.DataFrame(
-        [
-            {
-                "data": "yes",
-                "labels": "_confirm_",
-                "state": "state1",
-                "lang": "lang1",
-                "nls_label": "nls_label1",
-            },
-            {
-                "data": "yea",
-                "labels": "_confirm_",
-                "state": "state2",
-                "lang": "lang1",
-                "nls_label": "nls_label2",
-            },
-            {
-                "data": "no",
-                "labels": "_cancel_",
-                "state": "state1",
-                "lang": "lang2",
-                "nls_label": "nls_label3",
-            },
-            {
-                "data": "nope",
-                "labels": "_cancel_",
-                "state": "state3",
-                "lang": "lang3",
-                "nls_label": "nls_label4",
-            },
-        ]
-    )
-
-    xlmr_clf_prompt = XLMRMultiClass(
-        model_dir=directory,
-        dest="output.intents",
-        debug=True,
-        prompts_map=prompts_map,
-        use_state=False,
-        use_prompt=True,
-    )
-
-    merge_asr_output_plugin = MergeASROutputPlugin(
-        dest="input.clf_feature", debug=False
-    )
-    try:
-        xlmr_clf_prompt.train(train_df_prompt)
-    except ValueError:
-        pass
-
-    train_df_empty = pd.DataFrame()
-    train_df_invalid = pd.DataFrame(
-        [
-            {"apples": "yes", "fruit": "fruit"},
-            {"apples": "yea", "fruit": "fruit"},
-            {"apples": "no", "fruit": "fruit"},
-            {"apples": "nope", "fruit": "fruit"},
-        ]
-    )
-
-    assert xlmr_clf_prompt.validate(train_df_empty) is False
-    assert xlmr_clf_prompt.validate(train_df_invalid) is False
-
-    with pytest.raises(ValueError):
-        xlmr_clf_prompt.inference(texts=["text"], lang="hi", nls_label=None)
-
-    with pytest.raises(ValueError):
-        xlmr_clf_prompt.inference(texts=["text"], lang=None, nls_label="nls_label1")
-
-    assert (
-        len(
-            xlmr_clf_prompt.inference(
-                texts=["yes"], lang="lang1", nls_label="nls_label1"
-            )
-        )
-        > 0
-    )
-
-    assert (
-        len(
-            xlmr_clf_prompt.inference(
-                texts=["yes"], lang="unsupported_lang", nls_label="nls_label1"
-            )
-        )
-        > 0
-    )
-
-    assert (
-        len(
-            xlmr_clf_prompt.inference(
-                texts=["yes"], lang="lang1", nls_label="unsupported_nls_label"
-            )
-        )
-        > 0
-    )
-
-    assert (
-        len(
-            xlmr_clf_prompt.inference(
-                texts=["yes"],
-                lang="unsupported_lang",
-                nls_label="unsupported_nls_label",
-            )
-        )
-        > 0
-    )

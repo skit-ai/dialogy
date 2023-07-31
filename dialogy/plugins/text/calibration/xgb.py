@@ -102,6 +102,7 @@ class CalibrationModel(Plugin):
         output_column: Optional[str] = const.ALTERNATIVES,
         use_transform: bool = False,
         model_name: str = "calibration.pkl",
+        **kwargs: Any
     ) -> None:
         super().__init__(
             dest=dest,
@@ -110,6 +111,7 @@ class CalibrationModel(Plugin):
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
+            **kwargs
         )
         self.extraction_pipeline = FeatureExtractor()
         self.clf = XGBRegressor(n_jobs=1)
@@ -155,7 +157,7 @@ class CalibrationModel(Plugin):
             filtered_utterances.append(filtered_alternatives)
         return filtered_utterances
 
-    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+    async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         # filters df alternatives and feeds into merge_asr_output,
         # doesn't change training_data schema
         training_data["use"] = True
@@ -204,7 +206,7 @@ class CalibrationModel(Plugin):
     def save(self, fname: str) -> None:
         pickle.dump(self, open(fname, "wb"))
 
-    def utility(self, input: Input, _: Output) -> Any:
+    async def utility(self, input: Input, _: Output) -> Any:
         return self.inference(
             input.transcripts, input.utterances
         )  # pylint: disable=no-value-for-parameter

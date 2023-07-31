@@ -1,18 +1,18 @@
 import operator
-import time
-from http.client import REQUESTED_RANGE_NOT_SATISFIABLE
 
+import aiohttp.client_exceptions
 import httpretty
 import pandas as pd
 import pytest
 import requests
+import json
 
 from dialogy.base import Input, Output
-from dialogy.plugins import DucklingPlugin
+from dialogy.plugins.registry import DucklingPlugin
 from dialogy.types import BaseEntity, Intent, KeywordEntity, TimeEntity
 from dialogy.utils import make_unix_ts
 from dialogy.workflow import Workflow
-from tests import EXCEPTIONS, load_tests, request_builder
+from tests import EXCEPTIONS, load_tests, MockResponse
 
 
 def test_remove_low_scoring_entities_works_only_if_threshold_is_not_none():
@@ -100,7 +100,8 @@ def test_remove_low_scoring_entities_doesnt_remove_unscored_entities():
     ]
 
 
-def test_duckling_connection_error() -> None:
+@pytest.mark.asyncio
+async def test_duckling_connection_error() -> None:
     """
     [summary]
 
@@ -120,11 +121,12 @@ def test_duckling_connection_error() -> None:
     )
 
     workflow = Workflow([duckling_plugin])
-    with pytest.raises(requests.exceptions.ConnectionError):
-        workflow.run(Input(utterances=[[{"transcript": "test"}]], locale=locale))
+    with pytest.raises(aiohttp.client_exceptions.ClientConnectionError):
+        await workflow.run(Input(utterances=[[{"transcript": "test"}]], locale=locale))
 
 
-def test_max_workers_greater_than_zero() -> None:
+@pytest.mark.asyncio
+async def test_max_workers_greater_than_zero() -> None:
     """Checks that "ValueError: max_workers must be greater than 0" is not raised when there are no transcriptions
 
     When we get an empty transcription from ASR in a production setup, FSM does not send the empty transcription to the SLU service.
@@ -149,14 +151,15 @@ def test_max_workers_greater_than_zero() -> None:
     workflow = Workflow([duckling_plugin])
     alternatives = []  # When ASR returns empty transcriptions.
     try:
-        workflow.run(Input(utterances=alternatives, locale=locale))
+        await workflow.run(Input(utterances=alternatives, locale=locale))
     except ValueError as exc:
         pytest.fail(f"{exc}")
 
 
+@pytest.mark.asyncio
 @httpretty.activate
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_plugin_working_cases(payload) -> None:
+async def test_plugin_working_cases(payload, mocker) -> None:
     """
     An end-to-end example showing how to use `DucklingPlugin` with a `Workflow`.
     """
@@ -177,10 +180,8 @@ def test_plugin_working_cases(payload) -> None:
 
     duckling_plugin = DucklingPlugin(dest="output.entities", **duckling_args)
 
-    request_callback = request_builder(mock_entity_json, response_code=response_code)
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
+    resp = MockResponse(json.dumps(mock_entity_json), response_code)
+    mocker.patch('aiohttp.ClientSession.post', return_value=resp)
 
     workflow = Workflow([duckling_plugin])
     if isinstance(reference_time, str):
@@ -194,9 +195,8 @@ def test_plugin_working_cases(payload) -> None:
             latent_entities=use_latent,
         )
         output = Output(**output)
-        _, output = workflow.run(input_, output)
+        _, output = await workflow.run(input_, output)
         output = output.dict()
-
         if not output["entities"]:
             assert output["entities"] == []
 
@@ -214,11 +214,12 @@ def test_plugin_working_cases(payload) -> None:
                 latent_entities=use_latent,
             )
             output = Output(**output)
-            workflow.run(input_, output)
+            await workflow.run(input_, output)
 
 
+@pytest.mark.asyncio
 @httpretty.activate
-def test_plugin_no_transform():
+async def test_plugin_no_transform(mocker):
     mock_entity_json = [
         {
             "body": "today",
@@ -240,10 +241,8 @@ def test_plugin_no_transform():
             "latent": False,
         }
     ]
-    request_callback = request_builder(mock_entity_json, response_code=200)
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
+    resp = MockResponse(json.dumps(mock_entity_json), 200)
+    mocker.patch('aiohttp.ClientSession.post', return_value=resp)
 
     df = pd.DataFrame(
         [
@@ -271,12 +270,13 @@ def test_plugin_no_transform():
         output_column="entities",
     )
 
-    df_ = duckling_plugin.transform(df)
+    df_ = await duckling_plugin.transform(df)
     assert "entities" not in df_.columns
 
 
+@pytest.mark.asyncio
 @httpretty.activate
-def test_plugin_transform():
+async def test_plugin_transform(mocker):
     mock_entity_json = [
         {
             "body": "today",
@@ -298,10 +298,8 @@ def test_plugin_transform():
             "latent": False,
         }
     ]
-    request_callback = request_builder(mock_entity_json, response_code=200)
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
+    resp = MockResponse(json.dumps(mock_entity_json), 200)
+    mocker.patch('aiohttp.ClientSession.post', return_value=resp)
 
     df = pd.DataFrame(
         [
@@ -342,14 +340,15 @@ def test_plugin_transform():
         grain="day",
     )
 
-    df_ = duckling_plugin.transform(df)
+    df_ = await duckling_plugin.transform(df)
     parsed_entity = df_["entities"].iloc[0][0]
     assert parsed_entity.value == today.value
     assert parsed_entity.type == today.type
 
 
+@pytest.mark.asyncio
 @httpretty.activate
-def test_plugin_transform_type_error():
+async def test_plugin_transform_type_error(mocker):
     mock_entity_json = [
         {
             "body": "today",
@@ -371,10 +370,8 @@ def test_plugin_transform_type_error():
             "latent": False,
         }
     ]
-    request_callback = request_builder(mock_entity_json, response_code=200)
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
+    resp = MockResponse(json.dumps(mock_entity_json), 200)
+    mocker.patch('aiohttp.ClientSession.post', return_value=resp)
 
     df = pd.DataFrame(
         [
@@ -399,11 +396,12 @@ def test_plugin_transform_type_error():
     )
 
     with pytest.raises(TypeError):
-        _ = duckling_plugin.transform(df)
+        _ = await duckling_plugin.transform(df)
 
 
+@pytest.mark.asyncio
 @httpretty.activate
-def test_plugin_transform_existing_entity():
+async def test_plugin_transform_existing_entity(mocker):
     mock_entity_json = [
         {
             "body": "today",
@@ -425,10 +423,8 @@ def test_plugin_transform_existing_entity():
             "latent": False,
         }
     ]
-    request_callback = request_builder(mock_entity_json, response_code=200)
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
+    resp = MockResponse(json.dumps(mock_entity_json), 200)
+    mocker.patch('aiohttp.ClientSession.post', return_value=resp)
 
     df = pd.DataFrame(
         [
@@ -476,7 +472,7 @@ def test_plugin_transform_existing_entity():
         output_column="entities",
     )
 
-    df_ = duckling_plugin.transform(df)
+    df_ = await duckling_plugin.transform(df)
     today = TimeEntity(
         entity_type="date",
         body="today",

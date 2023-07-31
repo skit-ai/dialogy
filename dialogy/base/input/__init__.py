@@ -240,7 +240,6 @@ class Input(BaseModel):
 
     @validator("reference_time")
     def check_reference_time(cls, v):  # type: ignore
-        print(v)
         if not v:
             return None
         if not is_unix_ts(v):

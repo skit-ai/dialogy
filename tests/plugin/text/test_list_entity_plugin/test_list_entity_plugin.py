@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from dialogy.base import Input, Output
-from dialogy.plugins import ListEntityPlugin
+from dialogy.base import Input
+from dialogy.plugins.registry import ListEntityPlugin
 from dialogy.types import KeywordEntity
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
@@ -58,7 +58,8 @@ def test_type_error_if_compiled_patterns_missing():
         l.regex_search("...")
 
 
-def test_entity_extractor_transform():
+@pytest.mark.asyncio
+async def test_entity_extractor_transform():
     entity_extractor = ListEntityPlugin(
         dest="output.entities",
         input_column="data",
@@ -86,7 +87,7 @@ def test_entity_extractor_transform():
         ],
         columns=["data", "entities"],
     )
-    df_ = entity_extractor.transform(df)
+    df_ = await entity_extractor.transform(df)
     parsed_entities = df_.entities
     assert parsed_entities.iloc[0][0].entity_type == "fruits"
     assert parsed_entities.iloc[0][0].value == "apple"
@@ -94,7 +95,8 @@ def test_entity_extractor_transform():
     assert parsed_entities.iloc[1][1].value == "orange"
 
 
-def test_entity_extractor_no_transform():
+@pytest.mark.asyncio
+async def test_entity_extractor_no_transform():
     entity_extractor = ListEntityPlugin(
         dest="output.entities",
         input_column="data",
@@ -122,12 +124,13 @@ def test_entity_extractor_no_transform():
         ],
         columns=["data", "entities"],
     )
-    df_ = entity_extractor.transform(df)
+    df_ = await entity_extractor.transform(df)
     parsed_entities = df_.entities
     assert pd.isna(parsed_entities.iloc[0]) is True
 
 
-def test_entity_extractor_transform_no_existing_entity():
+@pytest.mark.asyncio
+async def test_entity_extractor_transform_no_existing_entity():
     entity_extractor = ListEntityPlugin(
         dest="output.entities",
         input_column="data",
@@ -146,7 +149,7 @@ def test_entity_extractor_transform_no_existing_entity():
             },
         ]
     )
-    df_ = entity_extractor.transform(df)
+    df_ = await entity_extractor.transform(df)
     parsed_entities = df_.entities
     assert parsed_entities.iloc[0][0].entity_type == "fruits"
     assert parsed_entities.iloc[0][0].value == "apple"
@@ -154,8 +157,9 @@ def test_entity_extractor_transform_no_existing_entity():
     assert parsed_entities.iloc[1][0].value == "orange"
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_get_list_entities(payload):
+async def test_get_list_entities(payload):
     input_ = payload.get("input")
     expected = payload.get("expected")
     exception = payload.get("exception")
@@ -172,7 +176,7 @@ def test_get_list_entities(payload):
         )
 
         workflow = Workflow([list_entity_plugin])
-        _, output = workflow.run(input=Input(utterances=transcripts))
+        _, output = await workflow.run(input=Input(utterances=transcripts))
         output = output.dict()
         entities = output["entities"]
 
@@ -191,4 +195,4 @@ def test_get_list_entities(payload):
             )
 
             workflow = Workflow([list_entity_plugin])
-            _, output = workflow.run(input=Input(utterances=transcripts))
+            _, output = await workflow.run(input=Input(utterances=transcripts))

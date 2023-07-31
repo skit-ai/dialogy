@@ -6,8 +6,9 @@ from tests import EXCEPTIONS, load_tests
 import pytest
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("oos_filter", __file__))
-def test_oos_filter(payload) -> None:
+async def test_oos_filter(payload) -> None:
     threshold = payload.get("threshold")
     intent_oos = payload.get("intent_oos")
     intent_threshold_map_path = payload.get("intent_threshold_map_path")
@@ -46,10 +47,10 @@ def test_oos_filter(payload) -> None:
         if payload["empty_intents"]:
             output = Output(intents=[])
             with pytest.raises(EXCEPTIONS[payload["exception"]]):
-                _, output = workflow.run(Input(utterances=body), output)
+                _, output = await workflow.run(Input(utterances=body), output)
 
         else:
             output = Output(intents=[intent])
-            _, output = workflow.run(Input(utterances=body), output)
+            _, output = await workflow.run(Input(utterances=body), output)
 
             assert output.intents[0].name == payload["expected_intent"]

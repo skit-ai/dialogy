@@ -6,7 +6,7 @@ import hashlib
 import pathlib
 
 from dialogy.base import Input
-from dialogy.plugins import ListSearchPlugin
+from dialogy.plugins.registry import ListSearchPlugin
 from dialogy.workflow import Workflow
 from tests import EXCEPTIONS, load_tests
 
@@ -78,8 +78,9 @@ def test_not_supported_lang(mocker):
         l.get_entities(["........."], "te")
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_get_list_entities(payload, mocker):
+async def test_get_list_entities(payload, mocker):
     input_ = payload.get("input")
     lang_ = payload.get("lang")
     expected = payload.get("expected")
@@ -90,13 +91,13 @@ def test_get_list_entities(payload, mocker):
     mocker.patch("stanza.download", return_value=1)
     mocker.patch("stanza.Pipeline", return_value={})
     mocker.patch(
-        "dialogy.plugins.ListSearchPlugin.get_words_from_nlp", return_value=nlp_words
+        "dialogy.plugins.registry.ListSearchPlugin.get_words_from_nlp", return_value=nlp_words
     )
 
     list_entity_plugin = ListSearchPlugin(dest="output.entities", **config)
 
     workflow = Workflow([list_entity_plugin])
-    _, output = workflow.run(Input(utterances=transcripts, lang=lang_))
+    _, output = await workflow.run(Input(utterances=transcripts, lang=lang_))
     output = output.dict()
     entities = output["entities"]
 

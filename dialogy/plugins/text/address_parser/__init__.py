@@ -68,7 +68,7 @@ class AddressParserPlugin(Plugin):
         }
         self.provider_fn = provider_functions[provider]
 
-    def utility(self, input_: Input, output: Output) -> List[Optional[AddressEntity]]:
+    async def utility(self, input_: Input, output: Output) -> List[Optional[AddressEntity]]:
 
         intents = output.intents
         pincode = ""

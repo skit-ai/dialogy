@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "dialogy"
-version = "1.2.1"
+version = "2.0.7"
 description = "Dialogy is a library for building and managing SLU applications."
-authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
+authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>", "Daksh Varshneya <dakshvar22@gmail.com"]
 license = "MIT"
 repository = "https://github.com/skit-ai/dialogy"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
-attrs = "^20.3.0"
+attrs = "21.3.0"
 requests = "^2.25.1"
 pytz = "^2020.4"
 python-dateutil = "^2.8.1"
@@ -33,10 +33,13 @@ black = "^22.8.0"
 googlemaps = "^4.6.0"
 torch = "1.12.1"
 pydantic = "^1.10.2"
-types-pyyaml = "^6.0.12.9"
+aiohttp = "^3.8.4"
+nest-asyncio = "^1.5.6"
+transformers = "4.30.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.0"
+pytest = "^7.3.1"
+pytest-asyncio = "^0.21.0"
 pytest-cov = "^2.10.1"
 copier = "^6.0.0"
 mypy = "^0.982"
@@ -55,6 +58,7 @@ sphinxcontrib-mermaid = "^0.7.1"
 pytest-mock = "^3.7.0"
 spacy = "^3.3.1"
 ipykernel = "^6.15.0"
+types-PyYAML = "6.0.12.9"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"

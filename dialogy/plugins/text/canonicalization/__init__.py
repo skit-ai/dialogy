@@ -36,6 +36,7 @@ class CanonicalizationPlugin(Plugin):
         use_transform: bool = False,
         threshold: float = 0.0,
         debug: bool = False,
+        **kwargs: Any,
     ) -> None:
         super().__init__(
             dest=dest,
@@ -44,6 +45,7 @@ class CanonicalizationPlugin(Plugin):
             use_transform=use_transform,
             input_column=input_column,
             output_column=output_column,
+            **kwargs
         )
         self.mask = mask
         self.mask_tokens = mask_tokens or []
@@ -77,12 +79,12 @@ class CanonicalizationPlugin(Plugin):
 
         return canonicalized_transcripts
 
-    def utility(self, input: Input, output: Output) -> Any:
+    async def utility(self, input: Input, output: Output) -> Any:
         entities = output.entities
         transcripts = input.transcripts
         return self.mask_transcript(entities, transcripts)
 
-    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+    async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         if not self.use_transform:
             return training_data
 

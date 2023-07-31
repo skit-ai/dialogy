@@ -9,11 +9,12 @@ from typing import Optional
 
 import httpretty
 import pytest
+import json
 
 from pydantic import ValidationError
 
 from dialogy.base import Input, Plugin
-from dialogy.plugins import DucklingPlugin
+from dialogy.plugins.registry import DucklingPlugin
 from dialogy.types import (
     BaseEntity,
     CreditCardNumberEntity,
@@ -28,7 +29,7 @@ from dialogy.types import (
 from dialogy.types.entity.pincode import PincodeEntity
 from dialogy.utils import dt2timestamp
 from dialogy.workflow import Workflow
-from tests import EXCEPTIONS, load_tests, request_builder
+from tests import EXCEPTIONS, load_tests, MockResponse
 
 
 class MockPlugin(Plugin):
@@ -718,9 +719,10 @@ def test_time_interval_entity_no_value() -> None:
         TimeIntervalEntity.from_duckling(d, 1)
 
 
+@pytest.mark.asyncio
 @httpretty.activate
 @pytest.mark.parametrize("payload", load_tests("cases", __file__))
-def test_entity_type(payload) -> None:
+async def test_entity_type(payload, mocker) -> None:
     """
     Evaluate a set of cases from a file.
     """
@@ -736,22 +738,20 @@ def test_entity_type(payload) -> None:
         timezone="Asia/Kolkata",
     )
 
-    request_callback = request_builder(mock_entity_json)
-    httpretty.register_uri(
-        httpretty.POST, "http://0.0.0.0:8000/parse", body=request_callback
-    )
+    resp = MockResponse(json.dumps(mock_entity_json), 200)
+    mocker.patch('aiohttp.ClientSession.post', return_value=resp)
 
     workflow = Workflow([duckling_plugin])
 
     if expected:
-        _, output = workflow.run(Input(utterances=body))
+        _, output = await workflow.run(Input(utterances=body))
         output = output.dict()
         entities = output["entities"]
         for i, entity in enumerate(entities):
             assert entity["entity_type"] == expected[i]["entity_type"]
     elif exception:
         with pytest.raises(EXCEPTIONS[exception]):
-            workflow.run(Input(utterances=body))
+            await workflow.run(Input(utterances=body))
 
 
 def test_pincode_entity() -> None:

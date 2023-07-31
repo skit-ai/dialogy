@@ -6,7 +6,7 @@ import pytest
 from torch import threshold
 
 from dialogy.base.entity_extractor import EntityScoringMixin
-from dialogy.plugins import DucklingPlugin
+from dialogy.plugins.registry import DucklingPlugin
 from dialogy.types import KeywordEntity
 from tests import EXCEPTIONS, load_tests
 

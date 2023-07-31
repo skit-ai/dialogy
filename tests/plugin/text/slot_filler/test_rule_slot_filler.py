@@ -8,7 +8,7 @@ import pytest
 
 import dialogy.constants as const
 from dialogy.base import Input, Output
-from dialogy.plugins import RuleBasedSlotFillerPlugin
+from dialogy.plugins.registry import RuleBasedSlotFillerPlugin
 from dialogy.types import BaseEntity
 from dialogy.types.intent import Intent
 from dialogy.workflow import Workflow
@@ -26,7 +26,8 @@ rules = {
 }
 
 
-def test_slot_filling() -> None:
+@pytest.mark.asyncio
+async def test_slot_filling() -> None:
     """
     This test case covers a trivial usage of a slot-filler.
     We have `rules` that demonstrate association of intents with entities and their respective slot-configuration.
@@ -54,7 +55,7 @@ def test_slot_filling() -> None:
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
     output = Output(intents=[intent], entities=[entity])
 
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     output = output.dict()
     intent, *_ = output[const.INTENTS]
 
@@ -63,7 +64,8 @@ def test_slot_filling() -> None:
     assert intent["slots"]["entity_1_slot"]["values"][0] == entity.dict()
 
 
-def test_slot_no_fill() -> None:
+@pytest.mark.asyncio
+async def test_slot_no_fill() -> None:
     """
     Here, we will see that an entity will not fill an intent unless the intent has a slot for it.
     `intent_1` doesn't have a slot for an entity of type `entity_2`.
@@ -92,7 +94,7 @@ def test_slot_no_fill() -> None:
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
     output = Output(intents=[intent], entities=[entity])
 
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
@@ -100,7 +102,8 @@ def test_slot_no_fill() -> None:
     assert len(output[const.INTENTS][0]["slots"]) == 0
 
 
-def test_slot_invalid_intents() -> None:
+@pytest.mark.asyncio
+async def test_slot_invalid_intents() -> None:
     """
     Here, we will see that an entity will not fill an intent unless the intent has a slot for it.
     `intent_1` doesn't have a slot for an entity of type `entity_2`.
@@ -130,7 +133,7 @@ def test_slot_invalid_intents() -> None:
     # The RuleBasedSlotFillerPlugin specifies that it expects `Tuple[Intent, List[Entity])` on `access(workflow)`.
     output = Output(intents=[], entities=[entity])
     # workflow.set("output.intents", []).set("output.entities", [entity])
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
@@ -138,7 +141,8 @@ def test_slot_invalid_intents() -> None:
     assert output[const.INTENTS] == []
 
 
-def test_slot_dual_fill() -> None:
+@pytest.mark.asyncio
+async def test_slot_dual_fill() -> None:
     """
     Let's try filling both the slots this time!
     `intent_2` supports both `entity_1` and `entity_2`.
@@ -181,7 +185,7 @@ def test_slot_dual_fill() -> None:
     #     "output.entities", [entity_1, entity_2]
     # )
     output = Output(intents=[intent], entities=[entity_1, entity_2])
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     output = output.dict()
     intent, *_ = output[const.INTENTS]
 
@@ -191,7 +195,8 @@ def test_slot_dual_fill() -> None:
     assert intent["slots"]["entity_2_slot"]["values"] == [entity_2.dict()]
 
 
-def test_slot_filling_multiple() -> None:
+@pytest.mark.asyncio
+async def test_slot_filling_multiple() -> None:
     """
     Let's try filling both the slots this time with fill_multiple=True!
     `intent_2` supports both `entity_1` and `entity_2`.
@@ -232,7 +237,7 @@ def test_slot_filling_multiple() -> None:
     #     "output.entities", [entity_1, entity_2]
     # )
     output = Output(intents=[intent], entities=[entity_1, entity_2])
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
@@ -241,7 +246,8 @@ def test_slot_filling_multiple() -> None:
     assert output[const.INTENTS][0]["slots"]["entity_2_slot"]["values"] == [entity_2.dict()]
 
 
-def test_slot_competition_fill_multiple() -> None:
+@pytest.mark.asyncio
+async def test_slot_competition_fill_multiple() -> None:
     """
     What happens when we have two entities of the same type but different value?
     """
@@ -280,7 +286,7 @@ def test_slot_competition_fill_multiple() -> None:
     #     "output.entities", [entity_1, entity_2]
     # )
     output = Output(intents=[intent], entities=[entity_1, entity_2])
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
@@ -291,7 +297,8 @@ def test_slot_competition_fill_multiple() -> None:
     ]
 
 
-def test_slot_competition_fill_one() -> None:
+@pytest.mark.asyncio
+async def test_slot_competition_fill_one() -> None:
     """
     What happens when we have two entities of the same type but different value?
     """
@@ -327,7 +334,7 @@ def test_slot_competition_fill_one() -> None:
     )
 
     output = Output(intents=[intent], entities=[entity_1, entity_2])
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     output = output.dict()
 
     # `workflow.output[0]` is the `Intent` we created.
@@ -337,7 +344,8 @@ def test_slot_competition_fill_one() -> None:
     assert "entity_1_slot" not in output[const.INTENTS][0]["slots"]
 
 
-def test_slot_filling_order() -> None:
+@pytest.mark.asyncio
+async def test_slot_filling_order() -> None:
     """
     Here, we will see that entities of same type filled in a slot are sorted by their score in descending order.
     """
@@ -390,7 +398,7 @@ def test_slot_filling_order() -> None:
     #     "output.entities", [entity_1, entity_2, entity_3], sort_output_attributes=False
     # )  # we don't want to sort the output attributes here as we want to test if slot.json() does the sorting for us.
     output = Output(intents=[intent], entities=[entity_1, entity_2, entity_3])
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     output = output.dict()
 
     slot_values = output["intents"][0]["slots"]["entity_1_slot"]["values"]
@@ -400,7 +408,8 @@ def test_slot_filling_order() -> None:
     )
 
 
-def test_slot_filling_with_expected_slots() -> None:
+@pytest.mark.asyncio
+async def test_slot_filling_with_expected_slots() -> None:
     """
     Here, we will see that entities of same type filled in a slot are sorted by their score in descending order.
     Only if the slots are expected.
@@ -448,7 +457,7 @@ def test_slot_filling_with_expected_slots() -> None:
     )
 
     output = Output(intents=[intent], entities=[entity_1, entity_2, entity_3])
-    _, output = workflow.run(
+    _, output = await workflow.run(
         Input(utterances=body, expected_slots=["entity_1_slot"]), output
     )
     output = output.dict()
@@ -456,7 +465,8 @@ def test_slot_filling_with_expected_slots() -> None:
     assert [s_val["name"] for s_key, s_val in output["intents"][0]["slots"].items()] == ["entity_1_slot"]
 
 
-def test_slot_filling_order_by_alternative_index() -> None:
+@pytest.mark.asyncio
+async def test_slot_filling_order_by_alternative_index() -> None:
     """
     Here, we will see that entities of same type filled in a slot are sorted by their alternative_index in ascending order.
     """
@@ -507,7 +517,7 @@ def test_slot_filling_order_by_alternative_index() -> None:
 
     output = Output(intents=[intent], entities=[entity_1, entity_2, entity_3])
 
-    _, output = workflow.run(Input(utterances=body), output)
+    _, output = await workflow.run(Input(utterances=body), output)
     slot_values = output.dict()["intents"][0]["slots"]["entity_1_slot"]["values"]
     assert all(
         slot_values[i]["alternative_index"] <= slot_values[i + 1]["alternative_index"]

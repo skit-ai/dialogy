@@ -39,12 +39,13 @@ class ArbitraryPlugin(Plugin):
             dest=dest, guards=guards, debug=debug, use_transform=use_transform
         )
 
-    def utility(self, _: Input, __: Output) -> Any:
+    async def utility(self, _: Input, __: Output) -> Any:
         return [Intent(name="_greeting_", score=0.9)]
 
 
 # == Plugin as a class with workflow ==
-def test_arbitrary_plugin() -> None:
+@pytest.mark.asyncio
+async def test_arbitrary_plugin() -> None:
     """
     We will test how an arbitrary-class-based plugin works with a workflow.
     """
@@ -58,7 +59,7 @@ def test_arbitrary_plugin() -> None:
 
     # This runs all the `preprocessors` and `postprocessors` provided previously.
     # we can expect our `arbitrary_plugin` will also be used.
-    _, output = workflow.run(input_)
+    _, output = await workflow.run(input_)
     first_intent, *rest = output.intents
 
     # This test would pass only if our plugin works correctly!
@@ -93,54 +94,58 @@ def test_plugin_train() -> None:
     assert arbitrary_plugin.train([]) is None
 
 
-def test_plugin_transform_not_use_transform() -> None:
+@pytest.mark.asyncio
+async def test_plugin_transform_not_use_transform() -> None:
     arbitrary_plugin = ArbitraryPlugin(dest="output.intents", use_transform=False)
-    assert arbitrary_plugin.transform([]) == []
+    assert await arbitrary_plugin.transform([]) == []
 
-
-def test_plugin_transform() -> None:
+@pytest.mark.asyncio
+async def test_plugin_transform() -> None:
     arbitrary_plugin = ArbitraryPlugin(
         dest="output.intents", debug=False, use_transform=True
     )
-    assert arbitrary_plugin.transform([{"a": 1}]) == [{"a": 1}]
+    assert await arbitrary_plugin.transform([{"a": 1}]) == [{"a": 1}]
 
 
-def test_plugin_guards() -> None:
+@pytest.mark.asyncio
+async def test_plugin_guards() -> None:
     arbitrary_plugin = ArbitraryPlugin(
         dest="output.intents",
-        guards=[lambda i, _: i.current_state == "COF"],
+        guards=[lambda i, _, p: i.current_state == "COF"],
     )
     input = Input(utterances=[[{"transcript": "hello"}]], current_state="COF")
     output = Output()
     assert arbitrary_plugin.prevent(input, output) is True
 
-    returned_input, returned_output = arbitrary_plugin(input, output)
+    returned_input, returned_output = await arbitrary_plugin(input, output)
     # Output should still be empty
     assert returned_output == output
     assert returned_input == input
 
 
-def test_plugin_no_set_on_invalid_input():
+@pytest.mark.asyncio
+async def test_plugin_no_set_on_invalid_input():
     arbitrary_plugin = ArbitraryPlugin(
         dest="output.intents",
-        guards=[lambda i, _: i.current_state == "COF"],
+        guards=[lambda i, _, p: i.current_state == "COF"],
     )
     input = None
     output = Output()
-    returned_input, returned_output = arbitrary_plugin(input, output)
+    returned_input, returned_output = await arbitrary_plugin(input, output)
     # Output should still be empty
     assert returned_output == output
     assert returned_input == input
 
 
-def test_plugin_no_set_on_invalid_output():
+@pytest.mark.asyncio
+async def test_plugin_no_set_on_invalid_output():
     arbitrary_plugin = ArbitraryPlugin(
         dest="output.intents",
-        guards=[lambda i, _: i.current_state == "COF"],
+        guards=[lambda i, _, p: i.current_state == "COF"],
     )
     input = Input(utterances=[[{"transcript": "hello"}]], current_state="COF")
     output = Output()
-    returned_input, returned_output = arbitrary_plugin(input, output)
+    returned_input, returned_output = await arbitrary_plugin(input, output)
     # Output should still be empty
     assert returned_output == output
     assert returned_input == input

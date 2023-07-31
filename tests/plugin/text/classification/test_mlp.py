@@ -10,7 +10,7 @@ from sklearn.model_selection import GridSearchCV
 
 import dialogy.constants as const
 from dialogy.base import Input
-from dialogy.plugins import MergeASROutputPlugin, MLPMultiClass
+from dialogy.plugins.registry import MergeASROutputPlugin, MLPMultiClass
 from dialogy.utils import load_file
 from dialogy.workflow import Workflow
 from tests import load_tests
@@ -265,8 +265,9 @@ def test_invalid_operations(tmpdir):
     assert mlp_clf.inference(["text"])[0].name == "_error_"
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize("payload", load_tests("mlp_cases", __file__))
-def test_inference(payload, tmpdir):
+async def test_inference(payload, tmpdir):
     directory = tmpdir.mkdir("mlp_plugin")
     file_path = directory.join(const.MLPMODEL_FILE)
 
@@ -337,7 +338,7 @@ def test_inference(payload, tmpdir):
     )
 
     workflow.train(train_df)
-    _, output = workflow.run(
+    _, output = await workflow.run(
         Input(utterances=[[{"transcript": transcript} for transcript in transcripts]])
     )
     assert output.intents[0].name == intent

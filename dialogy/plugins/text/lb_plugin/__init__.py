@@ -4,7 +4,7 @@ from pydash import partition
 
 from dialogy import constants as const
 from dialogy.base import Guard, Input, Output
-from dialogy.plugins import DucklingPlugin
+from dialogy.plugins.registry import DucklingPlugin
 from dialogy.types import BaseEntity
 
 
@@ -25,6 +25,7 @@ class DucklingPluginLB(DucklingPlugin):
         output_column: Optional[str] = None,
         use_transform: bool = False,
         debug: bool = False,
+        **kwargs: Any
     ):
         super().__init__(
             dimensions,
@@ -41,10 +42,11 @@ class DucklingPluginLB(DucklingPlugin):
             output_column=output_column,
             use_transform=use_transform,
             debug=debug,
+            **kwargs
         )
 
-    def utility(self, input_: Input, output: Output) -> List[BaseEntity]:
-        entity_list = super().utility(input_, output)
+    async def utility(self, input_: Input, output: Output) -> List[BaseEntity]:
+        entity_list = await super().utility(input_, output)
         datetime_list, other_list = partition(
             entity_list, lambda x: x.entity_type in ["datetime", "date", "time"]
         )

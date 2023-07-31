@@ -1,6 +1,7 @@
 import json
 
 import pandas as pd
+import pytest
 
 from dialogy.base import Input
 from dialogy.plugins.text.canonicalization import CanonicalizationPlugin
@@ -99,22 +100,26 @@ TEST_DATA_2 = pd.DataFrame(
 )
 
 
-def test_canonicalization_utility():
+@pytest.mark.asyncio
+async def test_canonicalization_utility():
     input_ = Input(utterances=[[{"transcript": "hello apple"}]])
-    input_, _ = workflow.run(input_)
+    input_, _ = await workflow.run(input_)
     assert input_.clf_feature == ["MASK <fruits>"]
 
 
-def test_canonicalization_transform():
-    df = canonicalization.transform(TEST_DATA.copy())
+@pytest.mark.asyncio
+async def test_canonicalization_transform():
+    df = await canonicalization.transform(TEST_DATA.copy())
     assert df["data"][0] == json.dumps(["MASK <fruits>", "MASK orange"])
 
 
-def test_canonicalization_transform_check_alts():
-    df = canonicalization.transform(TEST_DATA_2.copy())
+@pytest.mark.asyncio
+async def test_canonicalization_transform_check_alts():
+    df = await canonicalization.transform(TEST_DATA_2.copy())
     assert df["data"][0] == json.dumps(["MASK apple", "MASK orange"])
 
 
-def test_canonicalization_non_transform():
-    df = no_op_canonicalization.transform(TEST_DATA.copy())
+@pytest.mark.asyncio
+async def test_canonicalization_non_transform():
+    df = await no_op_canonicalization.transform(TEST_DATA.copy())
     assert df["data"][0] == json.dumps(["hello apple", "hello orange"])

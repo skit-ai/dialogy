@@ -135,6 +135,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         use_transform: bool = True,
         flags: re.RegexFlag = re.I | re.U,
         debug: bool = False,
+        **kwargs: Any
     ):
         super().__init__(
             dest=dest,
@@ -143,6 +144,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
             input_column=input_column,
             output_column=output_column,
             use_transform=use_transform,
+            **kwargs
         )
         self.__style_search_map = {
             const.SPACY: self.ner_search,
@@ -279,7 +281,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         aggregated_entities = self.entity_consensus(entities, len(transcripts))
         return self.apply_filters(aggregated_entities)
 
-    def utility(self, input: Input, _: Output) -> Any:
+    async def utility(self, input: Input, _: Output) -> Any:
         transcripts = input.transcripts
         return self.get_entities(transcripts)  # pylint: disable=no-value-for-parameter
 
@@ -359,7 +361,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         logger.debug(entity_tokens)
         return entity_tokens
 
-    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+    async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         """
         Transform training data.
 
@@ -376,7 +378,7 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         if self.output_column not in training_data.columns:
             training_data[self.output_column] = None
 
-        logger.disable("dialogy")
+        # logger.disable("dialogy")
         for i, row in tqdm(training_data.iterrows(), total=len(training_data)):
             transcripts = self.make_transform_values(row[self.input_column])
             entities = self.get_entities(transcripts)

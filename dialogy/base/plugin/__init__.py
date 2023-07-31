@@ -199,14 +199,13 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Any, Callable, List, Optional
-
 import dialogy.constants as const
 from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.utils.logger import logger
 
 
-Guard = Callable[[Input, Output], bool]
+Guard = Callable[[Input, Output, str], bool]
 
 
 class Plugin(ABC):
@@ -237,6 +236,7 @@ class Plugin(ABC):
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
         dynamic_output_path: bool = False,
+        **kwargs: Any
     ) -> None:
         self.debug = debug
         self.guards = guards
@@ -245,10 +245,18 @@ class Plugin(ABC):
         self.input_column = input_column
         self.output_column = output_column or input_column
         self.use_transform = use_transform
+        self.purpose = kwargs.pop("purpose", const.PRODUCTION)
+        self.project_name = kwargs.pop("project_name", None)
         self.dynamic_output_path = dynamic_output_path
+        if not self.project_name:
+            logger.warning(
+                f"project_name is set to None for {type(self)} because no value was received during "
+                f"the instantiation of the plugin."
+                f"If you are seeing this on core-slu-service, pipeline will fail."
+            )
 
     @abstractmethod
-    def utility(self, input_: Input, output: Output) -> Any:
+    async def utility(self, input_: Input, output: Output) -> Any:
         """
         An abstract method that describes the plugin's functionality.
 
@@ -260,7 +268,7 @@ class Plugin(ABC):
         :rtype: Any
         """
 
-    def __call__(self, input, output):  # type: ignore
+    async def __call__(self, input, output, **kwargs):  # type: ignore
         """
         Set workflow with output.
 
@@ -277,8 +285,7 @@ class Plugin(ABC):
         :param workflow: An instance of :ref:`Workflow <WorkflowClass>`.
         :type workflow: Workflow
         """
-        logger.enable(str(self)) if self.debug else logger.disable(str(self))
-
+        logger.enable(self.__module__) if self.debug and not kwargs.pop("is_sensitive", False) else logger.disable(self.__module__)
         if input is None:
             return input, output
 
@@ -289,7 +296,7 @@ class Plugin(ABC):
             return input, output
 
         # compute
-        return_value = self.utility(input, output)
+        return_value = await self.utility(input, output)
         if return_value is None:
             return input, output
 
@@ -300,6 +307,8 @@ class Plugin(ABC):
         # update
         if value is not None and isinstance(dest, str):
             input, output = self.set(dest, value, input, output)
+
+        # logger.enable("dialogy") if self.debug else logger.disable("dialogy")
 
         return input, output
 
@@ -370,7 +379,7 @@ class Plugin(ABC):
         """
         if not self.guards:
             return False
-        return any(guard(input_, output) for guard in self.guards)
+        return any(guard(input_, output, self.purpose) for guard in self.guards)
 
     def train(self, _: Any) -> Any:
         """
@@ -378,7 +387,7 @@ class Plugin(ABC):
         """
         return None
 
-    def transform(self, training_data: Any) -> Any:
+    async def transform(self, training_data: Any) -> Any:
         """
         Transform data for a plugin in the workflow.
         """

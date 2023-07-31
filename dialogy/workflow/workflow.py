@@ -115,6 +115,7 @@ from __future__ import annotations
 
 import time
 
+import typing
 from typing import List
 
 import attr
@@ -122,13 +123,14 @@ import pandas as pd
 
 from threading import Lock
 from pprint import pformat
+import asyncio, nest_asyncio
+from collections import OrderedDict
 
 from dialogy import constants as const
 from dialogy.base.input import Input
 from dialogy.base.output import Output
 from dialogy.base.plugin import Plugin
 from dialogy.utils.logger import logger
-from dialogy.utils import normalize, get_best_transcript
 
 
 @attr.s
@@ -168,11 +170,27 @@ class Workflow:
         Post init hook.
         """
         self.lock = Lock()
-        for plugin in self.plugins:
-            if isinstance(plugin, Plugin):
-                plugin.debug = self.debug & plugin.debug
 
-    def run(self, input: Input, output: Output = None):  # type: ignore
+    @typing.no_type_check
+    def log_output(self, executed_plugin: Plugin, input: Input, output: Output) -> None:
+        # PluginProxy
+        if hasattr(executed_plugin, "plugin_name"):
+            plugins_executed_names = executed_plugin.plugin_name
+        # PluginProxyFused
+        elif hasattr(executed_plugin, "plugins"):
+            plugins_executed_names = executed_plugin.plugins
+        else:
+            plugins_executed_names = str(executed_plugin)
+
+        output = {
+            "Resultant Transcripts": input.utterances,
+            "Resultant Feature Input to Classifier": input.clf_feature,
+            "Resultant Output intent": [] if not output.intents else output.intents[0],
+            "Resultant Output entities": output.entities
+        }
+        logger.debug(f"Executed plugin(s) - {plugins_executed_names} \n {pformat(output, sort_dicts=False)}")
+
+    async def run(self, input: Input, output: Output = None, **kwargs):  # type: ignore
         """
         .. _workflow_run:
 
@@ -206,10 +224,16 @@ class Workflow:
                 }
 
             start = time.perf_counter()
-            with self.lock:
-                input, output = plugin(input, output)
+            # with self.lock:
+            # Removing the lock as plugins are
+            # expected to be implemented in a thread safe manner
+            input, output = await plugin(input, output, **kwargs)
             end = time.perf_counter()
-
+            try:
+                self.log_output(plugin, input, output)
+            except Exception as e:
+                logger.debug(f"logging resultant output after "
+                             f"plugin execution failed because of {e}")
             # logs are available only when debug=False during class initialization
             if self.debug:
                 history["after"] = {
@@ -217,9 +241,6 @@ class Workflow:
                     "output": output.dict(),
                 }
                 history["perf"] = round(end - start, 4)
-
-            if history:
-                logger.debug(pformat(history))
 
         return input, output
 
@@ -236,7 +257,10 @@ class Workflow:
         """
         for plugin in self.plugins:
             plugin.train(training_data)
-            transformed_data = plugin.transform(training_data)
+            loop = asyncio.get_event_loop()
+            nest_asyncio.apply(loop)
+            coroutine = plugin.transform(training_data)
+            transformed_data = loop.run_until_complete(coroutine)
             if transformed_data is not None:
                 training_data = transformed_data
         return self

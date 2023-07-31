@@ -50,10 +50,10 @@ class MLPMultiClass(Plugin):
         label_column: str = const.LABELS,
         args_map: Optional[Dict[str, Any]] = None,
         skip_labels: Optional[List[str]] = None,
-        kwargs: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
     ) -> None:
 
-        super().__init__(dest=dest, guards=guards, debug=debug)
+        super().__init__(dest=dest, guards=guards, debug=debug, **kwargs)
         self.model_pipeline: Any = None
         self.fallback_label = fallback_label
         self.data_column = data_column
@@ -321,7 +321,7 @@ class MLPMultiClass(Plugin):
             self.mlp_model_path, mode="rb", loader=joblib.load
         )
 
-    def utility(self, input: Input, _: Output) -> Any:
+    async def utility(self, input: Input, _: Output) -> Any:
         return self.inference(
             input.clf_feature
         )  # pylint: disable=no-value-for-parameter

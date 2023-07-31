@@ -1,3 +1,4 @@
+
 from dialogy.plugins.text.calibration.xgb import CalibrationModel
 from dialogy.plugins.text.canonicalization import CanonicalizationPlugin
 from dialogy.plugins.text.classification.mlp import MLPMultiClass
@@ -15,3 +16,24 @@ from dialogy.plugins.text.error_recovery.error_recovery import ErrorRecoveryPlug
 from dialogy.plugins.text.oos_filter import OOSFilterPlugin
 from dialogy.plugins.text.intent_entity_mutator import IntentEntityMutatorPlugin
 from dialogy.plugins.text.qc_plugin import QCPlugin
+
+
+plugin_cls_lib = {
+    "CalibrationModel": CalibrationModel,
+    "CanonicalizationPlugin": CanonicalizationPlugin,
+    "MLPMultiClass": MLPMultiClass,
+    "MergeASROutputPlugin": MergeASROutputPlugin,
+    "DucklingPlugin": DucklingPlugin,
+    "ListEntityPlugin": ListEntityPlugin,
+    "XLMRMultiClass": XLMRMultiClass,
+    "RuleBasedSlotFillerPlugin": RuleBasedSlotFillerPlugin,
+    "AddressParserPlugin": AddressParserPlugin,
+    "RetainOriginalIntentPlugin": RetainOriginalIntentPlugin,
+    "CombineDateTimeOverSlots": CombineDateTimeOverSlots,
+    "DucklingPluginLB": DucklingPluginLB,
+    "ListSearchPlugin": ListSearchPlugin,
+    "ErrorRecoveryPlugin": ErrorRecoveryPlugin,
+    "OOSFilterPlugin": OOSFilterPlugin,
+    "IntentEntityMutatorPlugin": IntentEntityMutatorPlugin,
+    "QCPlugin": QCPlugin
+}

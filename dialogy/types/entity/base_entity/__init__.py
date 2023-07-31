@@ -55,6 +55,7 @@ Module provides access to a base class to create other entities.
 
         class DurationEntity {
             +str unit
+            +str grain
             +dict normalized
             +DurationEntity from_duckling(d)
         }

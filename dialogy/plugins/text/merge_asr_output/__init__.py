@@ -90,6 +90,7 @@ class MergeASROutputPlugin(Plugin):
         dest: Optional[str] = None,
         guards: Optional[List[Guard]] = None,
         debug: bool = False,
+        **kwargs: Any
     ) -> None:
         super().__init__(
             dest=dest,
@@ -98,12 +99,13 @@ class MergeASROutputPlugin(Plugin):
             output_column=output_column,
             use_transform=use_transform,
             debug=debug,
+            **kwargs
         )
 
-    def utility(self, input: Input, _: Output) -> Any:
+    async def utility(self, input: Input, _: Output) -> Any:
         return merge_asr_output(input.utterances)
 
-    def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
+    async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         if not self.use_transform:
             return training_data
 
