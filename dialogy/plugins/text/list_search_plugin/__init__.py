@@ -119,6 +119,7 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                 lang=lang_code,
                 tokenize_pretokenized=True,
                 download_method=DownloadMethod.REUSE_RESOURCES,
+                processors='tokenize,pos',
             )
 
     def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:
