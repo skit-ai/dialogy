@@ -105,20 +105,13 @@ Ensure tests are passing before you start working on your PRs.
 
 We follow [semantic versioning](https://semver.org/) to name new versions of the library.
 All new versions are hosted on PyPI and automatically pushed to PyPI 
-once a new tag is pushed to git. For e.g. if you want to release a new version `0.9.27` on PyPI, 
+once a new tag is pushed to git. For e.g. if you want to release a new version `2.1.3` on PyPI, 
 checkout `master` branch, create a new tag and push the tag to github:
 ```commandline
 git checkout master
 git pull
-git tag -a '0.9.27' -m 'new example release'
-git push -u origin 0.9.27
+git tag -a '2.1.3' -m 'new example release'
+git push -u origin 2.1.3
 ```
 
-**Note**: We are introducing major breaking changes to the library. As we go 
-through this transition and have the new changes adopted across all client code bases, we will need
-to support both the old API and new API of the library. For that reason, releases for the old API
-will happen through the `0.9.x` branch and will result in 
-new patch versions of the same minor version, for e.g. `0.9.30`.
-
-The new API will live on `master` and all changes built on top of new API 
-should be released from `master` with a new major version `1.0.x`, for e.g. `1.0.1`.
+Note: The new architecture of SLU is supported only by dialogy versions `2.x.y`. For any SLU that is not on the new architecture would be using `0.x.y` versions.
