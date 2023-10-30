@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dialogy"
-version = "0.10.0"
+version = "0.10.1"
 description = "Dialogy is a library for building and managing SLU applications."
 authors = ["Amresh Venugopal <amresh.venugopal@gmail.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ attrs = "^20.3.0"
 requests = "^2.25.1"
 pytz = "^2020.4"
 python-dateutil = "^2.8.1"
-pydash = "^4.9.3"
+pydash = "^6.0.0"
 numpy = "^1.20.2"
 scipy = "^1.7.1"
 loguru = "^0.5.3"
@@ -54,6 +54,21 @@ pytest-mock = "^3.7.0"
 spacy = "^3.3.1"
 ipykernel = "^6.15.0"
 types-tabulate = "^0.9.0.2"
+
+[ipython]
+version = ">=8.10.0"
+
+[tornado]
+version = ">=6.3.3"
+
+[GitPython]
+version = ">=3.1.33"
+
+[Pillow]
+version = ">=10.0.1"
+
+[certifi]
+version = ">=2023.07.22"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
