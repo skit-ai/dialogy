@@ -5,6 +5,7 @@ from dialogy.plugins.text.classification.mlp import MLPMultiClass
 from dialogy.plugins.text.classification.retain_intent import RetainOriginalIntentPlugin
 from dialogy.plugins.text.classification.xlmr import XLMRMultiClass
 from dialogy.plugins.text.combine_date_time import CombineDateTimeOverSlots
+from dialogy.plugins.text.dob_plugin import DOBPlugin
 from dialogy.plugins.text.duckling_plugin import DucklingPlugin
 from dialogy.plugins.text.lb_plugin import DucklingPluginLB
 from dialogy.plugins.text.list_entity_plugin import ListEntityPlugin
@@ -23,6 +24,7 @@ plugin_cls_lib = {
     "CanonicalizationPlugin": CanonicalizationPlugin,
     "MLPMultiClass": MLPMultiClass,
     "MergeASROutputPlugin": MergeASROutputPlugin,
+    "DOBPlugin":DOBPlugin,
     "DucklingPlugin": DucklingPlugin,
     "ListEntityPlugin": ListEntityPlugin,
     "XLMRMultiClass": XLMRMultiClass,
