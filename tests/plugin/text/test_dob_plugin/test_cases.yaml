@@ -1,0 +1,565 @@
+- utterances:
+  -
+    - confidence: 0.6564267
+      transcript: "6 to 4:59"
+    - confidence: 0.65825063
+      transcript: "6459"
+    - confidence: 0.7236573
+      transcript: "6:59"
+    - confidence: 0.7435373
+      transcript: "6th 4:59"
+    - confidence: 0.42740962
+      transcript: "6 for 59"
+    - confidence: 0.62294835
+      transcript: "6 or 4:59"
+    - confidence: 0.5137664
+      transcript: "6 459"
+    - confidence: 0.44438317
+      transcript: "6 4:50 9"
+    - confidence: 0.37032515
+      transcript: "64 59"
+    - confidence: 0.44438317
+      transcript: "6 for fifty-nine"
+  expected: "6 to 4:59"
+  description: "call 1, id: I266498697, error_category: "
+
+- utterances:
+  -
+    - confidence: 0.6564267
+      transcript: "6 to 4:59"
+    - confidence: 0.65825063
+      transcript: "6459"
+    - confidence: 0.7236573
+      transcript: "6:59"
+    - confidence: 0.7435373
+      transcript: "6th 4:59"
+    - confidence: 0.42740962
+      transcript: "6 for 59"
+    - confidence: 0.62294835
+      transcript: "6 or 4:59"
+    - confidence: 0.5137664
+      transcript: "6 459"
+    - confidence: 0.44438317
+      transcript: "6 4:50 9"
+    - confidence: 0.37032515
+      transcript: "64 59"
+    - confidence: 0.44438317
+      transcript: "6 for fifty-nine"
+  expected: "6:59"
+  description: "call 2, id: I275609977, error_category: "
+
+- utterances:
+  -
+    - confidence: 0.9128386
+      transcript: "1576"
+  expected: "1576"
+  description: "call 3, id: O10830309453, error_category: "
+
+- utterances:
+  -
+    - confidence: 0.6454812
+      transcript: "7 2763"
+    - confidence: 0.39310354
+      transcript: "7th 2763"
+    - confidence: 0.36840641
+      transcript: "7:20 763"
+    - confidence: 0.36022073
+      transcript: "7:27 63"
+    - confidence: 0.37189767
+      transcript: "7:27. 6 to 3"
+    - confidence: 0.36332303
+      transcript: "7:27. 63"
+    - confidence: 0.36600232
+      transcript: "7:27 to 6:33"
+    - confidence: 0.37127718
+      transcript: "7:27 to 6 to 3"
+    - confidence: 0.36204123
+      transcript: "7:20 seven sixty-three"
+    - confidence: 0.3695277
+      transcript: "727 63"
+  expected: "July 27th 1960"
+  description: "call 4, id: O10830646109, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.9122844
+      transcript: "July 27th 1960"
+    - confidence: 0.5956998
+      transcript: "July 27th nineteen 6"
+    - confidence: 0.7403251
+      transcript: "July 27th nineteen sixty"
+    - confidence: 0.5970477
+      transcript: "July twenty seventh nineteen sixty"
+    - confidence: 0.5873656
+      transcript: "July twenty seventh nineteen 6"
+    - confidence: 0.7395463
+      transcript: "July the 27th 1960"
+    - confidence: 0.59013546
+      transcript: "July twenty-seventh nineteen sixty"
+  expected: "July 27th 1960"
+  description: "call 4, id: O10830646109, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.54951096
+      transcript: "1212 72"
+    - confidence: 0.5891804
+      transcript: "12:12 is 72"
+    - confidence: 0.5092191
+      transcript: "12:12 to 72"
+    - confidence: 0.47724038
+      transcript: "12 12:00 is 72"
+    - confidence: 0.62284434
+      transcript: "12:12 72"
+    - confidence: 0.48582697
+      transcript: "12 12:00 72"
+    - confidence: 0.5595205
+      transcript: "1212 is 72"
+    - confidence: 0.5399843
+      transcript: "12:12 is seventy-two"
+    - confidence: 0.5087993
+      transcript: "12 1272"
+    - confidence: 0.5312013
+      transcript: "1212 and 72"
+  expected: "December 12th 1972"
+  description: "call 5, id: O10854145401, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.9128385
+      transcript: "December 12th 1972"
+    - confidence: 0.6221639
+      transcript: "December 12th nineteen seventy two"
+    - confidence: 0.5165949
+      transcript: "December 12th nineteen seventy-two"
+    - confidence: 0.5337697
+      transcript: "December twelfth nineteen seventy two"
+    - confidence: 0.4189055
+      transcript: "December twelfth nineteen seventy-two"
+    - confidence: 0.7045402
+      transcript: "December twelfth 1972"
+  expected: "December 12th 1972"
+  description: "call 5, id: O10854145401, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.7422427
+      transcript: "1212 72"
+    - confidence: 0.6226069
+      transcript: "12:12 to 72"
+    - confidence: 0.39931288
+      transcript: "12 to 12:32"
+    - confidence: 0.5041511
+      transcript: "1212 to 72"
+    - confidence: 0.47186333
+      transcript: "1212. 72"
+    - confidence: 0.5665432
+      transcript: "1212 $72"
+    - confidence: 0.41034815
+      transcript: "12 12:00 72"
+    - confidence: 0.46337035
+      transcript: "12 1272"
+    - confidence: 0.5801449
+      transcript: "12:12. 72"
+    - confidence: 0.68844926
+      transcript: "12:12 72"
+  expected: "December 12th 1972"
+  description: "call 5, id: O10854145401, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.86378163
+      transcript: "4:45"
+    - confidence: 0.751487
+      transcript: "4th 85"
+    - confidence: 0.56624573
+      transcript: "4 for the 85"
+    - confidence: 0.56624573
+      transcript: "4 for a 85"
+    - confidence: 0.375
+      transcript: "485"
+    - confidence: 0.5542795
+      transcript: "on 4th 85"
+    - confidence: 0.56624573
+      transcript: "4 for an 85"
+    - confidence: 0.6426135
+      transcript: "4 for 85"
+    - confidence: 0.5617315
+      transcript: "4 or 4:35"
+    - confidence: 0.375
+      transcript: "on 485"
+  expected: "485"
+  description: "call 6, id: O10854283846, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.9128386
+      transcript: "61257"
+    - confidence: 0.9128386
+      transcript: "6125 seven"
+    - confidence: 0.375
+      transcript: "6125 7"
+    - confidence: 0.375
+      transcript: "612 57"
+    - confidence: 0.375
+      transcript: "6 1 2 5 7"
+  expected: "61257"
+  description: "call 7, id: O10945174938, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.6770064
+      transcript: "3 to 76"
+    - confidence: 0.6036487
+      transcript: "3 to 7 to 6"
+    - confidence: 0.5948184
+      transcript: "3 to 7:36"
+    - confidence: 0.375
+      transcript: "3276"
+    - confidence: 0.54370093
+      transcript: "3 276"
+    - confidence: 0.55042934
+      transcript: "3 to 7. 6"
+    - confidence: 0.6471291
+      transcript: "3 to Seventy-Six"
+    - confidence: 0.5608109
+      transcript: "3 to 270 6"
+    - confidence: 0.6479101
+      transcript: "3 to 76."
+    - confidence: 0.5608109
+      transcript: "3 to 70 6"
+  expected: "3276"
+  description: "call 7, id: O10945174938, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.47632036
+      transcript: "7:29 1990"
+    - confidence: 0.44110787
+      transcript: "729-9090"
+    - confidence: 0.4213582
+      transcript: "79 nineteen ninety"
+    - confidence: 0.39615512
+      transcript: "7th 2019 9th"
+    - confidence: 0.43880254
+      transcript: "7th 2990"
+    - confidence: 0.40152285
+      transcript: "7:20 9 99 cent"
+    - confidence: 0.39879423
+      transcript: "7 29 99 cent"
+    - confidence: 0.46817553
+      transcript: "7:29 99th"
+    - confidence: 0.42997542
+      transcript: "7:29 99 cent"
+    - confidence: 0.3934703
+      transcript: "7th 29 99 cent"
+  expected: "729 1990"
+  description: "call 8, id: O10949637986, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.013324062
+      transcript: "5290"
+    - confidence: 0.14356692
+      transcript: "5:29"
+  expected: "5290"
+  description: "call 8, id: O10949637986, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.5503342
+      transcript: "6th 1278"
+    - confidence: 0.41715455
+      transcript: "6 2078"
+    - confidence: 0.43887377
+      transcript: "6th 2070 8"
+    - confidence: 0.46879363
+      transcript: "6th 2078"
+    - confidence: 0.38831332
+      transcript: "6 to oh seventy-eight"
+    - confidence: 0.46021625
+      transcript: "6 1278"
+    - confidence: 0.4284574
+      transcript: "6th 2070 a"
+    - confidence: 0.39916015
+      transcript: "6 12:00 78"
+    - confidence: 0.375
+      transcript: "6:07"
+    - confidence: 0.4391328
+      transcript: "6th 2070 8th"
+  expected: "62078"
+  description: "call 9, id: O10951948585, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.71429694
+      transcript: "1116 48"
+    - confidence: 0.4608461
+      transcript: "11 1648"
+    - confidence: 0.54803085
+      transcript: "1116 48th"
+    - confidence: 0.7184105
+      transcript: "11:16 48"
+    - confidence: 0.54803085
+      transcript: "1116 Forty-Eight"
+    - confidence: 0.5521444
+      transcript: "11:16 48th"
+    - confidence: 0.5521444
+      transcript: "11:16 Forty-Eight"
+    - confidence: 0.49309626
+      transcript: "11:16 forty eight"
+    - confidence: 0.54803085
+      transcript: "1116 488"
+  expected: "1116 48"
+  description: "call 10, id: O10957594915, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.661171
+      transcript: "8469"
+    - confidence: 0.3945848
+      transcript: "8 for 69"
+    - confidence: 0.5182074
+      transcript: "84 69"
+    - confidence: 0.46069714
+      transcript: "8 469"
+    - confidence: 0.46590602
+      transcript: "84 or 69"
+    - confidence: 0.40705696
+      transcript: "May 8th for 69"
+    - confidence: 0.5525972
+      transcript: "8 for sixty nine"
+    - confidence: 0.46697605
+      transcript: "8 for 6:39"
+    - confidence: 0.36379066
+      transcript: "08 for 69"
+    - confidence: 0.39472976
+      transcript: "8 for 60 9"
+  expected: "8469"
+  description: "call 11, id: O10962323127, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.60194904
+      transcript: "10:26 to 6"
+    - confidence: 0.90481335
+      transcript: "1026"
+    - confidence: 0.90481335
+      transcript: "10:26"
+    - confidence: 0.63990664
+      transcript: "1026 T6"
+    - confidence: 0.6439193
+      transcript: "10:20 66"
+    - confidence: 0.4198199
+      transcript: "10th 2066"
+    - confidence: 0.90481335
+      transcript: "1026 6"
+    - confidence: 0.6439193
+      transcript: "1020 $66"
+    - confidence: 0.57677674
+      transcript: "10:26 to 6."
+    - confidence: 0.6439193
+      transcript: "1020 66"
+  expected: "1026"
+  description: "call 12, id: O10964558225, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.46652526
+      transcript: "1026 T6"
+    - confidence: 0.54813075
+      transcript: "10:20 66"
+    - confidence: 0.4576525
+      transcript: "10 2066"
+    - confidence: 0.54542094
+      transcript: "1020 66"
+    - confidence: 0.5505544
+      transcript: "10:20 sixty-six"
+    - confidence: 0.54892546
+      transcript: "1020 66th"
+    - confidence: 0.37233654
+      transcript: "n 2066"
+    - confidence: 0.54892546
+      transcript: "1020 sixty-six"
+    - confidence: 0.5505544
+      transcript: "10:20 66th"
+    - confidence: 0.4904205
+      transcript: "10:20 sixty six"
+  expected: "1020"
+  description: "call 12, id: O10964558225, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.8917927
+      transcript: "October 20th 1960"
+    - confidence: 0.5253096
+      transcript: "October 20th nineteen 6"
+    - confidence: 0.64947116
+      transcript: "October 20th nineteen sixty"
+    - confidence: 0.4186621
+      transcript: "October twentieth nineteen 6"
+    - confidence: 0.3    
+      transcript: "October twentieth nineteen sixty"
+    - confidence: 0.52991045
+      transcript: "October 20th nineteen six"
+    - confidence: 0.4232629
+      transcript: "October twentieth nineteen six"
+    - confidence: 0.66398025
+      transcript: "October twentieth 1960"
+  expected: "October 20th, 1960"
+  description: "call 12, id: O10964558225, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.63681567
+      transcript: "5173"
+    - confidence: 0.37027207
+      transcript: "5 1 7 3"
+    - confidence: 0.375
+      transcript: "517 3"
+    - confidence: 0.43302935
+      transcript: "5 173"
+    - confidence: 0.40401468
+      transcript: "5 17 3"
+    - confidence: 0.39240882
+      transcript: "5 one seven 3"
+    - confidence: 0.3849479
+      transcript: "5 One 7 to 3"
+  expected: "5173"
+  description: "call 13, id: O10974289217, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.80872846
+      transcript: "6:28"
+    - confidence: 0.5990994
+      transcript: "6th 2098"
+    - confidence: 0.69738317
+      transcript: "6:20 98"
+    - confidence: 0.6439193
+      transcript: "6098"
+  expected: "628"
+  description: "call 14, id: O10974913596, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.7583141
+      transcript: "1:20 for 1992"
+    - confidence: 0.73677015
+      transcript: "1:24 1992"
+    - confidence: 0.7009103
+      transcript: "1:24. 1992"
+    - confidence: 0.68460345
+      transcript: "1 24 1992"
+    - confidence: 0.62919056
+      transcript: "124 1992"
+    - confidence: 0.7087341
+      transcript: "1:20 for 1992."
+    - confidence: 0.678026
+      transcript: "1:20 for a 1992"
+    - confidence: 0.6962385
+      transcript: "1:20 4 1992"
+    - confidence: 0.60957426
+      transcript: "1:20 for 992"
+    - confidence: 0.6161801
+      transcript: "1:24 or 1992"
+  expected: "1:20 for 1992"
+  description: "call 15, id: O10975075455, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.79604435
+      transcript: "24th 1992 1:20"
+    - confidence: 0.71225655
+      transcript: "24th 1990 to 1:20"
+    - confidence: 0.7704174
+      transcript: "24th June 1992 1:20"
+    - confidence: 0.64480525
+      transcript: "24th nineteen ninety to 1:20"
+    - confidence: 0.5546568
+      transcript: "2014 nineteen ninety to 1:20"
+    - confidence: 0.6990196
+      transcript: "24th nineteen ninety two 1:20"
+    - confidence: 0.55613166
+      transcript: "2014 nineteen ninety two 1:20"
+    - confidence: 0.60154206
+      transcript: "24th nineteen ninety-two 1:20"
+    - confidence: 0.8116609
+      transcript: "24th 1992"
+    - confidence: 0.47245285
+      transcript: "2014 nineteen ninety-two 1:20"
+  expected: "24th, 1992, 1:20"
+  description: "call 15, id: O10975075455, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.71024805
+      transcript: "it's 12:00 1936"
+    - confidence: 0.6879978
+      transcript: "it's 12 1936"
+    - confidence: 0.6273291
+      transcript: "it's 12:00 and 1936"
+    - confidence: 0.5542795
+      transcript: "it's 1219 36"
+    - confidence: 0.6777052
+      transcript: "it's twelve 1936"
+    - confidence: 0.5094596
+      transcript: "it's twelve nineteen thirty-six"
+    - confidence: 0.5542795
+      transcript: "it's 1219 thirty-six"
+    - confidence: 0.5542795
+      transcript: "it's 1219. 36"
+    - confidence: 0.5542795
+      transcript: "it's 1219 36."
+    - confidence: 0.7364886
+      transcript: "it's 12 and 1936"
+  expected: "It's 12:19, 1936"
+  description: "call 15, id: O10975075455, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.71024805
+      transcript: "it's 12:00 1936"
+    - confidence: 0.6879978
+      transcript: "it's 12 1936"
+    - confidence: 0.6273291
+      transcript: "it's 12:00 and 1936"
+    - confidence: 0.5542795
+      transcript: "it's 1219 36"
+    - confidence: 0.6777052
+      transcript: "it's twelve 1936"
+    - confidence: 0.5094596
+      transcript: "it's twelve nineteen thirty-six"
+    - confidence: 0.5542795
+      transcript: "it's 1219 thirty-six"
+    - confidence: 0.5542795
+      transcript: "it's 1219. 36"
+    - confidence: 0.5542795
+      transcript: "it's 1219 36."
+    - confidence: 0.7364886
+      transcript: "it's 12 and 1936"
+  expected: "12:00 1936"
+  description: "call 16, id: O10975094075, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.91283864
+      transcript: "December 19th"
+    - confidence: 0
+      transcript: "December nineteenth"
+  expected: "December 19th"
+  description: "call 16, id: O10975094075, error_category:"
+
+- utterances:
+  -
+    - confidence: 0.9128386
+      transcript: "5:43"
+    - confidence: 0.375
+      transcript: "5453"
+    - confidence: 0.46463975
+      transcript: "5 for 63"
+  expected: "5:43"
+  description: "call 17, id: O10975379688, error_category:"
+
+
+
