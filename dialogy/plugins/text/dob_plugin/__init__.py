@@ -18,7 +18,7 @@ def _transform_invalid_date(transcript):
     """
     return transcript
 import pdb
-def get_best_transcript_from_utterances(utterances, func_transcript):
+def get_transcripts_from_utterances(utterances, func_transcript):
     """
     input: utterances = [
         [{'transcript': '102998', 'confidence': None}, 
@@ -46,10 +46,12 @@ def get_best_transcript_from_utterances(utterances, func_transcript):
 
     # Sort the result_dict based on confidence in descending order
     sorted_result = {k: v for k, v in sorted(result_dict.items(), key=lambda item: item[1], reverse=True)}
+    transcripts = sorted(sorted_result, key=lambda x: sorted_result[x], reverse=True)
+    # print("transcripts = ", transcripts)
     # Get the best transcript from the sorted result
-    best_transcript = next(iter(sorted_result.keys()), [])
+    # best_transcript = next(iter(sorted_result.keys()), [])
 
-    return best_transcript
+    return transcripts
 
 
 def get_dob(utterances) -> str:  
@@ -63,9 +65,9 @@ def get_dob(utterances) -> str:
             return []
         else:
             # best_transcript = _format_date(utterances)
-            best_transcript = get_best_transcript_from_utterances(utterances=utterances, func_transcript=_transform_invalid_date)
-            print("dob output:",best_transcript)
-            return best_transcript
+            transcripts = get_transcripts_from_utterances(utterances=utterances, func_transcript=_transform_invalid_date)
+            print("dob output:",transcripts)
+            return transcripts
     except TypeError as type_error:
         raise TypeError("`transcript` is expected in the ASR output.") from type_error
 
@@ -93,8 +95,8 @@ class DOBPlugin(Plugin):
         )
 
     async def utility(self, input: Input, _: Output) -> Any:
-        return input.best_transcript
-        # return get_dob(input.utterances)
+        # return input.best_transcript
+        return get_dob(input.utterances)
 
     async def transform(self, training_data: pd.DataFrame) -> pd.DataFrame:
         if not self.use_transform:
