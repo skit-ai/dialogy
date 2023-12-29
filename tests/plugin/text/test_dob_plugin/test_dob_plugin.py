@@ -9,9 +9,9 @@ from dialogy.workflow import Workflow
 from tests import load_tests, MockResponse
 
 get_dob = DOBPlugin(
-    dest="input.best_transcript", use_transform=True, input_column="data"
+    dest="input.transcripts", use_transform=True, input_column="data"
 )
-def get_best_transcript_from_utterances(utterances):
+def get_transcripts_from_utterances(utterances):
     """
     input: utterances = [
         [{'transcript': '102998', 'confidence': None}, 
@@ -39,10 +39,12 @@ def get_best_transcript_from_utterances(utterances):
 
     # Sort the result_dict based on confidence in descending order
     sorted_result = {k: v for k, v in sorted(result_dict.items(), key=lambda item: item[1], reverse=True)}
-    # Get the best transcript from the sorted result
-    best_transcript = next(iter(sorted_result.keys()), [])
+    transcripts = sorted(sorted_result, key=lambda x: sorted_result[x], reverse=True)
 
-    return best_transcript
+    # Get the best transcript from the sorted result
+    # best_transcript = next(iter(sorted_result.keys()), [])
+
+    return transcripts
 
 @pytest.mark.asyncio
 async def test_dob_1() -> None:
@@ -57,6 +59,43 @@ async def test_dob_1() -> None:
     best = input_.best_transcript
     input_, _ = await workflow.run(input_)
     assert input_.best_transcript == best
+
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("test_case", load_tests("cases", __file__))
+async def test_dob_2(test_case) -> None:
+    try:
+        if test_case["description"]:
+            print("test_case description:",test_case["description"])
+    except:
+        pass
+
+    workflow = Workflow([get_dob])
+    print("workflow = ", workflow)
+    input_ = Input(utterances=test_case["utterances"])
+    print("input = ", input_)
+    expected = get_transcripts_from_utterances(utterances=test_case["utterances"])
+    # expected = input_.best_transcript
+    print("expected = ", expected)
+    input, _ = await workflow.run(input_)
+    print("transcripts= ", input.transcripts)
+
+    assert input.transcripts == expected
+
+
+@pytest.mark.asyncio
+async def test_invalid_data() -> None:
+    print("test 3")
+    train_df = pd.DataFrame(
+        [
+            {"data": json.dumps([[{"transcript": "yes"}]])},
+            {"data": json.dumps({})},
+        ]
+    )
+    train_df_ = await get_dob.transform(train_df)
+    assert len(train_df) - len(train_df_) == 1
+
 
 
 # @pytest.mark.asyncio
@@ -94,34 +133,3 @@ async def test_dob_1() -> None:
 #     input_, _ = await workflow.run(input_)
 
 #     assert input_.best_transcript == expected
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("test_case", load_tests("cases", __file__))
-async def test_dob_2(test_case) -> None:
-    try:
-        if test_case["description"]:
-            print("test_case description:",test_case["description"])
-    except:
-        pass
-
-    workflow = Workflow([get_dob])
-    input_ = Input(utterances=test_case["utterances"])
-    # expected = get_best_transcript_from_utterances(utterances=test_case["utterances"])
-    expected = input_.best_transcript
-    input_, _ = await workflow.run(input_)
-
-    assert input_.best_transcript == expected
-
-
-@pytest.mark.asyncio
-async def test_invalid_data() -> None:
-    print("test 3")
-    train_df = pd.DataFrame(
-        [
-            {"data": json.dumps([[{"transcript": "yes"}]])},
-            {"data": json.dumps({})},
-        ]
-    )
-    train_df_ = await get_dob.transform(train_df)
-    assert len(train_df) - len(train_df_) == 1
