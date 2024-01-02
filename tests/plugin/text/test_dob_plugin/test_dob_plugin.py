@@ -7,10 +7,33 @@ from dialogy.base import Input
 from dialogy.plugins.registry import DOBPlugin
 from dialogy.workflow import Workflow
 from tests import load_tests, MockResponse
+from tests.plugin.text.test_dob_plugin.duckling_api import get_entities_from_duckling
 
 get_dob = DOBPlugin(
     dest="input.transcripts", use_transform=True, input_column="data"
 )
+"""
+Checker function in test: 
+input: expected, all transcripts
+Description: for each transcript, check if duckling(transcript)==duckling(expected)
+Output: true/false, %increase in correctness
+"""
+def checker(transcripts,expected):
+    """
+    input: transcripts- a list of strings; expected- a string
+    description: for each transcript, check if get_entities_from_duckling(transcript)==get_entities_from_duckling(expected), if yes correctness +=1 
+    return "correctness"
+    """
+    correctness = 0
+
+    for transcript in transcripts:
+        duckling_val_transcript = get_entities_from_duckling(transcript)
+        duckling_val_expected = get_entities_from_duckling(expected)
+        # print("duckling_val_transcript, duckling_val_expected: ", duckling_val_transcript, duckling_val_expected)
+        if duckling_val_transcript == duckling_val_expected:
+            correctness += 1
+
+    return correctness
 def get_transcripts_from_utterances(utterances):
     """
     input: utterances = [
@@ -55,6 +78,7 @@ async def test_dob_1() -> None:
 
     workflow = Workflow([get_dob])
     input_ = Input(utterances=[[{"transcript": "1029 98", "confidence": None}]])
+    # correctness = checker(input_.transcripts,)
     # replace this "best" with "expected"
     best = input_.best_transcript
     input_, _ = await workflow.run(input_)
@@ -63,7 +87,7 @@ async def test_dob_1() -> None:
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("test_case", load_tests("cases", __file__))
+@pytest.mark.parametrize("test_case", load_tests("cases_desc", __file__))
 async def test_dob_2(test_case) -> None:
     try:
         if test_case["description"]:
@@ -71,17 +95,24 @@ async def test_dob_2(test_case) -> None:
     except:
         pass
 
-    workflow = Workflow([get_dob])
-    print("workflow = ", workflow)
-    input_ = Input(utterances=test_case["utterances"])
-    print("input = ", input_)
-    expected = get_transcripts_from_utterances(utterances=test_case["utterances"])
-    # expected = input_.best_transcript
-    print("expected = ", expected)
-    input, _ = await workflow.run(input_)
-    print("transcripts= ", input.transcripts)
+    expected = test_case["expected"]
+    if expected != "-":
+        
+        workflow = Workflow([get_dob])
+        input_ = Input(utterances=test_case["utterances"])
+        correctness = checker(input_.transcripts,expected)
+        input, _ = await workflow.run(input_)
+        dob_plugin_correctness = checker(input.transcripts, expected)
+        # if dob_plugin_correctness<correctness and expected!="-":
+        #     print("RESULT:",test_case["description"])
+        #     print("input_ = ", input_)
+        #     print("input = ", input)
+        #     print("correctness and dob correctness:",correctness, dob_plugin_correctness)
+        assert dob_plugin_correctness > correctness
+    
+    else:
+        print("expected not defined")
 
-    assert input.transcripts == expected
 
 
 @pytest.mark.asyncio
