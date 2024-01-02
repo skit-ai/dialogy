@@ -15,6 +15,7 @@ def clean_string(input_string):
     # Remove all instances of "."
     cleaned_string = input_string.replace(".", "")
     
+    
     # Remove all instances of "it's" (case insensitive)
     cleaned_string = cleaned_string.replace("it's", "")
 
