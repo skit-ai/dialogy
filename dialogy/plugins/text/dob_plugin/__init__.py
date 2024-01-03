@@ -9,25 +9,58 @@ from tqdm import tqdm
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.utils import normalize
-import word2number as w2n
+from word2number import w2n
 import re
 def clean_string(input_string):
     # Remove all instances of "."
     cleaned_string = input_string.replace(".", "")
-    
-    
     # Remove all instances of "it's" (case insensitive)
     cleaned_string = cleaned_string.replace("it's", "")
-
+    # replace all instances of "for" with 4 (case insensitive)
+    cleaned_string = cleaned_string.replace("for", "4")
     return cleaned_string
 
-def _class_6(trasncript):
+def _class_6(transcript):
     """
     input: transcript that looks like- " X Y" where X is a string of numbers with or without space. Y is string- which is a 
     number written in words.
     description: let X be as is. Only if X exist, look for Y. then convert Y into numbers- numeric digits
     output: X (as is) Y(converted into numbers)
     """
+    """
+    logic: WILL ONLY HANDLE YY IN WORDS!, NOT YYYY
+    1. regex pattern- 
+        2 groups- 
+        1st: numeric characters- with or without space; 
+        2nd: everything that follows it - alphanumeric characters 
+        start_idx = starting index of group 1
+    2. let group 1 be as is
+    3. transform group 2:
+        1. only retain the part that is a word representation of some number. end_idx = last index of this word representation of number
+        2. convert this word representation of number to numbers = words_converted_to_number
+    4. new_substring = group 1 + words_converted_to_number
+    5. replace the start_idx to last_idx part of the original string with new_substring
+    6. return transformed string
+        """
+
+    # Regex pattern to capture numeric part and remaining words separately
+    pattern = re.compile(r'(\b\d+\s*\d*\b|\b\d+\b)(.*)', re.IGNORECASE)
+
+    match = re.search(pattern, transcript)
+
+    if match:
+        numeric_part = match.group(1)
+        remaining_words = match.group(2) or ""
+        try:
+            words_converted_to_number = str(w2n.word_to_num(remaining_words))
+            if len(words_converted_to_number)<=2:
+                        
+                    # Construct the transformed substring
+                    transformed_transcript = numeric_part + " " + words_converted_to_number
+                    return transformed_transcript.strip()
+        except:
+            pass
+        return transcript  # Return original transcript if no match
 def _class_5(transcript):
     """
     input: transcript that looks like-"xx:yy "
@@ -47,7 +80,7 @@ def _class_5(transcript):
 
         # Modifying the minutes based on the conditions
         if minutes == "00":
-            minutes = " "
+            minutes = ""
         elif minutes.startswith("0"):
             minutes = "" + minutes[1]
         
@@ -68,11 +101,11 @@ def _transform_invalid_date(transcript):
     output: trasnformed transcript recognised by duckling as date (closest valid date)
     description: handling class 5 error
     """
-    # transcript = _class_5(transcript)
     transcript = clean_string(transcript)
     transcript = _class_5(transcript)
+    transcript = _class_6(transcript)
     return transcript
-import pdb
+
 def get_transcripts_from_utterances(utterances, func_transcript):
     """
     input: utterances = [
@@ -94,6 +127,9 @@ def get_transcripts_from_utterances(utterances, func_transcript):
             confidence = utterance.get('confidence')
             confidence = 0 if confidence is None else confidence  # Ensure confidence is not None
             result = func_transcript(transcript)
+            if result==None:
+                result = ""
+                confidence = 0
             if result in result_dict:
                 result_dict[result] += confidence
             else:
@@ -102,9 +138,6 @@ def get_transcripts_from_utterances(utterances, func_transcript):
     # Sort the result_dict based on confidence in descending order
     sorted_result = {k: v for k, v in sorted(result_dict.items(), key=lambda item: item[1], reverse=True)}
     transcripts = sorted(sorted_result, key=lambda x: sorted_result[x], reverse=True)
-    # print("transcripts = ", transcripts)
-    # Get the best transcript from the sorted result
-    # best_transcript = next(iter(sorted_result.keys()), [])
 
     return transcripts
 
@@ -120,6 +153,7 @@ def get_dob(utterances) -> str:
             return []
         else:
             # best_transcript = _format_date(utterances)
+            # print("transcripts = ", transcripts)
             transcripts = get_transcripts_from_utterances(utterances=utterances, func_transcript=_transform_invalid_date)
             # print("dob output:",transcripts)
             return transcripts
