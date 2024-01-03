@@ -27,11 +27,15 @@ def checker(transcripts,expected):
     correctness = 0
 
     for transcript in transcripts:
-        duckling_val_transcript = get_entities_from_duckling(transcript)
-        duckling_val_expected = get_entities_from_duckling(expected)
-        # print("duckling_val_transcript, duckling_val_expected: ", duckling_val_transcript, duckling_val_expected)
-        if duckling_val_transcript == duckling_val_expected:
-            correctness += 1
+        try:
+            duckling_val_transcript = get_entities_from_duckling(transcript)
+            duckling_val_expected = get_entities_from_duckling(expected)
+            # print("duckling_val_transcript, duckling_val_expected: ", duckling_val_transcript, duckling_val_expected)
+            if duckling_val_transcript == duckling_val_expected:
+                correctness += 1
+        except:
+            print("text is empty/invalid, refused by duckling")
+            pass
 
     return correctness
 def get_transcripts_from_utterances(utterances):
@@ -102,6 +106,8 @@ async def test_dob_2(test_case) -> None:
         input_ = Input(utterances=test_case["utterances"])
         correctness = checker(input_.transcripts,expected)
         input, _ = await workflow.run(input_)
+        print("input_ = ", input_.transcripts)
+        print("input = ", input.transcripts)
         dob_plugin_correctness = checker(input.transcripts, expected)
         # if dob_plugin_correctness<correctness and expected!="-":
         #     print("RESULT:",test_case["description"])
@@ -127,40 +133,3 @@ async def test_invalid_data() -> None:
     train_df_ = await get_dob.transform(train_df)
     assert len(train_df) - len(train_df_) == 1
 
-
-
-# @pytest.mark.asyncio
-# @pytest.mark.parametrize("test_case", [
-#     {
-#         "utterances": [
-#             {"confidence": 0.6564267, "transcript": "6 to 4:59"},
-#             {"confidence": 0.65825063, "transcript": "6459"},
-#             # Add more utterances as needed
-#         ],
-#         "expected": "6 to 4:59"
-#     },
-#     {
-#         "utterances": [
-#             {"confidence": 0.9128386, "transcript": "1576"},
-#         ],
-#         "expected": "1576"
-#     },
-#     {
-#         "utterances": [
-#             {"confidence": 0.6454812, "transcript": "7 2763"},
-#             {"confidence": 0.39310354, "transcript": "7th 2763"},
-#             # Add more utterances as needed
-#         ],
-#         "expected": "7 2763"
-#     },
-#     # Add more test cases as needed
-# ])
-# async def test_dob_2(test_case) -> None:
-#     print("Running test case with expected:", test_case["expected"])
-#     workflow = Workflow([get_dob])
-#     input_ = Input(utterances=[test_case["utterances"]])
-#     # expected = test_case["expected"]
-#     expected = get_best_transcript_from_utterances(utterances = [test_case["utterances"]])
-#     input_, _ = await workflow.run(input_)
-
-#     assert input_.best_transcript == expected
