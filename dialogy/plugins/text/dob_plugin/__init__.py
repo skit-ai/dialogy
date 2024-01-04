@@ -123,9 +123,9 @@ def get_transcripts_from_utterances(utterances: List[Utterance], func_transcript
     output: 
     best_transcript,
     """
-    result_dict: Dict[str, float] = {}
+    result_dict: Dict[str, Any] = {}
     transcripts: List[str] = []
-    
+
     for utterance_set in utterances:
         for utterance in utterance_set:
             transcript = utterance.get('transcript')
