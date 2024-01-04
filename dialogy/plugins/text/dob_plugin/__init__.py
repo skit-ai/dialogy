@@ -139,7 +139,7 @@ def get_transcripts_from_utterances(utterances: List[Utterance], func_transcript
                 result_dict[result] = confidence
 
     # Sort the result_dict based on confidence in descending order
-    sorted_result = {k: v for k, v in sorted(result_dict.items(), key=lambda item: item[1], reverse=True)}
+    sorted_result = {k: v for k, v in sorted(result_dict.items(), key=lambda item: item[1], reverse=True) if v is not None}
     transcripts = sorted(sorted_result, key=lambda x: sorted_result[x], reverse=True)
 
     return transcripts
