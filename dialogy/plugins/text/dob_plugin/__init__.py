@@ -1,6 +1,9 @@
 import json
 import traceback
 from typing import Any, List, Optional, Union, Dict
+from typing import Any, Callable, List
+from dialogy.types import Utterance
+
 
 import pandas as pd
 from loguru import logger
@@ -11,7 +14,7 @@ from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.utils import normalize
 from word2number import w2n
 import re
-def clean_string(input_string):
+def clean_string(input_string: str) -> str:
     # Remove all instances of "."
     cleaned_string = input_string.replace(".", "")
     # Remove all instances of "it's" (case insensitive)
@@ -20,7 +23,7 @@ def clean_string(input_string):
     cleaned_string = cleaned_string.replace("for", "4")
     return cleaned_string
 
-def _class_6(transcript):
+def _class_6(transcript: str) ->str:
     """
     input: transcript that looks like- " X Y" where X is a string of numbers with or without space. Y is string- which is a 
     number written in words.
@@ -60,8 +63,8 @@ def _class_6(transcript):
                     return transformed_transcript.strip()
         except:
             pass
-        return transcript  # Return original transcript if no match
-def _class_5(transcript):
+    return transcript  # Return original transcript if no match
+def _class_5(transcript: str) ->str:
     """
     input: transcript that looks like-"xx:yy "
     description: replace ":" with " "; if yy = 00 or 0y: replace yy with "  " or if 0y, replace 0 with ""
@@ -94,7 +97,7 @@ def _class_5(transcript):
         return transcript
 
 
-def _transform_invalid_date(transcript):
+def _transform_invalid_date(transcript: str) -> str:
     """
     input: transcripts that are responses for when the user is asked their 
     dob for authentication and are not recognised as dates by duckling
@@ -106,7 +109,7 @@ def _transform_invalid_date(transcript):
     transcript = _class_6(transcript)
     return transcript
 
-def get_transcripts_from_utterances(utterances, func_transcript):
+def get_transcripts_from_utterances(utterances: List[Utterance], func_transcript: Callable[[str], str]) -> List[str]:
     """
     input: utterances = [
         [{'transcript': '102998', 'confidence': None}, 
@@ -141,8 +144,7 @@ def get_transcripts_from_utterances(utterances, func_transcript):
 
     return transcripts
 
-
-def get_dob(utterances) -> str:  
+def get_dob(utterances: List[Utterance]) -> List[str]:
     try:
         # print("UTTERS:", utterances)
         transcripts = normalize(utterances)
