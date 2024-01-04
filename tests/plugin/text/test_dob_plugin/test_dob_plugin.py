@@ -2,6 +2,9 @@ import json
 
 import pandas as pd
 import pytest
+from typing import Any, List, Optional, Union, Dict
+from typing import Any, Callable, List
+from dialogy.types import Utterance
 
 from dialogy.base import Input
 from dialogy.plugins.registry import DOBPlugin
@@ -18,7 +21,7 @@ input: expected, all transcripts
 Description: for each transcript, check if duckling(transcript)==duckling(expected)
 Output: true/false, %increase in correctness
 """
-def checker(transcripts,expected):
+def checker(transcripts: List[str], expected: str) -> Union[int, None]:
     """
     input: transcripts- a list of strings; expected- a string
     description: for each transcript, check if get_entities_from_duckling(transcript)==get_entities_from_duckling(expected), if yes correctness +=1 
@@ -38,7 +41,7 @@ def checker(transcripts,expected):
             pass
 
     return correctness
-def get_transcripts_from_utterances(utterances):
+def get_transcripts_from_utterances(utterances: List[Utterance]) -> List[str]:
     """
     input: utterances = [
         [{'transcript': '102998', 'confidence': None}, 
@@ -91,7 +94,7 @@ async def test_dob_1() -> None:
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("test_case", load_tests("cases_desc", __file__))
+@pytest.mark.parametrize("test_case", load_tests("cases_desc", __file__)) 
 async def test_dob_2(test_case) -> None:
     try:
         if test_case["description"]:
