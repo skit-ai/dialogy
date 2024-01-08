@@ -14,13 +14,19 @@ from dialogy.types import Utterance
 from dialogy.utils import normalize
 
 
-def clean_string(input_string: str) -> str:
+def _class_4(input_string: str) -> str:
+    """
+    cleaining
+    """
     # Remove all instances of "."
-    cleaned_string = input_string.replace(".", "")
+    cleaned_string = input_string.replace(".", " ")
     # Remove all instances of "it's" (case insensitive)
-    cleaned_string = cleaned_string.replace("it's", "")
+    cleaned_string = cleaned_string.replace("it's", " ")
     # replace all instances of "for" with 4 (case insensitive)
     cleaned_string = cleaned_string.replace("for", "4")
+    # replace all instances of "-" with " " (case insensitive)
+    cleaned_string = cleaned_string.replace("_", " ")
+    cleaned_string = cleaned_string.strip()
     return cleaned_string
 
 
@@ -107,7 +113,7 @@ def _transform_invalid_date(transcript: str) -> str:
     output: trasnformed transcript recognised by duckling as date (closest valid date)
     description: handling class 5 error
     """
-    transcript = clean_string(transcript)
+    transcript = _class_4(transcript)
     transcript = _class_5(transcript)
     transcript = _class_6(transcript)
     return transcript
