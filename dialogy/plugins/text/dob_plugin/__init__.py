@@ -13,6 +13,34 @@ from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Utterance
 from dialogy.utils import normalize
 
+def _post_processing_clean(transformed_transcript: str) -> str:
+    transformed_transcript = transformed_transcript.strip()
+    if "  "in transformed_transcript:
+        transformed_transcript = transformed_transcript.replace("  ", " ")
+    return transformed_transcript
+
+def _class_7_1(transcript: str) -> str:
+    """
+    replace all instances that look like this: 
+        <1 or 2 digit number><space><4 digit number> with 
+        <1 or 2 digit number><space><2 digit number><2 digit number>
+    """
+    try:
+        pattern = r'^\b(\d{1,2})\s(\d{2})(\d{2})\b$'
+        match = re.search(pattern, transcript)
+        if match:
+            # Access matching groups using group() or groups()
+            full_match = match.group(0)
+            print("groups = ",match.group(1), match.group(2), match.group(3))
+            initial = match.group(1)
+            two_digit_number_1 = match.group(2)
+            two_digit_number_2 = match.group(3)
+            split_four_into_2_two_digit_numbers = initial+" "+two_digit_number_1+" "+two_digit_number_2
+            return _post_processing_clean(split_four_into_2_two_digit_numbers)
+        else:
+            return transcript
+    except:
+        return transcript
 
 def _class_4(input_string: str) -> str:
     """
@@ -25,8 +53,12 @@ def _class_4(input_string: str) -> str:
     # replace all instances of "for" with 4 (case insensitive)
     cleaned_string = cleaned_string.replace("for", "4")
     # replace all instances of "-" with " " (case insensitive)
-    cleaned_string = cleaned_string.replace("_", " ")
-    cleaned_string = cleaned_string.strip()
+    cleaned_string = cleaned_string.replace("-", " ")
+    # replace all instances of "st/nd/rd/th" with "" (case insensitive)
+    cleaned_string = re.sub(r'(\d+)(?:st|nd|rd|th)', r'\1', cleaned_string)
+
+
+    cleaned_string = _post_processing_clean(cleaned_string)
     return cleaned_string
 
 
@@ -67,7 +99,7 @@ def _class_6(transcript: str) -> str:
 
                 # Construct the transformed substring
                 transformed_transcript = numeric_part + " " + words_converted_to_number
-                return transformed_transcript.strip()
+                return _post_processing_clean(transformed_transcript)
         except:
             pass
     return transcript  # Return original transcript if no match
@@ -99,7 +131,7 @@ def _class_5(transcript: str) -> str:
         # Combining the modified hours and minutes
         result = hours + " " + minutes
         transformed_transcript = transcript[:start_idx] + result + transcript[end_idx:]
-        return transformed_transcript
+        return _post_processing_clean(transformed_transcript)
 
     else:
         # Handle invalid input
@@ -115,7 +147,8 @@ def _transform_invalid_date(transcript: str) -> str:
     """
     transcript = _class_4(transcript)
     transcript = _class_5(transcript)
-    transcript = _class_6(transcript)
+    transcript = _class_6(transcript)    
+    transcript = _class_7_1(transcript)
     return transcript
 
 
