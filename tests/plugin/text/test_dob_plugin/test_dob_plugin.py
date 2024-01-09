@@ -23,18 +23,20 @@ async def test_transform_invalid_date(test_case) -> None:
     """
     These test cases cover different scenarios:
     - A valid transcript with no transformation needed.
+    - Class 4 transformation scenario
     - Class 5 transformation scenario (hours and minutes).
     - Class 6 transformation scenario (numeric and word representation).
-    - Combined transformations from both Class 5 and Class 6.
+    - Class 7 transformation scenario
+    - Combined transformations from both Class 4,5,6,7.
     """
-    try:
-        if test_case["function"]=="transform_invalid_transcript":
+    if test_case["function"]=="transform_invalid_transcript":
             print("testing function:",test_case["function"])
             print("description:",test_case["description"])
-            result = await _transform_invalid_date(test_case["transcript"])
+            result = _transform_invalid_date(test_case["transcript"])
+            print("result = ", result)
+            print("expected = ",test_case["expected"])
             assert result == test_case["expected"]
-    except:
-        pass
+
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("test_case", load_tests("cases", __file__)) 
