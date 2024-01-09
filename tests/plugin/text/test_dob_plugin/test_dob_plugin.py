@@ -51,3 +51,15 @@ async def test_get_transcripts_from_utterances(test_case) -> None:
         pass
 
 
+
+@pytest.mark.asyncio
+async def test_invalid_data() -> None:
+    print("test 3")
+    train_df = pd.DataFrame(
+        [
+            {"data": json.dumps([[{"transcript": "yes"}]])},
+            {"data": json.dumps({})},
+        ]
+    )
+    train_df_ = await get_dob.transform(train_df)
+    assert len(train_df) - len(train_df_) == 1
