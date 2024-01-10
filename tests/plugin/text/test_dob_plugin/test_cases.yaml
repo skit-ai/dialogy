@@ -1,0 +1,189 @@
+- function: transform_invalid_transcript
+  description: "error classes: 5"
+  transcript: "6 to 4:59"
+  expected: "6 to 4 59"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4"
+  transcript: "12.34-it's"
+  expected: "12 34"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4"
+  transcript: "6 for 59"
+  expected: "6 4 59"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 5"
+  transcript: "7:27. 6:33"
+  expected: "7 27 6:33"
+    
+- function: transform_invalid_transcript
+  description: "error classes: 4, 5"
+  transcript: "it's 3:10 1960"
+  expected: "3 10 1960"
+
+- function: transform_invalid_transcript
+  description: "error classes: -"
+  transcript: "1215 96"
+  expected: "1215 96"
+
+- function: transform_invalid_transcript
+  description: "error classes: 5"
+  transcript: "12 12:00 72"
+  expected: "12 12 72"
+
+- function: transform_invalid_transcript
+  description: "error classes: 5"
+  transcript: "12:06 96"
+  expected: "12 6 96"
+
+- function: transform_invalid_transcript
+  description: "error classes: 5"
+  transcript: "4th 85"
+  expected: "4 85"
+
+- function: transform_invalid_transcript
+  description: "error classes: 5"
+  transcript: "4 for 85"
+  expected: "4 4 85"
+
+  
+- function: transform_invalid_transcript
+  description: "error classes: 7" 
+  transcript: "7 2763"
+  expected: "7 27 63"
+
+- function: transform_invalid_transcript
+  description: "error classes: 7" 
+  transcript: "12 1272"
+  expected: "12 12 72"
+
+- function: transform_invalid_transcript
+  description: "error classes: 5" 
+  transcript: "12 12:00 72"
+  expected: "12 12 72"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 7" 
+  transcript: "7th 2019 9th"
+  expected: "7 2019 9"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 7" 
+  transcript: "7th 2990"
+  expected: "7 29 90"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 7" 
+  transcript: "6th 1278"      
+  expected: "6 12 78"
+
+- function: transform_invalid_transcript
+  description: "error classes: 7" 
+  transcript: "6 2078"
+  expected: "6 20 78"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 7" 
+  transcript: "6th 2070 8"      
+  expected: "6 2070 8"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 7" 
+  transcript: "6th 2078"      
+  expected: "6 20 78"
+
+- function: transform_invalid_transcript
+  description: "error classes: 5" 
+  transcript: "6 12:00 78"
+  expected: "6 12 78"
+
+- function: transform_invalid_transcript
+  description: "error classes: 5" 
+  transcript: "6:07"
+  expected: "6 7"
+
+- function: transform_invalid_transcript
+  description: "error classes: 7" 
+  transcript: "11 1648"
+  expected: "11 16 48"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4" 
+  transcript: "8 for 1969"
+  expected: "8 4 1969"
+
+- function: transform_invalid_transcript
+  description: "error classes: -" 
+  transcript: "1026"
+  expected: "1026"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 7" 
+  transcript: "10th 2066"
+  expected: "10 20 66"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 7, should be '10 20 66' " 
+  transcript: "ten 2066"
+  expected: "ten 2066"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 5 " 
+  transcript: "1:24. 1992"
+  expected: "1 24 1992"
+
+- function: transform_invalid_transcript
+  description: "error classes: 4, 5, 7"
+  transcript: "it's 12:00 1936"
+  expected: "12 19 36"
+
+- function: transform_invalid_transcript
+  description: "error classes: -"
+  transcript: "123 3456"
+  expected: "123 3456"
+
+- function: transform_invalid_transcript
+  description: "error classes: -"
+  transcript: "5 4 6778"
+  expected: "5 4 6778"
+
+
+
+- function: get_transcripts_from_utterances
+  description: "sorted on confidence"
+  utterances:
+  -
+    - confidence: 0.6564267
+      transcript: "6 to 4:59"
+    - confidence: 0.65825063
+      transcript: "6459"
+    - confidence: 0.7236573
+      transcript: "6:59"
+    - confidence: 0.7435373
+      transcript: "6th 4:59"
+    - confidence: 0.42740962
+      transcript: "6 for 59"
+    - confidence: 0.62294835
+      transcript: "6 or 4:59"
+    - confidence: 0.5137664
+      transcript: "6 459"
+    - confidence: 0.44438317
+      transcript: "6 4:50 9"
+    - confidence: 0.37032515
+      transcript: "64 59"
+    - confidence: 0.44438317
+      transcript: "6 for fifty-nine"
+  expected:
+  -
+    - "6th 4:59"
+    - "6:59"
+    - "6459"
+    - "6 to 4:59"
+    - "6 or 4:59"
+    - "6 459"
+    - "6 4:50 9"
+    - "6 for fifty-nine"
+    - "6 for 59"
+    - "64 59"
