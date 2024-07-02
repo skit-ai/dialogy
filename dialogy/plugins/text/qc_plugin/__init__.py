@@ -53,6 +53,7 @@ class QCPlugin(Plugin):
 
         logger.debug(f"Finding data points with conflicting labels...")
 
+
         training_data["frozen_set_hash"] = training_data["alternatives"].apply(
             lambda x: hashlib.md5(
                 pickle.dumps(
