@@ -3463,19 +3463,20 @@ files = [
 
 [[package]]
 name = "pyyaml-include"
-version = "2.1"
-description = "An extending constructor of PyYAML: include other YAML files into current YAML document"
+version = "1.4.1"
+description = "Extending PyYAML with a custom constructor for including YAML files within YAML files"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.6"
 files = [
-    {file = "pyyaml_include-2.1-py3-none-any.whl", hash = "sha256:f64e6dd18961450c26977e4416466662246b55d5e57953df8e7e30bbb4e18f42"},
-    {file = "pyyaml_include-2.1.tar.gz", hash = "sha256:800304da30a3686f2cadbd9888cc46db782ba3712870a723916b193368b5c4da"},
+    {file = "pyyaml-include-1.4.1.tar.gz", hash = "sha256:1a96e33a99a3e56235f5221273832464025f02ff3d8539309a3bf00dec624471"},
+    {file = "pyyaml_include-1.4.1-py3-none-any.whl", hash = "sha256:323c7f3a19c82fbc4d73abbaab7ef4f793e146a13383866831631b26ccc7fb00"},
 ]
 
 [package.dependencies]
-fsspec = ">=2021.04.0"
 PyYAML = ">=6.0,<7.0"
-typing-extensions = {version = "*", markers = "python_version < \"3.11\""}
+
+[package.extras]
+toml = ["toml"]
 
 [[package]]
 name = "pyzmq"
@@ -5426,4 +5427,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.13"
-content-hash = "07ac0a8b6228e534af4df29ad1c8f74293862642e7441a7b08c0449a5c2f363f"
+content-hash = "84e47b5e08106fb10dd226dd4ec91d590137249f04abfb7316ba3ca9ef1cac36"
