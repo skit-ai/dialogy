@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, '3.10']
+        python-version: [3.9, '3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
       run: |
         # stop the build if there are Python syntax errors or undefined names
         black .
-        mypy dialogy --install-types
+        mypy dialogy --install-types --non-interactive
     - name: Test with pytest and get Coverage
       run: |
         poetry run pytest --cov=dialogy --cov-report=xml tests/
