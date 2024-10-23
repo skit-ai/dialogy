@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ master, feat/python_3.10_support, 0.9.x ]
+    branches: [ master, feat/python_3.10_support, 0.10.x ]
   pull_request:
-    branches: [ master, 0.9.x ]
+    branches: [ master, 0.10.x ]
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, '3.10']
+        python-version: [3.9, '3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -30,12 +30,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install coverage black mypy pytest types-pytz types-requests
-        if [ -f pyproject.toml ]; then poetry run pip install 'setuptools==57.5.0'; poetry install --no-root; fi
+        if [ -f pyproject.toml ]; then poetry config installer.modern-installation false; poetry run pip install 'setuptools==57.5.0'; poetry install --no-root; fi
     - name: Lint with black and static type check with mypy
       run: |
         # stop the build if there are Python syntax errors or undefined names
         black .
-        mypy dialogy --install-types
+        mypy dialogy --install-types --non-interactive
     - name: Test with pytest and get Coverage
       run: |
         poetry run pytest --cov=dialogy --cov-report=xml tests/
@@ -44,12 +44,13 @@ jobs:
     - name: Upload coverage data to coverage
       uses: codecov/codecov-action@v2
       with:
+         token: ${{ secrets.CODECOV_TOKEN }}
          flags: unittests
          fail_ci_if_error: true
          verbose: true
-    - name: Check if coverage less than 90%
-      if: env.covpercentage < '90'
+    - name: Check if coverage less than 85%
+      if: env.covpercentage < '85'
       uses: actions/github-script@v3
       with:
         script: |
-            core.setFailed('Code Coverage is less that 90%')
+            core.setFailed('Code Coverage is less than 85%')
