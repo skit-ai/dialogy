@@ -173,14 +173,14 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
         :return: None
         :rtype: NoneType
         """
-        logger.debug(
-            pformat(
-                {
-                    "style": self.style,
-                    "candidates": candidates,
-                }
-            )
-        )
+        # logger.debug(
+        #     pformat(
+        #         {
+        #             "style": self.style,
+        #             "candidates": candidates,
+        #         }
+        #     )
+        # )
         if not isinstance(candidates, dict):
             raise TypeError(
                 'Expected "candidates" to be a Dict[str, List[str]]'
@@ -214,8 +214,8 @@ class ListEntityPlugin(EntityScoringMixin, Plugin):
                     else:
                         self.compiled_patterns[entity_type] = {entity_value: patterns}
 
-        logger.debug("compiled patterns")
-        logger.debug(self.compiled_patterns)
+        # logger.debug("compiled patterns")
+        # logger.debug(self.compiled_patterns)
 
     def _search(self, transcripts: List[str]) -> List[MatchType]:
         """

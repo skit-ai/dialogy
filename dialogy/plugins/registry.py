@@ -17,6 +17,7 @@ from dialogy.plugins.text.error_recovery.error_recovery import ErrorRecoveryPlug
 from dialogy.plugins.text.oos_filter import OOSFilterPlugin
 from dialogy.plugins.text.intent_entity_mutator import IntentEntityMutatorPlugin
 from dialogy.plugins.text.qc_plugin import QCPlugin
+from dialogy.plugins.text.transliteration_plugin import TransliterationPlugin
 
 
 plugin_cls_lib = {
@@ -37,5 +38,6 @@ plugin_cls_lib = {
     "ErrorRecoveryPlugin": ErrorRecoveryPlugin,
     "OOSFilterPlugin": OOSFilterPlugin,
     "IntentEntityMutatorPlugin": IntentEntityMutatorPlugin,
-    "QCPlugin": QCPlugin
+    "QCPlugin": QCPlugin,
+    "TransliterationPlugin": TransliterationPlugin
 }
