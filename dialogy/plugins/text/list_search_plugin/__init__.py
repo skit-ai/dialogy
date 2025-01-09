@@ -105,7 +105,6 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
     def fuzzy_init(self) -> None:
         """
         Initializing the parameters for fuzzy dp search with their values
-
         """
         valid_langs = ["hi", "en"]
         for lang_code in self.fuzzy_dp_config.keys():
@@ -115,11 +114,25 @@ class ListSearchPlugin(EntityScoringMixin, Plugin):
                 )
             self.entity_dict[lang_code] = self.fuzzy_dp_config[lang_code]
             self.entity_types[lang_code] = list(self.entity_dict[lang_code].keys())
-            self.nlp[lang_code] = stanza.Pipeline(
-                lang=lang_code,
-                tokenize_pretokenized=True,
-                download_method=DownloadMethod.REUSE_RESOURCES,
-            )
+            try:
+                # Only load the processors we actually need
+                self.nlp[lang_code] = stanza.Pipeline(
+                    lang=lang_code,
+                    processors='tokenize',  # Only load tokenizer
+                    tokenize_pretokenized=True,
+                    download_method=DownloadMethod.REUSE_RESOURCES,
+                    use_gpu=False,
+                    verbose=False  # Reduce logging noise
+                )
+            except Exception as e:
+                logger.warning(f"Failed to initialize stanza pipeline with error: {str(e)}")
+                # Try alternative initialization with minimal configuration
+                self.nlp[lang_code] = stanza.Pipeline(
+                    lang=lang_code,
+                    processors='tokenize',
+                    download_method=DownloadMethod.REUSE_RESOURCES,
+                    verbose=False
+                )
 
     def _search(self, transcripts: List[str], lang: str) -> List[MatchType]:
         """
