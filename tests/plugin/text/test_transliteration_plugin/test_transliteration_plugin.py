@@ -2,13 +2,13 @@ import json
 import pytest
 import pandas as pd
 
-from dialogy.base import Guard, Input, Output
+from dialogy.base import Input
 from dialogy.plugins.registry import TransliterationPlugin
 from dialogy.workflow import Workflow
 
 # Initialize plugin instance for testing
 transliteration_plugin = TransliterationPlugin(
-    dest = "input.utterances",
+    dest = "input.transcripts",
     guards = [(lambda i, o, _: i.lang == "en")]
 )
 
@@ -21,7 +21,7 @@ async def test_basic_transliteration():
     input_ = Input(utterances=[[{"transcript": "monday को meeting है"}]], lang="hi")
     
     input_, _ = await workflow.run(input_)
-    assert input_.utterances[0][0]["transcript"] == "सोमवार को meeting है"
+    assert input_.transcripts[0] == "सोमवार को meeting है"
 
 @pytest.mark.asyncio
 async def test_guard_blocks_transliteration():
@@ -33,7 +33,7 @@ async def test_guard_blocks_transliteration():
     
     input_, _ = await workflow.run(input_)
     # Should remain unchanged since guard blocks transliteration for lang="en"
-    assert input_.utterances[0][0]["transcript"] == "monday को meeting है"
+    assert input_.transcripts[0] == "monday को meeting है"
 
 @pytest.mark.asyncio
 async def test_multiple_datetime_words():
@@ -46,7 +46,7 @@ async def test_multiple_datetime_words():
     }]], lang="hi")
     
     input_, _ = await workflow.run(input_)
-    assert input_.utterances[0][0]["transcript"] == "अगला सोमवार सुबह meeting रखें"
+    assert input_.transcripts[0] == "अगला सोमवार सुबह meeting रखें"
 
 @pytest.mark.asyncio
 async def test_case_insensitive():
@@ -59,7 +59,7 @@ async def test_case_insensitive():
     }]], lang="hi")
     
     input_, _ = await workflow.run(input_)
-    assert input_.utterances[0][0]["transcript"] == "सोमवार को या मंगलवार को"
+    assert input_.transcripts[0] == "सोमवार को या मंगलवार को"
 
 @pytest.mark.asyncio
 async def test_empty_utterances():
@@ -70,7 +70,7 @@ async def test_empty_utterances():
     input_ = Input(utterances=[[]], lang="hi")
     
     input_, _ = await workflow.run(input_)
-    assert input_.utterances == [[]]
+    assert input_.transcripts == []
 
 @pytest.mark.asyncio
 async def test_no_datetime_words():
@@ -82,7 +82,7 @@ async def test_no_datetime_words():
     input_ = Input(utterances=[[{"transcript": original}]], lang="hi")
     
     input_, _ = await workflow.run(input_)
-    assert input_.utterances[0][0]["transcript"] == original
+    assert input_.transcripts[0] == original
 
 @pytest.mark.asyncio
 async def test_multiple_alternatives():
@@ -96,8 +96,8 @@ async def test_multiple_alternatives():
     ]], lang="hi")
     
     input_, _ = await workflow.run(input_)
-    assert input_.utterances[0][0]["transcript"] == "सोमवार को meeting"
-    assert input_.utterances[0][1]["transcript"] == "मंगलवार को meeting"
+    assert input_.transcripts[0] == "सोमवार को meeting"
+    assert input_.transcripts[1] == "मंगलवार को meeting"
 
 @pytest.mark.asyncio
 async def test_punctuation_handling():
@@ -110,4 +110,4 @@ async def test_punctuation_handling():
     }]], lang="hi")
     
     input_, _ = await workflow.run(input_)
-    assert input_.utterances[0][0]["transcript"] == "सोमवार मंगलवार और बुधवार"
+    assert input_.transcripts[0] == "सोमवार मंगलवार और बुधवार"

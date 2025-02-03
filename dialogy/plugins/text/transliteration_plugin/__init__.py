@@ -117,37 +117,33 @@ class TransliterationPlugin(Plugin):
         ]
         return ' '.join(translated_words)
 
-    def modify_utterances(self, utterances: List[List[Dict[str, str]]]) -> List[List[Dict[str, str]]]:
+    def modify_transcripts(self, transcripts: List[str]) -> List[str]:
         """
-        Modifies utterances by transliterating date/time words.
+        Modifies transcripts by transliterating date/time words.
         
         Args:
-            utterances: List of ASR transcripts with confidence scores
+            transcripts: List of transcripts to process
             
         Returns:
-            Modified utterances with transliterated text
+            Modified transcripts with transliterated text
         """
-        if not utterances or not utterances[0]:
-            return utterances
+        if not transcripts:
+            return transcripts
             
-        for transcript in utterances[0]:
-            if 'transcript' in transcript:
-                transcript['transcript'] = self.map_to_hindi(transcript['transcript'])
-                
-        return utterances
+        return [self.map_to_hindi(transcript) for transcript in transcripts]
 
     async def utility(self, input_: Input, output: Output) -> Any:
         """
-        Plugin utility method that processes the input utterances.
+        Plugin utility method that processes the input transcripts.
         
         Args:
-            input_: Input object containing utterances
+            input_: Input object containing transcripts
             output: Output object for results
             
         Returns:
-            Modified utterances with transliterated text
+            Modified transcripts with transliterated text
         """
-        logger.debug(f"Input utterances for transliteration:\n{input_.utterances}")
-        modified_utterances = self.modify_utterances(input_.utterances)
-        logger.debug(f"Transliterated utterances:\n{modified_utterances}")
-        return modified_utterances
+        logger.debug(f"Input transcripts for transliteration:\n{input_.transcripts}")
+        modified_transcripts = self.modify_transcripts(input_.transcripts)
+        logger.debug(f"Transliterated transcripts:\n{modified_transcripts}")
+        return modified_transcripts
