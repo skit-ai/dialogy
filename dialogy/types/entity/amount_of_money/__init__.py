@@ -51,7 +51,17 @@ class CurrencyEntity(BaseEntity):
     def from_duckling(
         cls, d: Dict[str, Any], alternative_index: int, **kwargs: Any
     ) -> CurrencyEntity:
-        value = d[const.VALUE][const.VALUE]
+        val_dict = d[const.VALUE]
+        if val_dict.get(const.TYPE) == const.INTERVAL:
+            if const.FROM in val_dict:
+                value = val_dict[const.FROM][const.VALUE]
+                unit = val_dict[const.FROM].get(const.UNIT)
+            elif const.TO in val_dict:
+                value = val_dict[const.TO][const.VALUE]
+                unit = val_dict[const.TO].get(const.UNIT)
+        else:
+            value = val_dict[const.VALUE]
+            unit = val_dict[const.UNIT]
         return cls(
             range={const.START: d[const.START], const.END: d[const.END]},
             body=d[const.BODY],
@@ -59,5 +69,5 @@ class CurrencyEntity(BaseEntity):
             alternative_index=alternative_index,
             values=[{const.VALUE: value}],
             latent=d[const.LATENT],
-            unit=d[const.VALUE][const.UNIT],
+            unit=unit,
         )
