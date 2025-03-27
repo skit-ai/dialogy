@@ -25,6 +25,9 @@ from dialogy.types import Intent
 from dialogy.utils import load_file, logger, read_from_json, save_file
 import torch
 from torch.profiler import profile, record_function, ProfilerActivity
+from sklearn.model_selection import train_test_split
+import logging
+logging.basicConfig(level=logging.INFO)
 
 
 class XLMRMultiClass(Plugin):
@@ -106,6 +109,9 @@ class XLMRMultiClass(Plugin):
                 classifer = getattr(
                     importlib.import_module(const.XLMR_MODULE), const.XLMR_MULTI_CLASS_MODEL
                 )
+                training_args = getattr(
+                    importlib.import_module(const.XLMR_MODULE), const.XLMR_TRAINING_ARGS
+                )
             except ModuleNotFoundError as error:
                 raise ModuleNotFoundError(
                     "Plugin requires simpletransformers -- https://simpletransformers.ai/docs/installation/"
@@ -119,6 +125,7 @@ class XLMRMultiClass(Plugin):
             self.labelencoder = preprocessing.LabelEncoder()
             self.classifier = classifer
             self.model: Any = None
+            self.trainingArgs = training_args()
 
             self.labelencoder_file_path = os.path.join(
                 self.model_dir, const.LABELENCODER_FILE
@@ -135,7 +142,7 @@ class XLMRMultiClass(Plugin):
             try:
                 if os.path.exists(self.labelencoder_file_path):
                     logger.debug(f"initializing label encoder file from {self.labelencoder_file_path}")
-                    self.init_model()
+                    self.init_model(self.args_map)
             except EOFError:
                 logger.error(
                     f"Plugin {self} Failed to load labelencoder from {self.labelencoder_file_path}. "
@@ -153,7 +160,7 @@ class XLMRMultiClass(Plugin):
 
         self.debug = debug
 
-    def init_model(self, label_count: Optional[int] = None) -> None:
+    def init_model(self, args,label_count: Optional[int] = None) -> None:
         """
         Initialize the model if artifacts are available.
         :param label_count: number of labels to train on or predict, defaults to None
@@ -176,7 +183,7 @@ class XLMRMultiClass(Plugin):
                 self.model_dir,
                 num_labels=label_count,
                 use_cuda=self.use_cuda,
-                args=self.args_map,
+                args=self.trainingArgs,
                 **self.kwargs,
             )
         except OSError:
@@ -187,7 +194,7 @@ class XLMRMultiClass(Plugin):
                 const.XLMR_MODEL_TIER,
                 num_labels=label_count,
                 use_cuda=self.use_cuda,
-                args=self.args_map,
+                args=self.trainingArgs,
                 **self.kwargs,
             )
 
@@ -349,9 +356,25 @@ class XLMRMultiClass(Plugin):
                 f"Training dataframe is invalid, for {self.__class__.__name__} plugin."
             )
             return
+        try:
+            eval_data_path = self.args_map.get(const.EVAL_DATA_DIR)
+            eval_data = pd.read_csv(os.path.join(eval_data_path, const.TEST)+'.csv')
+        except (FileNotFoundError, pd.errors.ParserError) as e:
+            logger.exception("Error loading Eval Data: %s", e)
+            return
+        
+        logger.error(f"\n\nTrain shape: {training_data.shape}\tTest shape: {eval_data.shape}\n\n")
+        
+        if not self.validate(eval_data):
+            logger.warning(
+                f"Evaluation dataframe is invalid, for {self.__class__.__name__} plugin."
+            )
+            return
 
-        skip_labels_filter = training_data[self.label_column].isin(self.skip_labels)
-        training_data = training_data[~skip_labels_filter].copy()
+        train_skip_labels_filter = training_data[self.label_column].isin(self.skip_labels)
+        training_data = training_data[~train_skip_labels_filter].copy()
+        eval_skip_labels_filter = eval_data[self.label_column].isin(self.skip_labels)
+        eval_data = eval_data[~eval_skip_labels_filter].copy()
 
         encoder = self.labelencoder.fit(training_data[self.label_column])
 
@@ -360,14 +383,24 @@ class XLMRMultiClass(Plugin):
             columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
             inplace=True,
         )
+        eval_data.rename(
+            columns={self.data_column: const.TEXT, self.label_column: const.LABELS},
+            inplace=True,
+        )
         training_data.loc[:, const.LABELS] = encoder.transform(
             training_data[const.LABELS]
+        )
+        eval_data.loc[:, const.LABELS] = encoder.transform(
+            eval_data[const.LABELS]
         )
 
         # Append state to text
         if self.use_state:
             training_data[const.TEXT] += (
                 "<s> " + training_data[self.state_column] + " </s>"
+            )
+            eval_data[const.TEXT] += (
+                "<s> " + eval_data[self.state_column] + " </s>"
             )
 
         # Append prompt to text
@@ -382,14 +415,55 @@ class XLMRMultiClass(Plugin):
                     if _prompt
                     else self.null_prompt_token + " </s>"
                 )
+            for i in tqdm(range(eval_data.shape[0]), desc="progress bar:"):
+                _lang = eval_data.iloc[i][self.lang_column]
+                _nls_label = eval_data.iloc[i][self.nls_label_column]
+                _prompt = self.lookup_prompt(_lang, _nls_label)
+                eval_data.at[i, const.TEXT] = (
+                    eval_data.iloc[i][const.TEXT] + "<s> " + _prompt
+                    if _prompt
+                    else self.null_prompt_token + " </s>"
+                )
 
         training_data = training_data[[const.TEXT, const.LABELS]]
-        self.init_model(len(encoder.classes_))
+        eval_data = eval_data[[const.TEXT, const.LABELS]]
+
         logger.debug(
-            f"Displaying a few samples (this goes into the model):\n{training_data.sample(sample_size)}\nLabels: {len(encoder.classes_)}."
+            f"Displaying a few train samples (this goes into the model):\n{training_data.sample(sample_size)}\nLabels: {len(encoder.classes_)}."
+        )
+        logger.debug(
+            f"Displaying a few eval samples (this goes into the model):\n{eval_data.sample(sample_size)}\nLabels: {len(encoder.classes_)}."
         )
 
-        self.model.train_model(training_data)
+        # Common Training parameters
+        self.trainingArgs.num_train_epochs = self.args_map.get(const.NUM_TRAIN_EPOCHS,10)
+        self.trainingArgs.overwrite_output_dir = self.args_map.get(const.OVERRIDE_OUTPUT_DIR, True)
+        self.trainingArgs.train_batch_size = self.args_map.get(const.TRAIN_BATCH_SIZE, 16)
+        self.trainingArgs.use_multiprocessing = self.args_map.get(const.USE_MULTIPROCESSING, False)
+        self.trainingArgs.save_model_every_epoch = self.args_map.get(const.SAVE_MODEL_EVERY_EPOCH, False)
+        self.trainingArgs.save_best_model = self.args_map.get(const.SAVE_MODEL_EVERY_EPOCH, False)
+        self.trainingArgs.save_steps = self.args_map.get(const.SAVE_STEPS, -1)  # Added save_steps
+        self.trainingArgs.fp16 = self.args_map.get(const.FP16, False)  # Added fp16
+        self.trainingArgs.learning_rate = self.args_map.get(const.LEARNING_RATE, 1.0e-05)  # Added learning_rate
+        self.trainingArgs.max_seq_length = self.args_map.get(const.MAX_SEQ_LENGTH, 176)  # Added max_seq_length
+        self.trainingArgs.output_dir = self.args_map.get(const.OUTPUT_DIR, "data/classification/models")  # Added output_dir
+        self.trainingArgs.reprocess_input_data = self.args_map.get(const.REPROCESS_INPUT_DATA, True)  # Added reprocess_input_data
+
+        if self.args_map.get(const.USE_EARLY_STOPPING, False):
+            self.trainingArgs.use_early_stopping = self.args_map.get(const.USE_EARLY_STOPPING, True)
+            self.trainingArgs.evaluate_during_training = self.args_map.get(const.EVALUATE_DURING_TRAINING,True)
+            self.trainingArgs.evaluate_during_training_verbose = self.args_map.get(const.EVALUATE_DURING_TRAINING_VERBOSE,True)
+            self.trainingArgs.eval_batch_size = self.args_map.get(const.EVAL_BATCH_SIZE,16)
+            self.trainingArgs.early_stopping_consider_epochs = self.args_map.get(const.EARLY_STOPPING_CONSIDER_EPOCHS,True)
+            self.trainingArgs.early_stopping_patience = self.args_map.get(const.EARLY_STOPPING_PATIENCE, 3)
+            self.trainingArgs.early_stopping_delta = self.args_map.get(const.EARLY_STOPPING_DELTA, 0.01)
+            self.trainingArgs.early_stopping_metric = self.args_map.get(const.EARLY_STOPPING_METRIC, "eval_loss")
+            self.trainingArgs.early_stopping_metric_minimize = self.args_map.get(const.EARLY_STOPPING_METRIC_MINIMIZE, True)
+            self.trainingArgs.save_eval_checkpoints = self.args_map.get(const.SAVE_EVAL_CHECKPOINTS, False)
+            self.trainingArgs.use_multiprocessing_for_evaluation = self.args_map.get(const.USE_MULTIPROCESSING_FOR_EVALUATION, False)
+
+        self.init_model(self.trainingArgs, len(encoder.classes_))
+        self.model.train_model(training_data, eval_df=eval_data)
         self.save()
 
     def save(self) -> None:
