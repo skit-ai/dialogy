@@ -74,6 +74,10 @@ class Task(BaseConfig):
             purpose_args[const.OUTPUT_DIR] = os.path.join(
                 project_config_path, purpose_args[const.OUTPUT_DIR]
             )
+            if purpose == const.TRAIN:
+                purpose_args[const.EVAL_DATA_DIR] = os.path.join(
+                    project_config_path, purpose_args[const.EVAL_DATA_DIR]
+                )
 
 
 @attr.s
