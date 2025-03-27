@@ -6,6 +6,7 @@ This module provides a trainable XLMR classifier.
 """
 import importlib
 import os
+import shutil
 import pickle
 import requests
 from typing import Any, Dict, List, Optional, Tuple
@@ -360,7 +361,7 @@ class XLMRMultiClass(Plugin):
             eval_data_path = self.args_map.get(const.EVAL_DATA_DIR)
             eval_data = pd.read_csv(os.path.join(eval_data_path, const.TEST)+'.csv')
         except (FileNotFoundError, pd.errors.ParserError) as e:
-            logger.exception("Error loading Eval Data: %s", e)
+            logger.exception(f"Error loading Eval Data: {e}")
             return
         
         logger.error(f"\n\nTrain shape: {training_data.shape}\tTest shape: {eval_data.shape}\n\n")
@@ -441,7 +442,7 @@ class XLMRMultiClass(Plugin):
         self.trainingArgs.train_batch_size = self.args_map.get(const.TRAIN_BATCH_SIZE, 16)
         self.trainingArgs.use_multiprocessing = self.args_map.get(const.USE_MULTIPROCESSING, False)
         self.trainingArgs.save_model_every_epoch = self.args_map.get(const.SAVE_MODEL_EVERY_EPOCH, False)
-        self.trainingArgs.save_best_model = self.args_map.get(const.SAVE_MODEL_EVERY_EPOCH, False)
+        self.trainingArgs.save_best_model = self.args_map.get(const.SAVE_BEST_MODEL, False)
         self.trainingArgs.save_steps = self.args_map.get(const.SAVE_STEPS, -1)  # Added save_steps
         self.trainingArgs.fp16 = self.args_map.get(const.FP16, False)  # Added fp16
         self.trainingArgs.learning_rate = self.args_map.get(const.LEARNING_RATE, 1.0e-05)  # Added learning_rate
@@ -464,7 +465,23 @@ class XLMRMultiClass(Plugin):
 
         self.init_model(self.trainingArgs, len(encoder.classes_))
         self.model.train_model(training_data, eval_df=eval_data)
-        self.save()
+
+        # Create destination directory if it doesn't exist
+        destination_dir = self.args_map.get(const.BEST_MODEL_DIR, "data/classification/models")
+        source_dir = const.LOCAL_MODEL_DIR
+        os.makedirs(destination_dir, exist_ok=True)
+
+        # Move all files from source to destination
+        for file_name in os.listdir(source_dir):
+            source_file = os.path.join(source_dir, file_name)
+            destination_file = os.path.join(destination_dir, file_name)
+            
+            # If source_file is a file (not a directory)
+            if os.path.isfile(source_file):
+                shutil.move(source_file, destination_file)
+                self.save()
+        shutil.rmtree(const.LOCAL_MODEL_BASE_DIR, ignore_errors=True)
+        logger.info(f"Model saved to {destination_dir}")
 
     def save(self) -> None:
         """
