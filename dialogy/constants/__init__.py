@@ -236,6 +236,8 @@ ENTITY_VALUE_TOKEN = "__value__"
 
 OUTPUT_DIR = "output_dir"
 BEST_MODEL_DIR = "best_model_dir"
+METRIC_FOR_BEST_MODEL = "metric_for_best_model"
+SAVE_TOTAL_LIMIT = "save_total_limit"
 BEST_MODEL = BEST_MODEL_DIR
 LOCAL_MODEL_DIR = "outputs/best_model"
 LOCAL_MODEL_BASE_DIR = "outputs"

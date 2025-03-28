@@ -462,26 +462,15 @@ class XLMRMultiClass(Plugin):
             self.trainingArgs.early_stopping_metric_minimize = self.args_map.get(const.EARLY_STOPPING_METRIC_MINIMIZE, True)
             self.trainingArgs.save_eval_checkpoints = self.args_map.get(const.SAVE_EVAL_CHECKPOINTS, False)
             self.trainingArgs.use_multiprocessing_for_evaluation = self.args_map.get(const.USE_MULTIPROCESSING_FOR_EVALUATION, False)
+            self.trainingArgs.best_model_dir = self.args_map.get(const.BEST_MODEL_DIR, "data/classification/models")
+            self.trainingArgs.metric_for_best_model = self.args_map.get(const.METRIC_FOR_BEST_MODEL, "eval_loss")
+            self.trainingArgs.save_total_limit= self.args_map.get(const.SAVE_TOTAL_LIMIT, 1)
 
         self.init_model(self.trainingArgs, len(encoder.classes_))
         self.model.train_model(training_data, eval_df=eval_data)
+        logger.info(f"Best Model saved to {self.trainingArgs.best_model_dir}")
 
-        # Create destination directory if it doesn't exist
-        destination_dir = self.args_map.get(const.BEST_MODEL_DIR, "data/classification/models")
-        source_dir = const.LOCAL_MODEL_DIR
-        os.makedirs(destination_dir, exist_ok=True)
-
-        # Move all files from source to destination
-        for file_name in os.listdir(source_dir):
-            source_file = os.path.join(source_dir, file_name)
-            destination_file = os.path.join(destination_dir, file_name)
-            
-            # If source_file is a file (not a directory)
-            if os.path.isfile(source_file):
-                shutil.move(source_file, destination_file)
-                self.save()
-        shutil.rmtree(const.LOCAL_MODEL_BASE_DIR, ignore_errors=True)
-        logger.info(f"Model saved to {destination_dir}")
+        shutil.rmtree(const.OUTPUT_DIR, ignore_errors=True)
 
     def save(self) -> None:
         """
