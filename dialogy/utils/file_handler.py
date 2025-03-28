@@ -107,3 +107,28 @@ def create_timestamps_path(
     if not dry_run:
         os.makedirs(dir_path, exist_ok=True)
     return os.path.join(dir_path, file_name)
+
+def remove_directory(path):
+    # Walk the directory tree from bottom to top
+    for root, dirs, files in os.walk(path, topdown=False):
+        # Remove files first
+        for name in files:
+            file_path = os.path.join(root, name)
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                print(f"Error removing file '{file_path}': {e}")
+        # Then remove directories
+        for name in dirs:
+            dir_path = os.path.join(root, name)
+            try:
+                os.rmdir(dir_path)
+            except Exception as e:
+                print(f"Error removing directory '{dir_path}': {e}")
+    # Finally, remove the top-level directory
+    try:
+        os.rmdir(path)
+    except Exception as e:
+        print(f"Error removing top-level directory '{path}': {e}")
+
+

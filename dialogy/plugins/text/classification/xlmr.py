@@ -23,7 +23,7 @@ from aiohttp.client_exceptions import ClientConnectorError
 import dialogy.constants as const
 from dialogy.base import Guard, Input, Output, Plugin
 from dialogy.types import Intent
-from dialogy.utils import load_file, logger, read_from_json, save_file
+from dialogy.utils import load_file, logger, read_from_json, save_file, remove_directory
 import torch
 from torch.profiler import profile, record_function, ProfilerActivity
 from sklearn.model_selection import train_test_split
@@ -364,7 +364,7 @@ class XLMRMultiClass(Plugin):
             logger.exception(f"Error loading Eval Data: {e}")
             return
         
-        logger.error(f"\n\nTrain shape: {training_data.shape}\tTest shape: {eval_data.shape}\n\n")
+        logger.info(f"\n\nTrain shape: {training_data.shape}\tTest shape: {eval_data.shape}\n\n")
         
         if not self.validate(eval_data):
             logger.warning(
@@ -470,7 +470,7 @@ class XLMRMultiClass(Plugin):
         self.model.train_model(training_data, eval_df=eval_data)
         logger.info(f"Best Model saved to {self.trainingArgs.best_model_dir}")
 
-        shutil.rmtree(const.OUTPUT_DIR, ignore_errors=True)
+        remove_directory(self.trainingArgs.output_dir)
 
     def save(self) -> None:
         """

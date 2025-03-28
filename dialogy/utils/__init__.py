@@ -10,6 +10,7 @@ from dialogy.utils.file_handler import (
     read_from_json,
     save_file,
     save_to_json,
+    remove_directory
 )
 from dialogy.utils.logger import logger
 from dialogy.utils.misc import traverse_dict, validate_type
