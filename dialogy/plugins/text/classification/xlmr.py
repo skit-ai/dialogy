@@ -28,6 +28,7 @@ import torch
 from torch.profiler import profile, record_function, ProfilerActivity
 from sklearn.model_selection import train_test_split
 import logging
+import shutil
 logging.basicConfig(level=logging.INFO)
 
 
@@ -469,8 +470,19 @@ class XLMRMultiClass(Plugin):
         self.init_model(self.trainingArgs, len(encoder.classes_))
         self.model.train_model(training_data, eval_df=eval_data)
         logger.info(f"Best Model saved to {self.trainingArgs.best_model_dir}")
-
-        remove_directory(self.trainingArgs.output_dir)
+        
+        try:
+            # Move training progress file to parent directory if it exists
+            progress_file = os.path.join(self.trainingArgs.output_dir, "training_progress_scores.csv")
+            if os.path.exists(progress_file):
+                parent_dir = os.path.dirname(self.trainingArgs.output_dir)
+                shutil.move(progress_file, os.path.join(parent_dir, "training_progress_scores.csv"))
+            
+            # Remove the output directory if it exists
+            if os.path.exists(self.trainingArgs.output_dir):
+                shutil.rmtree(self.trainingArgs.output_dir)
+        except Exception as e:
+            logger.warning(f"Failed to cleanup training artifacts: {str(e)}")
 
     def save(self) -> None:
         """

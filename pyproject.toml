@@ -39,6 +39,7 @@ transformers = "4.38.0"
 word2number = "^1.1"
 pyyaml-include = "1.4.1"
 spacy = "3.8.3"
+pytest-shutil = "^1.8.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
