@@ -464,8 +464,6 @@ class XLMRMultiClass(Plugin):
             self.trainingArgs.save_eval_checkpoints = self.args_map.get(const.SAVE_EVAL_CHECKPOINTS, False)
             self.trainingArgs.use_multiprocessing_for_evaluation = self.args_map.get(const.USE_MULTIPROCESSING_FOR_EVALUATION, False)
             self.trainingArgs.best_model_dir = self.args_map.get(const.BEST_MODEL_DIR, "data/classification/models")
-            self.trainingArgs.metric_for_best_model = self.args_map.get(const.METRIC_FOR_BEST_MODEL, "eval_loss")
-            self.trainingArgs.save_total_limit= self.args_map.get(const.SAVE_TOTAL_LIMIT, 1)
 
         self.init_model(self.trainingArgs, len(encoder.classes_))
         self.model.train_model(training_data, eval_df=eval_data)
@@ -473,10 +471,10 @@ class XLMRMultiClass(Plugin):
         
         try:
             # Move training progress file to parent directory if it exists
-            progress_file = os.path.join(self.trainingArgs.output_dir, "training_progress_scores.csv")
+            progress_file = os.path.join(self.trainingArgs.output_dir, const.TRAINING_PROGRESS_FILE)
             if os.path.exists(progress_file):
                 parent_dir = os.path.dirname(self.trainingArgs.output_dir)
-                shutil.move(progress_file, os.path.join(parent_dir, "training_progress_scores.csv"))
+                shutil.move(progress_file, os.path.join(parent_dir, const.METRICS, const.TRAINING_PROGRESS_FILE))
             
             # Remove the output directory if it exists
             if os.path.exists(self.trainingArgs.output_dir):
