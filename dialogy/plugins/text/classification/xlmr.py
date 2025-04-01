@@ -29,6 +29,7 @@ from torch.profiler import profile, record_function, ProfilerActivity
 from sklearn.model_selection import train_test_split
 import logging
 import shutil
+import matplotlib.pyplot as plt
 logging.basicConfig(level=logging.INFO)
 
 
@@ -470,7 +471,7 @@ class XLMRMultiClass(Plugin):
         logger.info(f"Best Model saved to {self.trainingArgs.best_model_dir}")
         
         try:
-            # Move training progress file to parent directory if it exists
+            # Move training progress file to metrics directory if it exists
             progress_file = os.path.join(self.trainingArgs.output_dir, const.TRAINING_PROGRESS_FILE)
             if os.path.exists(progress_file):
                 parent_dir = os.path.dirname(self.trainingArgs.output_dir)
@@ -481,6 +482,32 @@ class XLMRMultiClass(Plugin):
                 shutil.rmtree(self.trainingArgs.output_dir)
         except Exception as e:
             logger.warning(f"Failed to cleanup training artifacts: {str(e)}")
+
+        base_path = os.path.join(os.path.dirname(self.trainingArgs.output_dir), const.METRICS)
+        metrics_file = os.path.join(base_path, const.TRAINING_PROGRESS_FILE)
+        learning_curve_file = os.path.join(base_path, const.LEARNING_CURVE_FILE)
+        try:
+            if os.path.exists(metrics_file):
+                metrics_df = pd.read_csv(metrics_file)
+                epochs = range(1, len(metrics_df) + 1)
+                
+                plt.figure(figsize=(10, 6))
+                plt.plot(epochs, metrics_df['train_loss'], 'b-', label='Training Loss')
+                plt.plot(epochs, metrics_df['eval_loss'], 'orange', label='Evaluation Loss')
+                plt.title('Learning Curve')
+                plt.xlabel('Epoch')
+                plt.ylabel('Loss')
+                plt.legend()
+                plt.grid(True)
+                
+                plt.savefig(learning_curve_file)
+                plt.close()
+                
+                logger.info(f"Generated learning curve plot at {learning_curve_file}")
+            else:
+                logger.warning(f"Training Progress file not found at {metrics_file}")
+        except Exception as e:
+            logger.warning(f"Failed to generate learning curve: {str(e)}")
 
     def save(self) -> None:
         """
