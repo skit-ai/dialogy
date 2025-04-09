@@ -521,11 +521,11 @@ class XLMRMultiClass(Plugin):
                 plt.legend()
                 plt.grid(True)
                 
-                # Plot MCC curve
+                # Plot early stopping metric curve
                 plt.subplot(2, 1, 2)
-                plt.plot(epochs, metrics_df['mcc'], 'g-', label='Evaluation MCC')
+                plt.plot(epochs, metrics_df[early_stopping_metric], 'g-', label=f'Evaluation {early_stopping_metric}')
                 plt.xlabel('Epoch')
-                plt.ylabel('MCC Score')
+                plt.ylabel(f'{early_stopping_metric} Score')
                 plt.legend()
                 plt.grid(True)
                 
