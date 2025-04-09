@@ -186,12 +186,23 @@ EVALUATE_DURING_TRAINING = "evaluate_during_training"
 EVALUATE_DURING_TRAINING_STEPS = "evaluate_during_training_steps"
 EVALUATE_DURING_TRAINING_VERBOSE = "evaluate_during_training_verbose"
 EVALUTION_STRATERGY = "evaluation_strategy"
+SAVE_OPTIMIZER_AND_SCHEDULER = False
 SAVE_STEPS = "save_steps"
 FP16 = "fp16"
 LEARNING_RATE = "learning_rate"
 MAX_SEQ_LENGTH = "max_seq_length"
 REPROCESS_INPUT_DATA = "reprocess_input_data"
 VALIDATION_SPLIT = "validation_split"
+MINIMIZE_METRICS = [
+            "eval_loss",
+            "train_loss",
+            "eval_running_loss",
+            "train_running_loss",
+            "eval_perplexity",
+            "train_perplexity",
+            "eval_error_rate",
+            "train_error_rate"
+        ]
 
 # MLP
 MLPMODEL_FILE = "mlpmodelpipeline.joblib"

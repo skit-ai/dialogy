@@ -30,6 +30,8 @@ from sklearn.model_selection import train_test_split
 import logging
 import shutil
 import matplotlib.pyplot as plt
+from sklearn.metrics import f1_score
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -438,6 +440,9 @@ class XLMRMultiClass(Plugin):
             f"Displaying a few eval samples (this goes into the model):\n{eval_data.sample(sample_size)}\nLabels: {len(encoder.classes_)}."
         )
 
+        def weighted_f1(labels, preds):
+            return f1_score(labels, preds, average='weighted')
+
         # Common Training parameters
         self.trainingArgs.num_train_epochs = self.args_map.get(const.NUM_TRAIN_EPOCHS,10)
         self.trainingArgs.overwrite_output_dir = self.args_map.get(const.OVERRIDE_OUTPUT_DIR, True)
@@ -449,25 +454,36 @@ class XLMRMultiClass(Plugin):
         self.trainingArgs.fp16 = self.args_map.get(const.FP16, False)  # Added fp16
         self.trainingArgs.learning_rate = self.args_map.get(const.LEARNING_RATE, 1.0e-05)  # Added learning_rate
         self.trainingArgs.max_seq_length = self.args_map.get(const.MAX_SEQ_LENGTH, 176)  # Added max_seq_length
-        self.trainingArgs.output_dir = self.args_map.get(const.OUTPUT_DIR, "data/classification/models")  # Added output_dir
         self.trainingArgs.reprocess_input_data = self.args_map.get(const.REPROCESS_INPUT_DATA, True)  # Added reprocess_input_data
+        self.trainingArgs.evaluate_during_training = self.args_map.get(const.EVALUATE_DURING_TRAINING,True)
+        self.trainingArgs.evaluate_during_training_verbose = self.args_map.get(const.EVALUATE_DURING_TRAINING_VERBOSE,True)
+        self.trainingArgs.save_eval_checkpoints = self.args_map.get(const.SAVE_EVAL_CHECKPOINTS, False)
+        self.trainingArgs.use_multiprocessing_for_evaluation = self.args_map.get(const.USE_MULTIPROCESSING_FOR_EVALUATION, False)
+        
+        # Metrics where higher values indicate worse performance (should be minimized)
+        
+        early_stopping_metric = self.args_map.get(const.EARLY_STOPPING_METRIC, "weighted_f1")
+        if early_stopping_metric in const.MINIMIZE_METRICS:
+            self.trainingArgs.early_stopping_metric_minimize = True
+        else:
+            self.trainingArgs.early_stopping_metric_minimize = False
+        self.trainingArgs.early_stopping_metric = early_stopping_metric
+        # Had to rely on this logic beacuse in simple transformers evaluation and best model saving is very interwined with early stopping logic
+        self.trainingArgs.output_dir = self.args_map.get(const.BEST_MODEL_DIR, "data/classification/models")
+        self.trainingArgs.best_model_dir = self.args_map.get(const.OUTPUT_DIR, "data/classification/temp")
 
-        if self.args_map.get(const.USE_EARLY_STOPPING, False):
+        if self.args_map.get(const.USE_EARLY_STOPPING, True):
             self.trainingArgs.use_early_stopping = self.args_map.get(const.USE_EARLY_STOPPING, True)
-            self.trainingArgs.evaluate_during_training = self.args_map.get(const.EVALUATE_DURING_TRAINING,True)
-            self.trainingArgs.evaluate_during_training_verbose = self.args_map.get(const.EVALUATE_DURING_TRAINING_VERBOSE,True)
-            self.trainingArgs.eval_batch_size = self.args_map.get(const.EVAL_BATCH_SIZE,16)
+            self.trainingArgs.save_optimizer_and_scheduler = self.args_map.get(const.SAVE_OPTIMIZER_AND_SCHEDULER, False) # By default it should be False, else the model size will be too large
             self.trainingArgs.early_stopping_consider_epochs = self.args_map.get(const.EARLY_STOPPING_CONSIDER_EPOCHS,True)
             self.trainingArgs.early_stopping_patience = self.args_map.get(const.EARLY_STOPPING_PATIENCE, 3)
-            self.trainingArgs.early_stopping_delta = self.args_map.get(const.EARLY_STOPPING_DELTA, 0.01)
-            self.trainingArgs.early_stopping_metric = self.args_map.get(const.EARLY_STOPPING_METRIC, "eval_loss")
-            self.trainingArgs.early_stopping_metric_minimize = self.args_map.get(const.EARLY_STOPPING_METRIC_MINIMIZE, True)
-            self.trainingArgs.save_eval_checkpoints = self.args_map.get(const.SAVE_EVAL_CHECKPOINTS, False)
-            self.trainingArgs.use_multiprocessing_for_evaluation = self.args_map.get(const.USE_MULTIPROCESSING_FOR_EVALUATION, False)
+            self.trainingArgs.early_stopping_delta = self.args_map.get(const.EARLY_STOPPING_DELTA, 0.01)  # Changed to False since higher MCC is better
+            # Had to rely on this logic beacuse in simple transformers evaluation and best model saving is very interwined with early stopping logic
             self.trainingArgs.best_model_dir = self.args_map.get(const.BEST_MODEL_DIR, "data/classification/models")
+            self.trainingArgs.output_dir = self.args_map.get(const.OUTPUT_DIR, "data/classification/temp")
 
         self.init_model(self.trainingArgs, len(encoder.classes_))
-        self.model.train_model(training_data, eval_df=eval_data)
+        self.model.train_model(training_data, eval_df=eval_data,  weighted_f1=weighted_f1)
         logger.info(f"Best Model saved to {self.trainingArgs.best_model_dir}")
         
         try:
@@ -477,9 +493,11 @@ class XLMRMultiClass(Plugin):
                 parent_dir = os.path.dirname(self.trainingArgs.output_dir)
                 shutil.move(progress_file, os.path.join(parent_dir, const.METRICS, const.TRAINING_PROGRESS_FILE))
             
-            # Remove the output directory if it exists
-            if os.path.exists(self.trainingArgs.output_dir):
+            # Remove the training artifacts
+            if self.args_map.get(const.USE_EARLY_STOPPING, True) and os.path.exists(self.trainingArgs.output_dir):
                 shutil.rmtree(self.trainingArgs.output_dir)
+            elif not self.args_map.get(const.USE_EARLY_STOPPING, True) and os.path.exists(self.trainingArgs.best_model_dir):
+                shutil.rmtree(self.trainingArgs.best_model_dir)
         except Exception as e:
             logger.warning(f"Failed to cleanup training artifacts: {str(e)}")
 
@@ -492,22 +510,34 @@ class XLMRMultiClass(Plugin):
                 epochs = range(1, len(metrics_df) + 1)
                 
                 plt.figure(figsize=(10, 6))
+                
+                # Plot loss curves
+                plt.subplot(2, 1, 1)
                 plt.plot(epochs, metrics_df['train_loss'], 'b-', label='Training Loss')
                 plt.plot(epochs, metrics_df['eval_loss'], 'orange', label='Evaluation Loss')
-                plt.title('Learning Curve')
+                plt.title('Learning Curves')
                 plt.xlabel('Epoch')
                 plt.ylabel('Loss')
                 plt.legend()
                 plt.grid(True)
                 
+                # Plot MCC curve
+                plt.subplot(2, 1, 2)
+                plt.plot(epochs, metrics_df['mcc'], 'g-', label='Evaluation MCC')
+                plt.xlabel('Epoch')
+                plt.ylabel('MCC Score')
+                plt.legend()
+                plt.grid(True)
+                
+                plt.tight_layout()
                 plt.savefig(learning_curve_file)
                 plt.close()
                 
-                logger.info(f"Generated learning curve plot at {learning_curve_file}")
+                logger.info(f"Generated learning curves plot at {learning_curve_file}")
             else:
                 logger.warning(f"Training Progress file not found at {metrics_file}")
         except Exception as e:
-            logger.warning(f"Failed to generate learning curve: {str(e)}")
+            logger.warning(f"Failed to generate learning curves: {str(e)}")
 
     def save(self) -> None:
         """
