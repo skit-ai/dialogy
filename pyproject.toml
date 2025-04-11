@@ -60,7 +60,7 @@ sphinx-copybutton = "^0.3.1"
 sphinx-autodoc-typehints = "^1.16.0"
 sphinxcontrib-mermaid = "^0.7.1"
 pytest-mock = "^3.7.0"
-spacy = "^3.3.1"
+spacy = "^3.8.3"
 ipykernel = "^6.15.0"
 types-PyYAML = "6.0.12.9"
 
