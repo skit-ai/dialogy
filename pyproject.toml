@@ -63,6 +63,7 @@ pytest-mock = "^3.7.0"
 spacy = "^3.8.3"
 ipykernel = "^6.15.0"
 types-PyYAML = "6.0.12.9"
+blis = "1.2.0"
 
 [tool.poetry.scripts]
 dialogy = "dialogy.cli:main"
