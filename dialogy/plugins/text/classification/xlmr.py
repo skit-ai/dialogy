@@ -31,6 +31,7 @@ import logging
 import shutil
 import matplotlib.pyplot as plt
 from sklearn.metrics import f1_score
+from transformers import AutoConfig
 
 logging.basicConfig(level=logging.INFO)
 
@@ -130,6 +131,7 @@ class XLMRMultiClass(Plugin):
             self.labelencoder = preprocessing.LabelEncoder()
             self.classifier = classifer
             self.model: Any = None
+            self.config: Any = None
             self.trainingArgs = training_args()
 
             self.labelencoder_file_path = os.path.join(
@@ -180,12 +182,17 @@ class XLMRMultiClass(Plugin):
                 f"Plugin {self} needs either the training data "
                 "or an existing labelencoder to initialize."
             )
+        
+        self.config = AutoConfig.from_pretrained(self.model_dir)
+        self.config.hidden_dropout_prob = 0.15
+        self.config.attention_probs_dropout_prob = 0.15
 
         try:
             logger.debug(f"loading model weights from {self.model_dir}")
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 self.model_dir,
+                config=self.config,
                 num_labels=label_count,
                 use_cuda=self.use_cuda,
                 args=self.trainingArgs,
@@ -197,6 +204,7 @@ class XLMRMultiClass(Plugin):
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 const.XLMR_MODEL_TIER,
+                config=self.config,
                 num_labels=label_count,
                 use_cuda=self.use_cuda,
                 args=self.trainingArgs,
@@ -459,7 +467,8 @@ class XLMRMultiClass(Plugin):
         self.trainingArgs.evaluate_during_training_verbose = self.args_map.get(const.EVALUATE_DURING_TRAINING_VERBOSE,True)
         self.trainingArgs.save_eval_checkpoints = self.args_map.get(const.SAVE_EVAL_CHECKPOINTS, False)
         self.trainingArgs.use_multiprocessing_for_evaluation = self.args_map.get(const.USE_MULTIPROCESSING_FOR_EVALUATION, False)
-        
+        self.trainingArgs.weight_decay = self.args_map.get(const.WEIGHT_DECAY, 0.01)
+        self.trainingArgs.max_grad_norm = self.args_map.get(const.MAX_GRAD_NORM, 1.0)
         # Metrics where higher values indicate worse performance (should be minimized)
         
         early_stopping_metric = self.args_map.get(const.EARLY_STOPPING_METRIC, "weighted_f1")
