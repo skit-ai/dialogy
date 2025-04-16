@@ -182,10 +182,6 @@ class XLMRMultiClass(Plugin):
                 f"Plugin {self} needs either the training data "
                 "or an existing labelencoder to initialize."
             )
-        
-        self.config = AutoConfig.from_pretrained(self.model_dir)
-        self.config.hidden_dropout_prob = 0.15
-        self.config.attention_probs_dropout_prob = 0.15
 
         try:
             logger.debug(f"Loading model weights from {self.model_dir}")
@@ -193,7 +189,6 @@ class XLMRMultiClass(Plugin):
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 self.model_dir,
-                config=self.config,
                 num_labels=label_count,
                 use_cuda=self.use_cuda,
                 args=self.trainingArgs,
@@ -202,15 +197,10 @@ class XLMRMultiClass(Plugin):
         except OSError:
             logger.info(f"Model not found at {self.model_dir}. "
                         f"Default model weights will be loaded")
-            # Load the configuration from the fallback model directory and update dropout parameters
-            self.config = AutoConfig.from_pretrained(const.XLMR_MODEL_TIER)
-            self.config.hidden_dropout_prob = 0.15
-            self.config.attention_probs_dropout_prob = 0.15
 
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 const.XLMR_MODEL_TIER,
-                config=self.config,
                 num_labels=label_count,
                 use_cuda=self.use_cuda,
                 args=self.trainingArgs,
