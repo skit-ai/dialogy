@@ -189,10 +189,6 @@ class XLMRMultiClass(Plugin):
 
         try:
             logger.debug(f"Loading model weights from {self.model_dir}")
-            # Load the configuration from the given directory and update dropout parameters
-            self.config = AutoConfig.from_pretrained(self.model_dir)
-            self.config.hidden_dropout_prob = 0.15
-            self.config.attention_probs_dropout_prob = 0.15
 
             self.model = self.classifier(
                 const.XLMR_MODEL,
@@ -220,6 +216,8 @@ class XLMRMultiClass(Plugin):
                 args=self.trainingArgs,
                 **self.kwargs,
             )
+            self.model.config.hidden_dropout_prob = 0.15
+            self.model.config.attention_probs_dropout_prob = 0.15
 
 
     @property
