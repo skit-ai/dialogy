@@ -188,7 +188,12 @@ class XLMRMultiClass(Plugin):
         self.config.attention_probs_dropout_prob = 0.15
 
         try:
-            logger.debug(f"loading model weights from {self.model_dir}")
+            logger.debug(f"Loading model weights from {self.model_dir}")
+            # Load the configuration from the given directory and update dropout parameters
+            self.config = AutoConfig.from_pretrained(self.model_dir)
+            self.config.hidden_dropout_prob = 0.15
+            self.config.attention_probs_dropout_prob = 0.15
+
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 self.model_dir,
@@ -201,6 +206,11 @@ class XLMRMultiClass(Plugin):
         except OSError:
             logger.info(f"Model not found at {self.model_dir}. "
                         f"Default model weights will be loaded")
+            # Load the configuration from the fallback model directory and update dropout parameters
+            self.config = AutoConfig.from_pretrained(const.XLMR_MODEL_TIER)
+            self.config.hidden_dropout_prob = 0.15
+            self.config.attention_probs_dropout_prob = 0.15
+
             self.model = self.classifier(
                 const.XLMR_MODEL,
                 const.XLMR_MODEL_TIER,
@@ -210,6 +220,7 @@ class XLMRMultiClass(Plugin):
                 args=self.trainingArgs,
                 **self.kwargs,
             )
+
 
     @property
     def valid_labelencoder(self) -> bool:
