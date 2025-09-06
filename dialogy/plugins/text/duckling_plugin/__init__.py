@@ -504,6 +504,7 @@ Now we can see that it gives the correct entity value i.e *"2022-03-17T12:00:00+
 """
 import json
 import operator
+import time
 import traceback
 from concurrent import futures
 from datetime import datetime
@@ -560,6 +561,9 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
 
     :param url: The address where Duckling's entity parser can be reached, defaults to "http://0.0.0.0:8000/parse".
     :type url: Optional[str]
+
+    :param max_retries: Maximum number of retry attempts for timeout and connection errors, defaults to 3.
+    :type max_retries: int
     """
 
     FUTURE = const.FUTURE
@@ -593,6 +597,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         output_column: Optional[str] = None,
         use_transform: bool = False,
         debug: bool = False,
+        max_retries: int = 3,
     ) -> None:
         """
         constructor
@@ -617,6 +622,7 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
         self.datetime_filters = datetime_filters
         self.activate_latent_entities = activate_latent_entities
         self.constraints = constraints
+        self.max_retries = max_retries
         self.session = requests.Session()
         self.session.mount(
             "http://",
@@ -826,23 +832,41 @@ class DucklingPlugin(EntityScoringMixin, Plugin):
             text, reference_time=reference_time, locale=locale, use_latent=use_latent
         )
 
-        try:
-            response = self.session.post(
-                self.url, data=body, headers=self.headers, timeout=self.timeout
-            )
+        for attempt in range(self.max_retries + 1):
+            try:
+                response = self.session.post(
+                    self.url, data=body, headers=self.headers, timeout=self.timeout
+                )
 
-            if response.status_code == 200:
-                # The API call was successful, expect the following to contain entities.
-                # A list of dicts or an empty list.
-                return {const.IDX: sort_idx, const.VALUE: response.json()}
-        except requests.exceptions.Timeout as timeout_exception:
-            logger.error(f"Duckling timed out: {timeout_exception}")  # pragma: no cover
-            logger.error(pformat(body))  # pragma: no cover
-            return {const.IDX: sort_idx, const.VALUE: []}  # pragma: no cover
-        except requests.exceptions.ConnectionError as connection_error:
-            logger.error(f"Duckling server is turned off?: {connection_error}")
-            logger.error(pformat(body))
-            raise requests.exceptions.ConnectionError from connection_error
+                if response.status_code == 200:
+                    # The API call was successful, expect the following to contain entities.
+                    # A list of dicts or an empty list.
+                    return {const.IDX: sort_idx, const.VALUE: response.json()}
+                else:
+                    # Non-retryable HTTP errors
+                    raise ValueError(
+                        f"Duckling API call failed | [{response.status_code}]: {response.text}"
+                    )
+
+            except requests.exceptions.Timeout as timeout_exception:
+                if attempt < self.max_retries:
+                    logger.warning(f"Duckling timed out, retrying... (attempt {attempt + 1}/{self.max_retries + 1})")
+                    time.sleep(0.1)  # Simple 100ms delay
+                    continue
+                else:
+                    logger.error(f"Duckling timed out after {self.max_retries + 1} attempts: {timeout_exception}")
+                    logger.error(pformat(body))
+                    return {const.IDX: sort_idx, const.VALUE: []}
+
+            except requests.exceptions.ConnectionError as connection_error:
+                if attempt < self.max_retries:
+                    logger.warning(f"Duckling connection failed, retrying... (attempt {attempt + 1}/{self.max_retries + 1})")
+                    time.sleep(0.1)  # Simple 100ms delay
+                    continue
+                else:
+                    logger.error(f"Duckling connection failed after {self.max_retries + 1} attempts: {connection_error}")
+                    logger.error(pformat(body))
+                    raise requests.exceptions.ConnectionError from connection_error
 
         # Control flow reaching here would mean the API call wasn't successful.
         # To prevent rest of the things from crashing, we will raise an exception.
